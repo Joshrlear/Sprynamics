@@ -15,7 +15,7 @@
   - Add user authentication & user data
   - Develop secure login screen
 
-### Milestone 3: Project designer + APIs
+### Milestone 3: Product designer + APIs
 
   - Build product designer
   - Integrate with APIs (braintree, google, zillow)
