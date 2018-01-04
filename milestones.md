@@ -9,18 +9,18 @@
   - Build front page
   - Design admin & user panels
 
-### Milestone 2:
+### Milestone 2: Back-end/Auth
 
   - Set up database
   - Add user authentication & user data
   - Develop secure login screen
 
-### Milestone 3:
+### Milestone 3: Project designer + APIs
 
   - Build product designer
   - Integrate with APIs (braintree, google, zillow)
 
-### Milestone 4:
+### Milestone 4: Mailing List
 
   - Build mailing list feature
   - Parse CSV files/input as mailing lists
