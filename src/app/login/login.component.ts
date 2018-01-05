@@ -13,9 +13,13 @@ export class LoginComponent implements OnInit {
 
   loginForm: FormGroup;
 
+  error: string;
+
   constructor(public fb: FormBuilder, public auth: AuthService, private router: Router) { }
 
   ngOnInit() {
+    this.error = '';
+
     this.loginForm = this.fb.group({
       'email': ['', [
         Validators.required,
@@ -37,6 +41,7 @@ export class LoginComponent implements OnInit {
         this.router.navigate(['dashboard']);
       }).catch(error => {
         console.log(error);
+        this.error = error;
       });
   }
 

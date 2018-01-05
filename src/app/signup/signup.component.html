@@ -4,6 +4,8 @@
 
     <h3>New User Signup</h3>
 
+    <div style="color:red;">{{ error }}</div>
+
     <!-- Email Address -->
     <label for="email">Email</label>
     <input type="email" formControlName="email">
@@ -32,6 +34,8 @@
   <form [formGroup]="detailForm" *ngIf="user.uid && !user.firstName" (ngSubmit)="submitDetails(user)">
 
     <h3>Set User Details</h3>
+
+    <div style="color:red;">{{ error }}</div>
     
     <label for="firstName">First Name</label>
     <input type="text" formControlName="firstName">
