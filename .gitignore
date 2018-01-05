@@ -8,6 +8,12 @@
 # dependencies
 /node_modules
 functions/node_modules
+<<<<<<< HEAD
+=======
+
+# private credentials
+/src/environments
+>>>>>>> 415ab87758b325aeff59f469243212c4c367f30e
 
 # IDEs and editors
 /.idea
