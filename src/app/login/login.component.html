@@ -1,0 +1,28 @@
+<form [formGroup]="loginForm" (ngSubmit)="submitLogin()">
+
+  <h3>Log In to Sprynamics</h3>
+
+  <!-- Email Address -->
+  <label for="email">Email</label>
+  <input type="email" formControlName="email">
+
+  <div *ngIf="email.invalid && email.dirty">
+    Invalid e-mail address
+  </div>
+  <br>
+
+  <!-- Password -->
+  <label for="password">Password</label>
+  <input type="password" formControlName="password">
+
+  <div *ngIf="password.invalid && password.touched">
+    Password must be between 6 and 24 characters.
+  </div>
+  <br>
+
+  <!-- Valid -->
+  <div *ngIf="loginForm.valid">Form is valid.</div>
+
+  <button type="submit" [disabled]="!loginForm.valid">Submit</button>
+
+</form>
