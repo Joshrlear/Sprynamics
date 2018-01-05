@@ -40,8 +40,9 @@ export class SignupComponent implements OnInit {
     });
   }
 
-  get email() { return this.detailForm.get('email') }
-  get password() { return this.detailForm.get('password') }
+  get email() { return this.signupForm.get('email') }
+  get password() { return this.signupForm.get('password') }
+  
   get firstName() { return this.detailForm.get('firstName') }
   get lastName() { return this.detailForm.get('lastName') }
   get address1() { return this.detailForm.get('address1') }
