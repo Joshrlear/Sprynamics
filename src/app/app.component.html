@@ -1,5 +1,6 @@
 <ng-container *ngIf="(auth.user | async) || {} as user">
   <a routerLink="/home">Home</a>
+  <a routerLink="/designer">Designer</a>
   <a routerLink="/dashboard">Dashboard</a>
   <ng-container *ngIf="!user.uid; else loggedIn">
     <a routerLink="/login">Log In</a>
