@@ -1,0 +1,38 @@
+<div class="navbar">
+  <div class="navbar-row_inner">
+    <div class="navbar-left">
+      <a routerLink="/home">
+        <img src="assets/logo.png" style="width: 140px;">
+      </a>
+    </div>
+    <div class="navbar-right">
+      <ul class="nav-links">
+        <li class="nav-item">
+          <a routerLink="/home" class="nav-link">Home</a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/designer" class="nav-link">Design</a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/about" class="nav-link">About</a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/contact" class="nav-link">Contact Us</a>
+        </li>
+        <!-- <li class="nav-item">
+          <a routerLink="/login" class="nav-link">Account</a>
+        </li> -->
+        <li class="nav-item_dropdown dropdown show">
+            <a class="nav-link dropdown-toggle" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Account
+            </a>
+          
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+              <a class="dropdown-item" routerLink="/login">Login</a>
+              <a class="dropdown-item" routerLink="/signup">Sign Up</a>
+            </div>
+          </li>
+      </ul>
+    </div>
+  </div>
+</div>

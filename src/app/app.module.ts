@@ -11,6 +11,7 @@ import { LoginComponent } from './login/login.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { HomeComponent } from './home/home.component';
 import { DesignerComponent } from './designer/designer.component';
+import { NavigationComponent } from './navigation/navigation.component';
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import { DesignerComponent } from './designer/designer.component';
     DashboardComponent,
     HomeComponent,
     DesignerComponent,
+    NavigationComponent,
   ],
   imports: [
     BrowserModule,
