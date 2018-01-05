@@ -1,5 +1,7 @@
 {
   "projects": {
-    "default": "sprynamics"
+    "default": "spryn-f9f18",
+    "prod": "sprynamics",
+    "dev": "spryn-f9f18"
   }
 }
