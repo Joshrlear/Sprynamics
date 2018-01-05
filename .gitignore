@@ -7,6 +7,10 @@
 
 # dependencies
 /node_modules
+functions/node_modules
+
+# private credentials
+/src/environments
 
 # IDEs and editors
 /.idea

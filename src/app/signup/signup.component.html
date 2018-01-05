@@ -1,0 +1,84 @@
+<ng-container *ngIf="(auth.user | async) || {} as user">
+
+  <form [formGroup]="signupForm" *ngIf="!user.uid" (ngSubmit)="submitSignup()">
+
+    <h3>New User Signup</h3>
+
+    <div style="color:red;">{{ error }}</div>
+
+    <!-- Email Address -->
+    <label for="email">Email</label>
+    <input type="email" formControlName="email">
+
+    <div *ngIf="email.invalid && email.dirty">
+      Invalid e-mail address
+    </div>
+    <br>
+
+    <!-- Password -->
+    <label for="password">Password</label>
+    <input type="password" formControlName="password">
+
+    <div *ngIf="password.invalid && password.touched">
+      Password must be between 6 and 24 characters.
+    </div>
+    <br>
+
+    <!-- Valid -->
+    <div *ngIf="signupForm.valid">Form is valid.</div>
+
+    <button type="submit" [disabled]="!signupForm.valid">Submit</button>
+
+  </form>
+
+  <form [formGroup]="detailForm" *ngIf="user.uid && !user.firstName" (ngSubmit)="submitDetails(user)">
+
+    <h3>Set User Details</h3>
+
+    <div style="color:red;">{{ error }}</div>
+    
+    <label for="firstName">First Name</label>
+    <input type="text" formControlName="firstName">
+    <br>
+
+    <label for="lastName">Last Name</label>
+    <input type="text" formControlName="lastName">
+    <br>
+
+    <label for="address1">Address Line 1</label>
+    <input type="text" formControlName="address1">
+    <br>
+
+    <label for="address2">Address Line 2</label>
+    <input type="text" formControlName="address2">
+    <br>
+
+    <label for="city">City</label>
+    <input type="text" formControlName="city">
+    <br>
+
+    <label for="state">State</label>
+    <input type="text" formControlName="state">
+    <br>
+
+    <label for="country">Country</label>
+    <input type="text" formControlName="country">
+    <br>
+
+    <label for="company">Company Name</label>
+    <input type="text" formControlName="company">
+    <br>
+
+    <label for="licenseId">License ID</label>
+    <input type="text" formControlName="licenseId">
+    <br>
+
+    <button type="submit" [disabled]="!detailForm.valid">Submit</button>
+
+  </form>
+
+  <p *ngIf="user.firstName">
+    You have completed the form!
+  </p>
+
+</ng-container>
