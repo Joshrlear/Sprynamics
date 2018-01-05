@@ -37,7 +37,7 @@ export class AuthService {
           uid: user.uid,
           email
         });
-      }).catch(err => console.log(err));
+      });
   }
 
   emailLogin(username: string, password: string) {
