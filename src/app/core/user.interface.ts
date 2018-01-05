@@ -11,5 +11,4 @@ export interface User {
   company: string;
   licenseId: string;
   avatarUrl: string;
-  accountType: 'agent' | 'manager';
 }

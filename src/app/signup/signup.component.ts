@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { Observable } from 'rxjs/Observable';
+import { AuthService } from '../core/auth.service';
 
 @Component({
   selector: 'app-signup',
@@ -7,9 +10,53 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SignupComponent implements OnInit {
 
-  constructor() { }
+  signupForm: FormGroup;
+  detailForm: FormGroup;
+
+  constructor(public fb: FormBuilder, public auth: AuthService) { }
 
   ngOnInit() {
+    this.signupForm = this.fb.group({
+      'email': ['', [
+        Validators.required,
+        Validators.email
+      ]],
+      'password': ['', [
+        Validators.minLength(6),
+        Validators.maxLength(25)
+      ]]
+    });
+
+    this.detailForm = this.fb.group({
+      'firstName': ['', [Validators.required]],
+      'lastName': ['', [Validators.required]],
+      'address1': ['', [Validators.required]],
+      'address2': ['', [Validators.required]],
+      'city': ['', [Validators.required]],
+      'state': ['', [Validators.required]],
+      'country': ['', [Validators.required]],
+      'company': ['', [Validators.required]],
+      'licenseId': ['', [Validators.required]],
+    });
   }
 
+  get email() { return this.detailForm.get('email') }
+  get password() { return this.detailForm.get('password') }
+  get firstName() { return this.detailForm.get('firstName') }
+  get lastName() { return this.detailForm.get('lastName') }
+  get address1() { return this.detailForm.get('address1') }
+  get address2() { return this.detailForm.get('address2') }
+  get city() { return this.detailForm.get('city') }
+  get state() { return this.detailForm.get('state') }
+  get country() { return this.detailForm.get('country') }
+  get company() { return this.detailForm.get('company') }
+  get licenseId() { return this.detailForm.get('licenseId') }
+
+  submitSignup() {
+    return this.auth.emailSignUp(this.email.value, this.password.value);
+  }
+
+  submitDetails(user) {
+    return this.auth.updateUserData(user, this.detailForm.value);
+  }
 }
