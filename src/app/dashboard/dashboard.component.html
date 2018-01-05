@@ -1,3 +1,96 @@
 <p>
   This is the dashboard.
 </p>
+
+<br>
+
+<ng-container *ngIf="(auth.user | async) as user">
+
+  <ng-container *ngIf="!editing; else editForm">
+
+    <button (click)="edit()">Edit User</button>
+
+    <br><br>
+
+    <div>
+      Email: {{ user.email }}
+    </div>
+    <div>
+      Name: {{ user.firstName + ' ' + user.lastName }}
+    </div>
+    <div>
+      Address: {{ user.address1 + ' ' + user.address2 }}
+    </div>
+    <div>
+      City: {{ user.city }}
+    </div>
+    <div>
+      State: {{ user.state }}
+    </div>
+    <div>
+      Country: {{ user.country }}
+    </div>
+    <div>
+      Company Name: {{ user.company }}
+    </div>
+    <div>
+      License ID: {{ user.licenseId }}
+    </div>
+  
+
+  </ng-container>
+
+  <ng-template #editForm>
+
+    <button (click)="save(user)">Save Changes</button>
+    
+    <br><br>
+    
+    <form [formGroup]="userForm">
+
+      <label for="email">Email: </label>
+      <input type="email" formControlName="email" value="{{user.email}}">
+      <br>
+    
+      <label for="firstName">First Name: </label>
+      <input type="text" formControlName="firstName" value="{{user.firstName}}">
+      <br>
+
+      <label for="lastName">Last Name: </label>
+      <input type="text" formControlName="lastName" value="{{user.lastName}}">
+      <br>
+
+      <label for="address1">Address Line 1: </label>
+      <input type="text" formControlName="address1" value="{{user.address1}}">
+      <br>
+
+      <label for="address2">Address Line 2: </label>
+      <input type="text" formControlName="address2" value="{{user.address2}}">
+      <br>
+
+      <label for="city">City: </label>
+      <input type="text" formControlName="city" value="{{user.city}}">
+      <br>
+
+      <label for="state">State: </label>
+      <input type="text" formControlName="state" value="{{user.state}}">
+      <br>
+
+      <label for="country">Country: </label>
+      <input type="text" formControlName="country" value="{{user.country}}">
+      <br>
+
+      <label for="company">Company Name: </label>
+      <input type="text" formControlName="company" value="{{user.company}}">
+      <br>
+
+      <label for="licenseId">License ID: </label>
+      <input type="text" formControlName="licenseId" value="{{user.licenseId}}">
+      <br>
+
+    </form>
+
+
+  </ng-template>
+
+</ng-container>
