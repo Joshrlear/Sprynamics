@@ -7,11 +7,11 @@
   - Set up database
   - Add user authentication & user data
   - Develop secure login screen
+  - Set up hosting
 
 ### Milestone 2: Front-end
 
   - Set up Angular
-  - Set up hosting
   - Build front page
   - Design admin & user panels
 
