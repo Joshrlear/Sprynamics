@@ -15,8 +15,7 @@ service cloud.firestore {
     // Match user data
     match /users/{userId} {
       allow read: if request.auth.uid == userId;
-      allow write: if request.auth.uid == userId
-                   && resource.data.admin == null; // don't allow changing admin status from the client
+      allow write: if request.auth.uid == userId;
     }
     
     // Match design templates
