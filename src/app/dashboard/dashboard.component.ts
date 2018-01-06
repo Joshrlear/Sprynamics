@@ -3,6 +3,8 @@ import { AuthService } from '../core/auth.service';
 import { FormGroup } from '@angular/forms/src/model';
 import { FormBuilder, Validators } from '@angular/forms';
 import { StorageService } from '../core/storage.service';
+import { FirestoreService } from '../core/firestore.service';
+import { Observable } from 'rxjs/Observable';
 
 @Component({
   selector: 'app-dashboard',
@@ -16,7 +18,9 @@ export class DashboardComponent implements OnInit {
 
   userForm: FormGroup;
 
-  constructor(public fb: FormBuilder, public auth: AuthService, private storage: StorageService) { }
+  templates: Observable<any[]>;
+
+  constructor(public fb: FormBuilder, public auth: AuthService, private storage: StorageService, private firestore: FirestoreService) { }
 
   ngOnInit() {
     this.error = '';
@@ -32,6 +36,12 @@ export class DashboardComponent implements OnInit {
       'country': [''],
       'company': [''],
       'licenseId': ['']
+    });
+
+    this.auth.user.take(1).subscribe(user => {
+      if (user.admin) {
+        this.templates = this.firestore.collection$('templates');
+      }
     });
   }
 
@@ -65,6 +75,10 @@ export class DashboardComponent implements OnInit {
       .subscribe(downloadURL => {
         this.auth.updateUserData(user, { avatarUrl: downloadURL });
       });
+  }
+
+  addTemplate(name: string) {
+    this.firestore.
   }
 
 }

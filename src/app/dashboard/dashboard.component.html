@@ -109,7 +109,7 @@
 
     <br><br>
 
-    <ng-container *ngFor="let template of templates; let i = index;">
+    <ng-container *ngFor="let template of templates | async; let i = index;">
       Template {{i}}: {{template.name}}
     </ng-container>
 

@@ -11,4 +11,5 @@ export interface User {
   company: string;
   licenseId: string;
   avatarUrl: string;
+  admin: boolean;
 }
