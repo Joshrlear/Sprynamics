@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../core/auth.service';
 import { FormGroup } from '@angular/forms/src/model';
 import { FormBuilder, Validators } from '@angular/forms';
+import { StorageService } from '../core/storage.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -15,7 +16,7 @@ export class DashboardComponent implements OnInit {
 
   userForm: FormGroup;
 
-  constructor(public fb: FormBuilder, public auth: AuthService) { }
+  constructor(public fb: FormBuilder, public auth: AuthService, private storage: StorageService) { }
 
   ngOnInit() {
     this.error = '';
@@ -30,7 +31,7 @@ export class DashboardComponent implements OnInit {
       'state': [''],
       'country': [''],
       'company': [''],
-      'licenseId': [''],
+      'licenseId': ['']
     });
   }
 
@@ -55,6 +56,10 @@ export class DashboardComponent implements OnInit {
         console.log(err);
         this.error = err;
       });
+  }
+
+  uploadAvatar(user, file: File) {
+    this.storage.uploadFile(file)
   }
 
 }
