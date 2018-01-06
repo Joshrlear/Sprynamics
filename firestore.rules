@@ -2,7 +2,9 @@ service cloud.firestore {
   match /databases/{database}/documents {
     // Match user data
     match /users/{userId} {
-      allow read, write: if request.auth.uid == userId;
+      allow read: if request.auth.uid == userId;
+      allow write: if request.auth.uid == userId
+                   && resource.data.admin == null; // don't allow changing admin status from the client
     }
   }
 }

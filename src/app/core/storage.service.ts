@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
 
+import { AngularFireStorage } from 'angularfire2/storage';
+
 @Injectable()
 export class StorageService {
 
-  constructor() { }
+  constructor(private storage: AngularFireStorage) { }
 
-  uploadFile(file: File) {
-    
+  putFile(file: File, path: string) {
+    return this.storage.ref(path).put(file).downloadURL();
   }
 }

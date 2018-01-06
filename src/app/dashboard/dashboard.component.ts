@@ -59,7 +59,12 @@ export class DashboardComponent implements OnInit {
   }
 
   uploadAvatar(user, file: File) {
-    this.storage.uploadFile(file)
+    const extension = file.name.split('.').pop();
+    this.storage.putFile(file, `avatars/${user.uid}.${extension}`)
+      .take(1)
+      .subscribe(downloadURL => {
+        this.auth.updateUserData(user, { avatarUrl: downloadURL });
+      });
   }
 
 }
