@@ -1,10 +1,28 @@
 service cloud.firestore {
+
+  // returns true if the userId is an admin
+  function isAdmin(userId) {
+    return get(/databases/$(database)/documents/users/$(userId)).data.admin == true;
+  }
+
+  // returns true if the current request is coming from an Admin user
+  function isAdminRequest() {
+    return isAdmin(request.auth.uid);
+  }
+
   match /databases/{database}/documents {
+
     // Match user data
     match /users/{userId} {
       allow read: if request.auth.uid == userId;
       allow write: if request.auth.uid == userId
                    && resource.data.admin == null; // don't allow changing admin status from the client
+    }
+    
+    // Match design templates
+    match /templates/{template} {
+      allow read;
+      allow write: if get(/databases/$(database)/documents/users/$(request.auth.uid)).data.admin == true;
     }
   }
 }
