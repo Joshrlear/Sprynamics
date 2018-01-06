@@ -78,7 +78,7 @@ export class DashboardComponent implements OnInit {
   }
 
   addTemplate(name: string) {
-    this.firestore.
+    this.firestore.add('templates', { name });
   }
 
 }

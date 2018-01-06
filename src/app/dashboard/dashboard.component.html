@@ -94,7 +94,7 @@
 
       <label for="licenseId">License ID: </label>
       <input type="text" formControlName="licenseId" value="{{user.licenseId}}">
-      <br>      
+      <br>
 
     </form>
 
@@ -110,7 +110,8 @@
     <br><br>
 
     <ng-container *ngFor="let template of templates | async; let i = index;">
-      Template {{i}}: {{template.name}}
+      Template {{i+1}}: {{template.name}}
+      <br><br>
     </ng-container>
 
   </ng-container>
