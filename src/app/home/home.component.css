@@ -1,0 +1,114 @@
+.home-container {
+    width: 100%;
+    height: 100%;
+    margin-top: 64px;
+}
+
+.hero-section {
+    display: flex;
+    width: 100%;
+    height: 764px;
+    background-image: url("/assets/bg/herobg_Lg.png");
+    background-size: cover;
+    /* background-position: center; */
+}
+
+.hero-section_inner {
+    display: flex;
+    padding: 0 16px;
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+}
+
+.hero-section_inner-column {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.hero-section_inner-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.hero-text_block {
+    background-color: #f2f2f2;
+    opacity: .75;
+    margin-top: 80px;
+}
+
+.hero-text_heading {
+    font-family: "Segoe UI Black";
+    text-transform: uppercase;
+    text-align: left;
+    color: #000;
+    font-size: 60px;
+    font-weight: 900;
+    padding: 0px 12px;
+    margin-top: 0;
+    margin-bottom: 1rem;
+    line-height: 1.55;
+}
+
+.hero-text_subheading {
+    font-family: "Segoe UI Light";
+    color: #000;
+    font-weight: 800;
+    font-size: 36px;
+    text-align: left;
+    padding: 0px 0px 10px 10px;
+    margin: 0;
+}
+
+.hero-action {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 80px;
+    width: 100%;
+}
+
+.hero-action_left {
+    width: 25%;
+}
+
+.hero-action_right {
+    width: 75%;
+}
+
+.bar {
+    height: 5px;
+    box-shadow: 0px 1px 5px 2px #666;
+    border-radius: 3px;
+    background: #fff;
+    width: 100%;
+}
+
+.btn-greenBg {
+    background-color: #12C463 !important;
+    opacity: 1.5 !important;
+    text-transform: uppercase;
+    padding: 15px 35px;
+    border-radius: 10px;
+    box-shadow: -1px 1px 2px 0px #333;
+    font-size: 20px;
+    font-style: italic;
+    font-weight: bold;
+    position: relative;
+    color: #fff !important;
+    font-family: "Segoe UI Black", Helvetica, Arial, sans-serif;
+}
+
+.hero-btn {
+    padding: 12px 25px;
+    border-radius: 10px;
+    box-shadow: -4px 4px 4px 0px #666666;
+    font-size: 28px;
+    font-style: italic;
+    font-weight: bold;
+    position: relative;
+    text-transform: none;
+    font-family: "Segoe UI Black", Helvetica, Arial, sans-serif;
+}
