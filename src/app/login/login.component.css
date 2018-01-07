@@ -11,14 +11,19 @@
 
 .login-card {
     width: 900px;
-    height: 400px;
-    margin: 0 auto;
+    height: 100%;
+    margin: 120px auto 48px auto;
     padding: 3rem;
-    margin-top: 200px;
     background-color: #4C545A;
     background-color: rgba(76, 84, 90, .9);
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.15), 0 0 1px 1px rgba(0, 0, 0, 0.1);
 }
+
+@media only screen and (min-width: 740px) {
+    .login-card {
+      margin: 200px auto 48px auto;
+    }
+  }
 
 .login-card_heading {
     color: #fff;
