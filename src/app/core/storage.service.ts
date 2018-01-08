@@ -8,6 +8,11 @@ export class StorageService {
   constructor(private storage: AngularFireStorage) { }
 
   putFile(file: File, path: string) {
-    return this.storage.ref(path).put(file).downloadURL();
+    // return this.storage.ref(path).put(file).downloadURL();
+    return this.storage.upload(path, file).downloadURL();
+  }
+
+  getDownloadURL(path) {
+    return this.storage.ref(path).getDownloadURL();
   }
 }
