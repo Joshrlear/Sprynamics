@@ -1,84 +1,100 @@
-<ng-container *ngIf="(auth.user | async) || {} as user">
+<div class="login-container">
 
-  <form [formGroup]="signupForm" *ngIf="!user.uid" (ngSubmit)="submitSignup()">
+    <div class="login-card">
+        <h3 class="login-card_heading">Please Sign Up <span class="login-card_subheading">It's free and always will be</span></h3>
+  
+      <div class="form-container">
+          <ng-container *ngIf="(auth.user | async) || {} as user">
 
-    <h3>New User Signup</h3>
+              <form [formGroup]="signupForm" *ngIf="!user.uid" (ngSubmit)="submitSignup()">
+            
+                
+            
+                <div style="color:red;">{{ error }}</div>
+            
+                <!-- Email Address -->
+                <div class="form-group">
+                <input class="form-control" placeholder="Enter your email" type="email" formControlName="email">
+                  
+                <div *ngIf="email.invalid && email.dirty">
+                  Invalid e-mail address
+                </div>
+              </div>
 
-    <div style="color:red;">{{ error }}</div>
+            
+                <!-- Password -->
+                <div class="form-group">
+                <input class="form-control" type="password" placeholder="Enter your password" formControlName="password">
+            
+                <div *ngIf="password.invalid && password.touched">
+                  Password must be between 6 and 24 characters.
+                </div>
+              </div>
+            
+                <!-- Valid -->
+                <div *ngIf="signupForm.valid">Form is valid.</div>
 
-    <!-- Email Address -->
-    <label for="email">Email</label>
-    <input type="email" formControlName="email">
+                <!-- Submit -->
+                <div class="form-actions">
+                <button class="btn btn-greenBg" type="submit" [disabled]="!signupForm.valid">Submit</button>
+              </div>
+            
+              </form>
+            
+              <form [formGroup]="detailForm" *ngIf="user.uid && !user.firstName" (ngSubmit)="submitDetails(user)">
+            
+                <h3 class="login-card_heading" style="margin-bottom: 42px;">Personal Information</h3>
+            
+                <div style="color:red;">{{ error }}</div>
+                
+                <div class="form-group">
+                <input class="form-control" type="text" formControlName="firstName" placeholder="Enter your first name">
+                </div>
 
-    <div *ngIf="email.invalid && email.dirty">
-      Invalid e-mail address
+                <div class="form-group">
+                  <input class="form-control" type="text" formControlName="lastName" placeholder="Enter your last name">
+                </div>
+
+                <div class="form-group">
+                  <input class="form-control" type="text" formControlName="address1" placeholder="Enter your address">
+                </div>
+
+                <div class="form-group">
+                  <input class="form-control" type="text" formControlName="address2" placeholder="Address line 2">
+                </div>
+
+                <div class="form-group">
+                  <input class="form-control" type="text" formControlName="city" placeholder="Enter your city">
+                </div>
+
+                <div class="form-group">
+                  <input class="form-control" type="text" formControlName="state" placeholder="Enter your state">
+                </div>
+                
+                <div class="form-group">
+                  <input class="form-control" type="text" formControlName="country" placeholder="Enter your country">
+                </div>
+
+                <div class="form-group">
+                  <input class="form-control" type="text" formControlName="company" placeholder="Enter your company name">
+                </div>
+
+                <div class="form-group">
+                    <input class="form-control" type="text" formControlName="licenseId" placeholder="Enter your license id">
+                  </div>
+
+                <div class="form-actions">
+                <button class="btn btn-greenBg"type="submit" [disabled]="!detailForm.valid">Submit</button>
+                </div>
+
+              </form>
+            
+              <p *ngIf="user.firstName" style="color: #fff;">
+                Thank you!
+              </p>
+            
+            </ng-container>
+        
+      </div>
     </div>
-    <br>
-
-    <!-- Password -->
-    <label for="password">Password</label>
-    <input type="password" formControlName="password">
-
-    <div *ngIf="password.invalid && password.touched">
-      Password must be between 6 and 24 characters.
-    </div>
-    <br>
-
-    <!-- Valid -->
-    <div *ngIf="signupForm.valid">Form is valid.</div>
-
-    <button type="submit" [disabled]="!signupForm.valid">Submit</button>
-
-  </form>
-
-  <form [formGroup]="detailForm" *ngIf="user.uid && !user.firstName" (ngSubmit)="submitDetails(user)">
-
-    <h3>Set User Details</h3>
-
-    <div style="color:red;">{{ error }}</div>
-    
-    <label for="firstName">First Name</label>
-    <input type="text" formControlName="firstName">
-    <br>
-
-    <label for="lastName">Last Name</label>
-    <input type="text" formControlName="lastName">
-    <br>
-
-    <label for="address1">Address Line 1</label>
-    <input type="text" formControlName="address1">
-    <br>
-
-    <label for="address2">Address Line 2</label>
-    <input type="text" formControlName="address2">
-    <br>
-
-    <label for="city">City</label>
-    <input type="text" formControlName="city">
-    <br>
-
-    <label for="state">State</label>
-    <input type="text" formControlName="state">
-    <br>
-
-    <label for="country">Country</label>
-    <input type="text" formControlName="country">
-    <br>
-
-    <label for="company">Company Name</label>
-    <input type="text" formControlName="company">
-    <br>
-
-    <label for="licenseId">License ID</label>
-    <input type="text" formControlName="licenseId">
-    <br>
-
-    <button type="submit" [disabled]="!detailForm.valid">Submit</button>
-
-  </form>
-
-  <p *ngIf="user.firstName">
-    You have completed the form!
-  </p>
-
-</ng-container>
+  </div>
