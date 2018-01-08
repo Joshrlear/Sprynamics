@@ -1,3 +1,6 @@
+
+    
+    
 <div class="navbar">
   <div class="navbar-row_inner">
     <div class="navbar-left">
@@ -19,15 +22,35 @@
         <li class="nav-item">
           <a routerLink="/contact" class="nav-link">Contact Us</a>
         </li>
+        
         <li class="nav-item_dropdown dropdown show">
-            <a class="nav-link dropdown-toggle" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Account
-            </a>
+            <ng-container *ngIf="(auth.user | async) || {} as user">
+            <ng-container *ngIf="!user.uid; else loggedIn">
+                <a class="nav-link dropdown-toggle" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Account
+                  </a>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                      <a class="dropdown-item" routerLink="/login">Login</a>
+                      <a class="dropdown-item" routerLink="/signup">Sign Up</a>
+                    </div>
+              </ng-container>
+
+
+            <ng-template #loggedIn>
+                <a class="nav-link dropdown-toggle" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Account
+                  </a>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                      <a class="dropdown-item" routerLink="/dashboard">Dashboard</a>
+                      <a class="dropdown-item" routerLink="/home" (click)="logout()">Logout</a>
+                    </div>
+              </ng-template>
+            
           
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-              <a class="dropdown-item" routerLink="/login">Login</a>
-              <a class="dropdown-item" routerLink="/signup">Sign Up</a>
-            </div>
+            
+          
+          
+          </ng-container>
           </li>
       </ul>
     </div>
