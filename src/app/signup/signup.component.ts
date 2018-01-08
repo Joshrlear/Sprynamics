@@ -32,15 +32,15 @@ export class SignupComponent implements OnInit {
     });
 
     this.detailForm = this.fb.group({
-      'firstName': ['', [Validators.required]],
-      'lastName': ['', [Validators.required]],
-      'address1': ['', [Validators.required]],
-      'address2': ['', []],
-      'city': ['', [Validators.required]],
-      'state': ['', [Validators.required]],
-      'country': ['', [Validators.required]],
-      'company': ['', [Validators.required]],
-      'licenseId': ['', [Validators.required]],
+      'firstName': [''],
+      'lastName': [''],
+      'address1': [''],
+      'address2': [''],
+      'city': [''],
+      'state': [''],
+      'country': [''],
+      'company': [''],
+      'licenseId': [''],
     });
   }
 
@@ -59,6 +59,9 @@ export class SignupComponent implements OnInit {
 
   submitSignup() {
     return this.auth.emailSignUp(this.email.value, this.password.value)
+      .then(_ => {
+        this.error = '';
+      })
       .catch(err => {
         console.log(err);
         this.error = err;
@@ -66,7 +69,15 @@ export class SignupComponent implements OnInit {
   }
 
   submitDetails(user) {
-    return this.auth.updateUserData(user, this.detailForm.value)
+    const changedValues = {};
+    const formData = this.detailForm.value;
+    // only include values that were filled in on the form
+    Object.getOwnPropertyNames(formData).forEach(prop => {
+      if (formData[prop] !== '' && formData[prop] !== null && formData[prop] !== undefined) {
+        changedValues[prop] = formData[prop];
+      }
+    });
+    return this.auth.updateUserData(user, changedValues)
       .catch(err => {
         console.log(err);
         this.error = err;

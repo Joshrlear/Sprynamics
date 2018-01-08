@@ -1,0 +1,26 @@
+[
+  {
+    "templateName": "template1",
+    "objects": [
+      {
+        "type": "shape",
+        "x": 0,
+        "y": 0,
+        "width": 400,
+        "height": 100,
+        "color": "#448aff",
+        "editable": false
+      },
+      {
+        "type": "text",
+        "x": 24,
+        "y": 8,
+        "fontSize": 24,
+        "fontFamily": "Roboto",
+        "color": "#ffffff",
+        "editable": true
+      }
+    ]
+  }
+]
+

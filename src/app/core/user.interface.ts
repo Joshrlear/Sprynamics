@@ -11,4 +11,7 @@ export interface User {
   company: string;
   licenseId: string;
   avatarUrl: string;
+  companyLogoUrl: string;
+  brokerageLogoUrl: string;
+  admin: boolean;
 }

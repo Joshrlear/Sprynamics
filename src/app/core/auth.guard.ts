@@ -16,7 +16,7 @@ export class AuthGuard implements CanActivate {
   canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | boolean {
     return this.auth.user
       .take(1)
-      .map(user => !!(user && user.firstName))
+      .map(user => !!user)
       .do(loggedIn => {
         if (!loggedIn) {
           console.log('You must be logged in to do that!');

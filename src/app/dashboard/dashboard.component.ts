@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../core/auth.service';
 import { FormGroup } from '@angular/forms/src/model';
 import { FormBuilder, Validators } from '@angular/forms';
+import { StorageService } from '../core/storage.service';
+import { FirestoreService } from '../core/firestore.service';
+import { Observable } from 'rxjs/Observable';
 
 @Component({
   selector: 'app-dashboard',
@@ -15,7 +18,9 @@ export class DashboardComponent implements OnInit {
 
   userForm: FormGroup;
 
-  constructor(public fb: FormBuilder, public auth: AuthService) { }
+  templates: Observable<any[]>;
+
+  constructor(public fb: FormBuilder, public auth: AuthService, private storage: StorageService, private firestore: FirestoreService) { }
 
   ngOnInit() {
     this.error = '';
@@ -30,7 +35,13 @@ export class DashboardComponent implements OnInit {
       'state': [''],
       'country': [''],
       'company': [''],
-      'licenseId': [''],
+      'licenseId': ['']
+    });
+
+    this.auth.user.take(1).subscribe(user => {
+      if (user.admin) {
+        this.templates = this.firestore.collection$('templates');
+      }
     });
   }
 
@@ -55,6 +66,40 @@ export class DashboardComponent implements OnInit {
         console.log(err);
         this.error = err;
       });
+  }
+
+  uploadAvatar(user, file: File) {
+    const extension = file.name.split('.').pop();
+    const path = `avatars/${user.uid}.${extension}`;
+    this.storage.putFile(file, path).toPromise().then(_ => {
+      this.storage.getDownloadURL(path).subscribe(url => {
+        this.auth.updateUserData(user, { avatarUrl: url });
+      });
+    });
+  }
+
+  uploadCompany(user, file: File) {
+    const extension = file.name.split('.').pop();
+    const path = `companyLogos/${user.uid}.${extension}`;
+    this.storage.putFile(file, path).toPromise().then(_ => {
+      this.storage.getDownloadURL(path).subscribe(url => {
+        this.auth.updateUserData(user, { companyLogoUrl: url });
+      });
+    });
+  }
+
+  uploadBrokerage(user, file: File) {
+    const extension = file.name.split('.').pop();
+    const path = `brokerageLogos/${user.uid}.${extension}`;
+    this.storage.putFile(file, path).toPromise().then(_ => {
+      this.storage.getDownloadURL(path).subscribe(url => {
+        this.auth.updateUserData(user, { brokerageLogoUrl: url });
+      });
+    });
+  }
+
+  addTemplate(name: string) {
+    this.firestore.add('templates', { name });
   }
 
 }

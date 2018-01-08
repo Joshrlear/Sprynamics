@@ -2,18 +2,18 @@
 
 ##### Each milestone represents $750, for a total project of $3,000.
 
-### Milestone 1: Front-end
-
-  - Set up Angular
-  - Set up hosting
-  - Build front page
-  - Design admin & user panels
-
-### Milestone 2: Back-end/Auth
+### Milestone 1: Back-end/Auth
 
   - Set up database
   - Add user authentication & user data
   - Develop secure login screen
+  - Set up hosting
+
+### Milestone 2: Front-end
+
+  - Set up Angular
+  - Build front page
+  - Design admin & user panels
 
 ### Milestone 3: Product designer + APIs
 
