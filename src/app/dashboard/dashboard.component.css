@@ -11,12 +11,17 @@
 .dashboard-container_inner {
     width: 100%;
     height: auto;
-    /* min-height: 100vh; */
     max-width: 1040px;
-    /* margin: 0 auto; */
-    margin: 164px 0 80px 0;
+    margin: 80px 0;
+    
     background-color: #fff;
 }
+
+@media only screen and (min-width: 936px) {
+    .dashboard-container_inner {
+        margin: 164px 0 80px 0;
+    }
+  }
 
 .dashboard {
     width: 100%;
@@ -41,7 +46,15 @@
     width: 100%;
     flex-direction: row;
     align-items: flex-start;
+    flex-wrap: wrap;
+    justify-content: center;
 }
+
+@media only screen and (min-width: 430px) {
+    .dashboard-inner_row {
+      justify-content: flex-start;
+    }
+  }
 
 .picture-section {
     width: 100%;
@@ -50,16 +63,32 @@
 
 .picture-section > .dashboard-inner_row {
     margin-bottom: 32px;
-    align-items: flex-start;
+    align-items: center;
+    justify-content: center;
 }
+
+@media only screen and (min-width: 936px) {
+    .picture-section > .dashboard-inner_row {
+      align-items: flex-start;
+      justify-content: flex-start;
+    }
+  }
 
 .picture-details p {
     color: #30343a;
     font-size: 14px;
     font-weight: 500;
-    margin-left: 12px;
+    margin-left: 0;
     margin-bottom: 0;
+    text-align: center;
 }
+
+@media only screen and (min-width: 324px) {
+    .picture-details p  {
+      margin-left: 12px;
+      text-align: left;
+    }
+  }
 
 .edit-picture_btn {
     font-size: 12px;
@@ -90,6 +119,7 @@
     display: flex;
     align-items: center;
     justify-content: flex-end;
+    height: 50px;
 }
 
 .edit-details_btn {
