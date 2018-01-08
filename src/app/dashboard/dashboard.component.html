@@ -6,9 +6,24 @@
 
 <ng-container *ngIf="(auth.user | async) as user">
 
-  <img style="vertical-align:top; width:96px;" src="{{ user.avatarUrl || 'http://via.placeholder.com/96x96' }}">
+  <!-- Profile Picture -->
+  <img style="vertical-align:top; width:96px;" src="{{ user.avatarUrl || 'https://via.placeholder.com/96x96' }}">
   <input #avatarInput type="file" (change)="uploadAvatar(user, avatarInput.files[0])" hidden>
   <button type="button" (click)="avatarInput.click()">Change Profile Picture</button>
+
+  <br><br>
+
+  <!-- Company Logo -->
+  <img style="vertical-align:top; height: 72px;" src="{{ user.companyLogoUrl || 'https://via.placeholder.com/128x72' }}">
+  <input #companyLogoInput type="file" (change)="uploadCompany(user, companyLogoInput.files[0])" hidden>
+  <button type="button" (click)="companyLogoInput.click()">Change Company Logo</button>
+
+  <br><br>
+
+  <!-- Brokerage Logo -->
+  <img style="vertical-align:top; height: 72px;" src="{{ user.brokerageLogoUrl || 'https://via.placeholder.com/128x72' }}">
+  <input #brokerageLogoInput type="file" (change)="uploadBrokerage(user, brokerageLogoInput.files[0])" hidden>
+  <button type="button" (click)="brokerageLogoInput.click()">Change Brokerage Logo</button>
 
   <br><br>
 

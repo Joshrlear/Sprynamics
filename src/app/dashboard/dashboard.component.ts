@@ -70,11 +70,32 @@ export class DashboardComponent implements OnInit {
 
   uploadAvatar(user, file: File) {
     const extension = file.name.split('.').pop();
-    this.storage.putFile(file, `avatars/${user.uid}.${extension}`)
-      .take(1)
-      .subscribe(downloadURL => {
-        this.auth.updateUserData(user, { avatarUrl: downloadURL });
+    const path = `avatars/${user.uid}.${extension}`;
+    this.storage.putFile(file, path).toPromise().then(_ => {
+      this.storage.getDownloadURL(path).subscribe(url => {
+        this.auth.updateUserData(user, { avatarUrl: url });
       });
+    });
+  }
+
+  uploadCompany(user, file: File) {
+    const extension = file.name.split('.').pop();
+    const path = `companyLogos/${user.uid}.${extension}`;
+    this.storage.putFile(file, path).toPromise().then(_ => {
+      this.storage.getDownloadURL(path).subscribe(url => {
+        this.auth.updateUserData(user, { companyLogoUrl: url });
+      });
+    });
+  }
+
+  uploadBrokerage(user, file: File) {
+    const extension = file.name.split('.').pop();
+    const path = `brokerageLogos/${user.uid}.${extension}`;
+    this.storage.putFile(file, path).toPromise().then(_ => {
+      this.storage.getDownloadURL(path).subscribe(url => {
+        this.auth.updateUserData(user, { brokerageLogoUrl: url });
+      });
+    });
   }
 
   addTemplate(name: string) {
