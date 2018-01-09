@@ -1,0 +1,20 @@
+.designer-container {
+  height: 100vh;
+  display: flex;
+  padding-top: 64px;
+}
+
+.designer-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.designer-view {
+  flex: 1;
+}
+
+.designer-sidebar {
+  width: 25%;
+  background-color: #fff;
+}

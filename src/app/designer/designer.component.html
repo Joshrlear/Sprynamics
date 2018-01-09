@@ -1,3 +1,20 @@
-<p>
-  This is the designer.
-</p>
+<div class="designer-container">
+
+  <div class="designer-content">
+
+    <div class="designer-actions">
+      <button mat-raised-button color="primary" (click)="addText()">Add text</button>
+      <button mat-raised-button color="primary" (click)="addShape()">Add shape</button>
+      <button mat-raised-button color="primary" (click)="addImage()">Add image</button>
+    </div>
+
+    <div #designerView class="designer-view">
+      <canvas #canvas id="canvas" class="designer-canvas"></canvas>
+    </div>
+
+  </div>
+
+  <div class="designer-sidebar">
+  </div>
+  
+</div>
