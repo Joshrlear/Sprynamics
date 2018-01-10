@@ -6,7 +6,7 @@
 
     <div class="form-container">
       <div class="form-container_left">
-        <a class="btn btn-greenBg">Sign Up</a>
+        <a routerLink="/signup" class="btn btn-greenBg">Sign Up</a>
       </div>
       <div class="form-container_right"><form [formGroup]="loginForm" (ngSubmit)="submitLogin()">
 
@@ -30,13 +30,10 @@
           <div class="form-group">
             <input class="form-control" type="password" formControlName="password" placeholder="Enter User Password">
           </div>
-          <div *ngIf="password.invalid && password.touched">
-            Password must be between 6 and 24 characters.
-          </div>
           <br>
         
           <!-- Valid -->
-          <div *ngIf="loginForm.valid">Form is valid.</div>
+          <!-- <div *ngIf="loginForm.valid">Form is valid.</div> -->
           <div class="form-actions">
             <button class="btn btn-greenBg" type="submit" [disabled]="!loginForm.valid">Submit</button>
           </div>
