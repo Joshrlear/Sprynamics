@@ -1,6 +1,9 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
+import { RecaptchaModule } from 'ng-recaptcha';
+import { RecaptchaFormsModule } from 'ng-recaptcha/forms';
 
 import { CoreModule } from './core/core.module';
 import { AppRoutingModule } from './app-routing.module';
@@ -25,9 +28,12 @@ import { NavigationComponent } from './navigation/navigation.component';
   ],
   imports: [
     BrowserModule,
+    FormsModule,
     ReactiveFormsModule,
     CoreModule,
     AppRoutingModule,
+    RecaptchaModule.forRoot(),
+    RecaptchaFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

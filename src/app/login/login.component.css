@@ -16,7 +16,7 @@
     padding: 3rem;
     background-color: #4C545A;
     background-color: rgba(76, 84, 90, .9);
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.15), 0 0 1px 1px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 15px rgba(165, 31, 31, 0.15), 0 0 1px 1px rgba(0, 0, 0, 0.1);
 }
 
 @media only screen and (min-width: 740px) {
@@ -115,8 +115,7 @@ form {
 }
 
 .form-tip {
-    color: #fff;
-
+    color: #ffb5b5;
 }
 
 .form-actions {

@@ -1,3 +1,102 @@
-<p>
-  This is the designer.
-</p>
+<div class="designer-container">
+
+  <div class="designer-sidebar mat-elevation-z8">
+    <!-- Template metadata -->
+    <h4>Template Editor</h4>
+    <br>
+    <label for="templateName">Template Name:</label>
+    <input type="text" placeholder="Name">
+    <hr>
+    <!-- Object Selection -->
+    <ng-container *ngIf="selection">
+      <ng-container [ngSwitch]="selection.type">
+        <!-- TEXT selected -->
+        <ng-container *ngSwitchCase="'i-text'">
+          <h4>Text</h4>
+          <!-- Text Styles -->
+          <div class="text-styles">
+            <button (click)="toggleBold()"><strong>B</strong></button>
+            <button (click)="toggleItalics()"><em>I</em></button>
+            <button (click)="toggleUnderline()">U</button>
+          </div>
+          <!-- Text ContentType -->
+          <div class="form-field">
+            <label for="textContentType">Content Type:</label>
+            <select #textContentType name="textContentType" id="textContentType" [(ngModel)]="selection.textContentType">
+              <option [value]="'plain'">Plain text</option>
+              <option [value]="'data'">User data</option>
+            </select>
+          </div>
+          <!-- Text Content -->
+          <div class="form-field" *ngIf="selection.textContentType === 'plain'">
+            <label for="textInput">Content:</label>
+            <input #textInput id="textInput" type="text" 
+              [(ngModel)]="selection.text" 
+              (keyup)="canvas.renderAll()" 
+              (click)="clickTextInput($event.target)" 
+              (blur)="blurTextInput($event.target)">
+          </div>
+          <!-- Text User Data -->
+          <div class="form-field"><label for="textUserData">User Data:</label>
+            <select name="textUserData" id="textUserData" [(ngModel)]="selection.textUserData" (change)="changeUserData()">
+              <option [value]="'name'">Name</option>
+              <option [value]="'email'">Email</option>
+              <option [value]="'address'">Address</option>
+              <option [value]="'company'">Company</option>
+              <option [value]="'licenseId'">License ID</option>
+            </select>
+          </div>
+          <!-- Text Editable -->
+          <div class="form-field">
+            <label for="textEditable">Editable:</label>
+            <input id="textEditable" type="checkbox"
+              [(ngModel)]="selection.userEditable">
+          </div>
+          <!-- Text Field Name -->
+          <div class="form-field" *ngIf="selection.editable">
+            <label for="textFieldName">Field Name:</label>
+            <input id="textFieldName" type="text" [(ngModel)]="selection.textFieldName">
+          </div>
+        </ng-container>
+        <!-- RECT selected -->
+        <ng-container *ngSwitchCase="'rect'">
+          <h4>Shape</h4>
+        </ng-container>
+        <!-- IMAGE selected -->
+        <ng-container *ngSwitchCase="'image'">
+          <h4>Image</h4>
+        </ng-container>
+        <!-- LOGO selected -->
+        <ng-container *ngSwitchCase="'logo'">
+          <h4>Logo</h4>
+          <label for="logoType">Logo Type:</label>
+          <select name="logoType" id="logoType">
+            <option value="sprynamics">Sprynamics Logo</option>
+            <option value="headshot">User Headshot</option>
+            <option value="company">User Company Logo</option>
+            <option value="brokerage">User Brokerage Logo</option>
+          </select>
+        </ng-container>
+      </ng-container>
+    </ng-container>
+  </div>
+
+  <div class="designer-content">
+
+    <div class="designer-actions mat-elevation-z1">
+      <button mat-raised-button color="primary" (click)="addText()">Add text</button>
+      <button mat-raised-button color="primary" (click)="addShape()">Add shape</button>
+      <button mat-raised-button color="primary" (click)="addLogo()">Add logo</button>
+      <button mat-raised-button color="primary" (click)="addImageInput.click()">Upload images</button>
+      <input #addImageInput type="file" (change)="addImageFiles(addImageInput.files)" multiple hidden>
+      <button mat-raised-button (click)="logSelection()" *ngIf="selection">Log selection</button>
+      <button mat-raised-button (click)="deleteSelection()" *ngIf="selection">Remove object{{ selection.type === 'group' ? 's' : '' }}</button>
+    </div>
+
+    <div #designerView class="designer-view">
+      <canvas id="canvas" class="designer-canvas"></canvas>
+    </div>
+
+  </div>
+
+</div>
