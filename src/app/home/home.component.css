@@ -541,7 +541,7 @@
 
 .contact-heading {
     font-family: "Segoe UI Black";
-    font-size: 76px;
+    font-size: 42px;
     font-weight: bold;
     padding-top: 60px;
     padding-bottom: 15px;
@@ -649,6 +649,7 @@ form {
         max-width: 650px;
     }
     .contact-heading {
+        font-size: 76px;
         text-align: right;
     }
     .contact-section_inner-row {
