@@ -12,7 +12,8 @@
     height: 764px;
     background-image: url("/assets/bg/herobg_Lg.png");
     background-size: cover;
-    /* background-position: center; */
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 .hero-section_inner {
@@ -33,12 +34,24 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+    justify-content: center;
 }
+
+.hero-logo {
+    margin-top: 32px;
+    width: 300px;
+}
+
+@media only screen and (min-width: 1040px) {
+    .hero-section_inner-row {
+        justify-content: flex-start;
+    }
+  }
 
 .hero-text_block {
     background-color: #f2f2f2;
     opacity: .75;
-    margin-top: 80px;
+    margin-top: 64px;
 }
 
 .hero-text_heading {
@@ -67,18 +80,33 @@
 .hero-action {
     display: flex;
     justify-content: space-between;
+    justify-content: center;
     align-items: center;
     margin-top: 80px;
     width: 100%;
 }
 
 .hero-action_left {
-    width: 25%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .hero-action_right {
+    display: none;
     width: 75%;
 }
+
+@media only screen and (min-width: 1040px) {
+    .hero-action_left {
+        width: 25%;
+        justify-content: flex-start;
+    }
+    .hero-action_right {
+        display: flex;
+    }
+  }
 
 .bar {
     height: 5px;
@@ -105,14 +133,16 @@
 
 .hero-cards_container {
     width: 100%;
-    height: 450px;
+    height: 100%;
     display: flex;
     flex-direction: row;
+    margin-top: -64px;
+    flex-wrap: wrap;
 }
 
 .hero-card {
-    width: 33.333%;
-    height: 100%;
+    width: 100%;
+    height: 450px;
     background: #666;
     background-size: cover;
 }
@@ -160,6 +190,12 @@
     text-align: center;
 }
 
+@media only screen and (min-width: 1040px) {
+    .hero-card {
+        width: 33.333%;
+    }
+  }
+
 /* ABOUT */
 
 .about-container {
@@ -171,7 +207,6 @@
     display: flex;
     width: 100%;
     height: auto;
-    max-height: 1400px;
     background-image: url("/assets/bg/aboutbg_XL.jpg");
     background-size: cover;
 }
@@ -207,6 +242,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    margin-top: 42px;
+}
+
+.campaign-header img {
+    width: 300px;
 }
 
 .campaign-graphics {
@@ -214,19 +254,21 @@
     width: 100%;
     justify-content: center;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 .campaign-graphics_card {
     display: flex;
     flex-direction: column;
     width: 100%;
-    max-width: 350px;
     padding: 64px 32px 0 32px;
 }
 
+
+
 .campaign-graphics_card-header h2 {
     line-height: 48px;
-    font-size: 36px;
+    font-size: 24px;
     font-weight: 800;
     font-style: italic;
     color: #000;
@@ -243,20 +285,41 @@
     background: #fff;
     border-radius: 50%;
     color: white;
-    height: 275px;
-    width: 275px;
+    height: 200px;
+    width: 200px;
     margin: 20px auto;
 }
 
 .campaign-graphics_card-image img {
-    max-width: 200px;
+    max-width: 150px;
     margin-top: 10px;
     vertical-align: middle;
 }
 
+@media only screen and (min-width: 1040px) {
+    .campaign-graphics_card {
+        width: 33.333%;
+    }
+    .campaign-graphics_card-header h2 {
+        font-size: 36px;
+    }
+    .campaign-graphics_card-image {
+        width: 275px;
+        height: 275px;
+    }
+  }
+
 .about-section_about-us {
     width: 100%;
     margin-top: 80px;
+}
+
+.about-heading {
+    font-family: "Segoe UI Black";
+    font-size: 42px;
+    font-weight: bold;
+    padding-top: 60px;
+    padding-bottom: 15px;
 }
 
 .about-us_text {
@@ -270,6 +333,12 @@
     font-weight: 300;
     padding: 0;
 }
+
+@media only screen and (min-width: 1040px) {
+    .about-heading {
+        font-size: 76px;
+    }
+  }
 
 .ceo-section {
     background-color: #262626;
@@ -287,21 +356,22 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 .ceo-section_left {
-    width: 75%;
+    width: 100%
 }
 
 .ceo-section_right {
-    width: 25%;
+    width: 100%
 }
 
 .ceo-section_left-heading {
     margin-bottom: 5px;
     font-family: "Segoe UI Black";
     text-align: center;
-    font-size: 36px;
+    font-size: 24px;
     font-weight: bold;
     font-style: italic;
     text-transform: uppercase;
@@ -312,7 +382,8 @@
     margin-bottom: 20px;
     opacity: .75;
     font-family: "Segoe UI Light";
-    font-size: 38px;
+    font-size: 24px;
+    padding: 0 16px;
     line-height: 42px;
     font-style: italic;
     text-align: left;
@@ -330,6 +401,21 @@
 .ceo-section_right-image img {
     width: 240px;
 }
+
+@media only screen and (min-width: 1040px) {
+    .ceo-section_left-heading {
+        font-size: 32px;
+    }
+    .ceo-section_left-text {
+        font-size: 38px;
+    }
+    .ceo-section_left {
+        width: 75%;
+    }
+    .ceo-section_right {
+        width: 25%;
+    }
+  }
 
 /* CONTACT US */
 
@@ -363,13 +449,14 @@
     flex-direction: row;
     align-items: center;
     width: 100%;
+    flex-wrap: wrap;
 }
 
 .info-section {
     background: rgba(92, 92, 92, .7);
     padding: 64px;
     width: 100%;
-    max-width: 650px;
+    max-width: 1040px;
 }
 
 .info-section h2 {
@@ -386,6 +473,7 @@
     justify-content: center;
     align-items: center;
     height: 80px;
+    transform: scale(.8);
 }
 
 .social-icon-btn {
@@ -432,7 +520,7 @@
 
 .address {
     font-family: "Segoe UI Light";
-    font-size: 24px;
+    font-size: 18px;
     color: white;
     line-height: 24px;
     font-weight: 400;
@@ -444,6 +532,7 @@
 
 .email h3 {
     font-weight: 300;
+    font-size: 18px;
 }
 
 .map {
@@ -454,10 +543,14 @@
     font-family: "Segoe UI Black";
     font-size: 76px;
     font-weight: bold;
-    float: right;
     padding-top: 60px;
     padding-bottom: 15px;
-    text-align: right;
+    text-align: center;
+}
+
+.form-section {
+    justify-content: center;
+    align-items: center;
 }
 
 .contact-form {
@@ -465,6 +558,8 @@
     max-width: 600px;
     display: flex;
     flex-direction: column;
+    padding: 0 16px;
+    margin-bottom: 42px;
 }
 
 form {
@@ -525,3 +620,38 @@ form {
     font-family: "Segoe UI Light";
     height: 100%;
 }
+
+#scrollTop {
+    display: none;
+    position: fixed;
+    bottom: 15px;
+    right: 15px;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: #199EB8;
+    color: #fff;
+    text-align: center;
+    font-size: 24px;
+}
+
+@media only screen and (min-width: 1040px) {
+    .social-icons {
+        transform: scale(1);
+    }
+    .address {
+        font-size: 24px;
+    }
+    .email h3 {
+        font-size: 1.75rem;
+    }
+    .info-section {
+        max-width: 650px;
+    }
+    .contact-heading {
+        text-align: right;
+    }
+    .contact-section_inner-row {
+        flex-wrap: nowrap;
+    }
+  }
