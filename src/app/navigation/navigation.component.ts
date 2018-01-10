@@ -12,6 +12,10 @@ export class NavigationComponent implements OnInit {
 
   ngOnInit() {
   }
+
+  goHome() {
+     
+  }
   
   public logout() {
     this.auth.logout();

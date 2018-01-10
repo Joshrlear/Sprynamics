@@ -4,23 +4,23 @@
 <div class="navbar">
   <div class="navbar-row_inner">
     <div class="navbar-left">
-      <a routerLink="/">
+      <a [routerLink]="['/']">
         <img src="assets/logo.png" style="width: 140px;">
       </a>
     </div>
     <div class="navbar-right">
       <ul class="nav-links">
         <li class="nav-item">
-          <a routerLink="/" class="nav-link">Home</a>
+          <a [routerLink]="['/']" class="nav-link">Home</a>
         </li>
         <li class="nav-item">
           <a routerLink="/designer" class="nav-link">Design</a>
         </li>
         <li class="nav-item">
-          <a href="#about-us" class="nav-link">About</a>
+          <a [routerLink]="['/']" fragment="about-us" class="nav-link">About</a>
         </li>
         <li class="nav-item">
-          <a href="#contact-us" class="nav-link">Contact Us</a>
+          <a [routerLink]="['/']" fragment="contact-us" class="nav-link">Contact Us</a>
         </li>
         
         <li class="nav-item_dropdown dropdown show">
