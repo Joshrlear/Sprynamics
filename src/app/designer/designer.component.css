@@ -1,0 +1,28 @@
+.designer-container {
+  height: 100vh;
+  display: flex;
+  padding-top: 64px;
+}
+
+.designer-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.designer-actions {
+  padding: 8px 16px;
+}
+
+.designer-view {
+  flex: 1;
+}
+
+.designer-sidebar {
+  width: 24%;
+  min-width: 128px;
+  max-width: 400px;
+  background-color: #eeeeee;
+  z-index: 99;
+  padding: 16px;
+}

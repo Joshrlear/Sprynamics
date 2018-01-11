@@ -9,12 +9,18 @@ import { AuthService } from './auth.service';
 import { StorageService } from './storage.service';
 import { FirestoreService } from './firestore.service';
 
+import { MaterialModule } from './material.module';
+
 @NgModule({
   imports: [
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireAuthModule,
     AngularFirestoreModule,
-    AngularFireStorageModule
+    AngularFireStorageModule,
+    MaterialModule,
+  ],
+  exports: [
+    MaterialModule
   ],
   providers: [AuthService, StorageService, FirestoreService]
 })
