@@ -42,7 +42,7 @@
 .form-container {
     display: flex;
     align-items: flex-start;
-    justify-content: space-between;
+    justify-content: center;
     flex-direction: row;
     flex-wrap: wrap;
     width: 100%;

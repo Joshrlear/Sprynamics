@@ -11,6 +11,11 @@ export class NavigationComponent implements OnInit {
   constructor(public auth: AuthService) { }
 
   ngOnInit() {
+
+  }
+
+  toggleMenu() {
+    document.getElementById("mobile-menu_dropdown").classList.toggle("active");
   }
   
   public logout() {
