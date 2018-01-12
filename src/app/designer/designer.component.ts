@@ -13,9 +13,51 @@ export class DesignerComponent implements OnInit, AfterViewInit {
 
   @ViewChild('designerView') view: ElementRef;
 
+  productTypes = {
+    postcard_small: {
+      type: 'postcard',
+      width: 9,
+      height: 6
+    },
+    postcard_large: {
+      type: 'postcard',
+      width: 11.5,
+      height: 6
+    },
+    flyer_portrait: {
+      type: 'flyer',
+      width: 8.5,
+      height: 11
+    },
+    flyer_landscape: {
+      type: 'flyer',
+      width: 11,
+      height: 8.5
+    },
+    door_hanger: {
+      type: 'doorhanger',
+      width: 3.5,
+      height: 8.5
+    }
+  };
+
+  template: any = {
+    productType: this.productTypes.postcard_small,
+    presetColors: []
+  };
+
+  defaultShadow = {
+    color: 'rgba(0,0,0,0)',
+    blur: 20,    
+    offsetX: 10,
+    offsetY: 10,
+    opacity: 0.6
+  }
+
   canvas;
   boundBox;
   shape;
+  dpi = 72; // the dpi to display the template at
 
   userData: any;
 
@@ -31,13 +73,34 @@ export class DesignerComponent implements OnInit, AfterViewInit {
   constructor(private element: ElementRef, private firestore: FirestoreService, private auth: AuthService) { }
 
   ngOnInit() {
-    this.auth.user.take(1).subscribe(user => {
+    this.auth.user.take(1).subscribe((user: any) => {
       this.userData = user;
-    })
+      this.template.presetColors = user.presetColors || [];
+    });
+
+    // returns true if the Object has a shadow, or false if not.
+    // Also accepts a parameter to set the shadow
+    Object.defineProperty(fabric.Object.prototype, 'spryShadow', {
+      get: function spryShadow() {
+        return new fabric.Color(this.shadow.color).getAlpha() > 0;
+      },
+      set: function spryShadow(val) {
+        if (typeof val === 'boolean') {
+          const color = new fabric.Color(this.shadow.color);
+          let alpha;
+          if (val) alpha = this.shadow.opacity;
+          else alpha = 0;
+          color.setAlpha(alpha);
+          this.shadow.color = color.toRgba();
+          fabric.canvas.renderAll();
+        }
+        
+      }
+    });
   }
 
   ngAfterViewInit() {
-    this.canvas = new fabric.Canvas('canvas', {
+    this.canvas = fabric.canvas = new fabric.Canvas('canvas', {
       width: this.view.nativeElement.clientWidth,
       height: this.view.nativeElement.clientHeight
     });
@@ -51,12 +114,60 @@ export class DesignerComponent implements OnInit, AfterViewInit {
       selectable: false,
       hasControls: false,
       lockMovementX: true,
-      lockMovementY: true
+      lockMovementY: true,
     });
 
     this.canvas.add(this.boundBox);
 
     this.canvas.centerObject(this.boundBox);
+
+    this.refreshTemplate();
+  }
+
+  save() {
+    console.log(this.canvas.toJSON());
+  }
+
+  colorPickerChange(event) {
+    if (this.selection.type === 'group') {
+      this.selection.forEachObject(obj => {
+        if (obj.type === 'i-text') {
+          obj.set({ fill: event });
+          // this is a bit of a hack to get the canvas to update the text color.
+          // the width is increased then decreased to force the cache to clear.
+          obj.set({ width: obj.width+1 });
+          obj.set({ width: obj.width-1 });
+        } else {
+          obj.set({ fill: event, backgroundColor: event });
+        }
+      });
+    } else if (this.selection.type === 'rect') {
+      this.selection.set({ backgroundColor: event });
+    } else if (this.selection.type === 'i-text') {
+      // this is a bit of a hack to get the canvas to update the text color.
+      // the width is increased then decreased to force the cache to clear.
+      this.selection.set({ width: this.selection.width+1 });
+      this.selection.set({ width: this.selection.width-1 });
+    }
+    this.canvas.renderAll();
+  }
+
+  shadowColorPickerChange(event) {
+    // bind the opacity to the color
+    this.selection.shadow.opacity = new fabric.Color(this.selection.shadow.color).getAlpha();
+    this.canvas.renderAll();
+  }
+
+  /** Refreshes the template size */
+  refreshTemplate() {
+    // split the product size from the format of 6x9 to a width and height of 6 by 9
+    const productType = this.template.productType;
+    this.boundBox.set({ 
+      width: productType.width * this.dpi,
+      height: productType.height * this.dpi
+    });
+    this.canvas.centerObject(this.boundBox);
+    this.canvas.renderAll();
   }
 
   logSelection() {
@@ -143,10 +254,22 @@ export class DesignerComponent implements OnInit, AfterViewInit {
       width: 150,
       fontSize: 20,
       hasRotatingPoint: false,
-      textContentType: 'plain',
-      userEditable: false
+      textContentType: 'plain', // custom
+      textUserData: 'name', // custom
+      userEditable: false // custom
     });
+    
+    textbox.toObject = (function(toObject) {
+      return function() {
+        return fabric.util.object.extend(toObject.call(this), {
+          textContentType: this.textContentType,
+          textUserData: this.textUserData,
+          userEditable: this.userEditable
+        });
+      };
+    })(textbox.toObject);
 
+    textbox.setShadow(this.defaultShadow);
     this.canvas.add(textbox).setActiveObject(textbox);
   }
 
@@ -158,6 +281,8 @@ export class DesignerComponent implements OnInit, AfterViewInit {
       hasRotatingPoint: false
     });
 
+    shape.setShadow(this.defaultShadow);
+    console.log(shape.spryShadow);
     this.canvas.add(shape).setActiveObject(shape);
   }
 
@@ -166,6 +291,7 @@ export class DesignerComponent implements OnInit, AfterViewInit {
       (img) => {
         img.scaleToHeight(100);
         img.type = 'logo';
+        img.setShadow(this.defaultShadow);
         this.canvas.add(img);
       });
   }
@@ -184,6 +310,7 @@ export class DesignerComponent implements OnInit, AfterViewInit {
             // height: 120,
             // width: 120
           });
+          image.setShadow(this.defaultShadow);
           this.canvas
             .add(image)
             .renderAll();

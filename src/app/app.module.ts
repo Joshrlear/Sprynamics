@@ -4,6 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { RecaptchaModule } from 'ng-recaptcha';
 import { RecaptchaFormsModule } from 'ng-recaptcha/forms';
+import { ColorPickerModule } from 'ngx-color-picker';
 
 import { CoreModule } from './core/core.module';
 import { AppRoutingModule } from './app-routing.module';
@@ -33,7 +34,8 @@ import { NavigationComponent } from './navigation/navigation.component';
     CoreModule,
     AppRoutingModule,
     RecaptchaModule.forRoot(),
-    RecaptchaFormsModule
+    RecaptchaFormsModule,
+    ColorPickerModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
