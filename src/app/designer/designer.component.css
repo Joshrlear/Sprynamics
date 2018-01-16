@@ -26,3 +26,14 @@
   z-index: 99;
   padding: 16px;
 }
+
+fieldset {
+  padding: 5.6px 12px 10px;
+}
+
+legend {
+  font-size: 16px;
+  font-weight: 400;
+  display: inline;
+  width: auto;
+}

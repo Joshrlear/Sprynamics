@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { AngularFireStorage } from 'angularfire2/storage';
+import { Observable } from 'rxjs/Observable';
 
 @Injectable()
 export class StorageService {
@@ -12,7 +13,23 @@ export class StorageService {
     return this.storage.upload(path, file).downloadURL();
   }
 
+  putJSON(data: any, path: string) {
+    return this.storage.ref(path).putString(JSON.stringify(data)).downloadURL();
+  }
+
   getDownloadURL(path) {
     return this.storage.ref(path).getDownloadURL();
+  }
+
+  getFile(url) {
+    return Observable.fromPromise(new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.responseType = 'json';
+      xhr.onload = (event) => {
+        resolve(xhr.response);
+      };
+      xhr.open('GET', url);
+      xhr.send();
+    }));
   }
 }
