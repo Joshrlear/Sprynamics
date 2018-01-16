@@ -33,7 +33,7 @@ export class AuthService {
   emailSignUp(email: string, password: string) {
     return this.afAuth.auth.createUserWithEmailAndPassword(email, password)
       .then(user => {
-        this.emailLogin(email, password).then(_ => {
+        return this.emailLogin(email, password).then(_ => {
           return this.afs.doc(`users/${user.uid}`).set({
             uid: user.uid,
             email

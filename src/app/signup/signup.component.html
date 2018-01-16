@@ -8,7 +8,7 @@
     <div class="form-container">
       <ng-container *ngIf="(auth.user | async) || {} as user">
 
-        <form [formGroup]="signupForm" *ngIf="!user.uid" (ngSubmit)="submitSignup()" autocomplete="on">
+        <form [formGroup]="signupForm" (ngSubmit)="submitSignup()" autocomplete="on">
 
           <div style="color:red;">{{ error }}</div>
 
@@ -56,58 +56,6 @@
           </div>
 
         </form>
-
-        <form [formGroup]="detailForm" *ngIf="user.uid && !user.firstName" (ngSubmit)="submitDetails(user)">
-
-          <h3 class="login-card_heading" style="margin-bottom: 42px;">Personal Information</h3>
-
-          <div style="color:red;">{{ error }}</div>
-
-          <div class="form-group">
-            <input class="form-control" type="text" formControlName="firstName" placeholder="Enter your first name">
-          </div>
-
-          <div class="form-group">
-            <input class="form-control" type="text" formControlName="lastName" placeholder="Enter your last name">
-          </div>
-
-          <div class="form-group">
-            <input class="form-control" type="text" formControlName="address1" placeholder="Enter your address">
-          </div>
-
-          <div class="form-group">
-            <input class="form-control" type="text" formControlName="address2" placeholder="Address line 2">
-          </div>
-
-          <div class="form-group">
-            <input class="form-control" type="text" formControlName="city" placeholder="Enter your city">
-          </div>
-
-          <div class="form-group">
-            <input class="form-control" type="text" formControlName="state" placeholder="Enter your state">
-          </div>
-
-          <div class="form-group">
-            <input class="form-control" type="text" formControlName="country" placeholder="Enter your country">
-          </div>
-
-          <div class="form-group">
-            <input class="form-control" type="text" formControlName="company" placeholder="Enter your company name">
-          </div>
-
-          <div class="form-group">
-            <input class="form-control" type="text" formControlName="licenseId" placeholder="Enter your license id">
-          </div>
-
-          <div class="form-actions">
-            <button class="btn btn-greenBg" type="submit" [disabled]="!detailForm.valid">Submit</button>
-          </div>
-
-        </form>
-
-        <p *ngIf="user.firstName" style="color: #fff;">
-          Thank you!
-        </p>
 
       </ng-container>
 
