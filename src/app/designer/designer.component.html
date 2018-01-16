@@ -141,11 +141,14 @@
           [(colorPicker)]="selection.shadow.color"
           (colorPickerChange)="shadowColorPickerChange($event)">
         <br>
+        <label for="shadowBlur">Blur:</label>
+        <input type="number" id="shadowBlur" min=0 [(ngModel)]="selection.shadow.blur" (input)="canvas.renderAll()">
+        <br>
         <label for="shadowOffsetX">X Offset:</label>
-        <input type="number" id="shadowOffsetX">
+        <input type="number" id="shadowOffsetX" [(ngModel)]="selection.shadow.offsetX" (input)="canvas.renderAll()">
         <br>
         <label for="shadowOffsetY">Y Offset:</label>
-        <input type="number" id="shadowOffsetY">
+        <input type="number" id="shadowOffsetY" [(ngModel)]="selection.shadow.offsetY" (input)="canvas.renderAll()">
         <br>
       </ng-container>
     </fieldset>
@@ -155,6 +158,7 @@
 
     <div class="designer-actions mat-elevation-z1">
       <button mat-raised-button color="primary" (click)="addText()">Add text</button>
+      <button mat-raised-button color="primary" (click)="addTextbox()">Add paragraph</button>
       <button mat-raised-button color="primary" (click)="addShape()">Add shape</button>
       <button mat-raised-button color="primary" (click)="addLogo()">Add logo</button>
       <button mat-raised-button color="primary" (click)="addImageInput.click()">Upload images</button>

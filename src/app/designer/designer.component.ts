@@ -115,6 +115,20 @@ export class DesignerComponent implements OnInit, AfterViewInit {
       height: this.view.nativeElement.clientHeight
     });
 
+    this.canvas.on('object:modified', (event) => {
+      if (event.target.type === 'rect') {
+        event.target.width *= event.target.scaleX;
+        event.target.height *= event.target.scaleY;
+        event.target.scaleX = 1;
+        event.target.scaleY = 1;
+        // this is a bit of a hack to get the canvas to update the size.
+        // the width is increased then decreased to force the cache to clear.
+        event.target.set({ width: event.target.width+1 });
+        event.target.set({ width: event.target.width-1 });
+      }
+      
+    });
+
     this.clearTemplate();
   }
 
@@ -329,6 +343,37 @@ export class DesignerComponent implements OnInit, AfterViewInit {
 
   addText() {
     const textbox = new fabric.IText('Type text here...', {
+      left: 50,
+      top: 50,
+      width: 150,
+      fontSize: 20,
+      hasRotatingPoint: false,
+      textContentType: 'plain', // custom
+      textUserData: 'name', // custom
+      userEditable: false // custom
+    });
+    
+    textbox.toObject = (function(toObject) {
+      return function() {
+        return fabric.util.object.extend(toObject.call(this), {
+          textContentType: this.textContentType,
+          textUserData: this.textUserData,
+          userEditable: this.userEditable
+        });
+      };
+    })(textbox.toObject);
+
+    textbox.setShadow(this.defaultShadow);
+    this.canvas.add(textbox).setActiveObject(textbox);
+  }
+
+  addTextbox() {
+    const loremIpsum = 'Lorem ipsum dolor sit amet, ' +
+    'consectetur adipisicing elit, sed do eiusmod tempor ' +
+    'incididunt ut labore et dolore magna aliqua. Ut enim ' +
+    'ad minim veniam, quis nostrud exercitation ullamco ' +
+    'laboris nisi ut aliquip exea commodo consequat.';
+    const textbox = new fabric.Textbox(loremIpsum, {
       left: 50,
       top: 50,
       width: 150,
