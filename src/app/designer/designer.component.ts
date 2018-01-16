@@ -1,7 +1,11 @@
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { MatDialog } from '@angular/material';
 import { AuthService } from '../core/auth.service';
 import { FirestoreService } from '../core/firestore.service';
+import { StorageService } from '../core/storage.service';
+
 import 'fabric';
+import { LoadTemplateDialogComponent } from './load-template-dialog/load-template-dialog.component';
 declare let fabric;
 
 @Component({
@@ -41,10 +45,13 @@ export class DesignerComponent implements OnInit, AfterViewInit {
     }
   };
 
-  template: any = {
+  defaultTemplate = {
+    name: '',
     productType: this.productTypes.postcard_small,
     presetColors: []
-  };
+  }
+
+  template: any = Object.assign({}, this.defaultTemplate);
 
   defaultShadow = {
     color: 'rgba(0,0,0,0)',
@@ -70,7 +77,11 @@ export class DesignerComponent implements OnInit, AfterViewInit {
     }
   }
 
-  constructor(private element: ElementRef, private firestore: FirestoreService, private auth: AuthService) { }
+  constructor(private element: ElementRef, 
+    private firestore: FirestoreService,
+    private storage: StorageService, 
+    private auth: AuthService,
+    private dialog: MatDialog) { }
 
   ngOnInit() {
     this.auth.user.take(1).subscribe((user: any) => {
@@ -94,7 +105,6 @@ export class DesignerComponent implements OnInit, AfterViewInit {
           this.shadow.color = color.toRgba();
           fabric.canvas.renderAll();
         }
-        
       }
     });
   }
@@ -104,6 +114,30 @@ export class DesignerComponent implements OnInit, AfterViewInit {
       width: this.view.nativeElement.clientWidth,
       height: this.view.nativeElement.clientHeight
     });
+
+    this.clearTemplate();
+  }
+
+  cloneSelection() {
+    const object = this.canvas.getActiveObject().toObject();
+    fabric.util.enlivenObjects([object], (objects) => {
+      objects.forEach(object => {
+        object.set("top", object.top+5);
+        object.set("left", object.left+5);
+        object.setShadow(this.defaultShadow);
+        this.canvas.add(object);
+        this.canvas.setActiveObject(object);
+      });
+      this.canvas.renderAll();
+    });
+    
+  }
+
+  /**
+   * Deletes all content and clears the canvas, then recreates the bounding box.
+   */
+  clearTemplate() {
+    this.canvas.clear();
 
     this.boundBox = new fabric.Rect({
       width: 912,
@@ -117,15 +151,61 @@ export class DesignerComponent implements OnInit, AfterViewInit {
       lockMovementY: true,
     });
 
-    this.canvas.add(this.boundBox);
+    this.boundBox.toObject = (function(toObject) {
+      return function() {
+        return fabric.util.object.extend(toObject.call(this), {
+          selectable: false,
+          hasControls: false,
+          lockMovementX: true,
+          lockMovementY: true,
+        });
+      };
+    })(this.boundBox.toObject);
 
+    this.canvas.add(this.boundBox);
     this.canvas.centerObject(this.boundBox);
 
     this.refreshTemplate();
   }
 
-  save() {
-    console.log(this.canvas.toJSON());
+  clickNew() {
+    if (confirm('Unsaved changes will be lost. Are you sure you want to start a new template?')) {
+      this.template = Object.assign({}, this.defaultTemplate);
+      this.clearTemplate();
+    } else {
+      return;
+    }
+  }
+
+  clickOpen() {
+    const dialogRef = this.dialog.open(LoadTemplateDialogComponent);
+    dialogRef.afterClosed().subscribe(id => {
+      if (id) {
+        this.firestore.doc$(`templates/${id}`)
+          .take(1).subscribe(template => this.loadTemplate(template));
+      }
+    });
+  }
+
+  clickSave() {
+    if (!this.template.name) {
+      alert('You need to set a name for this design!');
+      return;
+    }
+    const canvasData = this.canvas.toObject();
+    this.storage.putJSON(canvasData, `templates/${this.template.name}.json`)
+      .take(1).subscribe(url => {
+        this.template.url = url;
+        this.firestore.add('templates', this.template);
+      });
+  }
+
+  loadTemplate(template: any) {
+    this.template = template;
+    this.storage.getFile(template.url).take(1).subscribe(data => {
+      console.log(data);
+      this.canvas.loadFromJSON(data);
+    });
   }
 
   colorPickerChange(event) {
@@ -282,7 +362,6 @@ export class DesignerComponent implements OnInit, AfterViewInit {
     });
 
     shape.setShadow(this.defaultShadow);
-    console.log(shape.spryShadow);
     this.canvas.add(shape).setActiveObject(shape);
   }
 
@@ -290,8 +369,17 @@ export class DesignerComponent implements OnInit, AfterViewInit {
     const logo = new fabric.Image.fromURL('/assets/logo.png', 
       (img) => {
         img.scaleToHeight(100);
-        img.type = 'logo';
+        img.isLogo = true;
         img.setShadow(this.defaultShadow);
+
+        img.toObject = (function(toObject) {
+          return function() {
+            return fabric.util.object.extend(toObject.call(this), {
+              isLogo: true
+            });
+          };
+        })(img.toObject);
+
         this.canvas.add(img);
       });
   }

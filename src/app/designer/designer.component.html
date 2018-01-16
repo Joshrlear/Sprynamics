@@ -4,14 +4,13 @@
     <!-- Template metadata -->
     <h4>Template Settings</h4>
     <!-- Template actions -->
-    <button>New</button>
-    <button>Load</button>
-    <button (click)="save()">Save</button>
-    <button>Save as...</button>
+    <button (click)="clickNew()">New</button>
+    <button (click)="clickOpen()">Open</button>
+    <button (click)="clickSave()">Save</button>
     <br><br>
     <!-- Design Name -->
     <label for="templateName">Design Name:</label>
-    <input type="text" placeholder="Name">
+    <input type="text" placeholder="Name" [(ngModel)]="template.name">
     <br>
     <!-- Product Type -->
     <label for="productType">Product Type:</label>
@@ -160,8 +159,12 @@
       <button mat-raised-button color="primary" (click)="addLogo()">Add logo</button>
       <button mat-raised-button color="primary" (click)="addImageInput.click()">Upload images</button>
       <input #addImageInput type="file" (change)="addImageFiles(addImageInput.files)" multiple hidden>
-      <button mat-raised-button (click)="logSelection()" *ngIf="selection">Log selection</button>
-      <button mat-raised-button (click)="deleteSelection()" *ngIf="selection">Remove object{{ selection.type === 'group' ? 's' : '' }}</button>
+      <ng-container *ngIf="selection">
+        <button mat-raised-button (click)="logSelection()">Log selection</button>
+        <button mat-raised-button (click)="deleteSelection()">Remove object{{ selection.type === 'group' ? 's' : '' }}</button>
+        <button mat-raised-button (click)="cloneSelection()">Clone selection</button>
+      </ng-container>
+
     </div>
 
     <div #designerView class="designer-view">
