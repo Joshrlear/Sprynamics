@@ -16,7 +16,8 @@ import { SignupComponent } from './signup/signup.component';
 import { LoginComponent } from './login/login.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { HomeComponent } from './home/home.component';
-import { DesignerComponent } from './designer/designer.component';
+import { DesignerAdminComponent } from './designer/admin/designer-admin.component';
+import { DesignerClientComponent } from './designer/client/designer-client.component';
 import { NavigationComponent } from './navigation/navigation.component';
 import { ProductsComponent } from './products/products.component';
 import { LoadTemplateDialogComponent } from './designer/load-template-dialog/load-template-dialog.component';
@@ -28,7 +29,8 @@ import { LoadTemplateDialogComponent } from './designer/load-template-dialog/loa
     LoginComponent,
     DashboardComponent,
     HomeComponent,
-    DesignerComponent,
+    DesignerAdminComponent,
+    DesignerClientComponent,
     NavigationComponent,
     ProductsComponent,
     LoadTemplateDialogComponent,

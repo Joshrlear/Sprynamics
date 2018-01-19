@@ -2,9 +2,9 @@
   <div class="design-container">
 
     <div *ngIf="product" class="back">
-    <button mat-icon-button (click)="product = ''">
-      <mat-icon>arrow_back</mat-icon>
-    </button>
+      <button mat-icon-button (click)="product = ''">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
     </div>
     
     <div id="product" *ngIf="!product">
@@ -20,7 +20,7 @@
           </div>
           <h1>Flyers</h1>
         </div>
-        <div class="col-xs-12 col-md-4 product-padding">
+        <div class="col-xs-12 col-md-4 product-padding no-focus" routerLink="/designer" [queryParams]="{size: '3.5x8.5'}">
           <div class="product doorhanger">
           </div>
           <h1>Door Hangers</h1>
@@ -31,13 +31,13 @@
     <div id="size" *ngIf="product === 'postcard'">
       <h1 class="heading">Choose a size</h1>
       <div class="product-container row">
-        <div class="col-xs-12 col-md-6 product-padding">
+        <div class="col-xs-12 col-md-6 product-padding no-focus" routerLink="/designer" [queryParams]="{size: '9x6'}">
           <div class="size size-1">
 
           </div>
           <h1>9 x 6 in.</h1>
         </div>
-        <div class="col-xs-12 col-md-6 product-padding">
+        <div class="col-xs-12 col-md-6 product-padding no-focus" routerLink="/designer" [queryParams]="{size: '11.5x6'}">
           <div class="size size-2">
           </div>
           <h1>11.5 x 6 in.</h1>
@@ -48,12 +48,12 @@
     <div id="size" *ngIf="product === 'flyer'">
         <h1 class="heading">Choose a size</h1>
         <div class="product-container row">
-          <div class="col-xs-12 col-md-6 product-padding">
+          <div class="col-xs-12 col-md-6 product-padding no-focus" routerLink="/designer" [queryParams]="{size: '8.5x11'}">
             <div class="size size-3">
             </div>
             <h1>8.5 x 11 in.</h1>
           </div>
-          <div class="col-xs-12 col-md-6 product-padding">
+          <div class="col-xs-12 col-md-6 product-padding no-focus" routerLink="/designer" [queryParams]="{size: '11x8.5'}">
             <div class="size size-4">
             </div>
             <h1>11 x 8.5 in</h1>

@@ -2,10 +2,10 @@ import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angula
 import { Http } from '@angular/http';
 import { ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material';
-import { AuthService } from '../core/auth.service';
-import { FirestoreService } from '../core/firestore.service';
-import { StorageService } from '../core/storage.service';
-import { LoadTemplateDialogComponent } from './load-template-dialog/load-template-dialog.component';
+import { AuthService } from '../../core/auth.service';
+import { FirestoreService } from '../../core/firestore.service';
+import { StorageService } from '../../core/storage.service';
+import { LoadTemplateDialogComponent } from '../load-template-dialog/load-template-dialog.component';
 
 import 'webfontloader';
 declare let WebFont;
@@ -15,10 +15,10 @@ declare let fabric;
 
 @Component({
   selector: 'app-designer',
-  templateUrl: './designer.component.html',
-  styleUrls: ['./designer.component.css']
+  templateUrl: './designer-admin.component.html',
+  styleUrls: ['./designer-admin.component.css']
 })
-export class DesignerComponent implements OnInit, AfterViewInit {
+export class DesignerAdminComponent implements OnInit, AfterViewInit {
 
   @ViewChild('designerView') view: ElementRef;
 
@@ -26,27 +26,32 @@ export class DesignerComponent implements OnInit, AfterViewInit {
     postcard_small: {
       type: 'postcard',
       width: 9,
-      height: 6
+      height: 6,
+      size: '9x6'
     },
     postcard_large: {
       type: 'postcard',
       width: 11.5,
-      height: 6
+      height: 6,
+      size: '11.5x6'
     },
     flyer_portrait: {
       type: 'flyer',
       width: 8.5,
-      height: 11
+      height: 11,
+      size: '8.5x11'
     },
     flyer_landscape: {
       type: 'flyer',
       width: 11,
-      height: 8.5
+      height: 8.5,
+      size: '11x8.5'
     },
     door_hanger: {
       type: 'doorhanger',
       width: 3.5,
-      height: 8.5
+      height: 8.5,
+      size: '3.5x8.5'
     }
   };
 
@@ -411,7 +416,8 @@ export class DesignerComponent implements OnInit, AfterViewInit {
       hasRotatingPoint: false,
       textContentType: 'plain', // custom
       textUserData: 'name', // custom
-      userEditable: false // custom
+      userEditable: false, // custom
+      textFieldName: ''      // custom
     });
     
     textbox.toObject = (function(toObject) {
@@ -419,6 +425,7 @@ export class DesignerComponent implements OnInit, AfterViewInit {
         return fabric.util.object.extend(toObject.call(this), {
           textContentType: this.textContentType,
           textUserData: this.textUserData,
+          textFieldName: this.textFieldName,
           userEditable: this.userEditable
         });
       };
@@ -442,8 +449,9 @@ export class DesignerComponent implements OnInit, AfterViewInit {
       fontFamily: 'Roboto',
       hasRotatingPoint: false,
       textContentType: 'plain', // custom
-      textUserData: 'name', // custom
-      userEditable: false // custom
+      textUserData: 'name',    // custom
+      userEditable: false,    // custom
+      textFieldName: ''      // custom
     });
     
     textbox.toObject = (function(toObject) {
@@ -451,6 +459,7 @@ export class DesignerComponent implements OnInit, AfterViewInit {
         return fabric.util.object.extend(toObject.call(this), {
           textContentType: this.textContentType,
           textUserData: this.textUserData,
+          textFieldName: this.textFieldName,
           userEditable: this.userEditable
         });
       };
