@@ -4,8 +4,6 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-
 import { RecaptchaModule } from 'ng-recaptcha';
 import { RecaptchaFormsModule } from 'ng-recaptcha/forms';
 import { ColorPickerModule } from 'ngx-color-picker';
@@ -20,7 +18,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { HomeComponent } from './home/home.component';
 import { DesignerComponent } from './designer/designer.component';
 import { NavigationComponent } from './navigation/navigation.component';
-import { DesignComponent } from './design/design.component';
+import { ProductsComponent } from './products/products.component';
 import { LoadTemplateDialogComponent } from './designer/load-template-dialog/load-template-dialog.component';
 
 @NgModule({
@@ -32,7 +30,7 @@ import { LoadTemplateDialogComponent } from './designer/load-template-dialog/loa
     HomeComponent,
     DesignerComponent,
     NavigationComponent,
-    DesignComponent,
+    ProductsComponent,
     LoadTemplateDialogComponent,
   ],
   imports: [
