@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { Http } from '@angular/http';
+import { ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material';
 import { AuthService } from '../core/auth.service';
 import { FirestoreService } from '../core/firestore.service';
@@ -89,14 +90,16 @@ export class DesignerComponent implements OnInit, AfterViewInit {
     private storage: StorageService, 
     private auth: AuthService,
     private dialog: MatDialog,
-    private http: Http) { }
+    private http: Http,
+    private route: ActivatedRoute
+  ) { }
 
   ngOnInit() {
     this.loadingFonts = true;
     this.http.get('https://www.googleapis.com/webfonts/v1/webfonts?sort=popularity&key=AIzaSyA-kEmBuQZhfrdS1Rije3syG3tCu8OGVcM')
       .take(1).subscribe(res => {
         this.fonts = res.json().items.map(font => font.family).slice(0, 200);
-        console.log(this.fonts);
+        // console.log(this.fonts);
         WebFont.load({
           google: {
             families: this.fonts
@@ -111,6 +114,13 @@ export class DesignerComponent implements OnInit, AfterViewInit {
       this.userData = user;
       this.template.presetColors = user.presetColors || [];
     });
+
+    this.route.queryParamMap.take(1).subscribe(queryParamMap => {
+      const product = queryParamMap.params['product'];
+      if (product) {
+        this.template.productType = this.productTypes[product];
+      }
+    })
 
     // returns true if the Object has a shadow, or false if not.
     // Also accepts a parameter to set the shadow
