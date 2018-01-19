@@ -1,8 +1,12 @@
 <div class="designer-container">
 
+  <div *ngIf="loadingFonts" class="loading-overlay">
+    <mat-spinner></mat-spinner>
+  </div>
+
   <div class="designer-sidebar mat-elevation-z8">
     <!-- Template metadata -->
-    <h4>Template Settings</h4>
+    <h4>Design Settings</h4>
     <!-- Template actions -->
     <button (click)="clickNew()">New</button>
     <button (click)="clickOpen()">Open</button>
@@ -27,13 +31,18 @@
     <ng-container *ngIf="selection">
       <ng-container [ngSwitch]="selection.type">
         <!-- TEXT selected -->
-        <ng-container *ngSwitchCase="'i-text'">
+        <ng-container *ngSwitchCase="selection.type === 'i-text' || selection.type === 'textbox' ? selection.type : ''">
           <h4>Text</h4>
           <!-- Text Styles -->
-          <div class="text-styles">
+          <div class="form-field">
             <button (click)="toggleBold()"><strong>B</strong></button>
             <button (click)="toggleItalics()"><em>I</em></button>
             <button (click)="toggleUnderline()">U</button>
+          </div>
+          <div class="form-field">
+            <select #textFontFamily [style.font-family]="textFontFamily.value" [(ngModel)]="selection.fontFamily" (change)="canvas.renderAll()">
+              <option *ngFor="let font of fonts" [value]="font" [style.font-family]="font">{{ font }}</option>
+            </select>
           </div>
           <!-- Text ContentType -->
           <div class="form-field">
@@ -164,9 +173,13 @@
       <button mat-raised-button color="primary" (click)="addImageInput.click()">Upload images</button>
       <input #addImageInput type="file" (change)="addImageFiles(addImageInput.files)" multiple hidden>
       <ng-container *ngIf="selection">
-        <button mat-raised-button (click)="logSelection()">Log selection</button>
-        <button mat-raised-button (click)="deleteSelection()">Remove object{{ selection.type === 'group' ? 's' : '' }}</button>
-        <button mat-raised-button (click)="cloneSelection()">Clone selection</button>
+        <!-- <button mat-raised-button (click)="logSelection()">Log selection</button> -->
+        <button mat-raised-button (click)="deleteSelection()">Remove</button>
+        <button mat-raised-button (click)="cloneSelection()">Clone</button>
+        <button mat-raised-button (click)="bringToFront()">Bring to front</button>
+        <button mat-raised-button (click)="bringForward()">Bring forward</button>
+        <button mat-raised-button (click)="sendBackward()">Send backward</button>
+        <button mat-raised-button (click)="sendToBack()">Send to back</button>
       </ng-container>
 
     </div>

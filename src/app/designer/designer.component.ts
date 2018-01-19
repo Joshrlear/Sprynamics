@@ -1,11 +1,15 @@
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Http } from '@angular/http';
 import { MatDialog } from '@angular/material';
 import { AuthService } from '../core/auth.service';
 import { FirestoreService } from '../core/firestore.service';
 import { StorageService } from '../core/storage.service';
+import { LoadTemplateDialogComponent } from './load-template-dialog/load-template-dialog.component';
+
+import 'webfontloader';
+declare let WebFont;
 
 import 'fabric';
-import { LoadTemplateDialogComponent } from './load-template-dialog/load-template-dialog.component';
 declare let fabric;
 
 @Component({
@@ -68,6 +72,9 @@ export class DesignerComponent implements OnInit, AfterViewInit {
 
   userData: any;
 
+  loadingFonts: boolean;
+  fonts: string[];
+
   get selection() {
     if (this.canvas) {
       // console.log(this.canvas.getActiveObject());
@@ -81,9 +88,25 @@ export class DesignerComponent implements OnInit, AfterViewInit {
     private firestore: FirestoreService,
     private storage: StorageService, 
     private auth: AuthService,
-    private dialog: MatDialog) { }
+    private dialog: MatDialog,
+    private http: Http) { }
 
   ngOnInit() {
+    this.loadingFonts = true;
+    this.http.get('https://www.googleapis.com/webfonts/v1/webfonts?sort=popularity&key=AIzaSyA-kEmBuQZhfrdS1Rije3syG3tCu8OGVcM')
+      .take(1).subscribe(res => {
+        this.fonts = res.json().items.map(font => font.family).slice(0, 200);
+        console.log(this.fonts);
+        WebFont.load({
+          google: {
+            families: this.fonts
+          },
+          active: () => {
+            this.loadingFonts = false;
+          }
+        });
+      });
+
     this.auth.user.take(1).subscribe((user: any) => {
       this.userData = user;
       this.template.presetColors = user.presetColors || [];
@@ -112,7 +135,8 @@ export class DesignerComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     this.canvas = fabric.canvas = new fabric.Canvas('canvas', {
       width: this.view.nativeElement.clientWidth,
-      height: this.view.nativeElement.clientHeight
+      height: this.view.nativeElement.clientHeight,
+      preserveObjectStacking: true
     });
 
     this.canvas.on('object:modified', (event) => {
@@ -163,6 +187,7 @@ export class DesignerComponent implements OnInit, AfterViewInit {
       hasControls: false,
       lockMovementX: true,
       lockMovementY: true,
+      isBoundBox: true
     });
 
     this.boundBox.toObject = (function(toObject) {
@@ -172,6 +197,7 @@ export class DesignerComponent implements OnInit, AfterViewInit {
           hasControls: false,
           lockMovementX: true,
           lockMovementY: true,
+          isBoundBox: true
         });
       };
     })(this.boundBox.toObject);
@@ -196,7 +222,7 @@ export class DesignerComponent implements OnInit, AfterViewInit {
     dialogRef.afterClosed().subscribe(id => {
       if (id) {
         this.firestore.doc$(`templates/${id}`)
-          .take(1).subscribe(template => this.loadTemplate(template));
+          .take(1).subscribe(template => this.loadTemplate(template, id));
       }
     });
   }
@@ -206,16 +232,27 @@ export class DesignerComponent implements OnInit, AfterViewInit {
       alert('You need to set a name for this design!');
       return;
     }
+    
     const canvasData = this.canvas.toObject();
-    this.storage.putJSON(canvasData, `templates/${this.template.name}.json`)
-      .take(1).subscribe(url => {
-        this.template.url = url;
-        this.firestore.add('templates', this.template);
-      });
+
+    if (this.template.id) {
+      this.firestore.update(`templates/${this.template.id}`, this.template);
+      this.storage.putJSON(canvasData, `templates/${this.template.id}.json`);
+    } else {
+      this.firestore.add('templates', this.template).then(ref => {
+        const canvasData = this.canvas.toObject();
+        this.storage.putJSON(canvasData, `templates/${ref.id}.json`)
+          .take(1).subscribe(url => {
+            this.template.url = url;
+            this.firestore.update(`templates/${ref.id}`, { url });
+          });
+      });    
+    }
   }
 
-  loadTemplate(template: any) {
+  loadTemplate(template: any, id: string) {
     this.template = template;
+    this.template.id = id;
     this.storage.getFile(template.url).take(1).subscribe(data => {
       console.log(data);
       this.canvas.loadFromJSON(data);
@@ -279,6 +316,19 @@ export class DesignerComponent implements OnInit, AfterViewInit {
         this.selection.remove();
       }
     }
+  }
+
+  bringForward() {
+    fabric.canvas.bringForward(this.selection, false);
+  }
+  sendBackward() {
+    this.canvas.sendBackward(this.selection, false);
+  }
+  bringToFront() {
+    this.canvas.bringToFront(this.selection);
+  }
+  sendToBack() {
+    this.canvas.sendToBack(this.selection);
   }
 
   changeUserData() {
@@ -347,6 +397,7 @@ export class DesignerComponent implements OnInit, AfterViewInit {
       top: 50,
       width: 150,
       fontSize: 20,
+      fontFamily: 'Roboto',
       hasRotatingPoint: false,
       textContentType: 'plain', // custom
       textUserData: 'name', // custom
@@ -378,6 +429,7 @@ export class DesignerComponent implements OnInit, AfterViewInit {
       top: 50,
       width: 150,
       fontSize: 20,
+      fontFamily: 'Roboto',
       hasRotatingPoint: false,
       textContentType: 'plain', // custom
       textUserData: 'name', // custom
