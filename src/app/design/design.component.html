@@ -1,0 +1,68 @@
+<div class="main-container">
+  <div class="design-container">
+
+    <div *ngIf="product" class="back">
+    <button mat-icon-button (click)="product = ''">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    </div>
+    
+    <div id="product" *ngIf="!product">
+      <h1 class="heading">Choose a product</h1>
+      <div class="product-container row">
+        <div class="col-xs-12 col-md-4 product-padding">
+          <div (click)="product = 'postcard'" class="product postcard">
+          </div>
+          <h1>Post Cards</h1>
+        </div>
+        <div class="col-xs-12 col-md-4 product-padding">
+          <div (click)="product = 'flyer'" class="product flyer">
+          </div>
+          <h1>Flyers</h1>
+        </div>
+        <div class="col-xs-12 col-md-4 product-padding">
+          <div class="product doorhanger">
+          </div>
+          <h1>Door Hangers</h1>
+        </div>
+      </div>
+    </div>
+
+    <div id="size" *ngIf="product === 'postcard'">
+      <h1 class="heading">Choose a size</h1>
+      <div class="product-container row">
+        <div class="col-xs-12 col-md-6 product-padding">
+          <div class="size size-1">
+
+          </div>
+          <h1>9 x 6 in.</h1>
+        </div>
+        <div class="col-xs-12 col-md-6 product-padding">
+          <div class="size size-2">
+          </div>
+          <h1>11.5 x 6 in.</h1>
+        </div>
+      </div>
+    </div>
+
+    <div id="size" *ngIf="product === 'flyer'">
+        <h1 class="heading">Choose a size</h1>
+        <div class="product-container row">
+          <div class="col-xs-12 col-md-6 product-padding">
+            <div class="size size-3">
+            </div>
+            <h1>8.5 x 11 in.</h1>
+          </div>
+          <div class="col-xs-12 col-md-6 product-padding">
+            <div class="size size-4">
+            </div>
+            <h1>11 x 8.5 in</h1>
+          </div>
+        </div>
+      </div>
+
+  </div>
+</div>
+
+
+

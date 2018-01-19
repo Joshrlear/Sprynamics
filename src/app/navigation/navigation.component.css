@@ -113,7 +113,10 @@
         display: flex;
     }
     .mobile-menu {
-        display: none;
+        display: none !important;
+    }
+    .mobile-menu_dropdown.active {
+        display: none !important;
     }
   }
 
