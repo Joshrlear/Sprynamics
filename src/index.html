@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <title>Sprynamics</title>
@@ -8,56 +9,63 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy"
+    crossorigin="anonymous">
   <script src="https://use.fontawesome.com/3b64a83a76.js"></script>
- 
+  <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
 </head>
+
 <body>
   <app-root></app-root>
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js" integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js" integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4"
+  crossorigin="anonymous"></script>
 <script>
-    $(document).ready(function(){
-      // Add smooth scrolling to all links
-      $("a").on('click', function(event) {
-    
-        // Make sure this.hash has a value before overriding default behavior
-        if (this.hash !== "") {
-          // Prevent default anchor click behavior
-          event.preventDefault();
-    
-          // Store hash
-          var hash = this.hash;
+  $(document).ready(function () {
+    // Add smooth scrolling to all links
+    $("a").on('click', function (event) {
 
-    
-          // Using jQuery's animate() method to add smooth page scroll
-          // The optional number (800) specifies the number of milliseconds it takes to scroll to the specified area
-          $('html, body').animate({
-            scrollTop: $(hash).offset().top
-          }, 800, function(){
-       
-            // Add hash (#) to URL when done scrolling (default click behavior)
-            window.location.hash = hash;
-          });
-        } // End if
-      });
+      // Make sure this.hash has a value before overriding default behavior
+      if (this.hash !== "") {
+        // Prevent default anchor click behavior
+        event.preventDefault();
+
+        // Store hash
+        var hash = this.hash;
+
+
+        // Using jQuery's animate() method to add smooth page scroll
+        // The optional number (800) specifies the number of milliseconds it takes to scroll to the specified area
+        $('html, body').animate({
+          scrollTop: $(hash).offset().top
+        }, 800, function () {
+
+          // Add hash (#) to URL when done scrolling (default click behavior)
+          window.location.hash = hash;
+        });
+      } // End if
     });
-
-    // When the user scrolls down 20px from the top of the document, show the button
-window.onscroll = function() {scrollFunction()};
-
-function scrollFunction() {
-    if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-        document.getElementById("scrollTop").style.display = "block";
-    } else {
-        document.getElementById("scrollTop").style.display = "none";
-    }
-}
-
-$("a[href='#']").click(function() {
-  $("html, body").animate({ scrollTop: 0 }, "slow");
-  return false;
   });
-    </script>
+
+  // When the user scrolls down 20px from the top of the document, show the button
+  window.onscroll = scrollFunction;
+
+  function scrollFunction() {
+    const scrollEl = document.getElementById("scrollTop");
+    if (scrollEl) {
+      if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+        scrollEl.style.display = "block";
+      } else {
+        scrollEl.style.display = "none";
+      }
+    }
+  }
+
+  $("a[href='#']").click(function () {
+    $("html, body").animate({ scrollTop: 0 }, "slow");
+    return false;
+  });
+</script>
+
 </html>

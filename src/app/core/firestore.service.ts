@@ -85,7 +85,7 @@ export class FirestoreService {
     return this.doc(ref).delete()
   }
 
-  public add<T>(ref: CollectionPredicate<T>, data) {
+  add<T>(ref: CollectionPredicate<T>, data) {
     const timestamp = this.timestamp
     return this.col(ref).add({
       ...data,

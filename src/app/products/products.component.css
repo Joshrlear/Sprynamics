@@ -15,6 +15,10 @@
     background-color: #fff;
 }
 
+.no-focus:focus {
+    outline: 0;
+}
+
 .back {
     height: 64px;
     display: flex;

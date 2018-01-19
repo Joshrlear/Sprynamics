@@ -1,0 +1,26 @@
+.templates-container {
+  max-width: 664px;
+  display: flex;
+  flex-wrap: wrap;
+  padding-left: 16px;
+  padding-top: 16px;
+}
+
+.template {
+  flex-basis: 200px;
+  flex-shrink: 0;
+  width: 200px;
+  height: 200px;
+  background: #eee;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 16px;
+  margin-bottom: 16px;
+  cursor: pointer;
+  transition: 200ms ease;
+}
+
+.template:hover {
+  transform: scale(1.1);
+}

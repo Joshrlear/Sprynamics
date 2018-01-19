@@ -1,14 +1,15 @@
-<ng-container *ngIf="!(templates | async)">
-  <mat-spinner radius=5></mat-spinner>
-</ng-container>
+<div class="templates-container">
+  <ng-container *ngIf="!(templates | async)">
+      <div style="margin-right: 16px; margin-bottom: 16px;"><mat-spinner radius=5></mat-spinner></div>
+  </ng-container>
 
-<ng-container *ngIf="(templates | async)?.length === 0">
-  You haven't created any templates yet!
-</ng-container>  
+  <ng-container *ngIf="(templates | async)?.length === 0">
+    <div style="margin-right: 16px; margin-bottom: 16px;">There are no designs for this product yet.</div>
+  </ng-container>
 
-<ng-container *ngFor="let template of templates | async">
-  <div (click)="select(template.id)">
-    {{ template.name }}
-  </div>
-</ng-container>
-
+  <ng-container *ngFor="let template of templates | async">
+    <div class="template" (click)="select(template.id)">
+      {{ template.name }}
+    </div>
+  </ng-container>
+</div>

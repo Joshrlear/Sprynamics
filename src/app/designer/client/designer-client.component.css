@@ -1,0 +1,68 @@
+.loading-overlay {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #eeeeee;
+  z-index: 999999;
+}
+
+.main-container {
+  width: 100%;
+  height: 100vh;
+  padding-top: 64px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.design-container {
+  width: 100%;
+  height: 80%;
+  max-width: 1200px;
+  background-color: #fff;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.designer-view {
+  width: 50%;
+  height: 100%;
+  text-align: center;
+}
+
+.form-container {
+  width: 50%;
+  height: 100%;
+  background: #eee;
+}
+
+.form {
+  padding: 32px;
+  padding-top: 0;
+}
+
+.choose-design-button {
+  position: absolute;
+  top: 50%;
+  margin-left: -64px;
+  z-index: 999;
+}
+
+.back {
+  height: 64px;
+  display: flex;
+  width: 100%;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 0 24px;
+}
+
+.back button {
+  outline: 0;
+  border: 0;
+}
