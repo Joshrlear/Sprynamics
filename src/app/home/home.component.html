@@ -16,7 +16,7 @@
         <div class="hero-section_inner-row">
           <div class="hero-action">
             <div class="hero-action_left">
-              <a href="#" class="btn hero-btn btn-greenBg">Try it now</a>
+              <a routerLink="/products" class="btn hero-btn btn-greenBg">Try it now</a>
             </div>
             <div class="hero-action_right">
               <div class="bar"></div>
@@ -27,21 +27,21 @@
     </div>
   </div>
   <div class="hero-cards_container">
-    <div class="hero-card flyers">
+    <div class="hero-card flyers" routerLink="/designer" [queryParams]="{product: 'flyer_portrait'}">
       <div class="hero-card_overlay">
         <div class="hero-card_text">
           <h1>Flyers</h1>
         </div>
       </div>
     </div>
-    <div class="hero-card post-cards">
+    <div class="hero-card post-cards" routerLink="/designer" [queryParams]="{product: 'postcard_small'}">
       <div class="hero-card_overlay">
         <div class="hero-card_text">
           <h1>Post Cards</h1>
         </div>
       </div>
     </div>
-    <div class="hero-card door-hangers">
+    <div class="hero-card door-hangers" routerLink="/designer" [queryParams]="{product: 'door_hanger'}">
       <div class="hero-card_overlay">
         <div class="hero-card_text">
           <h1>Door Hangers</h1>
