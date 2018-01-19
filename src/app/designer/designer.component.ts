@@ -115,7 +115,7 @@ export class DesignerComponent implements OnInit, AfterViewInit {
       this.template.presetColors = user.presetColors || [];
     });
 
-    this.route.queryParamMap.take(1).subscribe(queryParamMap => {
+    this.route.queryParamMap.take(1).subscribe((queryParamMap: any) => {
       const product = queryParamMap.params['product'];
       if (product) {
         this.template.productType = this.productTypes[product];
