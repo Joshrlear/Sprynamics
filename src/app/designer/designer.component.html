@@ -2,10 +2,26 @@
 
   <div class="designer-sidebar mat-elevation-z8">
     <!-- Template metadata -->
-    <h4>Template Editor</h4>
+    <h4>Template Settings</h4>
+    <!-- Template actions -->
+    <button (click)="clickNew()">New</button>
+    <button (click)="clickOpen()">Open</button>
+    <button (click)="clickSave()">Save</button>
+    <br><br>
+    <!-- Design Name -->
+    <label for="templateName">Design Name:</label>
+    <input type="text" placeholder="Name" [(ngModel)]="template.name">
     <br>
-    <label for="templateName">Template Name:</label>
-    <input type="text" placeholder="Name">
+    <!-- Product Type -->
+    <label for="productType">Product Type:</label>
+    <select name="productType" id="productType" [(ngModel)]="template.productType" (change)="refreshTemplate()">
+      <option [ngValue]="productTypes.postcard_small">Postcard: 9x6</option>
+      <option [ngValue]="productTypes.postcard_large">Postcard: 11.5x6</option>
+      <option [ngValue]="productTypes.flyer_portrait">Flyer: 8.5x11</option>
+      <option [ngValue]="productTypes.flyer_landscape">Flyer: 11x8.5</option>
+      <option [ngValue]="productTypes.door_hanger">Door hanger: 3.5x8.5</option>
+    </select>
+    <br>
     <hr>
     <!-- Object Selection -->
     <ng-container *ngIf="selection">
@@ -37,7 +53,7 @@
               (blur)="blurTextInput($event.target)">
           </div>
           <!-- Text User Data -->
-          <div class="form-field"><label for="textUserData">User Data:</label>
+          <div class="form-field" *ngIf="selection.textContentType === 'data'"><label for="textUserData">User Data:</label>
             <select name="textUserData" id="textUserData" [(ngModel)]="selection.textUserData" (change)="changeUserData()">
               <option [value]="'name'">Name</option>
               <option [value]="'email'">Email</option>
@@ -53,14 +69,20 @@
               [(ngModel)]="selection.userEditable">
           </div>
           <!-- Text Field Name -->
-          <div class="form-field" *ngIf="selection.editable">
+          <div class="form-field" *ngIf="selection.userEditable">
             <label for="textFieldName">Field Name:</label>
             <input id="textFieldName" type="text" [(ngModel)]="selection.textFieldName">
           </div>
+          <!-- Text Color -->
+          <ng-container *ngTemplateOutlet="colorpicker"></ng-container>
+          <!-- Text Shadow -->
+          <ng-container *ngTemplateOutlet="shadow"></ng-container>
         </ng-container>
         <!-- RECT selected -->
         <ng-container *ngSwitchCase="'rect'">
           <h4>Shape</h4>
+          <ng-container *ngTemplateOutlet="colorpicker"></ng-container>
+          <ng-container *ngTemplateOutlet="shadow"></ng-container>
         </ng-container>
         <!-- IMAGE selected -->
         <ng-container *ngSwitchCase="'image'">
@@ -77,20 +99,76 @@
             <option value="brokerage">User Brokerage Logo</option>
           </select>
         </ng-container>
+        <!-- GROUP selected -->
+        <ng-container *ngSwitchCase="'group'">
+          <h4>Group</h4>
+          <ng-container *ngTemplateOutlet="colorpicker"></ng-container>
+        </ng-container>
       </ng-container>
     </ng-container>
   </div>
+
+  <!-- COLOR PICKER NG-TEMPLATE -->
+  <ng-template #colorpicker>
+    <label for="colorPicker">Color: </label>
+    <input id="colorPicker" 
+      [style.background]="selection.fill"
+      [cpCancelButton]="true"
+      [cpOKButton]="true"
+      cpAlphaChannel="always"
+      cpAddColorButton=true
+      [cpPresetColors]="template.presetColors"
+      [(colorPicker)]="selection.fill"
+      (colorPickerChange)="colorPickerChange($event)"
+      (cpPresetColorsChange)="template.presetColors = $event">
+    <br>
+  </ng-template>
+
+  <!-- SHADOW NG-TEMPLATE -->
+  <ng-template #shadow>
+    <fieldset style="border: 1px solid #1a1a1a">
+      <legend>Shadow:</legend>
+      <label for="shadowEnabled">Enabled:</label>
+      <input #shadowEnabled type="checkbox" id="shadowEnabled" [(ngModel)]="selection.spryShadow">
+      <br>
+      <ng-container *ngIf="selection.spryShadow">
+        <label for="shadowColor">Color:</label>
+        <input id="shadowColor"
+          [style.background]="selection.shadow.color"
+          [cpCancelButton]="true"
+          [cpOKButton]="true"
+          cpAlphaChannel="always"
+          [(colorPicker)]="selection.shadow.color"
+          (colorPickerChange)="shadowColorPickerChange($event)">
+        <br>
+        <label for="shadowBlur">Blur:</label>
+        <input type="number" id="shadowBlur" min=0 [(ngModel)]="selection.shadow.blur" (input)="canvas.renderAll()">
+        <br>
+        <label for="shadowOffsetX">X Offset:</label>
+        <input type="number" id="shadowOffsetX" [(ngModel)]="selection.shadow.offsetX" (input)="canvas.renderAll()">
+        <br>
+        <label for="shadowOffsetY">Y Offset:</label>
+        <input type="number" id="shadowOffsetY" [(ngModel)]="selection.shadow.offsetY" (input)="canvas.renderAll()">
+        <br>
+      </ng-container>
+    </fieldset>
+  </ng-template>
 
   <div class="designer-content">
 
     <div class="designer-actions mat-elevation-z1">
       <button mat-raised-button color="primary" (click)="addText()">Add text</button>
+      <button mat-raised-button color="primary" (click)="addTextbox()">Add paragraph</button>
       <button mat-raised-button color="primary" (click)="addShape()">Add shape</button>
       <button mat-raised-button color="primary" (click)="addLogo()">Add logo</button>
       <button mat-raised-button color="primary" (click)="addImageInput.click()">Upload images</button>
       <input #addImageInput type="file" (change)="addImageFiles(addImageInput.files)" multiple hidden>
-      <button mat-raised-button (click)="logSelection()" *ngIf="selection">Log selection</button>
-      <button mat-raised-button (click)="deleteSelection()" *ngIf="selection">Remove object{{ selection.type === 'group' ? 's' : '' }}</button>
+      <ng-container *ngIf="selection">
+        <button mat-raised-button (click)="logSelection()">Log selection</button>
+        <button mat-raised-button (click)="deleteSelection()">Remove object{{ selection.type === 'group' ? 's' : '' }}</button>
+        <button mat-raised-button (click)="cloneSelection()">Clone selection</button>
+      </ng-container>
+
     </div>
 
     <div #designerView class="designer-view">

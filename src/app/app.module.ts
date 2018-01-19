@@ -1,4 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -6,6 +7,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 import { RecaptchaModule } from 'ng-recaptcha';
 import { RecaptchaFormsModule } from 'ng-recaptcha/forms';
+import { ColorPickerModule } from 'ngx-color-picker';
 
 import { CoreModule } from './core/core.module';
 import { AppRoutingModule } from './app-routing.module';
@@ -18,8 +20,7 @@ import { HomeComponent } from './home/home.component';
 import { DesignerComponent } from './designer/designer.component';
 import { NavigationComponent } from './navigation/navigation.component';
 import { DesignComponent } from './design/design.component';
-
-
+import { LoadTemplateDialogComponent } from './designer/load-template-dialog/load-template-dialog.component';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,7 @@ import { DesignComponent } from './design/design.component';
     DesignerComponent,
     NavigationComponent,
     DesignComponent,
+    LoadTemplateDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -40,7 +42,11 @@ import { DesignComponent } from './design/design.component';
     CoreModule,
     AppRoutingModule,
     RecaptchaModule.forRoot(),
-    RecaptchaFormsModule
+    RecaptchaFormsModule,
+    ColorPickerModule,
+  ],
+  entryComponents: [
+    LoadTemplateDialogComponent
   ],
   providers: [],
   bootstrap: [AppComponent]
