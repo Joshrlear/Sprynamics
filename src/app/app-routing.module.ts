@@ -11,7 +11,6 @@ import { DesignComponent } from './design/design.component';
 import { AuthGuard } from './core/auth.guard';
 
 const routes: Routes = [
-  // { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: '', component: HomeComponent },
   { path: 'design', component: DesignComponent },
   { path: 'designer', component: DesignerComponent },

@@ -40,7 +40,7 @@ export class DashboardComponent implements OnInit {
 
     this.auth.user.take(1).subscribe(user => {
       if (user.admin) {
-        this.templates = this.firestore.collection$('templates');
+        this.templates = this.firestore.col$('templates');
       }
     });
   }
