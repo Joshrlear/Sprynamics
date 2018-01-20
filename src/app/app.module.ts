@@ -21,6 +21,8 @@ import { DesignerClientComponent } from './designer/client/designer-client.compo
 import { NavigationComponent } from './navigation/navigation.component';
 import { ProductsComponent } from './products/products.component';
 import { LoadTemplateDialogComponent } from './designer/load-template-dialog/load-template-dialog.component';
+import { CheckoutComponent } from './checkout/checkout.component';
+import { CartComponent } from './cart/cart.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +36,8 @@ import { LoadTemplateDialogComponent } from './designer/load-template-dialog/loa
     NavigationComponent,
     ProductsComponent,
     LoadTemplateDialogComponent,
+    CheckoutComponent,
+    CartComponent,
   ],
   imports: [
     BrowserModule,
