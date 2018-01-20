@@ -5,13 +5,13 @@
   </div>
 
   <div class="designer-sidebar mat-elevation-z8">
+    <!-- Template actions -->
+    <button class="btn btn-sm green-btn" (click)="clickNew()">New</button>
+    <button class="btn btn-sm green-btn" (click)="clickOpen()">Open</button>
+    <button class="btn btn-sm green-btn" (click)="clickSave()">Save</button>
+    <br><br>
     <!-- Template metadata -->
     <h4>Design Settings</h4>
-    <!-- Template actions -->
-    <button (click)="clickNew()">New</button>
-    <button (click)="clickOpen()">Open</button>
-    <button (click)="clickSave()">Save</button>
-    <br><br>
     <!-- Design Name -->
     <label for="templateName">Design Name:</label>
     <input type="text" placeholder="Name" [(ngModel)]="template.name">
@@ -166,11 +166,11 @@
   <div class="designer-content">
 
     <div class="designer-actions mat-elevation-z1">
-      <button mat-raised-button color="primary" (click)="addText()">Add text</button>
-      <button mat-raised-button color="primary" (click)="addTextbox()">Add paragraph</button>
-      <button mat-raised-button color="primary" (click)="addShape()">Add shape</button>
-      <button mat-raised-button color="primary" (click)="addLogo()">Add logo</button>
-      <button mat-raised-button color="primary" (click)="addImageInput.click()">Upload images</button>
+      <button class="btn green-btn" (click)="addText()">Add text</button>
+      <button class="btn green-btn" (click)="addTextbox()">Add paragraph</button>
+      <button class="btn green-btn" (click)="addShape()">Add shape</button>
+      <button class="btn green-btn" (click)="addLogo()">Add logo</button>
+      <button class="btn green-btn" (click)="addImageInput.click()">Upload images</button>
       <input #addImageInput type="file" (change)="addImageFiles(addImageInput.files)" multiple hidden>
       <ng-container *ngIf="selection">
         <!-- <button mat-raised-button (click)="logSelection()">Log selection</button> -->

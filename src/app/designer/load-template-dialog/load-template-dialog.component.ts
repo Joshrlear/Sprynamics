@@ -17,7 +17,7 @@ export class LoadTemplateDialogComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) private data: any) { }
 
   ngOnInit() {
-    if (this.data.size) {
+    if (this.data && this.data.size) {
       this.templates = this.firestore.colWithIds$('templates', ref => ref.where('productType.size', '==', this.data.size));
     } else {
       this.templates = this.firestore.colWithIds$('templates');

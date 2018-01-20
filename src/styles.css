@@ -28,6 +28,16 @@ body {
   font-family: "Segoe UI Black", Helvetica, Arial, sans-serif;
 }
 
+.green-btn {
+  background-color: #12c463;
+  color: #fff;
+  transition: 150ms ease;
+}
+
+.green-btn:hover {
+  background-color: #15af5b;
+}
+
 .mat-step-header .mat-step-icon {
   color: #fff !important;
 }
