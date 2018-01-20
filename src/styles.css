@@ -38,6 +38,16 @@ body {
 
 /* GRID */
 
+.fill {
+  height: 100%;
+  width: 100%;
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+}
+
 .container-fluid,
 .container {
   margin-right: auto;
@@ -63,8 +73,8 @@ body {
   flex-direction: row;
   -ms-flex-wrap: wrap;
   flex-wrap: wrap;
-  margin-right: -0.5rem;
-  margin-left: -0.5rem;
+  margin-right: 0;
+  margin-left: 0;
 }
 
 .row.reverse {
