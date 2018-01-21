@@ -24,6 +24,9 @@ import { LoadTemplateDialogComponent } from './designer/load-template-dialog/loa
 import { CheckoutComponent } from './checkout/checkout.component';
 import { CartComponent } from './cart/cart.component';
 
+import { ButtonsModule } from 'ngx-bootstrap';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -42,6 +45,8 @@ import { CartComponent } from './cart/cart.component';
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
+    BsDropdownModule.forRoot(),
+    ButtonsModule.forRoot(),
     FormsModule,
     ReactiveFormsModule,
     CoreModule,

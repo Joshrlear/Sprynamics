@@ -51,24 +51,28 @@
         <li class="nav-item_dropdown dropdown show">
             <ng-container *ngIf="(auth.user | async) || {} as user">
             <ng-container *ngIf="!user.uid; else loggedIn">
-                <a class="nav-link dropdown-toggle" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Account
-                  </a>
-                  <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                      <a class="dropdown-item" routerLink="/login">Login</a>
-                      <a class="dropdown-item" routerLink="/signup">Sign Up</a>
-                    </div>
+              <div class="btn-group" dropdown>
+                <a class="nav-link dropdown-toggle btn" dropdownToggle>
+                  Account <span class="caret"></span>
+                </a>
+                <ul *dropdownMenu class="dropdown-menu" role="menu">
+                  <li role="menuitem"><a class="dropdown-item" routerLink="/login">Login</a></li>
+                  <li role="menuitem"><a class="dropdown-item" routerLink="/signup">Sign Up</a></li> 
+                </ul>
+              </div>
               </ng-container>
 
 
             <ng-template #loggedIn>
-                <a class="nav-link dropdown-toggle" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Account
-                  </a>
-                  <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                      <a class="dropdown-item" routerLink="/dashboard">Dashboard</a>
-                      <a class="dropdown-item" routerLink="/" (click)="logout()">Logout</a>
-                    </div>
+              <div class="btn-group" dropdown>
+                <a class="nav-link dropdown-toggle btn" dropdownToggle>
+                  Account <span class="caret"></span>
+                </a>
+                <ul *dropdownMenu class="dropdown-menu" role="menu">
+                  <li role="menuitem"><a class="dropdown-item" routerLink="/dashboard">Dashboard</a></li>
+                  <li role="menuitem"><a class="dropdown-item" (click)="logout()" routerLink="/">Logout</a></li> 
+                </ul>
+              </div>
               </ng-template>
             
           

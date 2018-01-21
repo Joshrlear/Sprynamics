@@ -1,51 +1,14 @@
-/* You can add global styles to this file, and also import other style files */
-html, body {
-  overflow-x: hidden;
-}
-
-body {
-  margin: 0;
-  background-color: #f5f5f5;
-  font-family: 'Roboto';
-}
-
-* {
-  box-sizing: border-box;
-}
-
-.btn-greenBg {
-  background-color: #12C463 !important;
-  opacity: 1.5 !important;
-  text-transform: uppercase;
-  padding: 15px 35px;
-  border-radius: 10px;
-  box-shadow: -1px 1px 2px 0px #333;
-  font-size: 20px;
-  font-style: italic;
-  font-weight: bold;
-  position: relative;
-  color: #fff !important;
-  font-family: "Segoe UI Black", Helvetica, Arial, sans-serif;
-}
-
-.mat-step-header .mat-step-icon {
-  color: #fff !important;
-}
-
-.mat-step-icon .mat-icon {
-  color: #fff;
-}
-
-/* GRID */
-
 .fill {
+  width: 100%;
   height: 100%;
+}
+
+.fill-width {
   width: 100%;
 }
 
-.col {
-  display: flex;
-  flex-direction: column;
+.fill-height {
+  height: 100%;
 }
 
 .container-fluid,
@@ -73,8 +36,13 @@ body {
   flex-direction: row;
   -ms-flex-wrap: wrap;
   flex-wrap: wrap;
-  margin-right: 0;
-  margin-left: 0;
+  margin-right: $margin;
+  margin-left: $margin;
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
 }
 
 .row.reverse {
@@ -316,9 +284,9 @@ body {
   order: 1;
 }
 
-@media only screen and (min-width: 48em) {
+@media only screen and (min-width: $sm) {
   .container {
-    width: 49rem;
+    width: $sm-container;
   }
 
   .col-sm,
@@ -351,8 +319,8 @@ body {
     -webkit-box-flex: 0;
     -ms-flex: 0 0 auto;
     flex: 0 0 auto;
-    padding-right: 0.5rem;
-    padding-left: 0.5rem;
+    padding-right: $sm-gutter-right;
+    padding-left: $sm-gutter-left;
   }
 
   .col-sm {
@@ -547,9 +515,9 @@ body {
   }
 }
 
-@media only screen and (min-width: 64em) {
+@media only screen and (min-width: $med) {
   .container {
-    width: 65rem;
+    width: $med-container;
   }
 
   .col-md,
@@ -582,8 +550,8 @@ body {
     -webkit-box-flex: 0;
     -ms-flex: 0 0 auto;
     flex: 0 0 auto;
-    padding-right: 0.5rem;
-    padding-left: 0.5rem;
+    padding-right: $med-gutter-right;
+    padding-left: $med-gutter-left;
   }
 
   .col-md {
@@ -778,9 +746,9 @@ body {
   }
 }
 
-@media only screen and (min-width: 75em) {
+@media only screen and (min-width: $lg) {
   .container {
-    width: 76rem;
+    width: $lg-container;
   }
 
   .col-lg,
@@ -813,8 +781,8 @@ body {
     -webkit-box-flex: 0;
     -ms-flex: 0 0 auto;
     flex: 0 0 auto;
-    padding-right: 0.5rem;
-    padding-left: 0.5rem;
+    padding-right: $lg-gutter-right;
+    padding-left: $lg-gutter-left;
   }
 
   .col-lg {
