@@ -1,0 +1,23 @@
+// Viewports
+
+$sm: 48em;
+$med: 64em;
+$lg: 75em;
+
+// Containers
+
+$sm-container: 49rem;
+$med-container: 65rem;
+$lg-container: 76rem;
+
+// Gutters
+
+$gutter: 0.5rem;
+$margin: -$gutter;
+
+$sm-gutter-right: $gutter;
+$sm-gutter-left: $gutter;
+$med-gutter-right: $gutter;
+$med-gutter-left: $gutter;
+$lg-gutter-right: $gutter;
+$lg-gutter-left: $gutter;
