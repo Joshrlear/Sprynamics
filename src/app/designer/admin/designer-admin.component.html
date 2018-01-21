@@ -168,6 +168,13 @@
     <div class="designer-actions mat-elevation-z1">
       <button class="btn green-btn" (click)="addText()">+ Text</button>
       <button class="btn green-btn" (click)="addTextbox()">+ Paragraph</button>
+      <button class="btn green-btn dropdown-toggle" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Account
+      </button>
+      <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+        <a class="dropdown-item" routerLink="/login">Login</a>
+        <a class="dropdown-item" routerLink="/signup">Sign Up</a>
+      </div>
       <button class="btn green-btn" (click)="addRect()">+ Rect</button>
       <button class="btn green-btn" (click)="addRect()">+ Circ</button>
       <button class="btn green-btn" (click)="addRect()">+ Tri</button>
