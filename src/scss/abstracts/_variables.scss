@@ -1,0 +1,43 @@
+// Colors
+
+$white: #fff;
+
+$lightgrey: #f1f1f1;
+
+$grey: #9e9e9e;
+
+$darkgrey: #74777b;
+
+$green: #36cc7b;
+$green2: #16c466;
+
+// Fonts
+
+$font-primary: 'Roboto';
+
+// Viewports
+
+$sm: 48em;
+$med: 64em;
+$lg: 75em;
+$xl: 88em;
+
+// Containers
+
+$sm-container: 49rem;
+$med-container: 65rem;
+$lg-container: 76rem;
+$xl-container: 89rem;
+
+// Gutters
+
+$gutter: 0.5rem;
+$margin: auto;
+$margin1: -$gutter;
+
+$sm-gutter-right: $gutter;
+$sm-gutter-left: $gutter;
+$med-gutter-right: $gutter;
+$med-gutter-left: $gutter;
+$lg-gutter-right: $gutter;
+$lg-gutter-left: $gutter;
