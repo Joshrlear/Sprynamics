@@ -166,20 +166,24 @@
   <div class="designer-content">
 
     <div class="designer-actions mat-elevation-z1">
-      <button class="btn green-btn" (click)="addText()">Add text</button>
-      <button class="btn green-btn" (click)="addTextbox()">Add paragraph</button>
-      <button class="btn green-btn" (click)="addShape()">Add shape</button>
-      <button class="btn green-btn" (click)="addLogo()">Add logo</button>
-      <button class="btn green-btn" (click)="addImageInput.click()">Upload images</button>
+      <button class="btn green-btn" (click)="addText()">+ Text</button>
+      <button class="btn green-btn" (click)="addTextbox()">+ Paragraph</button>
+      <button class="btn green-btn" (click)="addRect()">+ Rect</button>
+      <button class="btn green-btn" (click)="addRect()">+ Circ</button>
+      <button class="btn green-btn" (click)="addRect()">+ Tri</button>
+      <button class="btn green-btn" (click)="addRect()">+ Poly</button>
+      <button class="btn green-btn" (click)="addLine()">+ Line</button>
+      <button class="btn green-btn" (click)="addLogo()">+ Logo</button>
+      <button class="btn green-btn" (click)="addImageInput.click()">+ Images</button>
       <input #addImageInput type="file" (change)="addImageFiles(addImageInput.files)" multiple hidden>
       <ng-container *ngIf="selection">
         <!-- <button mat-raised-button (click)="logSelection()">Log selection</button> -->
         <button mat-raised-button (click)="deleteSelection()">Remove</button>
         <button mat-raised-button (click)="cloneSelection()">Clone</button>
-        <button mat-raised-button (click)="bringToFront()">Bring to front</button>
-        <button mat-raised-button (click)="bringForward()">Bring forward</button>
-        <button mat-raised-button (click)="sendBackward()">Send backward</button>
-        <button mat-raised-button (click)="sendToBack()">Send to back</button>
+        <button mat-raised-button (click)="bringToFront()">To Front</button>
+        <button mat-raised-button (click)="bringForward()">Forward</button>
+        <button mat-raised-button (click)="sendBackward()">Backward</button>
+        <button mat-raised-button (click)="sendToBack()">To Back</button>
       </ng-container>
 
     </div>
