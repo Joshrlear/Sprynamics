@@ -19,6 +19,8 @@ declare let fabric;
   styleUrls: ['./designer-admin.component.css']
 })
 export class DesignerAdminComponent implements OnInit, AfterViewInit {
+  printArea: any;
+  background: any;
 
   @ViewChild('designerView') view: ElementRef;
 
@@ -65,14 +67,17 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
 
   defaultShadow = {
     color: 'rgba(0,0,0,0)',
-    blur: 20,    
+    blur: 20,
     offsetX: 10,
     offsetY: 10,
     opacity: 0.6
   }
 
+  bleedInches = 0.25;
+  safeInches = 0.125;
+
   canvas;
-  boundBox;
+  safeArea;
   shape;
   dpi = 72; // the dpi to display the template at
 
@@ -90,9 +95,9 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
     }
   }
 
-  constructor(private element: ElementRef, 
+  constructor(private element: ElementRef,
     private firestore: FirestoreService,
-    private storage: StorageService, 
+    private storage: StorageService,
     private auth: AuthService,
     private dialog: MatDialog,
     private http: Http,
@@ -118,6 +123,7 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
     this.auth.user.take(1).subscribe((user: any) => {
       this.userData = user;
       this.template.presetColors = user.presetColors || [];
+      console.log(this.userData);
     });
 
     this.route.queryParamMap.take(1).subscribe((queryParamMap: any) => {
@@ -151,7 +157,16 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
     this.canvas = fabric.canvas = new fabric.Canvas('canvas', {
       width: this.view.nativeElement.clientWidth,
       height: this.view.nativeElement.clientHeight,
-      preserveObjectStacking: true
+      preserveObjectStacking: true,
+      backgroundColor: '#fff'
+    });
+
+    fabric.Object.prototype.set({
+      borderColor: '#12C463',
+      cornerColor: 'white',
+      cornerStrokeColor: 'black',
+      cornerSize: 10,
+      transparentCorners: false
     });
 
     this.canvas.on('object:modified', (event) => {
@@ -160,12 +175,8 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
         event.target.height *= event.target.scaleY;
         event.target.scaleX = 1;
         event.target.scaleY = 1;
-        // this is a bit of a hack to get the canvas to update the size.
-        // the width is increased then decreased to force the cache to clear.
-        event.target.set({ width: event.target.width+1 });
-        event.target.set({ width: event.target.width-1 });
+        this.forceRender(event.target);
       }
-      
     });
 
     this.clearTemplate();
@@ -175,15 +186,15 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
     const object = this.canvas.getActiveObject().toObject();
     fabric.util.enlivenObjects([object], (objects) => {
       objects.forEach(object => {
-        object.set("top", object.top+5);
-        object.set("left", object.left+5);
+        object.set("top", object.top + 5);
+        object.set("left", object.left + 5);
         object.setShadow(this.defaultShadow);
         this.canvas.add(object);
         this.canvas.setActiveObject(object);
       });
       this.canvas.renderAll();
     });
-    
+
   }
 
   /**
@@ -192,7 +203,33 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
   clearTemplate() {
     this.canvas.clear();
 
-    this.boundBox = new fabric.Rect({
+    this.background = new fabric.Rect({
+      width: 912,
+      height: 586,
+      fill: '#ffffff',
+      selectable: false,
+      hasControls: false,
+      lockMovementX: true,
+      lockMovementY: true,
+      isBackground: true
+    });
+
+    this.background.toObject = (function (toObject) {
+      return function () {
+        return fabric.util.object.extend(toObject.call(this), {
+          selectable: false,
+          hasControls: false,
+          lockMovementX: true,
+          lockMovementY: true,
+          isBackground: true
+        });
+      };
+    })(this.background.toObject);
+
+    this.canvas.add(this.background);
+    this.canvas.centerObject(this.background);
+
+    this.safeArea = new fabric.Rect({
       width: 912,
       height: 586,
       fill: 'transparent',
@@ -202,25 +239,77 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
       hasControls: false,
       lockMovementX: true,
       lockMovementY: true,
-      isBoundBox: true
+      isHidden: true
     });
 
-    this.boundBox.toObject = (function(toObject) {
-      return function() {
+    this.safeArea.toObject = (function (toObject) {
+      return function () {
         return fabric.util.object.extend(toObject.call(this), {
           selectable: false,
           hasControls: false,
           lockMovementX: true,
           lockMovementY: true,
-          isBoundBox: true
+          isHidden: true
         });
       };
-    })(this.boundBox.toObject);
+    })(this.safeArea.toObject);
 
-    this.canvas.add(this.boundBox);
-    this.canvas.centerObject(this.boundBox);
+    this.canvas.add(this.safeArea);
+    this.canvas.centerObject(this.safeArea);
+
+    this.printArea = new fabric.Rect({
+      width: 912,
+      height: 586,
+      fill: 'transparent',
+      stroke: '#f00',
+      strokeDashArray: [5, 5],
+      selectable: false,
+      hasControls: false,
+      lockMovementX: true,
+      lockMovementY: true,
+      isBoundBox: true,
+      isHidden: true,
+    });
+
+    this.printArea.toObject = (function (toObject) {
+      return function () {
+        return fabric.util.object.extend(toObject.call(this), {
+          selectable: false,
+          hasControls: false,
+          lockMovementX: true,
+          lockMovementY: true,
+          isBoundBox: true,
+          isHidden: true
+        });
+      };
+    })(this.printArea.toObject);
+
+    this.canvas.add(this.printArea);
+    this.canvas.centerObject(this.printArea);
 
     this.refreshTemplate();
+  }
+
+  /** Refreshes the template size */
+  refreshTemplate() {
+    const productType = this.template.productType;
+    this.background.set({
+      width: productType.width * this.dpi + this.bleedInches * this.dpi,
+      height: productType.height * this.dpi + this.bleedInches * this.dpi
+    });
+    this.safeArea.set({
+      width: productType.width * this.dpi - this.safeInches * this.dpi,
+      height: productType.height * this.dpi - this.safeInches * this.dpi
+    });
+    this.printArea.set({
+      width: productType.width * this.dpi,
+      height: productType.height * this.dpi
+    })
+
+    this.canvas.centerObject(this.background);
+    this.canvas.centerObject(this.safeArea);
+    this.canvas.centerObject(this.printArea);
+    this.canvas.renderAll();
   }
 
   clickNew() {
@@ -247,8 +336,18 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
       alert('You need to set a name for this design!');
       return;
     }
-    
+
     const canvasData = this.canvas.toObject();
+
+    // add required fonts to template data
+    const fonts = [];
+    this.canvas.forEachObject((obj: any) => {
+      const family = obj.fontFamily;
+      if (family && !fonts.includes(family)) {
+        fonts.push(family);
+      }
+    });
+    this.template.fonts = fonts;
 
     if (this.template.id) {
       this.firestore.update(`templates/${this.template.id}`, this.template);
@@ -261,7 +360,7 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
             this.template.url = url;
             this.firestore.update(`templates/${ref.id}`, { url });
           });
-      });    
+      });
     }
   }
 
@@ -279,10 +378,7 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
       this.selection.forEachObject(obj => {
         if (obj.type === 'i-text') {
           obj.set({ fill: event });
-          // this is a bit of a hack to get the canvas to update the text color.
-          // the width is increased then decreased to force the cache to clear.
-          obj.set({ width: obj.width+1 });
-          obj.set({ width: obj.width-1 });
+          this.forceRender(obj);
         } else {
           obj.set({ fill: event, backgroundColor: event });
         }
@@ -290,10 +386,10 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
     } else if (this.selection.type === 'rect') {
       this.selection.set({ backgroundColor: event });
     } else if (this.selection.type === 'i-text') {
-      // this is a bit of a hack to get the canvas to update the text color.
-      // the width is increased then decreased to force the cache to clear.
-      this.selection.set({ width: this.selection.width+1 });
-      this.selection.set({ width: this.selection.width-1 });
+      this.forceRender(this.selection);
+    } else if (this.selection.type === 'path') {
+      this.selection.set({ fill: event });
+      this.forceRender(this.selection);
     }
     this.canvas.renderAll();
   }
@@ -304,15 +400,11 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
     this.canvas.renderAll();
   }
 
-  /** Refreshes the template size */
-  refreshTemplate() {
-    // split the product size from the format of 6x9 to a width and height of 6 by 9
-    const productType = this.template.productType;
-    this.boundBox.set({ 
-      width: productType.width * this.dpi,
-      height: productType.height * this.dpi
-    });
-    this.canvas.centerObject(this.boundBox);
+  forceRender(obj) {
+    // this is a bit of a hack to get the canvas to update the text color.
+    // the width is increased then decreased to force the cache to clear.
+    obj.set({ width: obj.width + 1 });
+    obj.set({ width: obj.width - 1 });
     this.canvas.renderAll();
   }
 
@@ -355,7 +447,7 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
         dataText = `${this.userData['firstName']} ${this.userData['lastName']}`;
       } else if (dataName === 'address') {
         dataText = `${this.userData['address1']} ${this.userData['address2']}\n` +
-                   `${this.userData['city']}, ${this.userData['state']}`;
+          `${this.userData['city']}, ${this.userData['state']}`;
       } else {
         dataText = this.userData[dataName];
       }
@@ -406,6 +498,29 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
     this.canvas.renderAll();
   }
 
+  changeLogoType() {
+    let src;
+    switch (this.selection.logoType) {
+      case 'headshot':
+        src = this.userData.avatarUrl;
+        break;
+      case 'brokerage':
+        src = this.userData.brokerageLogoUrl;
+        break;
+      case 'company':
+        src = this.userData.companyLogoUrl;
+        break;
+      default:
+        src = '/assets/logo.png';
+    }
+    const img = new Image();
+    img.onload = () => {
+      this.selection.setElement(img);
+      this.forceRender(this.selection);
+    }
+    img.src = src;
+  }
+
   addText() {
     const textbox = new fabric.IText('Type text here...', {
       left: 50,
@@ -419,9 +534,9 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
       userEditable: false, // custom
       textFieldName: ''      // custom
     });
-    
-    textbox.toObject = (function(toObject) {
-      return function() {
+
+    textbox.toObject = (function (toObject) {
+      return function () {
         return fabric.util.object.extend(toObject.call(this), {
           textContentType: this.textContentType,
           textUserData: this.textUserData,
@@ -437,10 +552,10 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
 
   addTextbox() {
     const loremIpsum = 'Lorem ipsum dolor sit amet, ' +
-    'consectetur adipisicing elit, sed do eiusmod tempor ' +
-    'incididunt ut labore et dolore magna aliqua. Ut enim ' +
-    'ad minim veniam, quis nostrud exercitation ullamco ' +
-    'laboris nisi ut aliquip exea commodo consequat.';
+      'consectetur adipisicing elit, sed do eiusmod tempor ' +
+      'incididunt ut labore et dolore magna aliqua. Ut enim ' +
+      'ad minim veniam, quis nostrud exercitation ullamco ' +
+      'laboris nisi ut aliquip exea commodo consequat.';
     const textbox = new fabric.Textbox(loremIpsum, {
       left: 50,
       top: 50,
@@ -453,9 +568,9 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
       userEditable: false,    // custom
       textFieldName: ''      // custom
     });
-    
-    textbox.toObject = (function(toObject) {
-      return function() {
+
+    textbox.toObject = (function (toObject) {
+      return function () {
         return fabric.util.object.extend(toObject.call(this), {
           textContentType: this.textContentType,
           textUserData: this.textUserData,
@@ -473,6 +588,8 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
     const rect = new fabric.Rect({
       width: 200,
       height: 200,
+      stroke: '#000000ff',
+      strokeWidth: 0,
       fill: '#00e676',
       hasRotatingPoint: true
     });
@@ -481,8 +598,24 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
     this.canvas.add(rect).setActiveObject(rect);
   }
 
+  addPolygon(numSides) {
+    const pathString = this.getRegularPolygonPath(0, 0, 50, numSides);
+    const polygon = new fabric.Path(pathString,
+    {
+      stroke: 'black',
+      strokeWidth: 1,
+      fill: '#00e676',
+      originX: 'center',
+      originY: 'center',
+      numSides: numSides,
+    });
+
+    polygon.setShadow(this.defaultShadow);
+    this.canvas.add(polygon).setActiveObject(polygon);
+  }
+
   addLine() {
-    const line = new fabric.Lin({
+    const line = new fabric.Line({
       width: 200,
       stroke: '#00e676',
       hasRotatingPoint: true
@@ -493,16 +626,18 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
   }
 
   addLogo() {
-    const logo = new fabric.Image.fromURL('/assets/logo.png', 
+    const logo = new fabric.Image.fromURL('/assets/logo.png',
       (img) => {
         img.scaleToHeight(100);
         img.isLogo = true;
+        img.logoType = 'sprynamics';
         img.setShadow(this.defaultShadow);
 
-        img.toObject = (function(toObject) {
-          return function() {
+        img.toObject = (function (toObject) {
+          return function () {
             return fabric.util.object.extend(toObject.call(this), {
-              isLogo: true
+              isLogo: true,
+              logoType: this.logoType
             });
           };
         })(img.toObject);
@@ -533,6 +668,62 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
       }
       reader.readAsDataURL(file);
     }
+  }
+
+  polarToCartesian(centerX, centerY, radius, angleInDegrees) {
+    // This function converts polar coordinates to cartesian coordinates
+
+    var angleInRadians = (angleInDegrees - 90) * Math.PI / 180.0;
+
+    return {
+      x: centerX + (radius * Math.cos(angleInRadians)),
+      y: centerY + (radius * Math.sin(angleInRadians))
+    };
+  }
+
+  getRegularPolygonPath(x, y, radius, numVertexes) {
+    // This function returns a path for a regular polygon centered at x,y with a radius specified with numVertexes sides
+
+    const interiorAngle = 360 / numVertexes;
+
+    // rotationAdjustment rotates the path by 1/2 the interior angle so that the polygon always has a flat side on the bottom
+    // This isn't strictly necessary, but it's how we tend to think of and expect polygons to be drawn
+    let rotationAdjustment = 0;
+    if (numVertexes % 2 == 0) {
+      rotationAdjustment = interiorAngle / 2;
+    }
+
+    const d = [];
+    for (var i = 0; i < numVertexes; i++) {
+      // var coord = coordList[i];
+      const coord = this.polarToCartesian(x, y, radius, i * interiorAngle + rotationAdjustment);
+
+      if (i == 0) {
+        d.push('M ');
+
+        // If an odd number of vertexes, add an additional point at the top of the polygon-- this will shift the calculated center
+        // point of the shape so that the centerpoint of the polygon is at x,y (otherwise the center is mis-located)
+        if (numVertexes % 2 == 1) {
+          d.push(0);
+          d.push(radius);
+        }
+
+        d.push('M');
+
+      } else {
+        d.push(" L ");
+      }
+
+      d.push(coord.x);
+      d.push(coord.y);
+    }
+
+    let pathString = d.join(" ");
+
+    pathString += " Z";
+
+    return pathString;
+
   }
 
 }

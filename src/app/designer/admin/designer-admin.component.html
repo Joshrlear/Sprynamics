@@ -6,10 +6,11 @@
 
   <div class="designer-sidebar mat-elevation-z8">
     <!-- Template actions -->
-    <button class="btn btn-sm green-btn" (click)="clickNew()">New</button>
-    <button class="btn btn-sm green-btn" (click)="clickOpen()">Open</button>
-    <button class="btn btn-sm green-btn" (click)="clickSave()">Save</button>
-    <br><br>
+    <button class="btn btn-sm green" (click)="clickNew()">New</button>
+    <button class="btn btn-sm green" (click)="clickOpen()">Open</button>
+    <button class="btn btn-sm green" (click)="clickSave()">Save</button>
+    <br>
+    <br>
     <!-- Template metadata -->
     <h4>Design Settings</h4>
     <!-- Design Name -->
@@ -35,8 +36,12 @@
           <h4>Text</h4>
           <!-- Text Styles -->
           <div class="form-field">
-            <button (click)="toggleBold()"><strong>B</strong></button>
-            <button (click)="toggleItalics()"><em>I</em></button>
+            <button (click)="toggleBold()">
+              <strong>B</strong>
+            </button>
+            <button (click)="toggleItalics()">
+              <em>I</em>
+            </button>
             <button (click)="toggleUnderline()">U</button>
           </div>
           <div class="form-field">
@@ -55,14 +60,12 @@
           <!-- Text Content -->
           <div class="form-field" *ngIf="selection.textContentType === 'plain'">
             <label for="textInput">Content:</label>
-            <input #textInput id="textInput" type="text" 
-              [(ngModel)]="selection.text" 
-              (keyup)="canvas.renderAll()" 
-              (click)="clickTextInput($event.target)" 
+            <input #textInput id="textInput" type="text" [(ngModel)]="selection.text" (keyup)="canvas.renderAll()" (click)="clickTextInput($event.target)"
               (blur)="blurTextInput($event.target)">
           </div>
           <!-- Text User Data -->
-          <div class="form-field" *ngIf="selection.textContentType === 'data'"><label for="textUserData">User Data:</label>
+          <div class="form-field" *ngIf="selection.textContentType === 'data'">
+            <label for="textUserData">User Data:</label>
             <select name="textUserData" id="textUserData" [(ngModel)]="selection.textUserData" (change)="changeUserData()">
               <option [value]="'name'">Name</option>
               <option [value]="'email'">Email</option>
@@ -74,8 +77,7 @@
           <!-- Text Editable -->
           <div class="form-field">
             <label for="textEditable">Editable:</label>
-            <input id="textEditable" type="checkbox"
-              [(ngModel)]="selection.userEditable">
+            <input id="textEditable" type="checkbox" [(ngModel)]="selection.userEditable">
           </div>
           <!-- Text Field Name -->
           <div class="form-field" *ngIf="selection.userEditable">
@@ -87,32 +89,51 @@
           <!-- Text Shadow -->
           <ng-container *ngTemplateOutlet="shadow"></ng-container>
         </ng-container>
+
         <!-- RECT selected -->
         <ng-container *ngSwitchCase="'rect'">
-          <h4>Shape</h4>
+          <h4>Rectangle</h4>
           <ng-container *ngTemplateOutlet="colorpicker"></ng-container>
+          <ng-container *ngTemplateOutlet="stroke"></ng-container>
           <ng-container *ngTemplateOutlet="shadow"></ng-container>
         </ng-container>
+
+        <!-- POLYGON selected -->
+        <ng-container *ngSwitchCase="'path'">
+          <h4>Shape</h4>
+          <ng-container *ngTemplateOutlet="colorpicker"></ng-container>
+          <ng-container *ngTemplateOutlet="stroke"></ng-container>
+          <ng-container *ngTemplateOutlet="shadow"></ng-container>
+        </ng-container>
+
         <!-- IMAGE selected -->
         <ng-container *ngSwitchCase="'image'">
-          <h4>Image</h4>
+          <ng-container *ngIf="selection.isLogo">
+            <h4>Logo</h4>
+            <label for="logoType">Logo Type:</label>
+            <select name="logoType" id="logoType" [(ngModel)]="selection.logoType" (change)="changeLogoType()">
+              <option value="sprynamics">Sprynamics Logo</option>
+              <option value="headshot">User Headshot</option>
+              <option value="company">User Company Logo</option>
+              <option value="brokerage">User Brokerage Logo</option>
+            </select>
+          </ng-container>
+          <ng-container *ngIf="!selection.isLogo">
+            <h4>Image</h4>
+          </ng-container>
         </ng-container>
+
         <!-- LOGO selected -->
         <ng-container *ngSwitchCase="'logo'">
-          <h4>Logo</h4>
-          <label for="logoType">Logo Type:</label>
-          <select name="logoType" id="logoType">
-            <option value="sprynamics">Sprynamics Logo</option>
-            <option value="headshot">User Headshot</option>
-            <option value="company">User Company Logo</option>
-            <option value="brokerage">User Brokerage Logo</option>
-          </select>
+
         </ng-container>
+
         <!-- GROUP selected -->
         <ng-container *ngSwitchCase="'group'">
           <h4>Group</h4>
           <ng-container *ngTemplateOutlet="colorpicker"></ng-container>
         </ng-container>
+
       </ng-container>
     </ng-container>
   </div>
@@ -120,15 +141,8 @@
   <!-- COLOR PICKER NG-TEMPLATE -->
   <ng-template #colorpicker>
     <label for="colorPicker">Color: </label>
-    <input id="colorPicker" 
-      [style.background]="selection.fill"
-      [cpCancelButton]="true"
-      [cpOKButton]="true"
-      cpAlphaChannel="always"
-      cpAddColorButton=true
-      [cpPresetColors]="template.presetColors"
-      [(colorPicker)]="selection.fill"
-      (colorPickerChange)="colorPickerChange($event)"
+    <input id="colorPicker" [style.background]="selection.fill" [cpCancelButton]="true" [cpOKButton]="true" cpAlphaChannel="always"
+      cpAddColorButton=true [cpPresetColors]="template.presetColors" [(colorPicker)]="selection.fill" (colorPickerChange)="colorPickerChange($event)"
       (cpPresetColorsChange)="template.presetColors = $event">
     <br>
   </ng-template>
@@ -142,13 +156,8 @@
       <br>
       <ng-container *ngIf="selection.spryShadow">
         <label for="shadowColor">Color:</label>
-        <input id="shadowColor"
-          [style.background]="selection.shadow.color"
-          [cpCancelButton]="true"
-          [cpOKButton]="true"
-          cpAlphaChannel="always"
-          [(colorPicker)]="selection.shadow.color"
-          (colorPickerChange)="shadowColorPickerChange($event)">
+        <input id="shadowColor" [style.background]="selection.shadow.color" [cpCancelButton]="true" [cpOKButton]="true" cpAlphaChannel="always"
+          [(colorPicker)]="selection.shadow.color" (colorPickerChange)="shadowColorPickerChange($event)">
         <br>
         <label for="shadowBlur">Blur:</label>
         <input type="number" id="shadowBlur" min=0 [(ngModel)]="selection.shadow.blur" (input)="canvas.renderAll()">
@@ -163,34 +172,46 @@
     </fieldset>
   </ng-template>
 
+  <!-- STROKE NG-TEMPLATE -->
+  <ng-template #stroke>
+    <fieldset style="border: 1px solid #1a1a1a">
+      <legend>Stroke:</legend>
+      <label for="strokeColor">Color:</label>
+      <input id="strokeColor" [style.background]="selection.stroke" [cpCancelButton]="true" [cpOKButton]="true" cpAlphaChannel="always"
+        [(colorPicker)]="selection.stroke" (colorPickerChange)="forceRender(selection)">
+      <br>
+      <label for="strokeWidth">Stroke Width:</label>
+      <input type="number" id="strokeWidth" min=0 [(ngModel)]="selection.strokeWidth" (input)="forceRender(selection)">
+    </fieldset>
+  </ng-template>
+
   <div class="designer-content">
 
     <div class="designer-actions mat-elevation-z1">
-      <button class="btn green-btn" (click)="addText()">+ Text</button>
-      <button class="btn green-btn" (click)="addTextbox()">+ Paragraph</button>
-      <button class="btn green-btn dropdown-toggle" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        Account
-      </button>
-      <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-        <a class="dropdown-item" routerLink="/login">Login</a>
-        <a class="dropdown-item" routerLink="/signup">Sign Up</a>
+      <button class="btn green" (click)="addText()">+ Text</button>
+      <button class="btn green" (click)="addTextbox()">+ Paragraph</button>
+      <div class="btn-group" dropdown>
+        <button dropdownToggle class="btn green dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          + Shape
+        </button>
+        <div *dropdownMenu class="dropdown-menu" role="menu">
+          <button class="dropdown-item" (click)="addRect()">+ Rectangle</button>
+          <a class="dropdown-item" (click)="addPolygon(3)">+ Triangle</a>
+          <a class="dropdown-item" (click)="addPolygon(5)">+ Pentagon</a>
+          <a class="dropdown-item" (click)="addLine()">+ Line</a>
+        </div>
       </div>
-      <button class="btn green-btn" (click)="addRect()">+ Rect</button>
-      <button class="btn green-btn" (click)="addRect()">+ Circ</button>
-      <button class="btn green-btn" (click)="addRect()">+ Tri</button>
-      <button class="btn green-btn" (click)="addRect()">+ Poly</button>
-      <button class="btn green-btn" (click)="addLine()">+ Line</button>
-      <button class="btn green-btn" (click)="addLogo()">+ Logo</button>
-      <button class="btn green-btn" (click)="addImageInput.click()">+ Images</button>
+      <button class="btn green" (click)="addLogo()">+ Logo</button>
+      <button class="btn green" (click)="addImageInput.click()">+ Images</button>
       <input #addImageInput type="file" (change)="addImageFiles(addImageInput.files)" multiple hidden>
       <ng-container *ngIf="selection">
-        <!-- <button mat-raised-button (click)="logSelection()">Log selection</button> -->
-        <button mat-raised-button (click)="deleteSelection()">Remove</button>
-        <button mat-raised-button (click)="cloneSelection()">Clone</button>
-        <button mat-raised-button (click)="bringToFront()">To Front</button>
-        <button mat-raised-button (click)="bringForward()">Forward</button>
-        <button mat-raised-button (click)="sendBackward()">Backward</button>
-        <button mat-raised-button (click)="sendToBack()">To Back</button>
+        <button mat-raised-button (click)="logSelection()">Log selection</button>
+        <button class="btn" (click)="deleteSelection()">Remove</button>
+        <button class="btn" (click)="cloneSelection()">Clone</button>
+        <button class="btn" (click)="bringToFront()">To Front</button>
+        <button class="btn" (click)="bringForward()">Forward</button>
+        <button class="btn" (click)="sendBackward()">Backward</button>
+        <button class="btn" (click)="sendToBack()">To Back</button>
       </ng-container>
 
     </div>

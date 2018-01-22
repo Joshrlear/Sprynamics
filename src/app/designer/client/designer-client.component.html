@@ -1,9 +1,5 @@
 <div class="main-container">
 
-  <div *ngIf="false" class="loading-overlay">
-    <mat-spinner></mat-spinner>
-  </div>
-
   <div class="design-container">
     <div class="form-container">
       <div class="back">
@@ -14,7 +10,7 @@
           <button class="btn" *ngIf="template" (click)="openTemplateDialog()">
             Change Design
           </button>
-          <button class="btn green-btn" (click)="addToCart()">
+          <button class="btn green" (click)="addToCart()">
             Add to Cart
           </button>
         </div>
@@ -34,6 +30,7 @@
       </div>
     </div>
     <div #designerView class="designer-view">
+      <mat-spinner *ngIf="loading"></mat-spinner>
       <button class="btn green-btn choose-design-button" *ngIf="!template" (click)="openTemplateDialog()">
         Choose A Design
       </button>
