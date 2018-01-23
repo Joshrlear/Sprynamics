@@ -6,6 +6,8 @@ import { AuthService } from '../../core/auth.service';
 import { FirestoreService } from '../../core/firestore.service';
 import { StorageService } from '../../core/storage.service';
 import { LoadTemplateDialogComponent } from '../load-template-dialog/load-template-dialog.component';
+import { productTypes } from '../products';
+import { ObjectFactoryService } from '../object-factory.service';
 
 import 'webfontloader';
 declare let WebFont;
@@ -19,67 +21,28 @@ declare let fabric;
   styleUrls: ['./designer-admin.component.css']
 })
 export class DesignerAdminComponent implements OnInit, AfterViewInit {
-  printArea: any;
-  background: any;
-
+  
   @ViewChild('designerView') view: ElementRef;
-
-  productTypes = {
-    postcard_small: {
-      type: 'postcard',
-      width: 9,
-      height: 6,
-      size: '9x6'
-    },
-    postcard_large: {
-      type: 'postcard',
-      width: 11.5,
-      height: 6,
-      size: '11.5x6'
-    },
-    flyer_portrait: {
-      type: 'flyer',
-      width: 8.5,
-      height: 11,
-      size: '8.5x11'
-    },
-    flyer_landscape: {
-      type: 'flyer',
-      width: 11,
-      height: 8.5,
-      size: '11x8.5'
-    },
-    door_hanger: {
-      type: 'doorhanger',
-      width: 3.5,
-      height: 8.5,
-      size: '3.5x8.5'
-    }
-  };
-
+  
+  productTypes = productTypes;
+  
   defaultTemplate = {
     name: '',
     productType: this.productTypes.postcard_small,
     presetColors: []
   }
-
+  
   template: any = Object.assign({}, this.defaultTemplate);
-
-  defaultShadow = {
-    color: 'rgba(0,0,0,0)',
-    blur: 20,
-    offsetX: 10,
-    offsetY: 10,
-    opacity: 0.6
-  }
-
+  
+  dpi = 72; // the dpi to display the template at
   bleedInches = 0.25;
   safeInches = 0.125;
-
+  
   canvas;
-  safeArea;
-  shape;
-  dpi = 72; // the dpi to display the template at
+  background: any;
+  safeArea: any;
+  printArea: any;
+  
 
   userData: any;
 
@@ -101,7 +64,8 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
     private auth: AuthService,
     private dialog: MatDialog,
     private http: Http,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    public factory: ObjectFactoryService
   ) { }
 
   ngOnInit() {
@@ -120,18 +84,36 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
         });
       });
 
+    // Get user data
     this.auth.user.take(1).subscribe((user: any) => {
       this.userData = user;
       this.template.presetColors = user.presetColors || [];
-      console.log(this.userData);
     });
 
+    // Load product type from query parameter
     this.route.queryParamMap.take(1).subscribe((queryParamMap: any) => {
       const product = queryParamMap.params['product'];
       if (product) {
         this.template.productType = this.productTypes[product];
       }
     })
+  }
+
+  ngAfterViewInit() {
+    this.canvas = fabric.canvas = new fabric.Canvas('canvas', {
+      width: this.view.nativeElement.clientWidth,
+      height: this.view.nativeElement.clientHeight,
+      preserveObjectStacking: true,
+      backgroundColor: '#fff'
+    });
+
+    fabric.Object.prototype.set({
+      borderColor: '#12C463',
+      cornerColor: 'white',
+      cornerStrokeColor: 'black',
+      cornerSize: 10,
+      transparentCorners: false
+    });
 
     // returns true if the Object has a shadow, or false if not.
     // Also accepts a parameter to set the shadow
@@ -151,24 +133,8 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
         }
       }
     });
-  }
 
-  ngAfterViewInit() {
-    this.canvas = fabric.canvas = new fabric.Canvas('canvas', {
-      width: this.view.nativeElement.clientWidth,
-      height: this.view.nativeElement.clientHeight,
-      preserveObjectStacking: true,
-      backgroundColor: '#fff'
-    });
-
-    fabric.Object.prototype.set({
-      borderColor: '#12C463',
-      cornerColor: 'white',
-      cornerStrokeColor: 'black',
-      cornerSize: 10,
-      transparentCorners: false
-    });
-
+    // Fix rectangle scaling
     this.canvas.on('object:modified', (event) => {
       if (event.target.type === 'rect') {
         event.target.width *= event.target.scaleX;
@@ -179,119 +145,23 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
       }
     });
 
-    this.clearTemplate();
-  }
-
-  cloneSelection() {
-    const object = this.canvas.getActiveObject().toObject();
-    fabric.util.enlivenObjects([object], (objects) => {
-      objects.forEach(object => {
-        object.set("top", object.top + 5);
-        object.set("left", object.left + 5);
-        object.setShadow(this.defaultShadow);
-        this.canvas.add(object);
-        this.canvas.setActiveObject(object);
-      });
-      this.canvas.renderAll();
-    });
-
+    this.clearCanvas();
   }
 
   /**
    * Deletes all content and clears the canvas, then recreates the bounding box.
    */
-  clearTemplate() {
+  clearCanvas() {
     this.canvas.clear();
-
-    this.background = new fabric.Rect({
-      width: 912,
-      height: 586,
-      fill: '#ffffff',
-      selectable: false,
-      hasControls: false,
-      lockMovementX: true,
-      lockMovementY: true,
-      isBackground: true
-    });
-
-    this.background.toObject = (function (toObject) {
-      return function () {
-        return fabric.util.object.extend(toObject.call(this), {
-          selectable: false,
-          hasControls: false,
-          lockMovementX: true,
-          lockMovementY: true,
-          isBackground: true
-        });
-      };
-    })(this.background.toObject);
-
-    this.canvas.add(this.background);
-    this.canvas.centerObject(this.background);
-
-    this.safeArea = new fabric.Rect({
-      width: 912,
-      height: 586,
-      fill: 'transparent',
-      stroke: '#777',
-      strokeDashArray: [5, 5],
-      selectable: false,
-      hasControls: false,
-      lockMovementX: true,
-      lockMovementY: true,
-      isHidden: true
-    });
-
-    this.safeArea.toObject = (function (toObject) {
-      return function () {
-        return fabric.util.object.extend(toObject.call(this), {
-          selectable: false,
-          hasControls: false,
-          lockMovementX: true,
-          lockMovementY: true,
-          isHidden: true
-        });
-      };
-    })(this.safeArea.toObject);
-
-    this.canvas.add(this.safeArea);
-    this.canvas.centerObject(this.safeArea);
-
-    this.printArea = new fabric.Rect({
-      width: 912,
-      height: 586,
-      fill: 'transparent',
-      stroke: '#f00',
-      strokeDashArray: [5, 5],
-      selectable: false,
-      hasControls: false,
-      lockMovementX: true,
-      lockMovementY: true,
-      isBoundBox: true,
-      isHidden: true,
-    });
-
-    this.printArea.toObject = (function (toObject) {
-      return function () {
-        return fabric.util.object.extend(toObject.call(this), {
-          selectable: false,
-          hasControls: false,
-          lockMovementX: true,
-          lockMovementY: true,
-          isBoundBox: true,
-          isHidden: true
-        });
-      };
-    })(this.printArea.toObject);
-
-    this.canvas.add(this.printArea);
-    this.canvas.centerObject(this.printArea);
-
-    this.refreshTemplate();
+    const base = this.factory.createProductBase(this.canvas);
+    Object.assign(this, base);
+    this.refreshCanvasSize();
   }
 
-  /** Refreshes the template size */
-  refreshTemplate() {
+  /** 
+   * Refreshes the template size 
+   */
+  refreshCanvasSize() {
     const productType = this.template.productType;
     this.background.set({
       width: productType.width * this.dpi + this.bleedInches * this.dpi,
@@ -315,7 +185,7 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
   clickNew() {
     if (confirm('Unsaved changes will be lost. Are you sure you want to start a new template?')) {
       this.template = Object.assign({}, this.defaultTemplate);
-      this.clearTemplate();
+      this.clearCanvas();
     } else {
       return;
     }
@@ -336,7 +206,7 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
       alert('You need to set a name for this design!');
       return;
     }
-
+    
     const canvasData = this.canvas.toObject();
 
     // add required fonts to template data
@@ -521,131 +391,6 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
     img.src = src;
   }
 
-  addText() {
-    const textbox = new fabric.IText('Type text here...', {
-      left: 50,
-      top: 50,
-      width: 150,
-      fontSize: 20,
-      fontFamily: 'Roboto',
-      hasRotatingPoint: true,
-      textContentType: 'plain', // custom
-      textUserData: 'name', // custom
-      userEditable: false, // custom
-      textFieldName: ''      // custom
-    });
-
-    textbox.toObject = (function (toObject) {
-      return function () {
-        return fabric.util.object.extend(toObject.call(this), {
-          textContentType: this.textContentType,
-          textUserData: this.textUserData,
-          textFieldName: this.textFieldName,
-          userEditable: this.userEditable
-        });
-      };
-    })(textbox.toObject);
-
-    textbox.setShadow(this.defaultShadow);
-    this.canvas.add(textbox).setActiveObject(textbox);
-  }
-
-  addTextbox() {
-    const loremIpsum = 'Lorem ipsum dolor sit amet, ' +
-      'consectetur adipisicing elit, sed do eiusmod tempor ' +
-      'incididunt ut labore et dolore magna aliqua. Ut enim ' +
-      'ad minim veniam, quis nostrud exercitation ullamco ' +
-      'laboris nisi ut aliquip exea commodo consequat.';
-    const textbox = new fabric.Textbox(loremIpsum, {
-      left: 50,
-      top: 50,
-      width: 150,
-      fontSize: 20,
-      fontFamily: 'Roboto',
-      hasRotatingPoint: true,
-      textContentType: 'plain', // custom
-      textUserData: 'name',    // custom
-      userEditable: false,    // custom
-      textFieldName: ''      // custom
-    });
-
-    textbox.toObject = (function (toObject) {
-      return function () {
-        return fabric.util.object.extend(toObject.call(this), {
-          textContentType: this.textContentType,
-          textUserData: this.textUserData,
-          textFieldName: this.textFieldName,
-          userEditable: this.userEditable
-        });
-      };
-    })(textbox.toObject);
-
-    textbox.setShadow(this.defaultShadow);
-    this.canvas.add(textbox).setActiveObject(textbox);
-  }
-
-  addRect() {
-    const rect = new fabric.Rect({
-      width: 200,
-      height: 200,
-      stroke: '#000000ff',
-      strokeWidth: 0,
-      fill: '#00e676',
-      hasRotatingPoint: true
-    });
-
-    rect.setShadow(this.defaultShadow);
-    this.canvas.add(rect).setActiveObject(rect);
-  }
-
-  addPolygon(numSides) {
-    const pathString = this.getRegularPolygonPath(0, 0, 50, numSides);
-    const polygon = new fabric.Path(pathString,
-    {
-      stroke: 'black',
-      strokeWidth: 1,
-      fill: '#00e676',
-      originX: 'center',
-      originY: 'center',
-      numSides: numSides,
-    });
-
-    polygon.setShadow(this.defaultShadow);
-    this.canvas.add(polygon).setActiveObject(polygon);
-  }
-
-  addLine() {
-    const line = new fabric.Line({
-      width: 200,
-      stroke: '#00e676',
-      hasRotatingPoint: true
-    })
-
-    line.setShadow(this.defaultShadow);
-    this.canvas.add(line).setActiveObject(line);
-  }
-
-  addLogo() {
-    const logo = new fabric.Image.fromURL('/assets/logo.png',
-      (img) => {
-        img.scaleToHeight(100);
-        img.isLogo = true;
-        img.logoType = 'sprynamics';
-        img.setShadow(this.defaultShadow);
-
-        img.toObject = (function (toObject) {
-          return function () {
-            return fabric.util.object.extend(toObject.call(this), {
-              isLogo: true,
-              logoType: this.logoType
-            });
-          };
-        })(img.toObject);
-
-        this.canvas.add(img);
-      });
-  }
-
   addImageFiles(files: FileList) {
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
@@ -655,75 +400,11 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
         img.src = event.target.result;
         img.onload = () => {
           const image = new fabric.Image(img);
-          image.set({
-            angle: 0,
-            // height: 120,
-            // width: 120
-          });
-          image.setShadow(this.defaultShadow);
-          this.canvas
-            .add(image)
-            .renderAll();
+          this.factory.addObject(image, this.canvas);
         }
       }
       reader.readAsDataURL(file);
     }
-  }
-
-  polarToCartesian(centerX, centerY, radius, angleInDegrees) {
-    // This function converts polar coordinates to cartesian coordinates
-
-    var angleInRadians = (angleInDegrees - 90) * Math.PI / 180.0;
-
-    return {
-      x: centerX + (radius * Math.cos(angleInRadians)),
-      y: centerY + (radius * Math.sin(angleInRadians))
-    };
-  }
-
-  getRegularPolygonPath(x, y, radius, numVertexes) {
-    // This function returns a path for a regular polygon centered at x,y with a radius specified with numVertexes sides
-
-    const interiorAngle = 360 / numVertexes;
-
-    // rotationAdjustment rotates the path by 1/2 the interior angle so that the polygon always has a flat side on the bottom
-    // This isn't strictly necessary, but it's how we tend to think of and expect polygons to be drawn
-    let rotationAdjustment = 0;
-    if (numVertexes % 2 == 0) {
-      rotationAdjustment = interiorAngle / 2;
-    }
-
-    const d = [];
-    for (var i = 0; i < numVertexes; i++) {
-      // var coord = coordList[i];
-      const coord = this.polarToCartesian(x, y, radius, i * interiorAngle + rotationAdjustment);
-
-      if (i == 0) {
-        d.push('M ');
-
-        // If an odd number of vertexes, add an additional point at the top of the polygon-- this will shift the calculated center
-        // point of the shape so that the centerpoint of the polygon is at x,y (otherwise the center is mis-located)
-        if (numVertexes % 2 == 1) {
-          d.push(0);
-          d.push(radius);
-        }
-
-        d.push('M');
-
-      } else {
-        d.push(" L ");
-      }
-
-      d.push(coord.x);
-      d.push(coord.y);
-    }
-
-    let pathString = d.join(" ");
-
-    pathString += " Z";
-
-    return pathString;
-
   }
 
 }

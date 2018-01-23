@@ -19,7 +19,7 @@
     <br>
     <!-- Product Type -->
     <label for="productType">Product Type:</label>
-    <select name="productType" id="productType" [(ngModel)]="template.productType" (change)="refreshTemplate()">
+    <select name="productType" id="productType" [(ngModel)]="template.productType" (change)="refreshCanvasSize()">
       <option [ngValue]="productTypes.postcard_small">Postcard: 9x6</option>
       <option [ngValue]="productTypes.postcard_large">Postcard: 11.5x6</option>
       <option [ngValue]="productTypes.flyer_portrait">Flyer: 8.5x11</option>
@@ -188,26 +188,25 @@
   <div class="designer-content">
 
     <div class="designer-actions mat-elevation-z1">
-      <button class="btn green" (click)="addText()">+ Text</button>
-      <button class="btn green" (click)="addTextbox()">+ Paragraph</button>
+      <button class="btn green" (click)="factory.createText(canvas);">+ Text</button>
+      <button class="btn green" (click)="factory.createParagraph(canvas);">+ Paragraph</button>
       <div class="btn-group" dropdown>
         <button dropdownToggle class="btn green dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           + Shape
         </button>
         <div *dropdownMenu class="dropdown-menu" role="menu">
-          <button class="dropdown-item" (click)="addRect()">+ Rectangle</button>
-          <a class="dropdown-item" (click)="addPolygon(3)">+ Triangle</a>
-          <a class="dropdown-item" (click)="addPolygon(5)">+ Pentagon</a>
-          <a class="dropdown-item" (click)="addLine()">+ Line</a>
+          <button class="dropdown-item" (click)="factory.createRectangle(canvas);">+ Rectangle</button>
+          <a class="dropdown-item" (click)="factory.createPolygon(3, canvas)">+ Triangle</a>
+          <a class="dropdown-item" (click)="factory.createPolygon(5, canvas)">+ Pentagon</a>
+          <a class="dropdown-item" (click)="factory.createLine(canvas)">+ Line</a>
         </div>
       </div>
-      <button class="btn green" (click)="addLogo()">+ Logo</button>
+      <button class="btn green" (click)="factory.createLogo(canvas)">+ Logo</button>
       <button class="btn green" (click)="addImageInput.click()">+ Images</button>
       <input #addImageInput type="file" (change)="addImageFiles(addImageInput.files)" multiple hidden>
       <ng-container *ngIf="selection">
-        <button mat-raised-button (click)="logSelection()">Log selection</button>
         <button class="btn" (click)="deleteSelection()">Remove</button>
-        <button class="btn" (click)="cloneSelection()">Clone</button>
+        <button class="btn" (click)="factory.createClone(selection, canvas)">Clone</button>
         <button class="btn" (click)="bringToFront()">To Front</button>
         <button class="btn" (click)="bringForward()">Forward</button>
         <button class="btn" (click)="sendBackward()">Backward</button>

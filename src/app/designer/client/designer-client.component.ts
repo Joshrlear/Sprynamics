@@ -6,6 +6,7 @@ import { LoadTemplateDialogComponent } from '../load-template-dialog/load-templa
 import { FirestoreService } from '../../core/firestore.service';
 import { StorageService } from '../../core/storage.service';
 import { AuthService } from '../../core/auth.service';
+import { productSizes } from '../products';
 
 import 'webfontloader';
 declare let WebFont;
@@ -23,38 +24,7 @@ declare let jsPDF;
 })
 export class DesignerClientComponent implements OnInit, AfterViewInit {
 
-  productSizes = {
-    '9x6': {
-      name: 'Postcard',
-      width: 9,
-      height: 6,
-      product: 'postcard'
-    },
-    '11.5x6': {
-      name: 'Postcard',
-      width: 11.5,
-      height: 6,
-      product: 'postcard'
-    },
-    '8.5x11': {
-      name: 'Flyer',
-      width: 8.5,
-      height: 11,
-      product: 'postcard'
-    },
-    '11x8.5': {
-      name: 'Flyer',
-      width: 11,
-      height: 8.5,
-      product: 'postcard'
-    },
-    '3.5x8.5': {
-      name: 'Door Hanger',
-      width: 3.5,
-      height: 8.5,
-    }
-  };
-
+  productSizes = productSizes;
   size: string;
 
   @ViewChild('designerView') view: ElementRef;

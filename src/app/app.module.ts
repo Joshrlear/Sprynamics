@@ -26,6 +26,7 @@ import { CartComponent } from './cart/cart.component';
 
 import { ButtonsModule } from 'ngx-bootstrap';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { ObjectFactoryService } from './designer/object-factory.service';
 
 @NgModule({
   declarations: [
@@ -59,7 +60,7 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
   entryComponents: [
     LoadTemplateDialogComponent
   ],
-  providers: [],
+  providers: [ObjectFactoryService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
