@@ -6,7 +6,7 @@ import { AuthService } from '../../core/auth.service';
 import { FirestoreService } from '../../core/firestore.service';
 import { StorageService } from '../../core/storage.service';
 import { LoadTemplateDialogComponent } from '../load-template-dialog/load-template-dialog.component';
-import { productTypes } from '../products';
+import { productTypes, productSpecs } from '../products';
 import { ObjectFactoryService } from '../object-factory.service';
 
 import 'webfontloader';
@@ -21,28 +21,24 @@ declare let fabric;
   styleUrls: ['./designer-admin.component.css']
 })
 export class DesignerAdminComponent implements OnInit, AfterViewInit {
-  
+
   @ViewChild('designerView') view: ElementRef;
-  
+
   productTypes = productTypes;
-  
+
   defaultTemplate = {
     name: '',
     productType: this.productTypes.postcard_small,
     presetColors: []
   }
-  
+
   template: any = Object.assign({}, this.defaultTemplate);
-  
-  dpi = 72; // the dpi to display the template at
-  bleedInches = 0.25;
-  safeInches = 0.125;
-  
+
   canvas;
   background: any;
   safeArea: any;
   printArea: any;
-  
+
 
   userData: any;
 
@@ -145,6 +141,123 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
       }
     });
 
+    // Auto-align object when dragged
+    this.canvas.on("object:moving", (event) => {
+      if (event.e.ctrlKey) {
+        // ignore alignment when the ctrl key is held down
+        return;
+      }
+      const target = event.target;
+
+      this.canvas.forEachObject(obj => {
+        if (obj.isBoundBox || (obj.id !== target.id && !obj.isBackground)) {
+          const bound = obj;
+          target.right = target.left + target.getWidth();
+          target.bottom = target.top + target.getHeight();
+          bound.right = bound.left + bound.width;
+          bound.bottom = bound.top + bound.height;
+          // top/top alignment
+          if (target.top > bound.top - 10 && target.top < bound.top + 10) {
+            target.setTop(bound.top);
+          }
+          // top/bottom alignment
+          if (target.top > bound.bottom - 10 && target.top < bound.bottom + 10) {
+            target.setTop(bound.bottom);
+          }
+          // left/left alignment
+          if (target.left > bound.left - 10 && target.left < bound.left + 10) {
+            target.setLeft(bound.left);
+          }
+          // left/right alignment
+          if (target.left > bound.right - 10 && target.left < bound.right + 10) {
+            target.setLeft(bound.right);
+          }
+          // right/right alignment
+          if (target.right > bound.right - 10 && target.right < bound.right + 10) {
+            target.left = bound.right - target.getWidth();
+          }
+          // right/left alignment
+          if (target.right > bound.left - 10 && target.right < bound.left + 10) {
+            target.left = bound.left - target.getWidth();
+          }
+          // bottom/bottom alignment
+          if (target.bottom > bound.bottom - 10 && target.bottom < bound.bottom + 10) {
+            target.top = bound.bottom - target.getHeight();
+          }
+          // bottom/top alignment
+          if (target.bottom > bound.top - 10 && target.bottom < bound.top + 10) {
+            target.top = bound.top - target.getHeight();
+          }
+          // center x alignment
+          const middleX = target.left + target.getWidth()/2;
+          const boundMiddleX = bound.left + bound.width/2;
+          if (middleX > boundMiddleX - 10 && middleX < boundMiddleX + 10) {
+            target.left = boundMiddleX - target.getWidth()/2;
+          }
+          // center y alignment
+          const middleY = target.top + target.getHeight()/2;
+          const boundMiddleY = bound.top + bound.height/2;
+          if (middleY > boundMiddleY - 10 && middleY < boundMiddleY + 10) {
+            target.top = boundMiddleY - target.getHeight()/2;
+          }
+        }
+      });
+      target.setCoords();
+    });
+
+    // Auto-align when scaling
+    this.canvas.on('object:scaling', (event) => {
+      if (event.e.ctrlKey) {
+        // ignore alignment when the ctrl key is held down
+        return;
+      }
+      
+      const target = event.target;
+      const targetBound = target.getBoundingRect();
+
+      this.canvas.forEachObject(obj => {
+        if (obj.id !== target.id) {
+          const bound = obj.getBoundingRect();
+
+          switch (target.__corner) {
+            // top
+            case 'mt':
+              if (target.top > bound.top - 10 && target.top < bound.top + 10) {
+                const h = target.height * target.scaleY;
+                target.scaleY = (h - (bound.top - target.top)) / target.height;
+                target.top = bound.top;
+              }
+              break;
+            // left
+            case 'ml':
+              if (target.left > bound.left - 10 && target.left < bound.left + 10) {
+                const w = target.width * target.scaleX;
+                target.scaleX = (w - (bound.left - target.left)) / target.width;
+                target.left = bound.left;
+              }
+              break;
+            // right
+            case 'mr':
+              const right = target.left + target.getWidth();
+              const boundRight = bound.left + bound.width;
+              if (right > boundRight - 10 && right < boundRight + 10) {
+                target.scaleX = (boundRight - target.left) / target.width;
+              }
+              break;
+            // bottom
+            case 'mb':
+              const bottom = target.top + target.getHeight();
+              const boundBottom = bound.top + bound.width;
+              if (bottom > boundBottom - 10 && bottom < boundBottom + 10) {
+                target.scaleY = (boundBottom - target.top) / target.height;
+              }
+              break;
+          }
+        }
+      });
+    });
+
+    // initialize the canvas
     this.clearCanvas();
   }
 
@@ -164,17 +277,20 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
   refreshCanvasSize() {
     const productType = this.template.productType;
     this.background.set({
-      width: productType.width * this.dpi + this.bleedInches * this.dpi,
-      height: productType.height * this.dpi + this.bleedInches * this.dpi
+      width: productType.width * productSpecs.dpi + productSpecs.bleedInches * productSpecs.dpi,
+      height: productType.height * productSpecs.dpi + productSpecs.bleedInches * productSpecs.dpi
     });
     this.safeArea.set({
-      width: productType.width * this.dpi - this.safeInches * this.dpi,
-      height: productType.height * this.dpi - this.safeInches * this.dpi
+      width: productType.width * productSpecs.dpi - productSpecs.safeInches * productSpecs.dpi,
+      height: productType.height * productSpecs.dpi - productSpecs.safeInches * productSpecs.dpi
     });
     this.printArea.set({
-      width: productType.width * this.dpi,
-      height: productType.height * this.dpi
-    })
+      width: productType.width * productSpecs.dpi,
+      height: productType.height * productSpecs.dpi
+    });
+
+    console.log(productType.width);
+    console.log(productType.height);
 
     this.canvas.centerObject(this.background);
     this.canvas.centerObject(this.safeArea);
@@ -206,7 +322,7 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
       alert('You need to set a name for this design!');
       return;
     }
-    
+
     const canvasData = this.canvas.toObject();
 
     // add required fonts to template data
@@ -384,6 +500,7 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
         src = '/assets/logo.png';
     }
     const img = new Image();
+    img.crossOrigin = 'Anonymous';
     img.onload = () => {
       this.selection.setElement(img);
       this.forceRender(this.selection);
@@ -397,6 +514,7 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
       const reader = new FileReader();
       reader.onload = (event: any) => {
         const img = new Image();
+        img.crossOrigin = 'Anonymous';
         img.src = event.target.result;
         img.onload = () => {
           const image = new fabric.Image(img);
@@ -406,5 +524,4 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
       reader.readAsDataURL(file);
     }
   }
-
 }

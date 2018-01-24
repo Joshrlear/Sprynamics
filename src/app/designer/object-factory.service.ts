@@ -16,10 +16,20 @@ export class ObjectFactoryService {
 
   constructor() { }
 
+  _uuidv4() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+  }
+
   /**
-   * Creates an object, applies the default shadow, adds it to the canvas and selects it.
+   * Creates an object with a unique ID, applies the default shadow, adds it to the canvas and selects it.
    */
   addObject(obj, canvas, center?) {
+    const id = this._uuidv4();
+    obj.set({ id });
+    console.log('Created object with id ' + id);
     obj.setShadow(this.defaultShadow);
     canvas.add(obj).setActiveObject(obj);
     if (center) canvas.centerObject(obj);
@@ -126,7 +136,7 @@ export class ObjectFactoryService {
           ]);
 
         this.addObject(img, canvas);
-      });
+      }, { crossOrigin: 'Anonymous' });
     return logo;
   }
 
@@ -154,16 +164,12 @@ export class ObjectFactoryService {
       height: 586,
       selectable: false,
       hasControls: false,
-      lockMovementX: true,
-      lockMovementY: true,
     }
 
     // the base extension properties that all base objects will add
     const baseExt = [
       'selectable',
       'hasControls',
-      'lockMovementX',
-      'lockMovementY',
     ];
 
     // Create background
@@ -223,7 +229,7 @@ export class ObjectFactoryService {
             Object.assign(extFields, field);
           }
         })
-        return fabric.util.object.extend(toObject.call(this), fields);
+        return fabric.util.object.extend(toObject.call(this), extFields);
       };
     })(obj.toObject);
   }

@@ -1,3 +1,9 @@
+export const productSpecs = {
+  dpi: 96, // the dpi to display the template at
+  bleedInches: 0.25,
+  safeInches: 0.125,
+}
+
 export const productSizes = {
   '9x6': {
     name: 'Postcard',

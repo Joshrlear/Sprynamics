@@ -6,7 +6,7 @@ import { LoadTemplateDialogComponent } from '../load-template-dialog/load-templa
 import { FirestoreService } from '../../core/firestore.service';
 import { StorageService } from '../../core/storage.service';
 import { AuthService } from '../../core/auth.service';
-import { productSizes } from '../products';
+import { productSizes, productSpecs } from '../products';
 
 import 'webfontloader';
 declare let WebFont;
@@ -64,7 +64,10 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
       width: this.view.nativeElement.clientWidth,
       height: this.view.nativeElement.clientHeight,
       preserveObjectStacking: true,
+      backgroundColor: '#eeeeee'
     });
+
+    this.canvas.setBackgroundColor({source: 'http://fabricjs.com/assets/escheresque_ste.png'}, this.canvas.renderAll.bind(this.canvas));
 
     //const point = new fabric.Point(this.canvas.getCenter().left, this.canvas.getCenter().top);
     //this.canvas.zoomToPoint(point, this.canvas.getZoom() * 0.6);
@@ -109,11 +112,16 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
     this.canvas.clipTo = null;
     this.canvas.bringToFront(this.boundBox);
     // this.canvas.imageSmoothingEnabled = false;
-    const data = this.canvas.toDataURL();
-    const doc = new jspdf({
-      unit: 'in',
-      format: [20, 20],
+    const offsetX = this.boundBox.left - productSpecs.bleedInches * productSpecs.dpi;
+    const offsetY = this.boundBox.top - productSpecs.bleedInches * productSpecs.dpi;
+    this.canvas.forEachObject(obj => {
+      obj.left -= offsetX;
+      obj.top -= offsetY;
     });
+    this.canvas.remove(this.boundBox); // remove the dashed lines
+    this.canvas.renderAll();
+    const data = this.canvas.toDataURL();
+    const doc = new jspdf('l', 'in', [this.template.productType.width + productSpecs.bleedInches*2, this.template.productType.height + productSpecs.bleedInches*2]);
     doc.addImage(data, 'PNG', 0, 0);
     doc.save('template.pdf');
   }
@@ -145,7 +153,8 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
               console.log('zoom:' + this.canvas.getZoom())
               ctx.rect(this.boundBox.left, this.boundBox.top,
                 this.boundBox.width, this.boundBox.height);
-            }
+              }
+            const canvi = document.getElementsByTagName('canvas');
             // now we center all objects
             const center = this.canvas.getCenter();
             const offset = this.boundBox.getCenterPoint();
@@ -203,12 +212,14 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
                     src = '/assets/logo.png';
                 }
                 const img = new Image();
+                img.crossOrigin = 'Anonymous';
                 imagesToLoad++;
                 img.onload = () => {
                   obj.setElement(img);
                   imagesToLoad--;
                   if (imagesToLoad <= 0) {
                     this.loading = false;
+                    this.canvas.backgroundColor = 'green';
                     this.canvas.renderAll();
                   }
                 }
@@ -218,6 +229,8 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
             this.canvas.getObjects('rect').forEach(obj => { if (obj.isHidden) this.canvas.remove(obj); });
             if (imagesToLoad <= 0) {
               this.loading = false;
+              this.canvas.backgroundColor = 'green';
+
               this.canvas.renderAll();
             }
           });
