@@ -30,11 +30,15 @@
       </div>
     </div>
     <div #designerView class="designer-view">
-      <mat-spinner *ngIf="loading"></mat-spinner>
+      <div class="loading-overlay" *ngIf="loading">
+          <mat-spinner></mat-spinner>
+      </div>
       <button class="btn green-btn choose-design-button" *ngIf="!template" (click)="openTemplateDialog()">
         Choose A Design
       </button>
-      <canvas id="canvas" class="designer-canvas"></canvas>
+      <div [hidden]="loading" (contextmenu)="$event.preventDefault()">
+        <canvas id="canvas" class="designer-canvas"></canvas>
+      </div>
     </div>
   </div>
 
