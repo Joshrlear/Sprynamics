@@ -92,9 +92,9 @@
             <label for="textFieldName">Field Name:</label>
             <input id="textFieldName" type="text" [(ngModel)]="selection.textFieldName">
           </div>
-          <!-- Text Color -->
+          <!-- Outlets -->
           <ng-container *ngTemplateOutlet="colorpicker"></ng-container>
-          <!-- Text Shadow -->
+          <ng-container *ngTemplateOutlet="stroke"></ng-container>
           <ng-container *ngTemplateOutlet="shadow"></ng-container>
         </ng-container>
 
