@@ -431,7 +431,7 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
     fabric.canvas.bringForward(this.selection, false);
   }
   sendBackward() {
-    this.canvas.sendBackward(this.selection, false);
+    this.canvas.sendBackwards(this.selection, false);
   }
   bringToFront() {
     this.canvas.bringToFront(this.selection);
