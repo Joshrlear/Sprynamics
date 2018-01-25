@@ -477,27 +477,39 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
     }
   }
 
-  toggleBold() {
-    if (this.selection.fontWeight === 'normal') {
-      this.selection.fontWeight = 'bold';
-    } else {
-      this.selection.fontWeight = 'normal';
+  setStyle(object, styleName, value) {
+    if (object.setSelectionStyles && object.isEditing) {
+      var style = { };
+      style[styleName] = value;
+      object.setSelectionStyles(style);
     }
-    this.canvas.renderAll();
+    else {
+      object[styleName] = value;
+    }
+  }
+
+  getStyle(object, styleName) {
+    return (object.getSelectionStyles && object.isEditing)
+      ? object.getSelectionStyles()[styleName]
+      : object[styleName];
+  }
+
+  toggleBold() {
+    const isBold = this.getStyle(this.selection, 'fontWeight') === 'bold';
+    this.setStyle(this.selection, 'fontWeight', isBold ? '' : 'bold');
+    this.forceRender(this.selection);
   }
 
   toggleItalics() {
-    if (this.selection.fontStyle === 'italic') {
-      this.selection.fontStyle = 'normal';
-    } else {
-      this.selection.fontStyle = 'italic';
-    }
-    this.canvas.renderAll();
+    const isItalic = this.getStyle(this.selection, 'fontStyle') === 'italic';
+    this.setStyle(this.selection, 'fontStyle', isItalic ? '' : 'italic');
+    this.forceRender(this.selection);
   }
 
   toggleUnderline() {
-    this.selection.underline = !this.selection.underline;
-    this.canvas.renderAll();
+    const isUnderline = (this.getStyle(this.selection, 'textDecoration') || '').indexOf('underline') > -1;
+    this.setStyle(this.selection, 'textDecoration', isUnderline ? '' : 'underline');
+    this.forceRender(this.selection);
   }
 
   changeLogoType() {
