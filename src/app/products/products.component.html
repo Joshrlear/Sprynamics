@@ -8,7 +8,7 @@
     </div>
     
     <div id="product" *ngIf="!product">
-      <h1 class="heading">Choose a product</h1>
+      <h1 class="heading">Choose A Product</h1>
       <div class="product-container row">
         <div class="col-xs-12 col-md-4 product-padding">
           <div (click)="product = 'postcard'" class="product postcard">
@@ -29,7 +29,7 @@
     </div>
 
     <div id="size" *ngIf="product === 'postcard'">
-      <h1 class="heading">Choose a size</h1>
+      <h1 class="heading">Choose A Size</h1>
       <div class="product-container row">
         <div class="col-xs-12 col-md-6 product-padding no-focus" routerLink="/designer" [queryParams]="{size: '9x6'}">
           <div class="size size-1">
@@ -46,7 +46,7 @@
     </div>
 
     <div id="size" *ngIf="product === 'flyer'">
-        <h1 class="heading">Choose a size</h1>
+        <h1 class="heading">Choose A Size</h1>
         <div class="product-container row">
           <div class="col-xs-12 col-md-6 product-padding no-focus" routerLink="/designer" [queryParams]="{size: '8.5x11'}">
             <div class="size size-3">
