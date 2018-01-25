@@ -17,7 +17,7 @@ export class ObjectFactoryService {
   constructor() { }
 
   _uuidv4() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
       var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
       return v.toString(16);
     });
@@ -114,12 +114,17 @@ export class ObjectFactoryService {
   }
 
   createLine(canvas) {
-    const line = new fabric.Line({
+    const line = new fabric.Rect({
       width: 200,
-      stroke: '#00e676',
+      height: 5,
+      fill: '#00e676',
       hasRotatingPoint: true
     });
-    return this.addObject(line, canvas);
+    return this.addObject(line, canvas).setControlsVisibility({
+      tl: false, tr: false,
+      br: false, bl: false,
+      mt: false,
+    });
   }
 
   createLogo(canvas) {
