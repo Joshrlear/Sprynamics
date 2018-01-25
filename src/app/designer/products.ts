@@ -7,14 +7,14 @@ export const productSpecs = {
 export const productSizes = {
   '9x6': {
     name: 'Postcard',
-    width: 9,
-    height: 6,
+    width: 6,
+    height: 9,
     product: 'postcard'
   },
   '11.5x6': {
     name: 'Postcard',
-    width: 11.5,
-    height: 6,
+    width: 6,
+    height: 11.5,
     product: 'postcard'
   },
   '8.5x11': {
