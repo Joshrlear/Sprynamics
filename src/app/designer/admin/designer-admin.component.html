@@ -27,6 +27,14 @@
       <option [ngValue]="productTypes.door_hanger">Door hanger: 3.5x8.5</option>
     </select>
     <br>
+    <!-- Front/Back -->
+    <h5>View Side:</h5>
+    <input id="frontRadioBtn" type="radio" name="viewSide" value="front" [(ngModel)]="viewSide" (change)="updateViewSide()">
+    <label for="frontRadioBtn">Front</label>
+    <br>
+    <input id="backRadioBtn" type="radio" name="viewSide" value="back" [(ngModel)]="viewSide" (change)="updateViewSide()">
+    <label for="backRadioBtn">Back</label>
+    <!-- End of Design Settings -->
     <hr>
     <!-- Object Selection -->
     <ng-container *ngIf="selection">

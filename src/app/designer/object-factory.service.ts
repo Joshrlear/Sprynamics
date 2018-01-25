@@ -49,7 +49,7 @@ export class ObjectFactoryService {
       userEditable: false, // custom
       textFieldName: ''      // custom
     });
-    text.toObject = this._extendFabricObject(text,
+    text.toObject = this.extendFabricObject(text,
       [
         'textContentType',
         'textUserData',
@@ -77,7 +77,7 @@ export class ObjectFactoryService {
       userEditable: false,    // custom
       textFieldName: ''      // custom
     });
-    paragraph.toObject = this._extendFabricObject(paragraph,
+    paragraph.toObject = this.extendFabricObject(paragraph,
       [
         'textContentType',
         'textUserData',
@@ -129,7 +129,7 @@ export class ObjectFactoryService {
         img.isLogo = true;
         img.logoType = 'sprynamics';
 
-        img.toObject = this._extendFabricObject(img,
+        img.toObject = this.extendFabricObject(img,
           [
             'isLogo',
             'logoType'
@@ -178,7 +178,7 @@ export class ObjectFactoryService {
         fill: '#ffffff',
         isBackground: true,
       }));
-    background.toObject = this._extendFabricObject(background,
+    background.toObject = this.extendFabricObject(background,
       baseExt.concat(['isBackground']));
 
     // Create safety line
@@ -189,7 +189,7 @@ export class ObjectFactoryService {
         strokeDashArray: [5, 5],
         isHidden: true,
       }));
-    safeArea.toObject = this._extendFabricObject(safeArea,
+    safeArea.toObject = this.extendFabricObject(safeArea,
       baseExt.concat(['isHidden']));
 
     // Create print line
@@ -200,7 +200,7 @@ export class ObjectFactoryService {
       isBoundBox: true,
       isHidden: true,
     }));
-    printArea.toObject = this._extendFabricObject(printArea,
+    printArea.toObject = this.extendFabricObject(printArea,
       baseExt.concat(['isHidden', 'isBoundBox']));
 
     // Add objects to center of canvas
@@ -218,7 +218,7 @@ export class ObjectFactoryService {
    * example: ['textContentType', 'textUserData', {isText: true}]
    * In the above example, the result will be: {textContentType: this.textContentType, textUserData: this.textUserData, isText: true}
    */
-  private _extendFabricObject(obj: any, fields: any[]) {
+  extendFabricObject(obj: any, fields: any[]) {
     return (function (toObject) {
       return function () {
         const extFields = {};

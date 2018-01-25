@@ -29,7 +29,9 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
   defaultTemplate = {
     name: '',
     productType: this.productTypes.postcard_small,
-    presetColors: []
+    presetColors: [],
+    front: null,
+    back: null
   }
 
   template: any = Object.assign({}, this.defaultTemplate);
@@ -39,6 +41,7 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
   safeArea: any;
   printArea: any;
 
+  viewSide: 'front' | 'back' = 'front';
 
   userData: any;
 
@@ -298,6 +301,15 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
     this.canvas.renderAll();
   }
 
+  updateViewSide() {
+    const lastSide = this.viewSide === 'front' ? 'back' : 'front';
+    this.template[lastSide] = this.canvas.toObject();
+    this.clearCanvas();
+    if (this.template[this.viewSide]) {
+      this.canvas.loadFromJSON(this.template[this.viewSide]);
+    }
+  }
+
   clickNew() {
     if (confirm('Unsaved changes will be lost. Are you sure you want to start a new template?')) {
       this.template = Object.assign({}, this.defaultTemplate);
@@ -323,7 +335,11 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    const canvasData = this.canvas.toObject();
+    this.template[this.viewSide] = this.canvas.toObject();
+    const canvasData = {
+      front: this.template.front,
+      back: this.template.back
+    }
 
     // add required fonts to template data
     const fonts = [];
@@ -340,7 +356,6 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
       this.storage.putJSON(canvasData, `templates/${this.template.id}.json`);
     } else {
       this.firestore.add('templates', this.template).then(ref => {
-        const canvasData = this.canvas.toObject();
         this.storage.putJSON(canvasData, `templates/${ref.id}.json`)
           .take(1).subscribe(url => {
             this.template.url = url;
@@ -353,9 +368,10 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
   loadTemplate(template: any, id: string) {
     this.template = template;
     this.template.id = id;
+    this.viewSide = 'front';
     this.storage.getFile(template.url).take(1).subscribe(data => {
       console.log(data);
-      this.canvas.loadFromJSON(data);
+      this.canvas.loadFromJSON(template['front']);
     });
   }
 
