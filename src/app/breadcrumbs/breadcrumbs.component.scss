@@ -1,0 +1,19 @@
+.breadcrumbs-container {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #eeeeee;
+}
+
+.arrow {
+  margin: 0 16px;
+}
+
+.step {
+  color: #1a1a1a;
+}
+
+.step.selected {
+  color: #448aff;
+}

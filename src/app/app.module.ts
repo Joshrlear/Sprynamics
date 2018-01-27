@@ -27,6 +27,7 @@ import { CartComponent } from './cart/cart.component';
 import { ButtonsModule } from 'ngx-bootstrap';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { ObjectFactoryService } from './designer/object-factory.service';
+import { BreadcrumbsComponent } from './breadcrumbs/breadcrumbs.component';
 
 @NgModule({
   declarations: [
@@ -42,6 +43,7 @@ import { ObjectFactoryService } from './designer/object-factory.service';
     LoadTemplateDialogComponent,
     CheckoutComponent,
     CartComponent,
+    BreadcrumbsComponent,
   ],
   imports: [
     BrowserModule,

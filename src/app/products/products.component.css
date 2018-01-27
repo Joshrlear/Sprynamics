@@ -5,6 +5,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    padding-top: 64px;
 }
 
 .design-container {
@@ -13,6 +14,7 @@
     max-height: 700px;
     max-width: 900px;
     background-color: #fff;
+    position: relative;
 }
 
 .no-focus:focus {
