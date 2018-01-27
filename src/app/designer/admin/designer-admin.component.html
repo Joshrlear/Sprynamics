@@ -53,6 +53,14 @@
             <button (click)="toggleUnderline()">U</button>
           </div>
           <div class="form-field">
+            <label for="textAlign">Content Type:</label>
+            <select #textAlign name="textAlign" id="textAlign" [(ngModel)]="selection.textAlign" (change)="canvas.renderAll()">
+              <option [value]="'left'">Align Left</option>
+              <option [value]="'center'">Align Center</option>
+              <option [value]="'right'">Align Right</option>
+            </select>
+          </div>
+          <div class="form-field">
             <select #textFontFamily [style.font-family]="textFontFamily.value" [(ngModel)]="selection.fontFamily" (change)="canvas.renderAll()">
               <option *ngFor="let font of fonts" [value]="font" [style.font-family]="font">{{ font }}</option>
             </select>
