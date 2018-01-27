@@ -140,7 +140,7 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
     });
   }
 
-  exportPDF() {
+  saveAndContinue() {
     this.getDataURL('front', front => {
       this.getDataURL('back', back => {
         console.log(front);
@@ -148,9 +148,10 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
         doc.addImage(front, 'PNG', 0, 0);
         doc.addPage();
         doc.addImage(back, 'PNG', 0, 0);
-        doc.save('template.pdf');
+        // doc.save('template.pdf');
       });
     });
+    this.router.navigate(['/cart']);
   }
 
   updateViewSide() {
