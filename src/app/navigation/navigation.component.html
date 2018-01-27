@@ -27,7 +27,7 @@
   <div class="navbar-row_inner">
     <div class="navbar-left">
       <a [routerLink]="['/']">
-        <img src="assets/logo.png" style="width: 140px;">
+        <img src="assets/logo.png" (click)="smoothScroll('home')" style="width: 140px;">
       </a>
     </div>
     <div class="navbar-right">
