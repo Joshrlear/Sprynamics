@@ -32,6 +32,7 @@ import { PhotosComponent } from './designer/client/photos/photos.component';
 import { ColorsComponent } from './designer/client/colors/colors.component';
 import { ContactInfoComponent } from './designer/client/contact-info/contact-info.component';
 import { DesignsComponent } from './designer/designs/designs.component';
+import { ScrollService } from './core/scroll.service';
 
 @NgModule({
   declarations: [
@@ -69,7 +70,7 @@ import { DesignsComponent } from './designer/designs/designs.component';
   ],
   entryComponents: [
   ],
-  providers: [ObjectFactoryService],
+  providers: [ObjectFactoryService, ScrollService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
