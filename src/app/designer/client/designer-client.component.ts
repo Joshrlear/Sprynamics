@@ -220,12 +220,12 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
         let dataName = obj.textUserData;
         let dataText;
         if (dataName === 'name') {
-          dataText = `${this.userData['firstName']} ${this.userData['lastName']}`;
+          dataText = `${this.userData['firstName']||''} ${this.userData['lastName']||''}`;
         } else if (dataName === 'address') {
-          dataText = `${this.userData['address1']} ${this.userData['address2']}\n` +
-            `${this.userData['city']}, ${this.userData['state']}`;
+          dataText = `${this.userData['address1']||''} ${this.userData['address2']||''}\n` +
+            `${this.userData['city']||''}, ${this.userData['state']||''}`;
         } else {
-          dataText = this.userData[dataName];
+          dataText = this.userData[dataName]||'';
         }
         obj.set({ text: dataText });
       }
