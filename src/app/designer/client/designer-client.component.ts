@@ -67,7 +67,6 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
       width: this.view.nativeElement.clientWidth,
       height: this.view.nativeElement.clientHeight,
       preserveObjectStacking: true,
-      backgroundColor: '#eeeeee'
     });
   }
 
@@ -126,6 +125,15 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
           this.canvas.remove(obj);
         }
       }); // remove the dashed lines
+      const bg = new fabric.Rect({
+        left:0,
+        top:0,
+        width:(this.template.productType.width+productSpecs.bleedInches*2)*productSpecs.dpi,
+        height:(this.template.productType.height+productSpecs.bleedInches*2)*productSpecs.dpi,
+        fill: '#ffffff'
+      });
+      this.canvas.add(bg);
+      this.canvas.sendToBack(bg);
       this.canvas.renderAll();
 
       callback(this.canvas.toDataURL());
@@ -135,6 +143,7 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
   exportPDF() {
     this.getDataURL('front', front => {
       this.getDataURL('back', back => {
+        console.log(front);
         const doc = new jspdf('l', 'in', [this.template.productType.width + productSpecs.bleedInches * 2, this.template.productType.height + productSpecs.bleedInches * 2]);
         doc.addImage(front, 'PNG', 0, 0);
         doc.addPage();
@@ -196,6 +205,8 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
       console.log(c);
       console.log(this.boundBox.height, this.canvas.height / 2);
       console.log('zoom:' + this.canvas.getZoom())
+      ctx.strokeStyle = '#ffffff';
+      ctx.fillStyle = '#ffffff';
       ctx.rect(this.boundBox.left, this.boundBox.top,
         this.boundBox.width, this.boundBox.height);
     }
