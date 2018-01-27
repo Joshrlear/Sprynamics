@@ -4,14 +4,24 @@
   align-items: center;
   justify-content: center;
   background-color: #e0dfdf;
+  position: relative;
+  z-index: 99;
+  @media screen and (max-width: 500px) {
+    display: none;
+  }
 }
 
 .arrow {
   margin: 0 16px;
+  @media screen and (max-width: 550px) {
+    margin: 0 8px;
+  }
 }
 
 .step {
+  display: inline-block;
   color: #1a1a1a;
+  text-align: center;
 }
 
 .step.selected {

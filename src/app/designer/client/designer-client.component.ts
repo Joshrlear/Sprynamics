@@ -24,6 +24,7 @@ declare let jsPDF;
 export class DesignerClientComponent implements OnInit, AfterViewInit {
 
   currentTab = 'designs';
+  currentTabIndex = 0;
   productSizes = productSizes;
   size: string;
 
@@ -140,8 +141,9 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
     this.router.navigate(['/cart']);
   }
 
-  updateViewSide() {
-    const lastSide = this.viewSide === 'front' ? 'back' : 'front';
+  setViewSide(side: 'front' | 'back') {
+    const lastSide = this.viewSide;
+    this.viewSide = side;
     // keep track of whether the lastside was processed
     const processed = this.template[lastSide] && this.template[lastSide].processed;
     this.template[lastSide] = Object.assign(this.canvas.toObject(), { processed });

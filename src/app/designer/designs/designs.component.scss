@@ -2,16 +2,18 @@
   max-width: 664px;
   display: flex;
   flex-wrap: wrap;
-  padding-left: 16px;
-  padding-top: 16px;
+  justify-content: center;
+  padding: 24px;
+  padding-top: 32px;
 }
 
 .template {
-  flex-basis: 200px;
+  flex-basis: 128px;
   flex-shrink: 0;
-  width: 200px;
-  height: 200px;
-  background: #fff;
+  width: 140px;
+  height: 112px;
+  background: rgb(141, 141, 141);
+  color: white;
   display: flex;
   justify-content: center;
   align-items: center;

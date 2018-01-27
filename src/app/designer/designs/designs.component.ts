@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, AfterViewInit } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { FirestoreService } from '../../core/firestore.service';
 
@@ -7,7 +7,7 @@ import { FirestoreService } from '../../core/firestore.service';
   templateUrl: './designs.component.html',
   styleUrls: ['./designs.component.scss']
 })
-export class DesignsComponent implements OnInit {
+export class DesignsComponent implements AfterViewInit {
 
   templates: Observable<any>;
 

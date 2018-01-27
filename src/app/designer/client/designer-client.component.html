@@ -1,44 +1,58 @@
 <div class="pusher"></div>
 <app-breadcrumbs [step]="3"></app-breadcrumbs>
+<div class="back">
+  <div style="flex-basis: 430px">
+    <button mat-icon-button routerLink="/products" [queryParams]="{product: productSizes[size]?.product}">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+  </div>
+  <div style="flex: 1">
+    <button class="btn" [class.green]="viewSide === 'front'" (click)="setViewSide('front')">
+      Front
+    </button>
+    <button class="btn" [class.green]="viewSide === 'back'" (click)="setViewSide('back')">
+      Back
+    </button>
+  </div>
+  <div>
+    <button class="btn green" (click)="saveAndContinue()">
+      Save and Continue
+    </button>
+  </div>
+</div>
 <div class="main-container">
 
   <div class="design-container">
+    <span class="selected-tab" [style.transform]="'translateY(' + (194 + currentTabIndex*70) + 'px)'">
+      <span></span>
+      <span class="bottom"></span>
+    </span>
     <div class="side-nav">
-      <div class="tab" [class.selected]="currentTab === 'designs'" (click)="currentTab = 'designs'">
+      <div class="tab" [class.selected]="currentTab === 'designs'" (click)="currentTab = 'designs'; currentTabIndex = 0;">
         <mat-icon>view_carousel</mat-icon>
         <div class="tab-title"> Designs </div>
       </div>
-      <div class="tab" [class.selected]="currentTab === 'text'" (click)="currentTab = 'text'">
+      <div class="tab" [class.selected]="currentTab === 'text'" (click)="currentTab = 'text'; currentTabIndex = 1;">
         <mat-icon>subject</mat-icon>
         <div class="tab-title"> Text </div>
       </div>
-      <div class="tab" [class.selected]="currentTab === 'photos'" (click)="currentTab = 'photos'">
+      <div class="tab" [class.selected]="currentTab === 'photos'" (click)="currentTab = 'photos'; currentTabIndex = 2;">
         <mat-icon>photo_library</mat-icon>
         <div class="tab-title"> Photos </div>
       </div>
-      <div class="tab" [class.selected]="currentTab === 'colors'" (click)="currentTab = 'colors'">
+      <div class="tab" [class.selected]="currentTab === 'colors'" (click)="currentTab = 'colors'; currentTabIndex = 3;">
         <mat-icon>color_lens</mat-icon>
         <div class="tab-title"> Colors </div>
       </div>
-      <div class="tab" [class.selected]="currentTab === 'contact'" (click)="currentTab = 'contact'">
+      <div class="tab" [class.selected]="currentTab === 'contact'" (click)="currentTab = 'contact'; currentTabIndex = 4;">
         <mat-icon>contact_mail</mat-icon>
         <div class="tab-title"> Contact </div>
       </div>
     </div>
     <div class="form-container">
-      <div class="back">
-        <button mat-icon-button routerLink="/products" [queryParams]="{product: productSizes[size]?.product}">
-          <mat-icon>arrow_back</mat-icon>
-        </button>
-        <div>
-          <button class="btn green" (click)="saveAndContinue()">
-            Save and Continue
-          </button>
-        </div>
-      </div>
       <app-designs *ngIf="currentTab === 'designs'" [size]="size" (select)="loadTemplate($event)"></app-designs>
       <app-text *ngIf="currentTab === 'text'" [productName]="productSizes[size]?.name" [size]="productSizes[size]?.width + ' x ' + productSizes[size]?.height + ' in.'"
-        [formFields]="formFields" ></app-text>
+        [formFields]="formFields"></app-text>
       <app-photos *ngIf="currentTab === 'photos'"></app-photos>
       <app-colors *ngIf="currentTab === 'colors'"></app-colors>
       <app-contact-info *ngIf="currentTab === 'contact'"></app-contact-info>
