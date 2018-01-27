@@ -638,6 +638,13 @@ form {
     font-size: 24px;
 }
 
+.link {
+    color: white;
+}
+.link:hover {
+    text-decoration: underline;
+}
+
 @media only screen and (min-width: 1040px) {
     .social-icons {
         transform: scale(1);
