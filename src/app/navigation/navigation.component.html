@@ -1,10 +1,10 @@
 <ng-container *ngIf="(auth.user | async) || {} as user">
     <ng-container *ngIf="!user.uid; else loggedIn">
         <div id="mobile-menu_dropdown" class="mobile-menu_dropdown">
-            <a (click)="toggleMenu()" [routerLink]="['/']" class="mobile-menu_link" href="">Home</a>
+            <a (click)="toggleMenu(); smoothScroll('home')" [routerLink]="['/']" class="mobile-menu_link" href="">Home</a>
             <a (click)="toggleMenu()" [routerLink]="['/designer']" class="mobile-menu_link" href="">Design</a>
-            <a (click)="toggleMenu()" [routerLink]="['/']" fragment="about-us" class="mobile-menu_link" href="">About Us</a>
-            <a (click)="toggleMenu()" [routerLink]="['/']" fragment="contact-us" class="mobile-menu_link" href="">Contact Us</a>
+            <a (click)="toggleMenu(); smoothScroll('about-us')" [routerLink]="['/']" fragment="about-us" class="mobile-menu_link" href="">About Us</a>
+            <a (click)="toggleMenu(); smoothScroll('contact-us')" [routerLink]="['/']" fragment="contact-us" class="mobile-menu_link" href="">Contact Us</a>
             <a (click)="toggleMenu()" [routerLink]="['/login']" class="mobile-menu_link" href="">Login</a>
             <a (click)="toggleMenu()" [routerLink]="['/signup']" class="mobile-menu_link" href="">Sign Up</a>
           </div>
@@ -12,10 +12,10 @@
 
       <ng-template #loggedIn>
           <div id="mobile-menu_dropdown" class="mobile-menu_dropdown">
-              <a (click)="toggleMenu()" [routerLink]="['/']" class="mobile-menu_link" href="">Home</a>
+              <a (click)="toggleMenu(); smoothScroll('home')" [routerLink]="['/']" class="mobile-menu_link" href="">Home</a>
               <a (click)="toggleMenu()" [routerLink]="['/designer']" class="mobile-menu_link" href="">Design</a>
-              <a (click)="toggleMenu()" [routerLink]="['/']" fragment="about-us" class="mobile-menu_link" href="">About Us</a>
-              <a (click)="toggleMenu()" [routerLink]="['/']" fragment="contact-us" class="mobile-menu_link" href="">Contact Us</a>
+              <a (click)="toggleMenu(); smoothScroll('about-us')" [routerLink]="['/']" fragment="about-us" class="mobile-menu_link" href="">About Us</a>
+              <a (click)="toggleMenu(); smoothScroll('contact-us')" [routerLink]="['/']" fragment="contact-us" class="mobile-menu_link" href="">Contact Us</a>
               <a (click)="toggleMenu()" [routerLink]="['/dashboard']" class="mobile-menu_link" href="">Dashboard</a>
               <a (click)="toggleMenu()" [routerLink]="['/']" (click)="logout()"  class="mobile-menu_link" href="">Logout</a>
             </div>
@@ -36,16 +36,16 @@
       </div>
       <ul class="nav-links">
         <li class="nav-item">
-          <a [routerLink]="['/']" class="nav-link">Home</a>
+          <a routerLink="/" (click)="smoothScroll('home')" class="nav-link">Home</a>
         </li>
         <li class="nav-item">
           <a routerLink="/products" class="nav-link">Design</a>
         </li>
         <li class="nav-item">
-          <a [routerLink]="['/']" fragment="about-us" class="nav-link">About</a>
+          <a routerLink="/" (click)="smoothScroll('about-us')"  class="nav-link">About</a>
         </li>
         <li class="nav-item">
-          <a [routerLink]="['/']" fragment="contact-us" class="nav-link">Contact Us</a>
+          <a routerLink="/" (click)="smoothScroll('contact-us')" class="nav-link">Contact Us</a>
         </li>
         
         <li class="nav-item_dropdown dropdown show">
