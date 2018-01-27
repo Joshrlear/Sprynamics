@@ -492,6 +492,10 @@
     overflow: hidden;
     text-overflow: ellipsis;
     position: relative;
+    transition: transform 0.2s ease-out;
+}
+.social-icon-btn:hover {
+    transform: scale(1.2);
 }
 
 .social-icons i {
