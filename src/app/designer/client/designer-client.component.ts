@@ -1,8 +1,6 @@
 import { Component, AfterViewInit, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatDialog } from '@angular/material';
 
-import { LoadTemplateDialogComponent } from '../load-template-dialog/load-template-dialog.component';
 import { FirestoreService } from '../../core/firestore.service';
 import { StorageService } from '../../core/storage.service';
 import { AuthService } from '../../core/auth.service';
@@ -25,6 +23,7 @@ declare let jsPDF;
 })
 export class DesignerClientComponent implements OnInit, AfterViewInit {
 
+  currentTab = 'designs';
   productSizes = productSizes;
   size: string;
 
@@ -38,8 +37,7 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
   viewSide: 'front' | 'back' = 'front';
 
   constructor(private route: ActivatedRoute,
-    private router: Router,
-    private dialog: MatDialog,
+    public router: Router,
     private firestore: FirestoreService,
     private storage: StorageService,
     private auth: AuthService,
@@ -55,7 +53,6 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
       const querySize = queryParamMap.params['size'];
       if (querySize) {
         this.size = querySize;
-        this.openTemplateDialog();
       } else {
         this.router.navigate(['/products']);
       }
@@ -68,6 +65,10 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
       height: this.view.nativeElement.clientHeight,
       preserveObjectStacking: true,
     });
+  }
+
+  isSelected(tab: string) {
+    // return this.router.url.endsWith(tab);
   }
 
   injectUserData(obj) {
@@ -86,21 +87,6 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
 
       obj.set({ text: dataText });
     }
-  }
-
-  openTemplateDialog() {
-    const dialogRef = this.dialog.open(LoadTemplateDialogComponent, {
-      data: {
-        size: this.size
-      }
-    });
-
-    dialogRef.afterClosed().subscribe(id => {
-      if (id) {
-        this.firestore.doc$(`templates/${id}`)
-          .take(1).subscribe(template => this.loadTemplate(template, id));
-      }
-    });
   }
 
   getDataURL(side: 'front' | 'back', callback) {
@@ -169,10 +155,9 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
     }
   }
 
-  loadTemplate(template: any, id: string) {
+  loadTemplate(template: any) {
     this.loading = true;
     this.template = template;
-    this.template.id = id;
     this.viewSide = 'front';
     if (!this.template.fonts || this.template.fonts.length === 0) { this.template.fonts = ['Roboto']; }
     WebFont.load({

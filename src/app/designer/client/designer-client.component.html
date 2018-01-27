@@ -3,47 +3,50 @@
 <div class="main-container">
 
   <div class="design-container">
+    <div class="side-nav">
+      <div class="tab" [class.selected]="currentTab === 'designs'" (click)="currentTab = 'designs'">
+        <mat-icon>view_carousel</mat-icon>
+        <div class="tab-title"> Designs </div>
+      </div>
+      <div class="tab" [class.selected]="currentTab === 'text'" (click)="currentTab = 'text'">
+        <mat-icon>subject</mat-icon>
+        <div class="tab-title"> Text </div>
+      </div>
+      <div class="tab" [class.selected]="currentTab === 'photos'" (click)="currentTab = 'photos'">
+        <mat-icon>photo_library</mat-icon>
+        <div class="tab-title"> Photos </div>
+      </div>
+      <div class="tab" [class.selected]="currentTab === 'colors'" (click)="currentTab = 'colors'">
+        <mat-icon>color_lens</mat-icon>
+        <div class="tab-title"> Colors </div>
+      </div>
+      <div class="tab" [class.selected]="currentTab === 'contact'" (click)="currentTab = 'contact'">
+        <mat-icon>contact_mail</mat-icon>
+        <div class="tab-title"> Contact </div>
+      </div>
+    </div>
     <div class="form-container">
       <div class="back">
         <button mat-icon-button routerLink="/products" [queryParams]="{product: productSizes[size]?.product}">
           <mat-icon>arrow_back</mat-icon>
         </button>
         <div>
-          <button class="btn" *ngIf="template" (click)="openTemplateDialog()">
-            Change Design
-          </button>
           <button class="btn green" (click)="saveAndContinue()">
             Save and Continue
           </button>
         </div>
       </div>
-      <div class="form">
-        <div>
-          <span class="product-type">{{ productSizes[size]?.name }}</span>
-          &nbsp;
-          <span class="product-size">{{ productSizes[size]?.width + ' x ' + productSizes[size]?.height + ' in.'}}</span>
-        </div>
-        <h6>View Side:</h6>
-        <input id="frontRadioBtn" type="radio" name="viewSide" value="front" [(ngModel)]="viewSide" (change)="updateViewSide()">
-        <label for="frontRadioBtn">Front</label>
-        <br>
-        <input id="backRadioBtn" type="radio" name="viewSide" value="back" [(ngModel)]="viewSide" (change)="updateViewSide()">
-        <label for="backRadioBtn">Back</label>
-        <ng-container *ngFor="let field of formFields; let i = index">
-          <div class="form-field">
-            <label [for]="'field'+i">{{field.name}}</label>
-            <input [id]="'field'+i" class="form-control" type="text" [placeholder]="field.name" [(ngModel)]="field.obj.text" (input)="canvas.renderAll()">
-          </div>
-        </ng-container>
-      </div>
+      <app-designs *ngIf="currentTab === 'designs'" [size]="size" (select)="loadTemplate($event)"></app-designs>
+      <app-text *ngIf="currentTab === 'text'" [productName]="productSizes[size]?.name" [size]="productSizes[size]?.width + ' x ' + productSizes[size]?.height + ' in.'"
+        [formFields]="formFields" ></app-text>
+      <app-photos *ngIf="currentTab === 'photos'"></app-photos>
+      <app-colors *ngIf="currentTab === 'colors'"></app-colors>
+      <app-contact-info *ngIf="currentTab === 'contact'"></app-contact-info>
     </div>
     <div #designerView class="designer-view">
       <div class="loading-overlay" *ngIf="loading">
         <mat-spinner></mat-spinner>
       </div>
-      <button class="btn green-btn choose-design-button" *ngIf="!template" (click)="openTemplateDialog()">
-        Choose A Design
-      </button>
       <div [hidden]="loading" (contextmenu)="$event.preventDefault()">
         <canvas id="canvas" class="designer-canvas"></canvas>
       </div>

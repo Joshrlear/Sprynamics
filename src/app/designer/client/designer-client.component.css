@@ -4,10 +4,10 @@
 
 .main-container {
   width: 100%;
-  height: calc(100vh - 64px);
+  height: calc(100vh - 128px);
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   overflow: hidden;
 }
 
@@ -79,10 +79,43 @@
   width: 100%;
   justify-content: space-between;
   align-items: center;
-  padding: 0 24px;
+  padding: 0 24px 0 12px;
+  background-color: #eeeeee;
 }
 
 .back button {
   outline: 0;
   border: 0;
+}
+
+.side-nav {
+  overflow: hidden;
+  height: 100%;
+  width: 64px;
+  background-color: #1a1a1a !important;
+}
+
+.tab {
+  width: 100%;
+  padding: 8px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  cursor: pointer;
+  color: #999;
+  box-shadow: none;
+  transition: background-color 0.1s, color 0.1s;
+  text-align: center;
+}
+.tab:hover {
+  color: #fafafa;
+  background-color: #505050;
+}
+.tab.selected {
+  color: white;
+  background-color: #333;
+}
+.tab-title {
+  font-size: 12px;
 }

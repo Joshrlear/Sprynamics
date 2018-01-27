@@ -20,7 +20,6 @@ import { DesignerAdminComponent } from './designer/admin/designer-admin.componen
 import { DesignerClientComponent } from './designer/client/designer-client.component';
 import { NavigationComponent } from './navigation/navigation.component';
 import { ProductsComponent } from './products/products.component';
-import { LoadTemplateDialogComponent } from './designer/load-template-dialog/load-template-dialog.component';
 import { CheckoutComponent } from './checkout/checkout.component';
 import { CartComponent } from './cart/cart.component';
 
@@ -28,6 +27,11 @@ import { ButtonsModule } from 'ngx-bootstrap';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { ObjectFactoryService } from './designer/object-factory.service';
 import { BreadcrumbsComponent } from './breadcrumbs/breadcrumbs.component';
+import { TextComponent } from './designer/client/text/text.component';
+import { PhotosComponent } from './designer/client/photos/photos.component';
+import { ColorsComponent } from './designer/client/colors/colors.component';
+import { ContactInfoComponent } from './designer/client/contact-info/contact-info.component';
+import { DesignsComponent } from './designer/designs/designs.component';
 
 @NgModule({
   declarations: [
@@ -40,10 +44,14 @@ import { BreadcrumbsComponent } from './breadcrumbs/breadcrumbs.component';
     DesignerClientComponent,
     NavigationComponent,
     ProductsComponent,
-    LoadTemplateDialogComponent,
     CheckoutComponent,
     CartComponent,
     BreadcrumbsComponent,
+    TextComponent,
+    PhotosComponent,
+    ColorsComponent,
+    ContactInfoComponent,
+    DesignsComponent,
   ],
   imports: [
     BrowserModule,
@@ -60,7 +68,6 @@ import { BreadcrumbsComponent } from './breadcrumbs/breadcrumbs.component';
     HttpModule,
   ],
   entryComponents: [
-    LoadTemplateDialogComponent
   ],
   providers: [ObjectFactoryService],
   bootstrap: [AppComponent]

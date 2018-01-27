@@ -1,6 +1,8 @@
 <div class="templates-container">
   <ng-container *ngIf="!(templates | async)">
-      <div style="margin-right: 16px; margin-bottom: 16px;"><mat-spinner radius=5></mat-spinner></div>
+    <div style="margin-right: 16px; margin-bottom: 16px;">
+      <mat-spinner radius=5></mat-spinner>
+    </div>
   </ng-container>
 
   <ng-container *ngIf="(templates | async)?.length === 0">
@@ -8,7 +10,7 @@
   </ng-container>
 
   <ng-container *ngFor="let template of templates | async">
-    <div class="template" (click)="select(template.id)">
+    <div class="template" (click)="select(template)">
       {{ template.name }}
     </div>
   </ng-container>

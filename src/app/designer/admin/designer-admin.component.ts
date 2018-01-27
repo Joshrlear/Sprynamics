@@ -1,11 +1,9 @@
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { Http } from '@angular/http';
 import { ActivatedRoute } from '@angular/router';
-import { MatDialog } from '@angular/material';
 import { AuthService } from '../../core/auth.service';
 import { FirestoreService } from '../../core/firestore.service';
 import { StorageService } from '../../core/storage.service';
-import { LoadTemplateDialogComponent } from '../load-template-dialog/load-template-dialog.component';
 import { productTypes, productSpecs } from '../products';
 import { ObjectFactoryService } from '../object-factory.service';
 
@@ -61,7 +59,6 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
     private firestore: FirestoreService,
     private storage: StorageService,
     private auth: AuthService,
-    private dialog: MatDialog,
     private http: Http,
     private route: ActivatedRoute,
     public factory: ObjectFactoryService
@@ -320,13 +317,13 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
   }
 
   clickOpen() {
-    const dialogRef = this.dialog.open(LoadTemplateDialogComponent);
-    dialogRef.afterClosed().subscribe(id => {
-      if (id) {
-        this.firestore.doc$(`templates/${id}`)
-          .take(1).subscribe(template => this.loadTemplate(template, id));
-      }
-    });
+    // const dialogRef = this.dialog.open(LoadTemplateDialogComponent);
+    // dialogRef.afterClosed().subscribe(id => {
+    //   if (id) {
+    //     this.firestore.doc$(`templates/${id}`)
+    //       .take(1).subscribe(template => this.loadTemplate(template, id));
+    //   }
+    // });
   }
 
   clickSave() {

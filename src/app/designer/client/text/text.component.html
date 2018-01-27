@@ -1,0 +1,19 @@
+<div class="form">
+  <div>
+    <span class="product-type">{{ productName }}</span>
+    &nbsp;
+    <span class="product-size">{{ size }}</span>
+  </div>
+  <h6>View Side:</h6>
+  <input id="frontRadioBtn" type="radio" name="viewSide" value="front" [(ngModel)]="viewSide" (change)="updateViewSide()">
+  <label for="frontRadioBtn">Front</label>
+  <br>
+  <input id="backRadioBtn" type="radio" name="viewSide" value="back" [(ngModel)]="viewSide" (change)="updateViewSide()">
+  <label for="backRadioBtn">Back</label>
+  <ng-container *ngFor="let field of formFields; let i = index">
+    <div class="form-field">
+      <label [for]="'field'+i">{{field.name}}</label>
+      <input [id]="'field'+i" class="form-control" type="text" [placeholder]="field.name" [(ngModel)]="field.obj.text" (input)="render()">
+    </div>
+  </ng-container>
+</div>
