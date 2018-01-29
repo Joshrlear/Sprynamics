@@ -54,7 +54,7 @@
       <app-text *ngIf="currentTab === 'text'" [productName]="productSizes[size]?.name" [size]="productSizes[size]?.width + ' x ' + productSizes[size]?.height + ' in.'"
         [formFields]="formFields"></app-text>
       <app-photos *ngIf="currentTab === 'photos'"></app-photos>
-      <app-colors *ngIf="currentTab === 'colors'"></app-colors>
+      <app-colors *ngIf="currentTab === 'colors'" [colors]="template.presetColors" (colorChange)="onColorChange($event)"></app-colors>
       <app-contact-info *ngIf="currentTab === 'contact'"></app-contact-info>
     </div>
     <div #designerView class="designer-view">

@@ -48,7 +48,7 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this.auth.user.take(1).subscribe((user: any) => {
       this.userData = user;
-      this.template.presetColors = user.presetColors || [];
+      // this.template.presetColors = user.presetColors || [];
     });
     this.route.queryParamMap.take(1).subscribe((queryParamMap: any) => {
       const querySize = queryParamMap.params['size'];
@@ -66,10 +66,6 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
       height: this.view.nativeElement.clientHeight,
       preserveObjectStacking: true,
     });
-  }
-
-  isSelected(tab: string) {
-    // return this.router.url.endsWith(tab);
   }
 
   injectUserData(obj) {
@@ -127,6 +123,19 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
     });
   }
 
+  onColorChange(event) {
+    const index = event.index;
+    const color = new fabric.Color(event.color);
+    const lastColor = new fabric.Color(this.template.presetColors[index]);
+    this.canvas.forEachObject(obj => {
+      if ((new fabric.Color(obj.fill)).toHexa() === lastColor.toHexa()) {
+        obj.set({ fill: event.color });
+      }
+    });
+    this.template.presetColors[index] = event.color;
+    this.canvas.renderAll();
+  }
+
   saveAndContinue() {
     this.getDataURL('front', front => {
       this.getDataURL('back', back => {
@@ -135,7 +144,7 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
         doc.addImage(front, 'PNG', 0, 0);
         doc.addPage();
         doc.addImage(back, 'PNG', 0, 0);
-        // doc.save('template.pdf');
+        doc.save('template.pdf');
       });
     });
     this.router.navigate(['/cart']);
@@ -146,7 +155,8 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
     this.viewSide = side;
     // keep track of whether the lastside was processed
     const processed = this.template[lastSide] && this.template[lastSide].processed;
-    this.template[lastSide] = Object.assign(this.canvas.toObject(), { processed });
+    this.template[lastSide] = Object.assign(this.canvas.toJSON(['isHidden', 'isBoundBox', 'isBackground', 'selectable', 'hasControls', 'textContentType', 'textUserData',
+    'textFieldName', 'userEditable', 'isLogo', 'logoType']), { processed });
     this.canvas.clear();
     if (this.template[this.viewSide]) {
       this.canvas.loadFromJSON(this.template[this.viewSide], _ => {
@@ -160,6 +170,7 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
   loadTemplate(template: any) {
     this.loading = true;
     this.template = template;
+    console.log(template);
     this.viewSide = 'front';
     if (!this.template.fonts || this.template.fonts.length === 0) { this.template.fonts = ['Roboto']; }
     WebFont.load({
@@ -182,7 +193,10 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
     this.template[this.viewSide].processed = true;
     let imagesToLoad = 0;
     // find the boundbox
-    this.boundBox = this.canvas.getObjects('rect').filter(obj => obj.isBoundBox === true)[0];
+    this.boundBox = this.canvas.getObjects('rect').filter(obj => {
+      console.log(obj);
+      return obj.isBoundBox === true
+    })[0];
     this.factory.extendFabricObject(this.boundBox, ['isBoundBox']);
     console.log(this.boundBox);
     this.canvas.clipTo = (ctx) => {
@@ -269,7 +283,7 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
         img.src = src;
       }
     });
-    // this.canvas.getObjects('rect').forEach(obj => { if (obj.isHidden) this.canvas.remove(obj); });
+    this.canvas.getObjects('rect').forEach(obj => { if (obj.isHidden) this.canvas.remove(obj); });
     if (imagesToLoad <= 0) {
       this.loading = false;
 

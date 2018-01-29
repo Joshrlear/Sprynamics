@@ -33,6 +33,8 @@ export class ObjectFactoryService {
     obj.setShadow(this.defaultShadow);
     canvas.add(obj).setActiveObject(obj);
     if (center) canvas.centerObject(obj);
+    obj.stateProperties.push('isHidden', 'isBoundBox', 'isBackground', 'selectable', 'hasControls', 'textContentType', 'textUserData',
+      'textFieldName', 'userEditable', 'isLogo', 'logoType');
     return obj;
   }
 
@@ -209,6 +211,8 @@ export class ObjectFactoryService {
     }));
     printArea.toObject = this.extendFabricObject(printArea,
       baseExt.concat(['isHidden', 'isBoundBox']));
+    
+      console.log(printArea.toObject());
 
     // Add objects to center of canvas
     this.addObject(background, canvas, true);
@@ -226,7 +230,7 @@ export class ObjectFactoryService {
    * In the above example, the result will be: {textContentType: this.textContentType, textUserData: this.textUserData, isText: true}
    */
   extendFabricObject(obj: any, fields: any[]) {
-    return (function (toObject) {
+    return (function (toObject, fields) {
       return function () {
         const extFields = {};
         fields.forEach(field => {
@@ -238,7 +242,7 @@ export class ObjectFactoryService {
         })
         return fabric.util.object.extend(toObject.call(this), extFields);
       };
-    })(obj.toObject);
+    })(obj.toObject, fields);
   }
 
   /**

@@ -68,3 +68,26 @@ export const productTypes = {
     size: '3.5x8.5'
   }
 };
+
+export const thumbnailSizes = {
+  '9x6': {
+    width: 129,
+    height: 86
+  },
+  '11.5x6': {
+    width: 138,
+    height: 72
+  },
+  '8.5x11': {
+    width: 102,
+    height: 132
+  },
+  '11x8.5': {
+    width: 132,
+    height: 102
+  },
+  '3.5x8.5': {
+    width: 56,
+    height: 136
+  }
+}

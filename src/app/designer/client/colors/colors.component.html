@@ -1,3 +1,7 @@
-<p>
-  colors works!
-</p>
+<div class="color-container">
+  <ng-container *ngFor="let color of colors; let i=index; trackBy: trackColors">
+    <div class="color" [style.background]="color" [colorPicker]="colors[i]" [cpCancelButton]="true" [cpOKButton]="true" cpAlphaChannel="always"
+      (colorPickerChange)="onColorChange($event, i)">
+    </div>
+  </ng-container>
+</div>

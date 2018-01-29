@@ -17,6 +17,10 @@ export class StorageService {
     return this.storage.ref(path).putString(JSON.stringify(data)).downloadURL();
   }
 
+  putBase64(data: string, path: string) {
+    return this.storage.ref(path).putString(data, 'data_url', {contentType:'image/jpeg'}).downloadURL();
+  }
+
   getDownloadURL(path) {
     return this.storage.ref(path).getDownloadURL();
   }

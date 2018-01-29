@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../core/auth.service';
 import { FirestoreService } from '../../core/firestore.service';
 import { StorageService } from '../../core/storage.service';
-import { productTypes, productSpecs } from '../products';
+import { productTypes, productSpecs, thumbnailSizes } from '../products';
 import { ObjectFactoryService } from '../object-factory.service';
 
 import 'webfontloader';
@@ -38,6 +38,8 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
   background: any;
   safeArea: any;
   printArea: any;
+  currentTab = 'settings';
+  currentTabIndex = 0;
 
   viewSide: 'front' | 'back' = 'front';
 
@@ -68,7 +70,7 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
     this.loadingFonts = true;
     this.http.get('https://www.googleapis.com/webfonts/v1/webfonts?sort=popularity&key=AIzaSyA-kEmBuQZhfrdS1Rije3syG3tCu8OGVcM')
       .take(1).subscribe(res => {
-        this.fonts = res.json().items.map(font => font.family).slice(0, 200);
+        this.fonts = res.json().items.map(font => font.family).slice(0, 1);
         // console.log(this.fonts);
         WebFont.load({
           google: {
@@ -189,16 +191,16 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
             target.top = bound.top - target.getHeight();
           }
           // center x alignment
-          const middleX = target.left + target.getWidth()/2;
-          const boundMiddleX = bound.left + bound.width/2;
+          const middleX = target.left + target.getWidth() / 2;
+          const boundMiddleX = bound.left + bound.width / 2;
           if (middleX > boundMiddleX - 10 && middleX < boundMiddleX + 10) {
-            target.left = boundMiddleX - target.getWidth()/2;
+            target.left = boundMiddleX - target.getWidth() / 2;
           }
           // center y alignment
-          const middleY = target.top + target.getHeight()/2;
-          const boundMiddleY = bound.top + bound.height/2;
+          const middleY = target.top + target.getHeight() / 2;
+          const boundMiddleY = bound.top + bound.height / 2;
           if (middleY > boundMiddleY - 10 && middleY < boundMiddleY + 10) {
-            target.top = boundMiddleY - target.getHeight()/2;
+            target.top = boundMiddleY - target.getHeight() / 2;
           }
         }
       });
@@ -211,7 +213,7 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
         // ignore alignment when the ctrl key is held down
         return;
       }
-      
+
       const target = event.target;
       const targetBound = target.getBoundingRect();
 
@@ -298,9 +300,12 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
     this.canvas.renderAll();
   }
 
-  updateViewSide() {
-    const lastSide = this.viewSide === 'front' ? 'back' : 'front';
-    this.template[lastSide] = this.canvas.toObject();
+  setViewSide(side: 'front' | 'back') {
+    const lastSide = this.viewSide;
+    this.viewSide = side;
+    this.template[lastSide] = this.canvas.toJSON(['isHidden', 'isBoundBox', 'isBackground', 'selectable', 'hasControls', 'textContentType', 'textUserData',
+    'textFieldName', 'userEditable', 'isLogo', 'logoType']);
+    console.log(this.template);
     this.clearCanvas();
     if (this.template[this.viewSide]) {
       this.canvas.loadFromJSON(this.template[this.viewSide]);
@@ -311,19 +316,7 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
     if (confirm('Unsaved changes will be lost. Are you sure you want to start a new template?')) {
       this.template = Object.assign({}, this.defaultTemplate);
       this.clearCanvas();
-    } else {
-      return;
     }
-  }
-
-  clickOpen() {
-    // const dialogRef = this.dialog.open(LoadTemplateDialogComponent);
-    // dialogRef.afterClosed().subscribe(id => {
-    //   if (id) {
-    //     this.firestore.doc$(`templates/${id}`)
-    //       .take(1).subscribe(template => this.loadTemplate(template, id));
-    //   }
-    // });
   }
 
   clickSave() {
@@ -331,13 +324,12 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
       alert('You need to set a name for this design!');
       return;
     }
-
-    this.template[this.viewSide] = this.canvas.toObject();
+    this.template[this.viewSide] = this.canvas.toJSON(['isHidden', 'isBoundBox', 'isBackground', 'selectable', 'hasControls', 'textContentType', 'textUserData',
+    'textFieldName', 'userEditable', 'isLogo', 'logoType']);
     const canvasData = {
       front: this.template.front,
       back: this.template.back
-    }
-
+    };
     // add required fonts to template data
     const fonts = [];
     this.canvas.forEachObject((obj: any) => {
@@ -347,24 +339,59 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
       }
     });
     this.template.fonts = fonts;
-
-    if (this.template.id) {
-      this.firestore.update(`templates/${this.template.id}`, this.template);
-      this.storage.putJSON(canvasData, `templates/${this.template.id}.json`);
-    } else {
-      this.firestore.add('templates', this.template).then(ref => {
-        this.storage.putJSON(canvasData, `templates/${ref.id}.json`)
-          .take(1).subscribe(url => {
-            this.template.url = url;
-            this.firestore.update(`templates/${ref.id}`, { url });
-          });
-      });
-    }
+    (new Promise((resolve, reject) => {
+      if (this.template.id) {
+        this.firestore.update(`templates/${this.template.id}`, this.template).then(_ => {
+          resolve(this.template.id);
+        });
+      } else {
+        this.firestore.add('templates', this.template).then(ref => {
+          resolve(ref.id);
+        });
+      }
+    })).then(id => {
+      this.storage.putJSON(canvasData, `templates/${id}.json`)
+        .take(1).subscribe(url => {
+          // this.canvas.remove(this.printArea);
+          // this.canvas.remove(this.safeArea);
+          this.canvas.deactivateAll().renderAll();
+          const ctx = this.canvas.getContext('2d');
+          const imgData = ctx.getImageData(this.printArea.left, this.printArea.top, this.printArea.width, this.printArea.height);
+          const buffer = document.createElement('canvas');
+          const bufferCtx = buffer.getContext('2d');
+          buffer.width = this.printArea.width;
+          buffer.height = this.printArea.height;
+          bufferCtx.putImageData(imgData, 0, 0);
+          const dataUrl = buffer.toDataURL('image/jpeg');
+          bufferCtx.clearRect(0, 0, buffer.width, buffer.height);
+          const sizes = thumbnailSizes[this.template.productType.size];
+          buffer.width = sizes.width;
+          buffer.height = sizes.height;
+          const img = document.createElement('img');
+          img.onload = () => {
+            bufferCtx.drawImage(img, 0, 0, sizes.width, sizes.height);
+            const jpg = buffer.toDataURL('jpg');
+            // const base = this.factory.createProductBase(this.canvas);
+            // Object.assign(this, base);
+            this.canvas.sendToBack(this.printArea);
+            this.canvas.sendToBack(this.safeArea);
+            this.canvas.sendToBack(this.background);
+            this.canvas.renderAll();
+            // store thumbnail
+            this.storage.putBase64(jpg, `thumbnails/${id}.jpg`)
+              .take(1).subscribe(thumbnail => {
+                this.template.thumbnail = thumbnail;
+                this.template.url = url;
+                this.firestore.update(`templates/${id}`, { url, thumbnail });
+              });
+          }
+          img.src = dataUrl;
+        });
+    });
   }
 
-  loadTemplate(template: any, id: string) {
+  loadTemplate(template: any) {
     this.template = template;
-    this.template.id = id;
     this.viewSide = 'front';
     this.storage.getFile(template.url).take(1).subscribe(data => {
       console.log(data);
@@ -390,6 +417,19 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
       this.selection.set({ fill: event });
       this.forceRender(this.selection);
     }
+    this.canvas.renderAll();
+  }
+
+  onColorChange(event) {
+    const index = event.index;
+    const color = new fabric.Color(event.color);
+    const lastColor = new fabric.Color(this.template.presetColors[index]);
+    this.canvas.forEachObject(obj => {
+      if ((new fabric.Color(obj.fill)).toHexa() === lastColor.toHexa()) {
+        obj.set({ fill: event.color });
+      }
+    });
+    this.template.presetColors[index] = event.color;
     this.canvas.renderAll();
   }
 
@@ -476,7 +516,7 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
 
   setStyle(object, styleName, value) {
     if (object.setSelectionStyles && object.isEditing) {
-      var style = { };
+      var style = {};
       style[styleName] = value;
       object.setSelectionStyles(style);
     }

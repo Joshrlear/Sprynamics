@@ -1,0 +1,18 @@
+.color-container {
+  color: white;
+  padding: 16px;
+}
+
+.color {
+  cursor: pointer;
+  width: 64px;
+  height: 64px;
+  margin: 0 8px 8px 0;
+  border: 0;
+  box-shadow: 0px 1px 4px rgba(0,0,0,0.5);
+  transition: transform 0.1s ease;
+  border-radius: 12px;
+}
+.color:hover {
+  transform: scale(1.1);
+}
