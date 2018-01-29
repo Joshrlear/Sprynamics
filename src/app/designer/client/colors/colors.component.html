@@ -1,4 +1,8 @@
 <div class="color-container">
+  <div class="color wide" [style.background]="bgColor" [colorPicker]="bgColor" [cpCancelButton]="true" [cpOKButton]="true"
+    cpAlphaChannel="always" (colorPickerChange)="onBgColorChange($event)">
+    <div class="color-title">Background Color</div>
+  </div>
   <ng-container *ngFor="let color of colors; let i=index; trackBy: trackColors">
     <div class="color" [style.background]="color" [colorPicker]="colors[i]" [cpCancelButton]="true" [cpOKButton]="true" cpAlphaChannel="always"
       (colorPickerChange)="onColorChange($event, i)">

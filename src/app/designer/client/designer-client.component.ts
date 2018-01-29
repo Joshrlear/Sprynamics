@@ -22,6 +22,8 @@ declare let jsPDF;
   styleUrls: ['./designer-client.component.css']
 })
 export class DesignerClientComponent implements OnInit, AfterViewInit {
+  
+  background: any = {};
 
   currentTab = 'designs';
   currentTabIndex = 0;
@@ -136,6 +138,14 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
     this.canvas.renderAll();
   }
 
+  onBgColorChange(event) {
+    const color = new fabric.Color(event);
+    this.background.set({
+      fill: '#' + color.toHexa()
+    });
+    this.canvas.renderAll();
+  }
+
   saveAndContinue() {
     this.getDataURL('front', front => {
       this.getDataURL('back', back => {
@@ -170,7 +180,6 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
   loadTemplate(template: any) {
     this.loading = true;
     this.template = template;
-    console.log(template);
     this.viewSide = 'front';
     if (!this.template.fonts || this.template.fonts.length === 0) { this.template.fonts = ['Roboto']; }
     WebFont.load({
@@ -192,21 +201,18 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
   processCanvas() {
     this.template[this.viewSide].processed = true;
     let imagesToLoad = 0;
+    this.background = this.canvas.getObjects('rect').filter(obj => obj.isBackground)[0];
+    console.log(this.background);
     // find the boundbox
     this.boundBox = this.canvas.getObjects('rect').filter(obj => {
-      console.log(obj);
       return obj.isBoundBox === true
     })[0];
     this.factory.extendFabricObject(this.boundBox, ['isBoundBox']);
-    console.log(this.boundBox);
     this.canvas.clipTo = (ctx) => {
       // this.canvas.getObjects('rect').filter(obj => obj.isBoundBox === true)[0].render(ctx);
       const c = this.boundBox.getCoords();
       const x = c[0].x;
       const y = c[0].y;
-      console.log(c);
-      console.log(this.boundBox.height, this.canvas.height / 2);
-      console.log('zoom:' + this.canvas.getZoom())
       ctx.strokeStyle = '#ffffff';
       ctx.fillStyle = '#ffffff';
       ctx.rect(this.boundBox.left, this.boundBox.top,
@@ -218,7 +224,6 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
     const offset = this.boundBox.getCenterPoint();
     const xdiff = offset.x - center.left;
     const ydiff = offset.y - center.top;
-    console.log(xdiff, ydiff);
     // modify all objects
     this.canvas.forEachObject(obj => {
       obj.left -= xdiff;
@@ -247,7 +252,6 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
       }
       // create form field if editable
       if (obj.userEditable || obj.textContentType === 'data') {
-        console.log('editable');
         this.formFields.push({
           name: obj.textFieldName,
           obj: obj,

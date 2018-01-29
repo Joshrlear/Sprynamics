@@ -433,6 +433,14 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
     this.canvas.renderAll();
   }
 
+  onBgColorChange(event) {
+    const color = new fabric.Color(event);
+    this.background.set({
+      fill: '#' + color.toHexa()
+    });
+    this.canvas.renderAll();
+  }
+
   shadowColorPickerChange(event) {
     // bind the opacity to the color
     this.selection.shadow.opacity = new fabric.Color(this.selection.shadow.color).getAlpha();

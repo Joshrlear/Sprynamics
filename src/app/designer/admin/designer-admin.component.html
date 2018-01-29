@@ -66,7 +66,8 @@
 
       <app-designs *ngIf="currentTab === 'designs'" [showDropdown]="true" (select)="loadTemplate($event)"></app-designs>
 
-      <app-colors *ngIf="currentTab === 'colors'" [colors]="template.presetColors" (colorChange)="onColorChange($event)"></app-colors>
+      <app-colors *ngIf="currentTab === 'colors'" [colors]="template.presetColors" (colorChange)="onColorChange($event)" [bgColor]="background.fill"
+        (bgColorChange)="onBgColorChange($event)"></app-colors>
 
       <div *ngIf="currentTab === 'edit'" style="padding: 16px;">
         <!-- Object Selection -->
