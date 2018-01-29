@@ -88,8 +88,15 @@
               </div>
               <div class="form-field">
                 <label for="textFontSize">Font Size:</label>
-                <input type="number" id="textFontSize" #textFontSize [value]="getStyle(selection, 'fontSize')" 
-                  (input)="setStyle(selection, 'fontSize', textFontSize.value); forceRender(selection)">
+                <input type="number" id="textFontSize" #textFontSize [value]="getStyle(selection, 'fontSize')" (input)="setStyle(selection, 'fontSize', textFontSize.value); forceRender(selection)">
+              </div>
+              <div class="form-field">
+                <label for="textCharSpacing">Character Spacing:</label>
+                <input type="number" id="textCharSpacing" [(ngModel)]="selection.charSpacing" (input)="forceRender(selection)">
+              </div>
+              <div class="form-field">
+                <label for="textLineHeight">Line Height:</label>
+                <input type="number" id="textLineHeight" [(ngModel)]="selection.lineHeight" (input)="forceRender(selection)">
               </div>
               <div class="form-field">
                 <label for="textAlign">Content Type:</label>
