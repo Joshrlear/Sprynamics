@@ -87,6 +87,11 @@
                 <button (click)="toggleUnderline()">U</button>
               </div>
               <div class="form-field">
+                <label for="textFontSize">Font Size:</label>
+                <input type="number" id="textFontSize" #textFontSize [value]="getStyle(selection, 'fontSize')" 
+                  (input)="setStyle(selection, 'fontSize', textFontSize.value); forceRender(selection)">
+              </div>
+              <div class="form-field">
                 <label for="textAlign">Content Type:</label>
                 <select #textAlign name="textAlign" id="textAlign" [(ngModel)]="selection.textAlign" (change)="canvas.renderAll()">
                   <option [value]="'left'">Align Left</option>

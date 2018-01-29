@@ -535,7 +535,7 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
 
   getStyle(object, styleName) {
     return (object.getSelectionStyles && object.isEditing)
-      ? object.getSelectionStyles()[styleName]
+      ? object.getSelectionStyles()[styleName] || object[styleName]
       : object[styleName];
   }
 
