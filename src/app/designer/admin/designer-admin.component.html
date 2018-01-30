@@ -65,10 +65,10 @@
       </div>
 
       <app-designs *ngIf="currentTab === 'designs'" [showDropdown]="true" (select)="loadTemplate($event)"></app-designs>
-
+      
       <app-colors *ngIf="currentTab === 'colors'" [colors]="template.presetColors" (colorChange)="onColorChange($event)" [bgColor]="background.fill"
-        (bgColorChange)="onBgColorChange($event)"></app-colors>
-
+      (bgColorChange)="onBgColorChange($event)"></app-colors>
+      
       <div *ngIf="currentTab === 'edit'" style="padding: 16px;">
         <!-- Object Selection -->
         <ng-container *ngIf="selection">
@@ -76,59 +76,58 @@
             <!-- TEXT selected -->
             <ng-container *ngSwitchCase="selection.type === 'i-text' || selection.type === 'textbox' ? selection.type : ''">
               <h4>Text</h4>
-              <!-- Text Styles -->
-              <div class="form-field">
-                <button (click)="toggleBold()">
-                  <strong>B</strong>
-                </button>
-                <button (click)="toggleItalics()">
-                  <em>I</em>
-                </button>
-                <button (click)="toggleUnderline()">U</button>
-              </div>
-              <div class="form-field">
-                <label for="textFontSize">Font Size:</label>
-                <input type="number" id="textFontSize" #textFontSize [value]="getStyle(selection, 'fontSize')" (input)="setStyle(selection, 'fontSize', textFontSize.value); forceRender(selection)">
-              </div>
-              <div class="form-field">
-                <label for="textCharSpacing">Character Spacing:</label>
-                <input type="number" id="textCharSpacing" [(ngModel)]="selection.charSpacing" (input)="forceRender(selection)">
-              </div>
-              <div class="form-field">
-                <label for="textLineHeight">Line Height:</label>
-                <input type="number" id="textLineHeight" [(ngModel)]="selection.lineHeight" (input)="forceRender(selection)">
-              </div>
-              <div class="form-field">
-                <label for="textAlign">Content Type:</label>
-                <select #textAlign name="textAlign" id="textAlign" [(ngModel)]="selection.textAlign" (change)="canvas.renderAll()">
-                  <option [value]="'left'">Align Left</option>
-                  <option [value]="'center'">Align Center</option>
-                  <option [value]="'right'">Align Right</option>
-                </select>
-              </div>
-              <div class="form-field">
-                <select #textFontFamily [style.font-family]="textFontFamily.value" [(ngModel)]="selection.fontFamily" (change)="canvas.renderAll()">
+              <!-- Font Family -->
+              <div class="form-field" style="display:flex;width:230px;margin-bottom:12px;">
+                <select #textFontFamily [style.font-family]="textFontFamily.value" style="flex:1" [(ngModel)]="selection.fontFamily" (change)="canvas.renderAll()">
                   <option *ngFor="let font of fonts" [value]="font" [style.font-family]="font">{{ font }}</option>
                 </select>
+                <input type="number" id="textFontSize" style="width:56px;flex-basis:56px" #textFontSize [value]="getStyle(selection, 'fontSize')" (input)="setStyle(selection, 'fontSize', textFontSize.value); forceRender(selection)">
               </div>
-              <!-- Text ContentType -->
+              <!-- Font Color -->
+              <ng-container *ngTemplateOutlet="colorpicker"></ng-container>
+              <!-- Text Styles -->
               <div class="form-field">
-                <label for="textContentType">Content Type:</label>
-                <select #textContentType name="textContentType" id="textContentType" [(ngModel)]="selection.textContentType">
-                  <option [value]="'plain'">Plain text</option>
-                  <option [value]="'data'">User data</option>
-                </select>
+                <button mat-icon-button (click)="toggleBold()"><mat-icon>format_bold</mat-icon></button>
+                <button mat-icon-button (click)="toggleItalics()"><mat-icon>format_italics</mat-icon></button>
+                <button mat-icon-button (click)="toggleUnderline()"><mat-icon>format_underline</mat-icon></button>
+              </div>
+              <div class="form-field">
+                <button mat-icon-button (click)="selection.textAlign = 'left'; canvas.renderAll();"><mat-icon>format_align_left</mat-icon></button>
+                <button mat-icon-button (click)="selection.textAlign = 'center'; canvas.renderAll();"><mat-icon>format_align_center</mat-icon></button>
+                <button mat-icon-button (click)="selection.textAlign = 'right'; canvas.renderAll();"><mat-icon>format_align_right</mat-icon></button>
+              </div>
+              <hr>
+              <div class="form-field" style="display:flex;align-items:center;margin-bottom:16px;">
+                <mat-icon matTooltip="Character Spacing">compare_arrows</mat-icon>
+                <input type="number" id="textCharSpacing" style="width:56px;margin-left:8px;margin-right:16px;" [(ngModel)]="selection.charSpacing" (input)="forceRender(selection)">
+                <mat-icon matTooltip="Line Spacing">format_line_spacing</mat-icon>
+                <input type="number" id="textLineHeight" style="width:56px;margin-left:8px;" [(ngModel)]="selection.lineHeight" (input)="forceRender(selection)">
+              </div>
+              <hr>
+              <!-- Text ContentType -->
+              <div class="radio">
+                <label>
+                  <input type="radio" name="textContentType" id="optionsRadios1" value="plain" [(ngModel)]="selection.textContentType">
+                  Plain text
+                </label>
+                <label style="margin-left:8px;">
+                  <input type="radio" name="textContentType" id="optionsRadios1" value="data" [(ngModel)]="selection.textContentType">
+                  User data
+                </label>
+              </div>
+              <div class="radio">
+                
               </div>
               <!-- Text Content -->
-              <div class="form-field" *ngIf="selection.textContentType === 'plain'">
-                <label for="textInput">Content:</label>
-                <input #textInput id="textInput" type="text" [(ngModel)]="selection.text" (keyup)="canvas.renderAll()" (click)="clickTextInput($event.target)"
-                  (blur)="blurTextInput($event.target)">
+              <div class="form-field" style="display:flex;align-items:center;margin-bottom:16px;" *ngIf="selection.textContentType === 'plain'">
+                <mat-icon matTooltip="Plain text content">message</mat-icon>
+                <textarea #textInput id="textInput" style="margin-left:8px;flex:1;" [(ngModel)]="selection.text" (keyup)="canvas.renderAll()" (click)="clickTextInput($event.target)"
+                  (blur)="blurTextInput($event.target)"></textarea>
               </div>
               <!-- Text User Data -->
-              <div class="form-field" *ngIf="selection.textContentType === 'data'">
-                <label for="textUserData">User Data:</label>
-                <select name="textUserData" id="textUserData" [(ngModel)]="selection.textUserData" (change)="changeUserData()">
+              <div class="form-field" style="display:flex;align-items:center;margin-bottom:16px;width:200px" *ngIf="selection.textContentType === 'data'">
+                <mat-icon matTooltip="User data field">contact_mail</mat-icon>
+                <select name="textUserData" id="textUserData" style="margin-left:8px;flex:1;" [(ngModel)]="selection.textUserData" (change)="changeUserData()">
                   <option [value]="'name'">Name</option>
                   <option [value]="'email'">Email</option>
                   <option [value]="'address'">Address</option>
@@ -146,8 +145,10 @@
                 <label for="textFieldName">Field Name:</label>
                 <input id="textFieldName" type="text" [(ngModel)]="selection.textFieldName">
               </div>
+
+              <hr>
+
               <!-- Outlets -->
-              <ng-container *ngTemplateOutlet="colorpicker"></ng-container>
               <ng-container *ngTemplateOutlet="stroke"></ng-container>
               <ng-container *ngTemplateOutlet="shadow"></ng-container>
             </ng-container>
@@ -155,6 +156,7 @@
             <!-- RECT selected -->
             <ng-container *ngSwitchCase="'rect'">
               <h4>Rectangle</h4>
+              <ng-container *ngTemplateOutlet="measurements"></ng-container>
               <ng-container *ngTemplateOutlet="colorpicker"></ng-container>
               <ng-container *ngTemplateOutlet="stroke"></ng-container>
               <ng-container *ngTemplateOutlet="shadow"></ng-container>
@@ -214,40 +216,55 @@
     </div>
   </ng-template>
 
+  <ng-template #measurements>
+    <hr>
+    <span>Measurements:</span>
+    <div>Height (in): {{ (selection.height / productSpecs.dpi).toFixed(2) }}"</div>
+    <div>Width (in): {{ (selection.width / productSpecs.dpi).toFixed(2) }}"</div>
+    <div>
+      <label for="height">Height (px): </label>
+      <input id="height" type="number" style="width: 128px" [(ngModel)]="selection.height" (input)="forceRender(selection)">
+    </div>
+    <div>
+      <label for="width">Width (px): </label>
+      <input id="width" type="number" style="width: 128px" [(ngModel)]="selection.width" (input)="forceRender(selection)">
+    </div>
+    <hr>
+  </ng-template>
+
   <!-- SHADOW NG-TEMPLATE -->
   <ng-template #shadow>
-    <fieldset style="border: 1px solid #1a1a1a">
-      <legend>Shadow:</legend>
-      <label for="shadowEnabled">Enabled:</label>
-      <input #shadowEnabled type="checkbox" id="shadowEnabled" [(ngModel)]="selection.spryShadow">
+    <hr>
+    <label for="shadowEnabled">Shadow:</label>
+    <input #shadowEnabled type="checkbox" id="shadowEnabled" [(ngModel)]="selection.spryShadow">
+    <br>
+    <ng-container *ngIf="selection.spryShadow">
+      <div class="color" [style.background]="selection.shadow.color" [cpCancelButton]="true" [cpOKButton]="true" cpAlphaChannel="always"
+        [(colorPicker)]="selection.shadow.color" (colorPickerChange)="shadowColorPickerChange($event)">
+      </div>
+      <label for="shadowBlur">Blur:</label>
+      <input type="number" id="shadowBlur" min=0 [(ngModel)]="selection.shadow.blur" (input)="canvas.renderAll()">
       <br>
-      <ng-container *ngIf="selection.spryShadow">
-        <div class="color" [style.background]="selection.shadow.color" [cpCancelButton]="true" [cpOKButton]="true" cpAlphaChannel="always"
-          [(colorPicker)]="selection.shadow.color" (colorPickerChange)="shadowColorPickerChange($event)">
-        </div>
-        <label for="shadowBlur">Blur:</label>
-        <input type="number" id="shadowBlur" min=0 [(ngModel)]="selection.shadow.blur" (input)="canvas.renderAll()">
-        <br>
-        <label for="shadowOffsetX">X Offset:</label>
-        <input type="number" id="shadowOffsetX" [(ngModel)]="selection.shadow.offsetX" (input)="canvas.renderAll()">
-        <br>
-        <label for="shadowOffsetY">Y Offset:</label>
-        <input type="number" id="shadowOffsetY" [(ngModel)]="selection.shadow.offsetY" (input)="canvas.renderAll()">
-        <br>
-      </ng-container>
-    </fieldset>
+      <label for="shadowOffsetX">X Offset:</label>
+      <input type="number" id="shadowOffsetX" [(ngModel)]="selection.shadow.offsetX" (input)="canvas.renderAll()">
+      <br>
+      <label for="shadowOffsetY">Y Offset:</label>
+      <input type="number" id="shadowOffsetY" [(ngModel)]="selection.shadow.offsetY" (input)="canvas.renderAll()">
+      <br>
+    </ng-container>
+    <hr>
   </ng-template>
 
   <!-- STROKE NG-TEMPLATE -->
   <ng-template #stroke>
-    <fieldset style="border: 1px solid #1a1a1a">
-      <legend>Stroke:</legend>
-      <div class="color" [style.background]="selection.stroke" [cpCancelButton]="true" [cpOKButton]="true" cpAlphaChannel="always"
-        [(colorPicker)]="selection.stroke" (colorPickerChange)="forceRender(selection)">
-      </div>
-      <label for="strokeWidth">Stroke Width:</label>
-      <input type="number" id="strokeWidth" min=0 [(ngModel)]="selection.strokeWidth" (input)="forceRender(selection)">
-    </fieldset>
+    <hr>
+    <span>Stroke:</span>
+    <div class="color" [style.background]="selection.stroke" [cpCancelButton]="true" [cpOKButton]="true" cpAlphaChannel="always"
+      [(colorPicker)]="selection.stroke" (colorPickerChange)="forceRender(selection)">
+    </div>
+    <label for="strokeWidth">Stroke Width:</label>
+    <input type="number" id="strokeWidth" min=0 [(ngModel)]="selection.strokeWidth" (input)="forceRender(selection)">
+    <hr>
   </ng-template>
 
   <div class="designer-content">
@@ -272,10 +289,17 @@
       <ng-container *ngIf="selection">
         <button class="btn" (click)="deleteSelection()">Remove</button>
         <button class="btn" (click)="factory.createClone(selection, canvas)">Clone</button>
-        <button class="btn" (click)="bringToFront()">To Front</button>
-        <button class="btn" (click)="bringForward()">Forward</button>
-        <button class="btn" (click)="sendBackward()">Backward</button>
-        <button class="btn" (click)="sendToBack()">To Back</button>
+        <div class="btn-group" dropdown>
+          <button dropdownToggle class="btn dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Arrange
+          </button>
+          <div *dropdownMenu class="dropdown-menu" role="menu">
+            <button class="btn dropdown-item" (click)="bringToFront()">To Front</button>
+            <button class="btn dropdown-item" (click)="bringForward()">Forward</button>
+            <button class="btn dropdown-item" (click)="sendBackward()">Backward</button>
+            <button class="btn dropdown-item" (click)="sendToBack()">To Back</button>
+          </div>
+        </div>
       </ng-container>
 
     </div>

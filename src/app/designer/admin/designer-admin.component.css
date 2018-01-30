@@ -41,6 +41,7 @@
   flex-basis: 360px;
   background-color: #3f4652;
   color: white;
+  overflow:auto;
 }
 
 fieldset {

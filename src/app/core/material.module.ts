@@ -7,6 +7,7 @@ import {
   MatIconModule,
   MatDialogModule,
   MatProgressSpinnerModule,
+  MatTooltipModule,
 } from '@angular/material';
 
 const modules = [
@@ -17,6 +18,7 @@ const modules = [
   MatIconModule,
   MatDialogModule,
   MatProgressSpinnerModule,
+  MatTooltipModule,
 ];
 
 @NgModule({

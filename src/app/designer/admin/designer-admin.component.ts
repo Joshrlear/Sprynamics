@@ -23,6 +23,7 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
   @ViewChild('designerView') view: ElementRef;
 
   productTypes = productTypes;
+  productSpecs = productSpecs;
 
   defaultTemplate = {
     name: '',
@@ -395,7 +396,9 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
     this.viewSide = 'front';
     this.storage.getFile(template.url).take(1).subscribe(data => {
       console.log(data);
-      this.canvas.loadFromJSON(template['front']);
+      this.canvas.loadFromJSON(template['front'], _ => {
+        this.background = this.canvas.getObjects('rect').filter(obj => obj.isBackground)[0];
+      });
     });
   }
 
