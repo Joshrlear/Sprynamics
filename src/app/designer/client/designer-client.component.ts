@@ -22,7 +22,7 @@ declare let jsPDF;
   styleUrls: ['./designer-client.component.css']
 })
 export class DesignerClientComponent implements OnInit, AfterViewInit {
-  
+
   background: any = {};
 
   currentTab = 'designs';
@@ -79,7 +79,7 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
     if (this.disableHistory) return;
     this.past.push(this.present);
     this.present = this.canvas.toJSON(['isHidden', 'isBoundBox', 'isBackground', 'selectable', 'hasControls', 'textContentType', 'textUserData',
-    'textFieldName', 'userEditable', 'isLogo', 'logoType']);
+      'textFieldName', 'userEditable', 'isLogo', 'logoType']);
     this.future = [];
   }
 
@@ -150,10 +150,10 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
         }
       }); // remove the dashed lines
       const bg = new fabric.Rect({
-        left:0,
-        top:0,
-        width:(this.template.productType.width+productSpecs.bleedInches*2)*productSpecs.dpi,
-        height:(this.template.productType.height+productSpecs.bleedInches*2)*productSpecs.dpi,
+        left: 0,
+        top: 0,
+        width: (this.template.productType.width + productSpecs.bleedInches * 2) * productSpecs.dpi,
+        height: (this.template.productType.height + productSpecs.bleedInches * 2) * productSpecs.dpi,
         fill: '#ffffff'
       });
       this.canvas.add(bg);
@@ -205,7 +205,7 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
     // keep track of whether the lastside was processed
     const processed = this.template[lastSide] && this.template[lastSide].processed;
     this.template[lastSide] = Object.assign(this.canvas.toJSON(['isHidden', 'isBoundBox', 'isBackground', 'selectable', 'hasControls', 'textContentType', 'textUserData',
-    'textFieldName', 'userEditable', 'isLogo', 'logoType']), { processed });
+      'textFieldName', 'userEditable', 'isLogo', 'logoType']), { processed });
     this.canvas.clear();
     if (this.template[this.viewSide]) {
       this.canvas.loadFromJSON(this.template[this.viewSide], _ => {
@@ -226,7 +226,7 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
         families: template.fonts
       },
       active: () => {
-        this.storage.getFile(template.url).take(1).subscribe((data: {front: any, back: any}) => {
+        this.storage.getFile(template.url).take(1).subscribe((data: { front: any, back: any }) => {
           this.template.front = data.front;
           this.template.back = data.back;
           this.canvas.loadFromJSON(template[this.viewSide], _ => {
@@ -281,12 +281,12 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
         let dataName = obj.textUserData;
         let dataText;
         if (dataName === 'name') {
-          dataText = `${this.userData['firstName']||''} ${this.userData['lastName']||''}`;
+          dataText = `${this.userData['firstName'] || ''} ${this.userData['lastName'] || ''}`;
         } else if (dataName === 'address') {
-          dataText = `${this.userData['address1']||''} ${this.userData['address2']||''}\n` +
-            `${this.userData['city']||''}, ${this.userData['state']||''}`;
+          dataText = `${this.userData['address1'] || ''} ${this.userData['address2'] || ''}\n` +
+            `${this.userData['city'] || ''}, ${this.userData['state'] || ''}`;
         } else {
-          dataText = this.userData[dataName]||'';
+          dataText = this.userData[dataName] || '';
         }
         obj.set({ text: dataText });
       }
@@ -327,7 +327,14 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
         img.src = src;
       }
     });
-    this.canvas.getObjects('rect').forEach(obj => { if (obj.isHidden) this.canvas.remove(obj); });
+    this.canvas.getObjects('rect').forEach(obj => {
+      if (obj.isHidden) {
+        obj.set({
+          stroke: '#eeeeee00'
+        });
+        this.canvas.sendToBack(obj);
+      }
+    });
     if (imagesToLoad <= 0) {
       this.loading = false;
 

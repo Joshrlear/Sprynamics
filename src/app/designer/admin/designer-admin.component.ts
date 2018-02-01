@@ -547,6 +547,9 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
   }
   sendToBack() {
     this.canvas.sendToBack(this.selection);
+    this.canvas.sendToBack(this.safeArea);
+    this.canvas.sendToBack(this.printArea);
+    this.canvas.sendToBack(this.background);
   }
 
   changeUserData() {
