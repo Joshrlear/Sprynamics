@@ -13,6 +13,7 @@ export class TextComponent implements OnInit {
   @Input('formFields') formFields: any = [];
 
   @Output('render') renderEvent = new EventEmitter();
+  @Output('change') changeEvent = new EventEmitter();
 
   viewSide: string;
   
@@ -21,12 +22,12 @@ export class TextComponent implements OnInit {
   ngOnInit() {
   }
 
-  updateViewSide() {
-
-  }
-
   render() {
     this.renderEvent.emit(null);
+  }
+
+  onChange() {
+    this.changeEvent.emit(null);
   }
 
 }

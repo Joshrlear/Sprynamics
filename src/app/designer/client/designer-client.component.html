@@ -7,6 +7,12 @@
     </button>
   </div>
   <div style="flex: 1">
+    <button mat-icon-button matTooltip="undo" (click)="undo()" [disabled]="past.length === 0">
+      <mat-icon>undo</mat-icon>
+    </button>
+    <button mat-icon-button matTooltip="redo" (click)="redo()" [disabled]="future.length === 0">
+      <mat-icon>redo</mat-icon>
+    </button>
     <button class="btn" [class.green]="viewSide === 'front'" (click)="setViewSide('front')">
       Front
     </button>
@@ -52,11 +58,11 @@
     <div class="form-container">
       <app-designs *ngIf="currentTab === 'designs'" [size]="size" (select)="loadTemplate($event)"></app-designs>
       <app-text *ngIf="currentTab === 'text'" [productName]="productSizes[size]?.name" [size]="productSizes[size]?.width + ' x ' + productSizes[size]?.height + ' in.'"
-        [formFields]="formFields"></app-text>
-      <app-photos *ngIf="currentTab === 'photos'"></app-photos>
+        [formFields]="formFields" (change)="saveUndo()"></app-text>
+      <app-photos *ngIf="currentTab === 'photos'" (change)="saveUndo()"></app-photos>
       <app-colors *ngIf="currentTab === 'colors'" [colors]="template.presetColors" (colorChange)="onColorChange($event)" [bgColor]="background.fill"
-        (bgColorChange)="onBgColorChange($event)"></app-colors>
-      <app-contact-info *ngIf="currentTab === 'contact'"></app-contact-info>
+        (bgColorChange)="onBgColorChange($event)" (change)="saveUndo()"></app-colors>
+      <app-contact-info *ngIf="currentTab === 'contact'" (change)="saveUndo()" ></app-contact-info>
     </div>
     <div #designerView class="designer-view">
       <div class="loading-overlay" *ngIf="loading">

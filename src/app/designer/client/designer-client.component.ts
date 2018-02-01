@@ -39,6 +39,11 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
   loading: boolean;
   viewSide: 'front' | 'back' = 'front';
 
+  past = [];
+  present;
+  future = [];
+  disableHistory: boolean;
+
   constructor(private route: ActivatedRoute,
     public router: Router,
     private firestore: FirestoreService,
@@ -68,6 +73,40 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
       height: this.view.nativeElement.clientHeight,
       preserveObjectStacking: true,
     });
+  }
+
+  saveUndo() {
+    if (this.disableHistory) return;
+    this.past.push(this.present);
+    this.present = this.canvas.toJSON(['isHidden', 'isBoundBox', 'isBackground', 'selectable', 'hasControls', 'textContentType', 'textUserData',
+    'textFieldName', 'userEditable', 'isLogo', 'logoType']);
+    this.future = [];
+  }
+
+  undo() {
+    if (this.past.length > 0) {
+      this.future.unshift(this.present);
+      this.present = this.past.pop();
+      this.disableHistory = true;
+      this.canvas.loadFromJSON(this.present, _ => {
+        this.processCanvas();
+        this.background = this.canvas.getObjects('rect').filter(obj => obj.isBackground)[0];
+        this.disableHistory = false;
+      });
+    }
+  }
+
+  redo() {
+    if (this.future.length > 0) {
+      this.past.push(this.present);
+      this.present = this.future.shift();
+      this.disableHistory = true;
+      this.canvas.loadFromJSON(this.present, _ => {
+        this.processCanvas();
+        this.background = this.canvas.getObjects('rect').filter(obj => obj.isBackground)[0];
+        this.disableHistory = false;
+      });
+    }
   }
 
   injectUserData(obj) {
@@ -141,7 +180,7 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
   onBgColorChange(event) {
     const color = new fabric.Color(event);
     this.background.set({
-      fill: '#' + color.toHexa()
+      fill: '#' + color.toHexa().split('.')[0]
     });
     this.canvas.renderAll();
   }
@@ -192,6 +231,7 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
           this.template.back = data.back;
           this.canvas.loadFromJSON(template[this.viewSide], _ => {
             this.processCanvas();
+            this.disableHistory = false;
           });
         });
       }

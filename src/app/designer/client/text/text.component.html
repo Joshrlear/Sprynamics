@@ -2,7 +2,8 @@
   <ng-container *ngFor="let field of formFields; let i = index">
     <div class="form-field">
       <label [for]="'field'+i">{{field.name}}
-        <input [id]="'field'+i" class="form-control" type="text" [placeholder]="field.name" [(ngModel)]="field.obj.text" (input)="render()">
+        <input [id]="'field'+i" class="form-control" type="text" [placeholder]="field.name" [(ngModel)]="field.obj.text" (input)="render()"
+          (change)="onChange()">
       </label>
     </div>
   </ng-container>

@@ -19,12 +19,12 @@ declare let fabric;
   styleUrls: ['./designer-admin.component.css']
 })
 export class DesignerAdminComponent implements OnInit, AfterViewInit {
-
+  
   @ViewChild('designerView') view: ElementRef;
-
+  
   productTypes = productTypes;
   productSpecs = productSpecs;
-
+  
   defaultTemplate = {
     name: '',
     productType: this.productTypes.postcard_small,
@@ -32,23 +32,28 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
     front: null,
     back: null
   }
-
+  
   template: any = Object.assign({}, this.defaultTemplate);
-
+  
   canvas;
   background: any;
   safeArea: any;
   printArea: any;
   currentTab = 'settings';
   currentTabIndex = 0;
-
+  
   viewSide: 'front' | 'back' = 'front';
-
+  
   userData: any;
-
+  
   loadingFonts: boolean;
   fonts: string[];
-
+  
+  past = [];
+  present;
+  future = [];
+  disableHistory = true;
+  
   get selection() {
     if (this.canvas) {
       // console.log(this.canvas.getActiveObject());
@@ -99,12 +104,16 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
+    this.disableHistory = true;
     this.canvas = fabric.canvas = new fabric.Canvas('canvas', {
       width: this.view.nativeElement.clientWidth,
       height: this.view.nativeElement.clientHeight,
       preserveObjectStacking: true,
       backgroundColor: '#fff'
     });
+
+    this.present = this.canvas.toJSON(['isHidden', 'isBoundBox', 'isBackground', 'selectable', 'hasControls', 'textContentType', 'textUserData',
+    'textFieldName', 'userEditable', 'isLogo', 'logoType']);
 
     fabric.Object.prototype.set({
       borderColor: '#12C463',
@@ -136,12 +145,21 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
     // Fix rectangle scaling
     this.canvas.on('object:modified', (event) => {
       if (event.target.type === 'rect') {
-        event.target.width *= event.target.scaleX;
-        event.target.height *= event.target.scaleY;
+        event.target.width = Math.floor(event.target.width * event.target.scaleX);
+        event.target.height = Math.floor(event.target.height * event.target.scaleY);
         event.target.scaleX = 1;
         event.target.scaleY = 1;
         this.forceRender(event.target);
       }
+      this.saveUndo();
+    });
+
+    this.canvas.on('object:added', (event) => {
+      this.saveUndo();
+    });
+
+    this.canvas.on('object:removed', (event) => {
+      this.saveUndo();
     });
 
     // Auto-align object when dragged
@@ -262,16 +280,21 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
 
     // initialize the canvas
     this.clearCanvas();
+    this.past = [];
   }
 
+  
   /**
    * Deletes all content and clears the canvas, then recreates the bounding box.
    */
   clearCanvas() {
+    this.disableHistory = true;
     this.canvas.clear();
     const base = this.factory.createProductBase(this.canvas);
     Object.assign(this, base);
     this.refreshCanvasSize();
+    this.disableHistory = false;
+    this.saveUndo();
   }
 
   /** 
@@ -292,24 +315,59 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
       height: productType.height * productSpecs.dpi
     });
 
-    console.log(productType.width);
-    console.log(productType.height);
-
     this.canvas.centerObject(this.background);
     this.canvas.centerObject(this.safeArea);
     this.canvas.centerObject(this.printArea);
     this.canvas.renderAll();
   }
 
+  saveUndo() {
+    if (this.disableHistory) return;
+    this.past.push(this.present);
+    this.present = this.canvas.toJSON(['isHidden', 'isBoundBox', 'isBackground', 'selectable', 'hasControls', 'textContentType', 'textUserData',
+    'textFieldName', 'userEditable', 'isLogo', 'logoType']);
+    this.future = [];
+  }
+
+  undo() {
+    if (this.past.length > 0) {
+      this.future.unshift(this.present);
+      this.present = this.past.pop();
+      this.disableHistory = true;
+      this.canvas.loadFromJSON(this.present, _ => {
+        this.background = this.canvas.getObjects('rect').filter(obj => obj.isBackground)[0];
+        this.disableHistory = false;
+      });
+    }
+  }
+
+  redo() {
+    if (this.future.length > 0) {
+      this.past.push(this.present);
+      this.present = this.future.shift();
+      this.disableHistory = true;
+      this.canvas.loadFromJSON(this.present, _ => {
+        this.background = this.canvas.getObjects('rect').filter(obj => obj.isBackground)[0];
+        this.disableHistory = false;
+      });
+    }
+  }
+
+  addColor() {
+    this.template.presetColors.push(this.selection.fill);
+  }
+
   setViewSide(side: 'front' | 'back') {
     const lastSide = this.viewSide;
     this.viewSide = side;
     this.template[lastSide] = this.canvas.toJSON(['isHidden', 'isBoundBox', 'isBackground', 'selectable', 'hasControls', 'textContentType', 'textUserData',
-    'textFieldName', 'userEditable', 'isLogo', 'logoType']);
+      'textFieldName', 'userEditable', 'isLogo', 'logoType']);
     console.log(this.template);
     this.clearCanvas();
     if (this.template[this.viewSide]) {
-      this.canvas.loadFromJSON(this.template[this.viewSide]);
+      this.canvas.loadFromJSON(this.template[this.viewSide], _ => {
+        this.saveUndo();
+      });
     }
   }
 
@@ -326,7 +384,7 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
       return;
     }
     this.template[this.viewSide] = this.canvas.toJSON(['isHidden', 'isBoundBox', 'isBackground', 'selectable', 'hasControls', 'textContentType', 'textUserData',
-    'textFieldName', 'userEditable', 'isLogo', 'logoType']);
+      'textFieldName', 'userEditable', 'isLogo', 'logoType']);
     const canvasData = {
       front: this.template.front,
       back: this.template.back
@@ -392,12 +450,14 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
   }
 
   loadTemplate(template: any) {
+    this.disableHistory = true;
     this.template = template;
     this.viewSide = 'front';
     this.storage.getFile(template.url).take(1).subscribe(data => {
       console.log(data);
       this.canvas.loadFromJSON(template['front'], _ => {
         this.background = this.canvas.getObjects('rect').filter(obj => obj.isBackground)[0];
+        this.disableHistory = false;
       });
     });
   }
@@ -405,7 +465,7 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
   colorPickerChange(event) {
     if (this.selection.type === 'group') {
       this.selection.forEachObject(obj => {
-        if (obj.type === 'i-text') {
+        if (obj.type === 'textbox') {
           obj.set({ fill: event });
           this.forceRender(obj);
         } else {
@@ -414,7 +474,7 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
       });
     } else if (this.selection.type === 'rect') {
       this.selection.set({ backgroundColor: event });
-    } else if (this.selection.type === 'i-text') {
+    } else if (this.selection.type === 'textbox') {
       this.forceRender(this.selection);
     } else if (this.selection.type === 'path') {
       this.selection.set({ fill: event });
@@ -439,7 +499,7 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
   onBgColorChange(event) {
     const color = new fabric.Color(event);
     this.background.set({
-      fill: '#' + color.toHexa()
+      fill: '#' + color.toHexa().split('.')[0]
     });
     this.canvas.renderAll();
   }
@@ -448,6 +508,7 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
     // bind the opacity to the color
     this.selection.shadow.opacity = new fabric.Color(this.selection.shadow.color).getAlpha();
     this.canvas.renderAll();
+    this.saveUndo();
   }
 
   forceRender(obj) {
@@ -546,18 +607,21 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
     const isBold = this.getStyle(this.selection, 'fontWeight') === 'bold';
     this.setStyle(this.selection, 'fontWeight', isBold ? '' : 'bold');
     this.forceRender(this.selection);
+    this.saveUndo();
   }
 
   toggleItalics() {
     const isItalic = this.getStyle(this.selection, 'fontStyle') === 'italic';
     this.setStyle(this.selection, 'fontStyle', isItalic ? '' : 'italic');
     this.forceRender(this.selection);
+    this.saveUndo();
   }
 
   toggleUnderline() {
     const isUnderline = (this.getStyle(this.selection, 'textDecoration') || '').indexOf('underline') > -1;
     this.setStyle(this.selection, 'textDecoration', isUnderline ? '' : 'underline');
     this.forceRender(this.selection);
+    this.saveUndo();
   }
 
   changeLogoType() {

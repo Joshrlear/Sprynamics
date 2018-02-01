@@ -34,12 +34,12 @@ export class ObjectFactoryService {
     canvas.add(obj).setActiveObject(obj);
     if (center) canvas.centerObject(obj);
     obj.stateProperties.push('isHidden', 'isBoundBox', 'isBackground', 'selectable', 'hasControls', 'textContentType', 'textUserData',
-      'textFieldName', 'userEditable', 'isLogo', 'logoType');
+      'textFieldName', 'userEditable', 'isLogo', 'logoType', 'isUserData');
     return obj;
   }
 
   createText(canvas) {
-    const text = new fabric.IText('Type text here...', {
+    const text = new fabric.Textbox('Type text here...', {
       left: 50,
       top: 50,
       width: 150,
@@ -147,6 +147,19 @@ export class ObjectFactoryService {
         this.addObject(img, canvas);
       }, { crossOrigin: 'Anonymous' });
     return logo;
+  }
+
+  createUserImage(canvas) {
+    const userImage = new fabric.Image.fromURL('/assets/300x250.png',
+      (img) => {
+        img.scaleToHeight(250);
+        img.isUserImage = true;
+
+        img.toObject = this.extendFabricObject(img, ['isUserImage']);
+
+        this.addObject(img, canvas);
+      }, { crossOrigin: 'Anonymous' });
+    return userImage;
   }
 
   createClone(obj: any, canvas) {

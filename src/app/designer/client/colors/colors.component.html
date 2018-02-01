@@ -1,11 +1,14 @@
 <div class="color-container">
   <div class="color wide" [style.background]="bgColor" [colorPicker]="bgColor" [cpCancelButton]="true" [cpOKButton]="true"
-    cpAlphaChannel="always" (colorPickerChange)="onBgColorChange($event)">
+    cpAlphaChannel="always" (colorPickerChange)="onBgColorChange($event)" (cpSliderDragEnd)="onChange()">
     <div class="color-title">Background Color</div>
   </div>
   <ng-container *ngFor="let color of colors; let i=index; trackBy: trackColors">
     <div class="color" [style.background]="color" [colorPicker]="colors[i]" [cpCancelButton]="true" [cpOKButton]="true" cpAlphaChannel="always"
-      (colorPickerChange)="onColorChange($event, i)">
+      (colorPickerChange)="onColorChange($event, i)" (cpSliderDragEnd)="onChange()">
     </div>
   </ng-container>
+  <div *ngIf="showAddButton" class="color add" (click)="onAddColor()">
+    <mat-icon>add</mat-icon>
+  </div>
 </div>
