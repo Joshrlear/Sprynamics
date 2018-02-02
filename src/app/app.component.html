@@ -42,7 +42,7 @@
               </ng-container>
               <ng-template #loggedIn>
                 <div class="dropdown-container" ngbDropdown>
-                  <a class="top-menu-account" id="account-dropdown" ngbDropdownToggle><i class="fas fa-user" style="margin-right: 6px;"></i> {{ ((user.firstName||'') + ' ' + (user.lastName||'')) ||'Your Account' }} </a>
+                  <a class="top-menu-account" id="account-dropdown" ngbDropdownToggle><i class="fas fa-user" style="margin-right: 6px;"></i> {{ (user.firstName||'') + ' ' + (user.lastName||'') }} Your Account</a>
                   <div ngbDropdownMenu aria-labelledby="account-dropdown">
                       <button class="dropdown-item" routerLink="/profile">Your Profile</button>
                       <button class="dropdown-item" (click)="logout()" routerLink="/">Logout</button>
