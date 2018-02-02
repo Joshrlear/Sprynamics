@@ -413,7 +413,7 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
       width: 150,
       fontSize: 20,
       fontFamily: 'Roboto',
-      hasRotatingPoint: false,
+      hasRotatingPoint: true,
       textContentType: 'plain', // custom
       textUserData: 'name', // custom
       userEditable: false, // custom
@@ -447,7 +447,7 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
       width: 150,
       fontSize: 20,
       fontFamily: 'Roboto',
-      hasRotatingPoint: false,
+      hasRotatingPoint: true,
       textContentType: 'plain', // custom
       textUserData: 'name',    // custom
       userEditable: false,    // custom
@@ -469,16 +469,27 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
     this.canvas.add(textbox).setActiveObject(textbox);
   }
 
-  addShape() {
-    const shape = new fabric.Rect({
+  addRect() {
+    const rect = new fabric.Rect({
       width: 200,
       height: 200,
       fill: '#00e676',
-      hasRotatingPoint: false
+      hasRotatingPoint: true
     });
 
-    shape.setShadow(this.defaultShadow);
-    this.canvas.add(shape).setActiveObject(shape);
+    rect.setShadow(this.defaultShadow);
+    this.canvas.add(rect).setActiveObject(rect);
+  }
+
+  addLine() {
+    const line = new fabric.Lin({
+      width: 200,
+      stroke: '#00e676',
+      hasRotatingPoint: true
+    })
+
+    line.setShadow(this.defaultShadow);
+    this.canvas.add(line).setActiveObject(line);
   }
 
   addLogo() {

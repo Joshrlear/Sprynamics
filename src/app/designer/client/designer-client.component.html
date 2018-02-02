@@ -10,17 +10,31 @@
         <button mat-icon-button routerLink="/products" [queryParams]="{product: productSizes[size]?.product}">
           <mat-icon>arrow_back</mat-icon>
         </button>
+        <div>
+          <button class="btn" *ngIf="template" (click)="openTemplateDialog()">
+            Change Design
+          </button>
+          <button class="btn green-btn" (click)="addToCart()">
+            Add to Cart
+          </button>
+        </div>
       </div>
       <div class="form">
-        <h2>{{ productSizes[size]?.name }}</h2>
-        <h6>{{ productSizes[size]?.width + ' x ' + productSizes[size]?.height  + ' in.'}}</h6>
-        <ng-container *ngFor="let field of formFields">
-          <input type="text" [placeholder]="field.name" [(ngModel)]="field.obj.text" (input)="canvas.renderAll()">
+        <div>
+          <span class="product-type">{{ productSizes[size]?.name }}</span>
+          &nbsp;
+          <span class="product-size">{{ productSizes[size]?.width + ' x ' + productSizes[size]?.height + ' in.'}}</span>
+        </div>
+        <ng-container *ngFor="let field of formFields; let i = index">
+          <div class="form-field">
+            <label [for]="'field'+i">{{field.name}}</label>
+            <input [id]="'field'+i" class="form-control" type="text" [placeholder]="field.name" [(ngModel)]="field.obj.text" (input)="canvas.renderAll()">
+          </div>
         </ng-container>
       </div>
     </div>
     <div #designerView class="designer-view">
-      <button mat-raised-button color="primary" class="choose-design-button" *ngIf="!template" (click)="openTemplateDialog()">
+      <button class="btn green-btn choose-design-button" *ngIf="!template" (click)="openTemplateDialog()">
         Choose A Design
       </button>
       <canvas id="canvas" class="designer-canvas"></canvas>
