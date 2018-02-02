@@ -13,6 +13,8 @@ import { Observable } from 'rxjs/Observable';
 })
 export class DashboardComponent implements OnInit {
 
+  
+  isSideNavDash = true;
   editing = false;
   error: string;
 

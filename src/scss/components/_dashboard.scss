@@ -1,0 +1,251 @@
+.dashboard-container {
+    width: 100%;;
+    min-height: calc(100vh - 80px);
+    margin-top: 80px;
+    background-color: #f1f1f1;
+    position: relative;
+}
+
+.dashboard-content {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    padding: 24px;
+    flex-direction: column;
+}
+
+.dashboard-sidebar {
+    background-color: #34383e;
+    width: 264px;
+    height: 100%;
+    position: fixed;
+    top: 64px;
+    left: 0;
+    bottom: 0;
+}
+
+.sidebar-account {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 24px;
+    flex-direction: column;
+
+    img {
+        border-radius: 4px;
+    }   
+}
+
+.account-name {
+    padding: 24px 24px 6px 24px;
+
+    p {
+        color: rgba(255,255,255,1);
+        font-size: 20px;
+        font-weight: 400;
+        margin: 0;
+    }
+}
+
+.account-email {
+    padding: 0 24px;
+
+    p {
+        color: rgba(255,255,255,.54);
+        font-weight: 500;
+        font-size: 12px;
+        margin: 0;
+    }
+}
+
+.account-settings {
+    p {
+        margin: 1rem 0 0 0;
+        font-size: 12px;
+        color: #fff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    mat-icon {
+        color: #9ac2ff;
+        color: #73d29f;
+        font-size: 18px;
+        height: 18px;
+    }
+}
+
+.divider {
+    border-bottom: 1px solid rgba(0,0,0,.26);
+}
+
+.design {
+    margin: 24px 0;
+    padding: 0 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    a {
+        background-color: #40b8ff;
+        background-color: #6899e3;
+        background-color: #71dfa4;
+        background-color: #12c463;
+    box-shadow: 0 0.25rem 0.125rem rgb(22, 120, 67);
+        color: #fff;
+        border-radius: 4px;
+        width: 100%;
+        padding: 8px;
+
+        &:hover {
+            text-decoration: none;
+        }
+    }
+}
+
+.sidebar-nav {
+    list-style-type: none;
+    padding: 0;
+    margin: 24px 0;
+
+    li {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        padding: 0 24px;
+        margin: 6px 0;
+    }
+
+    a {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        color: #fff;
+        text-transform: uppercase;
+        font-size: 12px;
+        font-family: 'Roboto';
+        font-weight: 600;
+        padding: 12px;
+        border-radius: 4px;
+
+        &:hover, &:active {
+            text-decoration: none;
+            background-color: rgba(255,255,255,.1);
+            color: #7ed9a8;
+        }
+    }
+}
+
+.account-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 80%;
+
+    a, span {
+        color: #6ed69e;
+        font-size: 14px;
+    }
+}
+
+.account-action {
+    width: 64px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.dashboard-panel {
+    width: 100%;
+    background-color: #fff;
+    height: 100%;
+    border-radius: 4px;
+}
+
+.dashboard-card {
+    background-color: #fff;
+    box-shadow: 0 2px 2px #eee;
+    border-radius: 4px;
+    width: 100%;
+    height: auto;
+    margin-bottom: 24px;
+    padding: 24px;
+}
+
+.dashboard-card-heading {
+    font-size: 18px;
+    color: #34383e;
+    font-weight: 600;
+    letter-spacing: .5px;
+}
+
+label {
+    color: rgba(52, 56, 62, 0.54);
+    font-weight: 500;
+}
+
+.form-control {
+    background-color: rgba(52, 56, 62, 0.05);
+    border: 1px solid rgba(52, 56, 62, 0.05);
+}
+
+.form-control:focus {
+    border-color: transparent;
+    box-shadow: 0 0 0 2px rgba(104, 153, 227, 0.18);
+}
+
+.form-action {
+    display: flex;
+    height: 64px;
+    width: 100%;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.dashboard-button {
+    background-color: #6899e3 !important;
+    color: #fff !important;
+}
+
+.profile-photo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    flex-direction: column;
+
+    img {
+        border-radius: 4px;
+    }
+    p {
+        padding: 24px 0 0 0;
+        text-align: center;
+        font-size: 18px;
+        color: #34383e;
+        font-weight: 600;
+        letter-spacing: .5px;
+    }
+    // button {
+    //     background-color: #52c69f !important;
+    //     color: #fff !important;
+    // }
+}
+
+.dashboard-footer {
+    height: 220px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    button {
+        background-color: #34383e;
+        color: #fff;
+        padding: 8px 32px;
+        border-radius: 4px;
+    }
+}

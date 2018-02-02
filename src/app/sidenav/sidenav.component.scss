@@ -1,0 +1,117 @@
+.sidebar-account {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 24px;
+    flex-direction: column;
+
+    img {
+        border-radius: 4px;
+    }   
+}
+
+.account-name {
+    padding: 24px 24px 6px 24px;
+
+    p {
+        color: rgba(255,255,255,1);
+        color: rgba(0,0,0,.87);
+        font-size: 20px;
+        font-weight: 400;
+        margin: 0;
+    }
+}
+
+.account-email {
+    padding: 0 24px;
+
+    p {
+        color: rgba(255,255,255,.54);
+        color: rgba(0,0,0,.54);
+        font-weight: 600;
+        font-size: 12px;
+        margin: 0;
+    }
+}
+
+.account-settings {
+    p {
+        margin: 1rem 0 0 0;
+        font-size: 12px;
+        color: #fff;
+        color: rgba(0,0,0,.87);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    mat-icon {
+        color: #9ac2ff;
+        color: #73d29f;
+        font-size: 18px;
+        height: 18px;
+    }
+}
+
+.divider {
+    border-bottom: 3px solid rgba(0,0,0,.1);
+}
+
+.design {
+    margin: 24px 0;
+    padding: 0 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    a {
+        background-color: #40b8ff;
+        background-color: #6899e3;
+        background-color: #71dfa4;
+        background-color: #12c463;
+    box-shadow: 0 0.25rem 0.125rem rgb(22, 120, 67);
+        color: #fff;
+        border-radius: 4px;
+        width: 100%;
+        padding: 8px;
+
+        &:hover {
+            text-decoration: none;
+        }
+    }
+}
+
+.sidebar-nav {
+    list-style-type: none;
+    padding: 0;
+    margin: 24px 0;
+
+    li {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        padding: 0 24px;
+        margin: 6px 0;
+    }
+
+    a {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        color: #fff;
+        text-transform: uppercase;
+        font-size: 12px;
+        font-family: 'Roboto';
+        font-weight: 600;
+        padding: 12px;
+        border-radius: 4px;
+
+        &:hover, &:active {
+            text-decoration: none;
+            background-color: rgba(255,255,255,.1);
+            color: #7ed9a8;
+        }
+    }
+}
