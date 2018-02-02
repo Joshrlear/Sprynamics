@@ -1,63 +1,95 @@
-import { Component, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, QueryList, ViewChild, ViewChildren, ElementRef, HostBinding, HostListener } from '@angular/core';
+import { RouterModule, Routes, Router } from '@angular/router';
 import { AuthService } from './core/auth.service';
+import { MatSidenav } from '@angular/material/sidenav';
 
-import * as $ from 'jquery';
+import { Observable } from 'rxjs/Observable';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { combineLatest } from 'rxjs/observable/combineLatest';
+import 'rxjs/add/operator/first';
+
+import { NavigationService } from './navigation.service';
+
+
+const sideNavView = 'SideNav';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
-  title = 'app';
+export class AppComponent implements OnInit {
 
-  constructor(public auth: AuthService) { }
+  @HostBinding('class')
+  hostClasses = '';
+  
+  isFetching = false;
+  isStarting = true;
+  isTransitioning = true;
+  isSideBySide = false;
+  private isFetchingTimeout: any;
+  isSideNavDash = false;
+
+  private sideBySideWidth = 992;
+
+  get isOpened() { return this.isSideBySide && this.ns.isSideNavDash; }
+  get mode() { return this.isSideBySide ? 'side' : 'over'; }
+
+  @ViewChild(MatSidenav)
+  sidenav: MatSidenav;
+
+  constructor(public auth: AuthService, private ns: NavigationService, private router: Router ) { }
 
   public logout() {
     this.auth.logout();
   }
 
+  ngOnInit() {
+    this.onResize(window.innerWidth);
+  }
+
+  @HostListener('window:resize', ['$event.target.innerWidth'])
+  onResize(width: number) {
+    this.isSideBySide = width > this.sideBySideWidth;
+
+    if (this.isSideBySide && !this.ns.isSideNavDash) {
+      // If this is a non-sidenav doc and the screen is wide enough so that we can display menu
+      // items in the top-bar, ensure the sidenav is closed.
+      // (This condition can only be met when the resize event changes the value of `isSideBySide`
+      //  from `false` to `true` while on a non-sidenav doc.)
+      this.sideNavToggle(false);
+    }
+  }
+
+
+  sideNavToggle(value?: boolean) {
+    this.sidenav.toggle(value);
+  }
+
+  updateHostClasses() {
+    const sideNavOpen = `sidenav-${this.sidenav.opened ? 'open' : 'closed'}`;
+
+    this.hostClasses = [
+      sideNavOpen,
+    ].join(' ');
+  }
+
+  updateSideNav() {
+    // Preserve current sidenav open state by default.
+    let openSideNav = this.sidenav.opened;
+    const isSideNavDash = !!this.ns.isSideNavDash;
+
+    if (this.ns.isSideNavDash !== isSideNavDash) {
+      // View type changed. Is it now a sidenav view (e.g, guide or tutorial)?
+      // Open if changed to a sidenav doc; close if changed to a marketing doc.
+      openSideNav = this.ns.isSideNavDash = isSideNavDash;
+    }
+    // May be open or closed when wide; always closed when narrow.
+    this.sideNavToggle(this.isSideBySide && openSideNav);
+  }
+
   ngAfterViewInit() {
 
-    //   // Add smooth scrolling to all links
-    //   $("a").on('click', function(event) {
-    
-    //     // Make sure this.hash has a value before overriding default behavior
-    //     if (window.location.hash !== "") {
-    //       // Prevent default anchor click behavior
-    //       event.preventDefault();
-    
-    //       // Store hash
-    //       var hash = window.location.hash;
-
-    
-    //       // Using jQuery's animate() method to add smooth page scroll
-    //       // The optional number (800) specifies the number of milliseconds it takes to scroll to the specified area
-    //       $('html, body').animate({
-    //         scrollTop: $(hash).offset().top
-    //       }, 800, function(){
-       
-    //         // Add hash (#) to URL when done scrolling (default click behavior)
-    //         window.location.hash = hash;
-    //       });
-    //     } // End if
-    //   });
-    
-
-    // window.onscroll = function() {scrollFunction()};
-
-    //   function scrollFunction() {
-    //       if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-    //           document.getElementById("scrollTop").style.display = "block";
-    //       } else {
-    //           document.getElementById("scrollTop").style.display = "none";
-    //       }
-    //   }
-
-    //   $("a[href='#']").click(function() {
-    //     $("html, body").animate({ scrollTop: 0 }, 800);
-    //     return false;
-    //     });
   }
 
   

@@ -1,0 +1,127 @@
+.account-card {
+    padding: 24px;
+    min-width: 500px;
+    min-height: 400px;
+    background-color: #fff;
+    border-radius: 6px;
+    box-shadow: 0 0.25rem 0.125rem 0 rgba(0,0,0,.05);
+    z-index: 1;
+
+    .header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        flex-direction: column;
+    }
+}
+
+.or {
+    border-top: 1px solid #f2f2f2;
+    margin: 32px 0;
+    position: relative;
+}
+
+.or:after {
+    background: #fff;
+    content: 'OR';
+    color: #a0a0a0;
+    font-size: 12px;
+    line-height: 1;
+    left: 50%;
+    margin: -.6em 0 0 -1em;
+    padding: 0 .5em;
+    position: absolute;
+    top: 0;
+}
+
+.sml {
+    margin: 32px 0 16px 0;
+
+    a {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 4px;
+        color: #fff;
+        text-decoration: none;
+        min-height: 48px;
+    }
+
+    svg {
+        margin-right: 12px;
+    }
+
+    .facebook {
+        background-color: #5283e5;
+    }
+
+    .google {
+        background-color: #ff3f3f;
+    }
+}
+
+
+// Forms 
+
+label {
+    color: rgba(52, 56, 62, 0.54);
+    font-weight: 500;
+}
+
+.form-control {
+    background-color: rgba(52, 56, 62, 0.05);
+    border: 1px solid rgba(52, 56, 62, 0.05);
+}
+
+.form-control:focus {
+    background-color: #fff;
+    border-color: transparent;
+    box-shadow: 0 0 0 2px rgba(18, 196, 99, .25);
+}
+
+.form-action {
+    display: flex;
+    height: 64px;
+    width: 100%;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 0 8px;
+    margin: 12px 0;
+}
+
+.form-tip {
+    padding: 12px 12px 0;
+    color: red;
+}
+
+.submit {
+    width: 100%;
+    border-radius: 4px !important;
+    font-size: 20px !important;
+    box-shadow: 0 0.25rem 0.125rem #167843;
+    background-color: #12c463 !important;
+    color: #fff !important;
+    min-height: 48px;
+
+    svg {
+        margin-left: 6px;
+        margin-bottom: 3px;
+    }
+}
+
+.change-method {
+    height: 64px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    p {
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}

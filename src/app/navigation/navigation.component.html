@@ -26,6 +26,9 @@
 <div class="navbar">
   <div class="navbar-row_inner">
     <div class="navbar-left">
+        <button mat-button class="hamburger" (click)="sidenav.toggle()" title="Docs menu">
+            <mat-icon>menu</mat-icon>
+          </button>
       <a [routerLink]="['/']">
         <img src="assets/logo.png" (click)="smoothScroll('home')" style="width: 140px;">
       </a>

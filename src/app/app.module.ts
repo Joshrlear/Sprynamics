@@ -14,7 +14,7 @@ import { AppRoutingModule } from './app-routing.module';
 
 import { AppComponent } from './app.component';
 import { SignupComponent } from './signup/signup.component';
-import { LoginComponent } from './login/login.component';
+// import { LoginComponent } from './login/login.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { HomeComponent } from './home/home.component';
 import { DesignerAdminComponent } from './designer/admin/designer-admin.component';
@@ -26,6 +26,16 @@ import { CartComponent } from './cart/cart.component';
 
 import { ButtonsModule } from 'ngx-bootstrap';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { TabsModule } from 'ngx-bootstrap';
+
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import { NavigationService } from './navigation.service';
+import { SidenavComponent } from './sidenav/sidenav.component';
+import { ProfileComponent } from './dashboard/profile/profile.component';
+import { DesignComponent } from './dashboard/design/design.component';
+import { AccountComponent } from './account/account.component';
+import { LoginComponent } from './account/login/login.component';
+import { RegisterComponent } from './account/register/register.component';
 import { ObjectFactoryService } from './designer/object-factory.service';
 import { BreadcrumbsComponent } from './breadcrumbs/breadcrumbs.component';
 import { TextComponent } from './designer/client/text/text.component';
@@ -48,6 +58,10 @@ import { ScrollService } from './core/scroll.service';
     ProductsComponent,
     CheckoutComponent,
     CartComponent,
+    SidenavComponent,
+    ProfileComponent,
+    DesignComponent,
+    AccountComponent,
     BreadcrumbsComponent,
     TextComponent,
     PhotosComponent,
@@ -60,6 +74,8 @@ import { ScrollService } from './core/scroll.service';
     BrowserAnimationsModule,
     BsDropdownModule.forRoot(),
     ButtonsModule.forRoot(),
+    TabsModule.forRoot(),
+    NgbModule.forRoot(),
     FormsModule,
     ReactiveFormsModule,
     CoreModule,
@@ -72,6 +88,7 @@ import { ScrollService } from './core/scroll.service';
   ],
   entryComponents: [
   ],
+  providers: [NavigationService],
   providers: [ObjectFactoryService, ScrollService],
   bootstrap: [AppComponent]
 })

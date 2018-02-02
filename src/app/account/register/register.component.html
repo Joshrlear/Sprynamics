@@ -1,0 +1,53 @@
+<div class="account-card">
+    <div class="header">
+      <img src="assets/logo.png" height="52" alt="Sprynamics">
+    </div>
+    <div class="sml">
+      <div class="row">
+        <div class="col-xs-6">
+          <a class="facebook" mat-button><i class="fab fa-facebook fa-2x"></i><span>Sign in with Facebook</span></a>
+        </div>
+        <div class="col-xs-6">
+          <a class="google" mat-button><i class="fab fa-google-plus-g fa-2x"></i>Sign in with Google</a>
+        </div>
+      </div>
+    </div>
+    <div class="or"></div>
+    <ng-container *ngIf="(auth.user | async) || {} as user">
+    <form [formGroup]="signupForm" (ngSubmit)="submitSignup()" autocomplete="on">
+      <div class="form-group col-xs-12">
+        <input type="email" class="form-control" id="email" placeholder="Email address" name="email" formControlName="email" autocomplete="email">
+        <div class="form-tip" *ngIf="email.invalid && (email.dirty || failedSubmit)">
+            Invalid e-mail address
+          </div>
+      </div>
+      <div class="form-group col-xs-12">
+        <input type="password" class="form-control" id="password" placeholder="Password" name="password" formControlName="password">
+        <div class="form-tip" *ngIf="password.invalid && (password.touched || failedSubmit)">
+          Password must be between 6 and 24 characters.
+        </div>
+      </div>
+      <div class="form-group col-xs-12">
+        <input type="password" class="form-control" id="password" placeholder="Confirm password"  formControlName="confirmPassword">
+        <div class="form-tip" *ngIf="confirmPassword.dirty && password.value !== confirmPassword.value">
+          Passwords do not match.
+        </div>
+      </div>
+      <!-- reCaptcha -->
+      <div class="captcha form-group col-xs-12">
+        <re-captcha (resolved)="captchaResolved($event)" siteKey="6Lel6z8UAAAAAItIoI3sax90GuUz1auqg8AadrlT" formControlName="recaptcha"></re-captcha>
+        <div class="form-tip" *ngIf="recaptcha.invalid && failedSubmit">
+          Please complete the captcha to sign up.
+        </div>
+      </div>
+      
+      <div class="form-action">
+        <button type="submit" class="submit" mat-button>Sign Up <i class="fas fa-arrow-right"></i></button>
+      </div>
+      <div class="change-method">
+          <p>Already a member? <button routerLink="/account/login" class="btn btn-link">Sign In</button></p>
+        </div>
+    </form>
+  </ng-container>
+
+  </div>
