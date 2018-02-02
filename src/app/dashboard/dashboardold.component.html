@@ -1,0 +1,212 @@
+<div class="dashboard-container">
+
+  <div class="dashboard-row row">
+    <div class="col-xs-3 col">
+      <div class="dashboard-sidebar">
+
+      </div>
+    </div>
+    <div class="col-xs-9 col">
+      <div class="dashboard-panel">
+        <div class="dashboard-panel-header">
+          <p>Welcome, Royce!</p>
+        </div>
+        <ngb-tabset justify="fill">
+            <ngb-tab title="General">
+              <ng-template ngbTabContent>
+                <p>TabContent1</p>
+              </ng-template>
+            </ngb-tab>
+            <ngb-tab title="Pictures">
+              <ng-template ngbTabContent>
+                <p>TabContent2</p>
+              </ng-template>
+            </ngb-tab>
+          </ngb-tabset>
+      </div>
+    </div>
+  </div>
+
+
+
+    <div class="dashboard-container_inner">
+    <div class="dashboard">
+      <div class="dashboard-inner">
+          <ng-container *ngIf="(auth.user | async) as user">
+            <div class="dashboard-inner_row">
+              <div class="dashboard-inner_column picture-section">
+                  <div class="dashboard-inner_row">
+      
+                    <div class="picture-container">
+                      <img style="vertical-align:top; width:96px;" src="{{ user.avatarUrl || 'https://via.placeholder.com/96x96' }}">
+                    </div>
+                    <div class="picture-details">
+                      <p>Profile Picture</p>
+                      <input #avatarInput type="file" (change)="uploadAvatar(user, avatarInput.files[0])" hidden>
+                      <button class="btn btn-link edit-picture_btn" type="button" (click)="avatarInput.click()">Change Profile Picture</button>
+                    </div>
+                    
+                    
+                  </div>
+                  <div class="dashboard-inner_row">
+                    
+                      <div class="picture-container">
+                          <img style="vertical-align:top; height: 72px;" src="{{ user.companyLogoUrl || 'https://via.placeholder.com/128x72' }}">
+                      </div>
+                      <div class="picture-details">
+                        <p>Company Logo</p>
+                        <input #companyLogoInput type="file" (change)="uploadCompany(user, companyLogoInput.files[0])" hidden>
+                        <button class="btn btn-link edit-picture_btn" type="button" (click)="companyLogoInput.click()">Change Company Logo</button>
+                      </div>
+                      
+                      
+                    </div>
+                    <div class="dashboard-inner_row">
+                     
+                        <div class="picture-container">
+                            <img style="vertical-align:top; height: 72px;" src="{{ user.brokerageLogoUrl || 'https://via.placeholder.com/128x72' }}">
+                        </div>
+                        <div class="picture-details">
+                          <p>Brokerage Logo</p>
+                          <input #brokerageLogoInput type="file" (change)="uploadBrokerage(user, brokerageLogoInput.files[0])" hidden>
+                          <button class="btn btn-link edit-picture_btn" type="button" (click)="brokerageLogoInput.click()">Change Brokerage Logo</button>
+                        </div>                  
+                      </div>
+                </div>
+                <div class="dashboard-inner_column user-details">
+                  <div class="dashboard-inner_row">
+                      <h3>Welcome<ng-container *ngIf="user.firstName">, {{user.firstName}}</ng-container>!</h3>
+                  </div>
+                  <div class="dashboard-inner_row">
+                    <div class="dashboard-inner_column">
+                        <ng-container *ngIf="!editing && user.firstName; else editForm">
+                          <div class="edit-details_container">
+                              <button class="btn btn-sm edit-details_btn" (click)="edit()">Edit User Details</button>
+                          </div>
+                            
+                        
+                            <div class="user-detail_row">
+                              <p class="user-detail_label">Email:</p>
+                              <p class="user-detail_detail">{{ user.email }}</p>
+                            </div>
+                            <div class="user-detail_row">
+                              <p class="user-detail_label">Name:</p>
+                              <p class="user-detail_detail">{{ (user.firstName||'') + ' ' + (user.lastName||'') }}</p> 
+                            </div>
+                            <div class="user-detail_row">
+                                <p class="user-detail_label">Address:</p>
+                                <p class="user-detail_detail">{{ (user.address1||'') + ' ' + (user.address2||'') }}</p> 
+                              </div>
+                              <div class="user-detail_row">
+                                  <p class="user-detail_label">City:</p>
+                                  <p class="user-detail_detail">{{ user.city }}</p> 
+                                </div>
+                                <div class="user-detail_row">
+                                    <p class="user-detail_label">State:</p>
+                                    <p class="user-detail_detail">{{ user.state }}</p> 
+                                  </div>
+                                  <div class="user-detail_row">
+                                      <p class="user-detail_label">Country:</p>
+                                      <p class="user-detail_detail">{{ user.country }}</p> 
+                                    </div>
+                                    <div class="user-detail_row">
+                                        <p class="user-detail_label">Company Name:</p>
+                                        <p class="user-detail_detail">{{ user.company }}</p> 
+                                      </div>
+                                      <div class="user-detail_row">
+                                          <p class="user-detail_label">License ID:</p>
+                                          <p class="user-detail_detail">{{ user.licenseId }}</p> 
+                                        </div>
+                          
+                        
+                          </ng-container>
+                        
+                          <ng-template #editForm>
+                            
+                            <form [formGroup]="userForm" (ngSubmit)="save(user)">
+                                <div class="edit-details_container">
+                              <button class="btn btn-sm edit-details_btn" type="submit">Save Changes</button>
+                              </div>
+                              <div class="form-group">
+                                  <label class="user-detail_label" for="email">Email:</label>
+                                  <input class="form-control"  placeholder="Enter email" type="email" formControlName="email" value="{{user.email}}">
+                              </div>
+                              <div class="form-group">
+                                  <label class="user-detail_label" for="firstName">First Name:</label>
+                                  <input class="form-control"  placeholder="Enter first name" type="text" formControlName="firstName" value="{{user.firstName}}">
+                              </div>
+                              <div class="form-group">
+                                  <label class="user-detail_label" for="lastName">Last Name:</label>
+                                  <input class="form-control"  placeholder="Enter last name" type="text" formControlName="lastName" value="{{user.lastName}}">
+                              </div>
+                              <div class="form-group">
+                                  <label class="user-detail_label" for="address1">Address Line 1:</label>
+                                  <input class="form-control"  placeholder="Enter your address" type="text" formControlName="address1" value="{{user.address1}}">
+                              </div>
+                              <div class="form-group">
+                                  <label class="user-detail_label" for="address2">Address Line 2:</label>
+                                  <input class="form-control" type="text" formControlName="address2" value="{{user.address2}}">
+                              </div>
+                              <div class="form-group">
+                                  <label class="user-detail_label" for="city">City:</label>
+                                  <input class="form-control" type="text" placeholder="Enter your city" formControlName="city" value="{{user.city}}">
+                              </div>
+                              <div class="form-group">
+                                  <label class="user-detail_label" for="state">State:</label>
+                                  <input class="form-control" type="text" placeholder="Enter your state"  formControlName="state" value="{{user.state}}">
+                              </div>
+                              <div class="form-group">
+                                  <label class="user-detail_label" for="country">Country:</label>
+                                  <input class="form-control" type="text" placeholder="Enter your country"  formControlName="country" value="{{user.country}}">
+                              </div>
+                              <div class="form-group">
+                                  <label class="user-detail_label" for="company">Company Name:</label>
+                                  <input class="form-control" type="text" placeholder="Enter your company"  formControlName="company" value="{{user.company}}">
+                              </div>
+                              <div class="form-group">
+                                  <label class="user-detail_label" for="licenseId">License ID:</label>
+                                  <input class="form-control" type="text" placeholder="Enter your license id"  formControlName="licenseId" value="{{user.licenseId}}">
+                              </div>
+                        
+                            </form>
+                        
+                          </ng-template>
+                        
+                          <!-- <ng-container *ngIf="user.admin">
+                        
+                            <h3>Design Templates:</h3>
+                        
+                            <input #templateName type="text" placeholder="Template name">
+                            <button (click)="addTemplate(templateName.value); templateName.value = ''">Create</button>
+                        
+                            <br><br>
+                        
+                            <ng-container *ngFor="let template of templates | async; let i = index;">
+                              Template {{i+1}}: {{template.name}}
+                              <br><br>
+                            </ng-container>
+                        
+                          </ng-container> -->
+                    </div>
+                      
+                  </div>
+                </div>
+              </div>
+
+
+            
+              
+            
+              
+            
+            
+            </ng-container>
+        
+      </div>
+          
+      
+    </div>
+  </div>
+</div>
+
+

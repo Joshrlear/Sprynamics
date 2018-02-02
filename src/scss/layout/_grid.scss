@@ -1,16 +1,3 @@
-.fill {
-  width: 100%;
-  height: 100%;
-}
-
-.fill-width {
-  width: 100%;
-}
-
-.fill-height {
-  height: 100%;
-}
-
 .container-fluid,
 .container {
   margin-right: auto;
@@ -975,4 +962,22 @@
     -ms-flex-order: 1;
     order: 1;
   }
+}
+
+.true {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.fill {
+  width: 100%;
+  height: 100%;
+}
+
+.fill-width {
+  width: 100%;
+}
+
+.fill-height {
+  height: 100%;
 }

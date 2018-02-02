@@ -1,0 +1,31 @@
+<div class="account-card">
+    <div class="header">
+      <img src="assets/logo.png" height="52" alt="Sprynamics">
+    </div>
+    <div class="sml">
+      <div class="row">
+        <div class="col-xs-6">
+          <a class="facebook" mat-button><i class="fab fa-facebook fa-2x"></i><span>Sign in with Facebook</span></a>
+        </div>
+        <div class="col-xs-6">
+          <a class="google" mat-button><i class="fab fa-google-plus-g fa-2x"></i>Sign in with Google</a>
+        </div>
+      </div>
+    </div>
+    <div class="or"></div>
+    <form [formGroup]="loginForm" (ngSubmit)="submitLogin()">
+      <div class="form-group col-xs-12">
+        <input type="email" class="form-control" formControlName="email" id="email" placeholder="Email address">
+      </div>
+      <div class="form-group col-xs-12">
+        <input type="password" class="form-control" formControlName="password" id="password" placeholder="Password">
+      </div>
+      <div class="form-action">
+        <button type="submit" class="submit" [disabled]="!loginForm.valid" mat-button>Sign In <i class="fas fa-arrow-right"></i></button>
+      </div>
+      <div class="change-method">
+        <p>Don't have a Sprynamics account? <button routerLink="/account/register" class="btn btn-link">Sign Up</button></p>
+      </div>
+    </form>
+
+  </div>
