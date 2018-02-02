@@ -492,6 +492,10 @@
     overflow: hidden;
     text-overflow: ellipsis;
     position: relative;
+    transition: transform 0.2s ease-out;
+}
+.social-icon-btn:hover {
+    transform: scale(1.2);
 }
 
 .social-icons i {
@@ -632,10 +636,17 @@ form {
     width: 42px;
     height: 42px;
     border-radius: 50%;
-    background: #199EB8;
+    background: #12c463;
     color: #fff;
     text-align: center;
     font-size: 24px;
+}
+
+.link {
+    color: white;
+}
+.link:hover {
+    text-decoration: underline;
 }
 
 @media only screen and (min-width: 1040px) {

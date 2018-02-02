@@ -5,6 +5,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    padding-top: 64px;
+    
 }
 
 .design-container {
@@ -13,6 +15,7 @@
     max-height: 700px;
     max-width: 900px;
     background-color: #fff;
+    position: relative;
 }
 
 .no-focus:focus {
@@ -73,7 +76,7 @@
 
 .product-container h1 {
     text-align: center;
-    font-size: 14px;
+    font-size: 18px;
     font-weight: 500;
     margin: 24px 0;
 }

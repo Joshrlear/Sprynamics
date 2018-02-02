@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
@@ -20,7 +21,6 @@ import { DesignerAdminComponent } from './designer/admin/designer-admin.componen
 import { DesignerClientComponent } from './designer/client/designer-client.component';
 import { NavigationComponent } from './navigation/navigation.component';
 import { ProductsComponent } from './products/products.component';
-import { LoadTemplateDialogComponent } from './designer/load-template-dialog/load-template-dialog.component';
 import { CheckoutComponent } from './checkout/checkout.component';
 import { CartComponent } from './cart/cart.component';
 
@@ -36,6 +36,14 @@ import { DesignComponent } from './dashboard/design/design.component';
 import { AccountComponent } from './account/account.component';
 import { LoginComponent } from './account/login/login.component';
 import { RegisterComponent } from './account/register/register.component';
+import { ObjectFactoryService } from './designer/object-factory.service';
+import { BreadcrumbsComponent } from './breadcrumbs/breadcrumbs.component';
+import { TextComponent } from './designer/client/text/text.component';
+import { PhotosComponent } from './designer/client/photos/photos.component';
+import { ColorsComponent } from './designer/client/colors/colors.component';
+import { ContactInfoComponent } from './designer/client/contact-info/contact-info.component';
+import { DesignsComponent } from './designer/designs/designs.component';
+import { ScrollService } from './core/scroll.service';
 
 @NgModule({
   declarations: [
@@ -48,14 +56,18 @@ import { RegisterComponent } from './account/register/register.component';
     DesignerClientComponent,
     NavigationComponent,
     ProductsComponent,
-    LoadTemplateDialogComponent,
     CheckoutComponent,
     CartComponent,
     SidenavComponent,
     ProfileComponent,
     DesignComponent,
     AccountComponent,
-    RegisterComponent,
+    BreadcrumbsComponent,
+    TextComponent,
+    PhotosComponent,
+    ColorsComponent,
+    ContactInfoComponent,
+    DesignsComponent,
   ],
   imports: [
     BrowserModule,
@@ -72,11 +84,12 @@ import { RegisterComponent } from './account/register/register.component';
     RecaptchaFormsModule,
     ColorPickerModule,
     HttpModule,
+    CommonModule
   ],
   entryComponents: [
-    LoadTemplateDialogComponent
   ],
   providers: [NavigationService],
+  providers: [ObjectFactoryService, ScrollService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,6 +1,8 @@
 <div class="main-container">
   <div class="design-container">
 
+    <app-breadcrumbs [step]="product ? 2 : 1"></app-breadcrumbs>
+    
     <div *ngIf="product" class="back">
       <button mat-icon-button (click)="product = ''">
         <mat-icon>arrow_back</mat-icon>
@@ -8,19 +10,19 @@
     </div>
     
     <div id="product" *ngIf="!product">
-      <h1 class="heading">Choose a product</h1>
+      <h1 class="heading">Choose A Product</h1>
       <div class="product-container row">
         <div class="col-xs-12 col-md-4 product-padding">
           <div (click)="product = 'postcard'" class="product postcard">
           </div>
-          <h1>Post Cards</h1>
+          <h1>Postcards</h1>
         </div>
         <div class="col-xs-12 col-md-4 product-padding">
           <div (click)="product = 'flyer'" class="product flyer">
           </div>
           <h1>Flyers</h1>
         </div>
-        <div class="col-xs-12 col-md-4 product-padding no-focus" routerLink="/designer" [queryParams]="{size: '3.5x8.5'}">
+        <div class="col-xs-12 col-md-4 product-padding no-focus" routerLink="/designer" [queryParams]="{product: product, size: '3.5x8.5'}" (click)="scrollUp()">
           <div class="product doorhanger">
           </div>
           <h1>Door Hangers</h1>
@@ -29,31 +31,31 @@
     </div>
 
     <div id="size" *ngIf="product === 'postcard'">
-      <h1 class="heading">Choose a size</h1>
+      <h1 class="heading">Choose A Size</h1>
       <div class="product-container row">
-        <div class="col-xs-12 col-md-6 product-padding no-focus" routerLink="/designer" [queryParams]="{size: '9x6'}">
+        <div class="col-xs-12 col-md-6 product-padding no-focus" routerLink="/designer" [queryParams]="{product: product, size: '9x6'}" (click)="scrollUp()">
           <div class="size size-1">
 
           </div>
-          <h1>9 x 6 in.</h1>
+          <h1>6 x 9 in.</h1>
         </div>
-        <div class="col-xs-12 col-md-6 product-padding no-focus" routerLink="/designer" [queryParams]="{size: '11.5x6'}">
+        <div class="col-xs-12 col-md-6 product-padding no-focus" routerLink="/designer" [queryParams]="{product: product, size: '11.5x6'}" (click)="scrollUp()">
           <div class="size size-2">
           </div>
-          <h1>11.5 x 6 in.</h1>
+          <h1>6 x 11.5 in.</h1>
         </div>
       </div>
     </div>
 
     <div id="size" *ngIf="product === 'flyer'">
-        <h1 class="heading">Choose a size</h1>
+        <h1 class="heading">Choose A Size</h1>
         <div class="product-container row">
-          <div class="col-xs-12 col-md-6 product-padding no-focus" routerLink="/designer" [queryParams]="{size: '8.5x11'}">
+          <div class="col-xs-12 col-md-6 product-padding no-focus" routerLink="/designer" [queryParams]="{product: product, size: '8.5x11'}" (click)="scrollUp()">
             <div class="size size-3">
             </div>
             <h1>8.5 x 11 in.</h1>
           </div>
-          <div class="col-xs-12 col-md-6 product-padding no-focus" routerLink="/designer" [queryParams]="{size: '11x8.5'}">
+          <div class="col-xs-12 col-md-6 product-padding no-focus" routerLink="/designer" [queryParams]="{product: product, size: '11x8.5'}" (click)="scrollUp()">
             <div class="size size-4">
             </div>
             <h1>11 x 8.5 in</h1>

@@ -1,11 +1,11 @@
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { Http } from '@angular/http';
 import { ActivatedRoute } from '@angular/router';
-import { MatDialog } from '@angular/material';
 import { AuthService } from '../../core/auth.service';
 import { FirestoreService } from '../../core/firestore.service';
 import { StorageService } from '../../core/storage.service';
-import { LoadTemplateDialogComponent } from '../load-template-dialog/load-template-dialog.component';
+import { productTypes, productSpecs, thumbnailSizes } from '../products';
+import { ObjectFactoryService } from '../object-factory.service';
 
 import 'webfontloader';
 declare let WebFont;
@@ -19,68 +19,41 @@ declare let fabric;
   styleUrls: ['./designer-admin.component.css']
 })
 export class DesignerAdminComponent implements OnInit, AfterViewInit {
-
+  
   @ViewChild('designerView') view: ElementRef;
-
-  productTypes = {
-    postcard_small: {
-      type: 'postcard',
-      width: 9,
-      height: 6,
-      size: '9x6'
-    },
-    postcard_large: {
-      type: 'postcard',
-      width: 11.5,
-      height: 6,
-      size: '11.5x6'
-    },
-    flyer_portrait: {
-      type: 'flyer',
-      width: 8.5,
-      height: 11,
-      size: '8.5x11'
-    },
-    flyer_landscape: {
-      type: 'flyer',
-      width: 11,
-      height: 8.5,
-      size: '11x8.5'
-    },
-    door_hanger: {
-      type: 'doorhanger',
-      width: 3.5,
-      height: 8.5,
-      size: '3.5x8.5'
-    }
-  };
-
+  
+  productTypes = productTypes;
+  productSpecs = productSpecs;
+  
   defaultTemplate = {
     name: '',
     productType: this.productTypes.postcard_small,
-    presetColors: []
+    presetColors: [],
+    front: null,
+    back: null
   }
-
+  
   template: any = Object.assign({}, this.defaultTemplate);
-
-  defaultShadow = {
-    color: 'rgba(0,0,0,0)',
-    blur: 20,    
-    offsetX: 10,
-    offsetY: 10,
-    opacity: 0.6
-  }
-
+  
   canvas;
-  boundBox;
-  shape;
-  dpi = 72; // the dpi to display the template at
-
+  background: any;
+  safeArea: any;
+  printArea: any;
+  currentTab = 'settings';
+  currentTabIndex = 0;
+  
+  viewSide: 'front' | 'back' = 'front';
+  
   userData: any;
-
+  
   loadingFonts: boolean;
   fonts: string[];
-
+  
+  past = [];
+  present;
+  future = [];
+  disableHistory = true;
+  
   get selection() {
     if (this.canvas) {
       // console.log(this.canvas.getActiveObject());
@@ -90,20 +63,20 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
     }
   }
 
-  constructor(private element: ElementRef, 
+  constructor(private element: ElementRef,
     private firestore: FirestoreService,
-    private storage: StorageService, 
+    private storage: StorageService,
     private auth: AuthService,
-    private dialog: MatDialog,
     private http: Http,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    public factory: ObjectFactoryService
   ) { }
 
   ngOnInit() {
     this.loadingFonts = true;
     this.http.get('https://www.googleapis.com/webfonts/v1/webfonts?sort=popularity&key=AIzaSyA-kEmBuQZhfrdS1Rije3syG3tCu8OGVcM')
       .take(1).subscribe(res => {
-        this.fonts = res.json().items.map(font => font.family).slice(0, 200);
+        this.fonts = res.json().items.map(font => font.family).slice(0, 1);
         // console.log(this.fonts);
         WebFont.load({
           google: {
@@ -115,17 +88,40 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
         });
       });
 
+    // Get user data
     this.auth.user.take(1).subscribe((user: any) => {
       this.userData = user;
       this.template.presetColors = user.presetColors || [];
     });
 
+    // Load product type from query parameter
     this.route.queryParamMap.take(1).subscribe((queryParamMap: any) => {
       const product = queryParamMap.params['product'];
       if (product) {
         this.template.productType = this.productTypes[product];
       }
     })
+  }
+
+  ngAfterViewInit() {
+    this.disableHistory = true;
+    this.canvas = fabric.canvas = new fabric.Canvas('canvas', {
+      width: this.view.nativeElement.clientWidth,
+      height: this.view.nativeElement.clientHeight,
+      preserveObjectStacking: true,
+      backgroundColor: '#fff'
+    });
+
+    this.present = this.canvas.toJSON(['isHidden', 'isBoundBox', 'isBackground', 'selectable', 'hasControls', 'textContentType', 'textUserData',
+    'textFieldName', 'userEditable', 'isLogo', 'logoType']);
+
+    fabric.Object.prototype.set({
+      borderColor: '#12C463',
+      cornerColor: 'white',
+      cornerStrokeColor: 'black',
+      cornerSize: 10,
+      transparentCorners: false
+    });
 
     // returns true if the Object has a shadow, or false if not.
     // Also accepts a parameter to set the shadow
@@ -145,101 +141,241 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
         }
       }
     });
-  }
 
-  ngAfterViewInit() {
-    this.canvas = fabric.canvas = new fabric.Canvas('canvas', {
-      width: this.view.nativeElement.clientWidth,
-      height: this.view.nativeElement.clientHeight,
-      preserveObjectStacking: true
-    });
-
+    // Fix rectangle scaling
     this.canvas.on('object:modified', (event) => {
       if (event.target.type === 'rect') {
-        event.target.width *= event.target.scaleX;
-        event.target.height *= event.target.scaleY;
+        event.target.width = Math.floor(event.target.width * event.target.scaleX);
+        event.target.height = Math.floor(event.target.height * event.target.scaleY);
         event.target.scaleX = 1;
         event.target.scaleY = 1;
-        // this is a bit of a hack to get the canvas to update the size.
-        // the width is increased then decreased to force the cache to clear.
-        event.target.set({ width: event.target.width+1 });
-        event.target.set({ width: event.target.width-1 });
+        this.forceRender(event.target);
       }
-      
+      this.saveUndo();
     });
 
-    this.clearTemplate();
-  }
+    this.canvas.on('object:added', (event) => {
+      this.saveUndo();
+    });
 
-  cloneSelection() {
-    const object = this.canvas.getActiveObject().toObject();
-    fabric.util.enlivenObjects([object], (objects) => {
-      objects.forEach(object => {
-        object.set("top", object.top+5);
-        object.set("left", object.left+5);
-        object.setShadow(this.defaultShadow);
-        this.canvas.add(object);
-        this.canvas.setActiveObject(object);
+    this.canvas.on('object:removed', (event) => {
+      this.saveUndo();
+    });
+
+    // Auto-align object when dragged
+    this.canvas.on("object:moving", (event) => {
+      if (event.e.ctrlKey) {
+        // ignore alignment when the ctrl key is held down
+        return;
+      }
+      const target = event.target;
+
+      this.canvas.forEachObject(obj => {
+        if (obj.isBoundBox || (obj.id !== target.id && !obj.isBackground)) {
+          const bound = obj;
+          target.right = target.left + target.getWidth();
+          target.bottom = target.top + target.getHeight();
+          bound.right = bound.left + bound.width;
+          bound.bottom = bound.top + bound.height;
+          // top/top alignment
+          if (target.top > bound.top - 10 && target.top < bound.top + 10) {
+            target.setTop(bound.top);
+          }
+          // top/bottom alignment
+          if (target.top > bound.bottom - 10 && target.top < bound.bottom + 10) {
+            target.setTop(bound.bottom);
+          }
+          // left/left alignment
+          if (target.left > bound.left - 10 && target.left < bound.left + 10) {
+            target.setLeft(bound.left);
+          }
+          // left/right alignment
+          if (target.left > bound.right - 10 && target.left < bound.right + 10) {
+            target.setLeft(bound.right);
+          }
+          // right/right alignment
+          if (target.right > bound.right - 10 && target.right < bound.right + 10) {
+            target.left = bound.right - target.getWidth();
+          }
+          // right/left alignment
+          if (target.right > bound.left - 10 && target.right < bound.left + 10) {
+            target.left = bound.left - target.getWidth();
+          }
+          // bottom/bottom alignment
+          if (target.bottom > bound.bottom - 10 && target.bottom < bound.bottom + 10) {
+            target.top = bound.bottom - target.getHeight();
+          }
+          // bottom/top alignment
+          if (target.bottom > bound.top - 10 && target.bottom < bound.top + 10) {
+            target.top = bound.top - target.getHeight();
+          }
+          // center x alignment
+          const middleX = target.left + target.getWidth() / 2;
+          const boundMiddleX = bound.left + bound.width / 2;
+          if (middleX > boundMiddleX - 10 && middleX < boundMiddleX + 10) {
+            target.left = boundMiddleX - target.getWidth() / 2;
+          }
+          // center y alignment
+          const middleY = target.top + target.getHeight() / 2;
+          const boundMiddleY = bound.top + bound.height / 2;
+          if (middleY > boundMiddleY - 10 && middleY < boundMiddleY + 10) {
+            target.top = boundMiddleY - target.getHeight() / 2;
+          }
+        }
       });
-      this.canvas.renderAll();
+      target.setCoords();
     });
-    
+
+    // Auto-align when scaling
+    this.canvas.on('object:scaling', (event) => {
+      if (event.e.ctrlKey) {
+        // ignore alignment when the ctrl key is held down
+        return;
+      }
+
+      const target = event.target;
+      const targetBound = target.getBoundingRect();
+
+      this.canvas.forEachObject(obj => {
+        if (obj.id !== target.id) {
+          const bound = obj.getBoundingRect();
+
+          switch (target.__corner) {
+            // top
+            case 'mt':
+              if (target.top > bound.top - 10 && target.top < bound.top + 10) {
+                const h = target.height * target.scaleY;
+                target.scaleY = (h - (bound.top - target.top)) / target.height;
+                target.top = bound.top;
+              }
+              break;
+            // left
+            case 'ml':
+              if (target.left > bound.left - 10 && target.left < bound.left + 10) {
+                const w = target.width * target.scaleX;
+                target.scaleX = (w - (bound.left - target.left)) / target.width;
+                target.left = bound.left;
+              }
+              break;
+            // right
+            case 'mr':
+              const right = target.left + target.getWidth();
+              const boundRight = bound.left + bound.width;
+              if (right > boundRight - 10 && right < boundRight + 10) {
+                target.scaleX = (boundRight - target.left) / target.width;
+              }
+              break;
+            // bottom
+            case 'mb':
+              const bottom = target.top + target.getHeight();
+              const boundBottom = bound.top + bound.width;
+              if (bottom > boundBottom - 10 && bottom < boundBottom + 10) {
+                target.scaleY = (boundBottom - target.top) / target.height;
+              }
+              break;
+          }
+        }
+      });
+    });
+
+    // initialize the canvas
+    this.clearCanvas();
+    this.past = [];
   }
 
+  
   /**
    * Deletes all content and clears the canvas, then recreates the bounding box.
    */
-  clearTemplate() {
+  clearCanvas() {
+    this.disableHistory = true;
     this.canvas.clear();
+    const base = this.factory.createProductBase(this.canvas);
+    Object.assign(this, base);
+    this.refreshCanvasSize();
+    this.disableHistory = false;
+    this.saveUndo();
+  }
 
-    this.boundBox = new fabric.Rect({
-      width: 912,
-      height: 586,
-      fill: 'transparent',
-      stroke: '#777',
-      strokeDashArray: [5, 5],
-      selectable: false,
-      hasControls: false,
-      lockMovementX: true,
-      lockMovementY: true,
-      isBoundBox: true
+  /** 
+   * Refreshes the template size 
+   */
+  refreshCanvasSize() {
+    const productType = this.template.productType;
+    this.background.set({
+      width: productType.width * productSpecs.dpi + productSpecs.bleedInches * productSpecs.dpi,
+      height: productType.height * productSpecs.dpi + productSpecs.bleedInches * productSpecs.dpi
+    });
+    this.safeArea.set({
+      width: productType.width * productSpecs.dpi - productSpecs.safeInches * productSpecs.dpi,
+      height: productType.height * productSpecs.dpi - productSpecs.safeInches * productSpecs.dpi
+    });
+    this.printArea.set({
+      width: productType.width * productSpecs.dpi,
+      height: productType.height * productSpecs.dpi
     });
 
-    this.boundBox.toObject = (function(toObject) {
-      return function() {
-        return fabric.util.object.extend(toObject.call(this), {
-          selectable: false,
-          hasControls: false,
-          lockMovementX: true,
-          lockMovementY: true,
-          isBoundBox: true
-        });
-      };
-    })(this.boundBox.toObject);
+    this.canvas.centerObject(this.background);
+    this.canvas.centerObject(this.safeArea);
+    this.canvas.centerObject(this.printArea);
+    this.canvas.renderAll();
+  }
 
-    this.canvas.add(this.boundBox);
-    this.canvas.centerObject(this.boundBox);
+  saveUndo() {
+    if (this.disableHistory) return;
+    this.past.push(this.present);
+    this.present = this.canvas.toJSON(['isHidden', 'isBoundBox', 'isBackground', 'selectable', 'hasControls', 'textContentType', 'textUserData',
+    'textFieldName', 'userEditable', 'isLogo', 'logoType']);
+    this.future = [];
+  }
 
-    this.refreshTemplate();
+  undo() {
+    if (this.past.length > 0) {
+      this.future.unshift(this.present);
+      this.present = this.past.pop();
+      this.disableHistory = true;
+      this.canvas.loadFromJSON(this.present, _ => {
+        this.background = this.canvas.getObjects('rect').filter(obj => obj.isBackground)[0];
+        this.disableHistory = false;
+      });
+    }
+  }
+
+  redo() {
+    if (this.future.length > 0) {
+      this.past.push(this.present);
+      this.present = this.future.shift();
+      this.disableHistory = true;
+      this.canvas.loadFromJSON(this.present, _ => {
+        this.background = this.canvas.getObjects('rect').filter(obj => obj.isBackground)[0];
+        this.disableHistory = false;
+      });
+    }
+  }
+
+  addColor() {
+    this.template.presetColors.push(this.selection.fill);
+  }
+
+  setViewSide(side: 'front' | 'back') {
+    const lastSide = this.viewSide;
+    this.viewSide = side;
+    this.template[lastSide] = this.canvas.toJSON(['isHidden', 'isBoundBox', 'isBackground', 'selectable', 'hasControls', 'textContentType', 'textUserData',
+      'textFieldName', 'userEditable', 'isLogo', 'logoType']);
+    console.log(this.template);
+    this.clearCanvas();
+    if (this.template[this.viewSide]) {
+      this.canvas.loadFromJSON(this.template[this.viewSide], _ => {
+        this.saveUndo();
+      });
+    }
   }
 
   clickNew() {
     if (confirm('Unsaved changes will be lost. Are you sure you want to start a new template?')) {
       this.template = Object.assign({}, this.defaultTemplate);
-      this.clearTemplate();
-    } else {
-      return;
+      this.clearCanvas();
     }
-  }
-
-  clickOpen() {
-    const dialogRef = this.dialog.open(LoadTemplateDialogComponent);
-    dialogRef.afterClosed().subscribe(id => {
-      if (id) {
-        this.firestore.doc$(`templates/${id}`)
-          .take(1).subscribe(template => this.loadTemplate(template, id));
-      }
-    });
   }
 
   clickSave() {
@@ -247,54 +383,124 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
       alert('You need to set a name for this design!');
       return;
     }
-    
-    const canvasData = this.canvas.toObject();
-
-    if (this.template.id) {
-      this.firestore.update(`templates/${this.template.id}`, this.template);
-      this.storage.putJSON(canvasData, `templates/${this.template.id}.json`);
-    } else {
-      this.firestore.add('templates', this.template).then(ref => {
-        const canvasData = this.canvas.toObject();
-        this.storage.putJSON(canvasData, `templates/${ref.id}.json`)
-          .take(1).subscribe(url => {
-            this.template.url = url;
-            this.firestore.update(`templates/${ref.id}`, { url });
-          });
-      });    
-    }
+    this.template[this.viewSide] = this.canvas.toJSON(['isHidden', 'isBoundBox', 'isBackground', 'selectable', 'hasControls', 'textContentType', 'textUserData',
+      'textFieldName', 'userEditable', 'isLogo', 'logoType']);
+    const canvasData = {
+      front: this.template.front,
+      back: this.template.back
+    };
+    // add required fonts to template data
+    const fonts = [];
+    this.canvas.forEachObject((obj: any) => {
+      const family = obj.fontFamily;
+      if (family && !fonts.includes(family)) {
+        fonts.push(family);
+      }
+    });
+    this.template.fonts = fonts;
+    (new Promise((resolve, reject) => {
+      if (this.template.id) {
+        this.firestore.update(`templates/${this.template.id}`, this.template).then(_ => {
+          resolve(this.template.id);
+        });
+      } else {
+        this.firestore.add('templates', this.template).then(ref => {
+          resolve(ref.id);
+        });
+      }
+    })).then(id => {
+      this.storage.putJSON(canvasData, `templates/${id}.json`)
+        .take(1).subscribe(url => {
+          // this.canvas.remove(this.printArea);
+          // this.canvas.remove(this.safeArea);
+          this.canvas.deactivateAll().renderAll();
+          const ctx = this.canvas.getContext('2d');
+          const imgData = ctx.getImageData(this.printArea.left, this.printArea.top, this.printArea.width, this.printArea.height);
+          const buffer = document.createElement('canvas');
+          const bufferCtx = buffer.getContext('2d');
+          buffer.width = this.printArea.width;
+          buffer.height = this.printArea.height;
+          bufferCtx.putImageData(imgData, 0, 0);
+          const dataUrl = buffer.toDataURL('image/jpeg');
+          bufferCtx.clearRect(0, 0, buffer.width, buffer.height);
+          const sizes = thumbnailSizes[this.template.productType.size];
+          buffer.width = sizes.width;
+          buffer.height = sizes.height;
+          const img = document.createElement('img');
+          img.onload = () => {
+            bufferCtx.drawImage(img, 0, 0, sizes.width, sizes.height);
+            const jpg = buffer.toDataURL('jpg');
+            // const base = this.factory.createProductBase(this.canvas);
+            // Object.assign(this, base);
+            this.canvas.sendToBack(this.printArea);
+            this.canvas.sendToBack(this.safeArea);
+            this.canvas.sendToBack(this.background);
+            this.canvas.renderAll();
+            // store thumbnail
+            this.storage.putBase64(jpg, `thumbnails/${id}.jpg`)
+              .take(1).subscribe(thumbnail => {
+                this.template.thumbnail = thumbnail;
+                this.template.url = url;
+                this.firestore.update(`templates/${id}`, { url, thumbnail });
+              });
+          }
+          img.src = dataUrl;
+        });
+    });
   }
 
-  loadTemplate(template: any, id: string) {
+  loadTemplate(template: any) {
+    this.disableHistory = true;
     this.template = template;
-    this.template.id = id;
+    this.viewSide = 'front';
     this.storage.getFile(template.url).take(1).subscribe(data => {
       console.log(data);
-      this.canvas.loadFromJSON(data);
+      this.canvas.loadFromJSON(template['front'], _ => {
+        this.background = this.canvas.getObjects('rect').filter(obj => obj.isBackground)[0];
+        this.disableHistory = false;
+      });
     });
   }
 
   colorPickerChange(event) {
     if (this.selection.type === 'group') {
       this.selection.forEachObject(obj => {
-        if (obj.type === 'i-text') {
+        if (obj.type === 'textbox') {
           obj.set({ fill: event });
-          // this is a bit of a hack to get the canvas to update the text color.
-          // the width is increased then decreased to force the cache to clear.
-          obj.set({ width: obj.width+1 });
-          obj.set({ width: obj.width-1 });
+          this.forceRender(obj);
         } else {
           obj.set({ fill: event, backgroundColor: event });
         }
       });
     } else if (this.selection.type === 'rect') {
       this.selection.set({ backgroundColor: event });
-    } else if (this.selection.type === 'i-text') {
-      // this is a bit of a hack to get the canvas to update the text color.
-      // the width is increased then decreased to force the cache to clear.
-      this.selection.set({ width: this.selection.width+1 });
-      this.selection.set({ width: this.selection.width-1 });
+    } else if (this.selection.type === 'textbox') {
+      this.forceRender(this.selection);
+    } else if (this.selection.type === 'path') {
+      this.selection.set({ fill: event });
+      this.forceRender(this.selection);
     }
+    this.canvas.renderAll();
+  }
+
+  onColorChange(event) {
+    const index = event.index;
+    const color = new fabric.Color(event.color);
+    const lastColor = new fabric.Color(this.template.presetColors[index]);
+    this.canvas.forEachObject(obj => {
+      if ((new fabric.Color(obj.fill)).toHexa() === lastColor.toHexa()) {
+        obj.set({ fill: event.color });
+      }
+    });
+    this.template.presetColors[index] = event.color;
+    this.canvas.renderAll();
+  }
+
+  onBgColorChange(event) {
+    const color = new fabric.Color(event);
+    this.background.set({
+      fill: '#' + color.toHexa().split('.')[0]
+    });
     this.canvas.renderAll();
   }
 
@@ -302,17 +508,14 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
     // bind the opacity to the color
     this.selection.shadow.opacity = new fabric.Color(this.selection.shadow.color).getAlpha();
     this.canvas.renderAll();
+    this.saveUndo();
   }
 
-  /** Refreshes the template size */
-  refreshTemplate() {
-    // split the product size from the format of 6x9 to a width and height of 6 by 9
-    const productType = this.template.productType;
-    this.boundBox.set({ 
-      width: productType.width * this.dpi,
-      height: productType.height * this.dpi
-    });
-    this.canvas.centerObject(this.boundBox);
+  forceRender(obj) {
+    // this is a bit of a hack to get the canvas to update the text color.
+    // the width is increased then decreased to force the cache to clear.
+    obj.set({ width: obj.width + 1 });
+    obj.set({ width: obj.width - 1 });
     this.canvas.renderAll();
   }
 
@@ -337,7 +540,7 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
     fabric.canvas.bringForward(this.selection, false);
   }
   sendBackward() {
-    this.canvas.sendBackward(this.selection, false);
+    this.canvas.sendBackwards(this.selection, false);
   }
   bringToFront() {
     this.canvas.bringToFront(this.selection);
@@ -355,7 +558,7 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
         dataText = `${this.userData['firstName']} ${this.userData['lastName']}`;
       } else if (dataName === 'address') {
         dataText = `${this.userData['address1']} ${this.userData['address2']}\n` +
-                   `${this.userData['city']}, ${this.userData['state']}`;
+          `${this.userData['city']}, ${this.userData['state']}`;
       } else {
         dataText = this.userData[dataName];
       }
@@ -383,132 +586,66 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
     }
   }
 
-  toggleBold() {
-    if (this.selection.fontWeight === 'normal') {
-      this.selection.fontWeight = 'bold';
-    } else {
-      this.selection.fontWeight = 'normal';
+  setStyle(object, styleName, value) {
+    if (object.setSelectionStyles && object.isEditing) {
+      var style = {};
+      style[styleName] = value;
+      object.setSelectionStyles(style);
     }
-    this.canvas.renderAll();
+    else {
+      object[styleName] = value;
+    }
+  }
+
+  getStyle(object, styleName) {
+    return (object.getSelectionStyles && object.isEditing)
+      ? object.getSelectionStyles()[styleName] || object[styleName]
+      : object[styleName];
+  }
+
+  toggleBold() {
+    const isBold = this.getStyle(this.selection, 'fontWeight') === 'bold';
+    this.setStyle(this.selection, 'fontWeight', isBold ? '' : 'bold');
+    this.forceRender(this.selection);
+    this.saveUndo();
   }
 
   toggleItalics() {
-    if (this.selection.fontStyle === 'italic') {
-      this.selection.fontStyle = 'normal';
-    } else {
-      this.selection.fontStyle = 'italic';
-    }
-    this.canvas.renderAll();
+    const isItalic = this.getStyle(this.selection, 'fontStyle') === 'italic';
+    this.setStyle(this.selection, 'fontStyle', isItalic ? '' : 'italic');
+    this.forceRender(this.selection);
+    this.saveUndo();
   }
 
   toggleUnderline() {
-    this.selection.underline = !this.selection.underline;
-    this.canvas.renderAll();
+    const isUnderline = (this.getStyle(this.selection, 'textDecoration') || '').indexOf('underline') > -1;
+    this.setStyle(this.selection, 'textDecoration', isUnderline ? '' : 'underline');
+    this.forceRender(this.selection);
+    this.saveUndo();
   }
 
-  addText() {
-    const textbox = new fabric.IText('Type text here...', {
-      left: 50,
-      top: 50,
-      width: 150,
-      fontSize: 20,
-      fontFamily: 'Roboto',
-      hasRotatingPoint: true,
-      textContentType: 'plain', // custom
-      textUserData: 'name', // custom
-      userEditable: false, // custom
-      textFieldName: ''      // custom
-    });
-    
-    textbox.toObject = (function(toObject) {
-      return function() {
-        return fabric.util.object.extend(toObject.call(this), {
-          textContentType: this.textContentType,
-          textUserData: this.textUserData,
-          textFieldName: this.textFieldName,
-          userEditable: this.userEditable
-        });
-      };
-    })(textbox.toObject);
-
-    textbox.setShadow(this.defaultShadow);
-    this.canvas.add(textbox).setActiveObject(textbox);
-  }
-
-  addTextbox() {
-    const loremIpsum = 'Lorem ipsum dolor sit amet, ' +
-    'consectetur adipisicing elit, sed do eiusmod tempor ' +
-    'incididunt ut labore et dolore magna aliqua. Ut enim ' +
-    'ad minim veniam, quis nostrud exercitation ullamco ' +
-    'laboris nisi ut aliquip exea commodo consequat.';
-    const textbox = new fabric.Textbox(loremIpsum, {
-      left: 50,
-      top: 50,
-      width: 150,
-      fontSize: 20,
-      fontFamily: 'Roboto',
-      hasRotatingPoint: true,
-      textContentType: 'plain', // custom
-      textUserData: 'name',    // custom
-      userEditable: false,    // custom
-      textFieldName: ''      // custom
-    });
-    
-    textbox.toObject = (function(toObject) {
-      return function() {
-        return fabric.util.object.extend(toObject.call(this), {
-          textContentType: this.textContentType,
-          textUserData: this.textUserData,
-          textFieldName: this.textFieldName,
-          userEditable: this.userEditable
-        });
-      };
-    })(textbox.toObject);
-
-    textbox.setShadow(this.defaultShadow);
-    this.canvas.add(textbox).setActiveObject(textbox);
-  }
-
-  addRect() {
-    const rect = new fabric.Rect({
-      width: 200,
-      height: 200,
-      fill: '#00e676',
-      hasRotatingPoint: true
-    });
-
-    rect.setShadow(this.defaultShadow);
-    this.canvas.add(rect).setActiveObject(rect);
-  }
-
-  addLine() {
-    const line = new fabric.Lin({
-      width: 200,
-      stroke: '#00e676',
-      hasRotatingPoint: true
-    })
-
-    line.setShadow(this.defaultShadow);
-    this.canvas.add(line).setActiveObject(line);
-  }
-
-  addLogo() {
-    const logo = new fabric.Image.fromURL('/assets/logo.png', 
-      (img) => {
-        img.scaleToHeight(100);
-        img.isLogo = true;
-        img.setShadow(this.defaultShadow);
-
-        img.toObject = (function(toObject) {
-          return function() {
-            return fabric.util.object.extend(toObject.call(this), {
-              isLogo: true
-            });
-          };
-        })(img.toObject);
-
-        this.canvas.add(img);
-      });
+  changeLogoType() {
+    let src;
+    switch (this.selection.logoType) {
+      case 'headshot':
+        src = this.userData.avatarUrl;
+        break;
+      case 'brokerage':
+        src = this.userData.brokerageLogoUrl;
+        break;
+      case 'company':
+        src = this.userData.companyLogoUrl;
+        break;
+      default:
+        src = '/assets/logo.png';
+    }
+    const img = new Image();
+    img.crossOrigin = 'Anonymous';
+    img.onload = () => {
+      this.selection.setElement(img);
+      this.forceRender(this.selection);
+    }
+    img.src = src;
   }
 
   addImageFiles(files: FileList) {
@@ -517,22 +654,14 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
       const reader = new FileReader();
       reader.onload = (event: any) => {
         const img = new Image();
+        img.crossOrigin = 'Anonymous';
         img.src = event.target.result;
         img.onload = () => {
           const image = new fabric.Image(img);
-          image.set({
-            angle: 0,
-            // height: 120,
-            // width: 120
-          });
-          image.setShadow(this.defaultShadow);
-          this.canvas
-            .add(image)
-            .renderAll();
+          this.factory.addObject(image, this.canvas);
         }
       }
       reader.readAsDataURL(file);
     }
   }
-
 }

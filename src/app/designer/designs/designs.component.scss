@@ -2,16 +2,15 @@
   max-width: 664px;
   display: flex;
   flex-wrap: wrap;
-  padding-left: 16px;
-  padding-top: 16px;
+  justify-content: center;
+  padding: 24px;
+  padding-top: 32px;
 }
 
 .template {
-  flex-basis: 200px;
+  flex-basis: 128px;
   flex-shrink: 0;
-  width: 200px;
-  height: 200px;
-  background: #eee;
+  color: white;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -19,8 +18,18 @@
   margin-bottom: 16px;
   cursor: pointer;
   transition: 200ms ease;
+  position: relative;
+  box-shadow: 0px 1px 4px rgba(0,0,0,0.6);
 }
 
 .template:hover {
   transform: scale(1.1);
+}
+
+.template-title {
+  display: inline-block;
+  position: absolute;
+  bottom: 0;
+  background-color: #3f4652;
+  padding: 0 8px;
 }
