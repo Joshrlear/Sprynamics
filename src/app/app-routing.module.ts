@@ -17,40 +17,54 @@ import { ProfileComponent } from './dashboard/profile/profile.component';
 
 import { AuthGuard } from './core/auth.guard';
 import { CartComponent } from './cart/cart.component';
-import { TextComponent } from './designer/client/text/text.component';
-import { PhotosComponent } from './designer/client/photos/photos.component';
-import { ColorsComponent } from './designer/client/colors/colors.component';
-import { ContactInfoComponent } from './designer/client/contact-info/contact-info.component';
-import { DesignsComponent } from './designer/designs/designs.component';
+import { TextComponent } from './designer/sidebar/text/text.component';
+import { PhotosComponent } from './designer/sidebar/photos/photos.component';
+import { ColorsComponent } from './designer/sidebar/colors/colors.component';
+import { ContactInfoComponent } from './designer/sidebar/contact-info/contact-info.component';
+import { DesignsComponent } from './designer/sidebar/designs/designs.component';
+import { AgentsComponent } from './dashboard/agents/agents.component';
+import { OrdersComponent } from './dashboard/orders/orders.component';
+import { ListsComponent } from './dashboard/lists/lists.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'products', component: ProductsComponent },
-  { path: 'designer', component: DesignerClientComponent, children: [
-    { path: '', redirectTo: 'designs', pathMatch: 'full' },
-    { path: 'designs', component: DesignsComponent },
-    { path: 'text', component: TextComponent },
-    { path: 'photos', component: PhotosComponent },
-    { path: 'colors', component: ColorsComponent },
-    { path: 'contact', component: ContactInfoComponent },
-  ] },
+  {
+    path: 'designer', component: DesignerClientComponent,
+    children: [
+      { path: '', redirectTo: 'designs', pathMatch: 'full' },
+      { path: 'designs', component: DesignsComponent },
+      { path: 'text', component: TextComponent },
+      { path: 'photos', component: PhotosComponent },
+      { path: 'colors', component: ColorsComponent },
+      { path: 'contact', component: ContactInfoComponent },
+    ]
+  },
   { path: 'cart', component: CartComponent },
   { path: 'checkout', component: CheckoutComponent },
   { path: 'admin-designer', component: DesignerAdminComponent },
-  { path: 'profile', component: DashboardComponent, canActivate: [AuthGuard], 
+  {
+    path: 'profile', component: DashboardComponent, canActivate: [AuthGuard],
     children: [
-      { path: '', component: ProfileComponent }
-    ]},
-  { path: 'account', component: AccountComponent, 
+      { path: '', component: ProfileComponent },
+      { path: 'agents', component: AgentsComponent },
+      { path: 'orders', component: OrdersComponent },
+      { path: 'lists', component: ListsComponent }
+    ]
+  },
+  {
+    path: 'account', component: AccountComponent,
     children: [
       { path: 'login', component: LoginComponent },
       { path: 'register', component: RegisterComponent },
-    ]}
+    ]
+  },
+  { path: '**', redirectTo: '', pathMatch: 'full' }
 ];
 
 @NgModule({
-  imports: [ RouterModule.forRoot(routes) ],
-  exports: [ RouterModule ],
-  providers: [ AuthGuard ]
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule],
+  providers: [AuthGuard]
 })
 export class AppRoutingModule { }

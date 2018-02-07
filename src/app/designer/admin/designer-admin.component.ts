@@ -19,12 +19,12 @@ declare let fabric;
   styleUrls: ['./designer-admin.component.css']
 })
 export class DesignerAdminComponent implements OnInit, AfterViewInit {
-  
+
   @ViewChild('designerView') view: ElementRef;
-  
+
   productTypes = productTypes;
   productSpecs = productSpecs;
-  
+
   defaultTemplate = {
     name: '',
     productType: this.productTypes.postcard_small,
@@ -32,28 +32,28 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
     front: null,
     back: null
   }
-  
+
   template: any = Object.assign({}, this.defaultTemplate);
-  
+
   canvas;
   background: any;
   safeArea: any;
   printArea: any;
   currentTab = 'settings';
   currentTabIndex = 0;
-  
+
   viewSide: 'front' | 'back' = 'front';
-  
+
   userData: any;
-  
+
   loadingFonts: boolean;
   fonts: string[];
-  
+
   past = [];
   present;
   future = [];
   disableHistory = true;
-  
+
   get selection() {
     if (this.canvas) {
       // console.log(this.canvas.getActiveObject());
@@ -113,7 +113,7 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
     });
 
     this.present = this.canvas.toJSON(['isHidden', 'isBoundBox', 'isBackground', 'selectable', 'hasControls', 'textContentType', 'textUserData',
-    'textFieldName', 'userEditable', 'isLogo', 'logoType']);
+      'textFieldName', 'userEditable', 'isLogo', 'logoType']);
 
     fabric.Object.prototype.set({
       borderColor: '#12C463',
@@ -281,9 +281,20 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
     // initialize the canvas
     this.clearCanvas();
     this.past = [];
+
+    // fabric.loadSVGFromURL('assets/flyer5.svg', (objects, options) => {
+    //   objects.forEach(obj => console.log(obj));
+    //   const shape = fabric.util.groupSVGElements(objects, options);
+    //   this.canvas.add(shape);
+    //   // shape.set({ left: 200, top: 100 }).setCoords();
+    //   this.canvas.renderAll();
+    // }, (el, obj) => {
+    //   obj.id = el.getAttribute('id');
+    //   console.log('svg element: ' + obj.id);
+    // });
   }
 
-  
+
   /**
    * Deletes all content and clears the canvas, then recreates the bounding box.
    */
@@ -325,7 +336,7 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
     if (this.disableHistory) return;
     this.past.push(this.present);
     this.present = this.canvas.toJSON(['isHidden', 'isBoundBox', 'isBackground', 'selectable', 'hasControls', 'textContentType', 'textUserData',
-    'textFieldName', 'userEditable', 'isLogo', 'logoType']);
+      'textFieldName', 'userEditable', 'isLogo', 'logoType']);
     this.future = [];
   }
 
@@ -547,6 +558,9 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
   }
   sendToBack() {
     this.canvas.sendToBack(this.selection);
+    this.canvas.sendToBack(this.safeArea);
+    this.canvas.sendToBack(this.printArea);
+    this.canvas.sendToBack(this.background);
   }
 
   changeUserData() {

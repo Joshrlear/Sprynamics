@@ -33,6 +33,9 @@
     height: auto;
     margin-bottom: 24px;
     padding: 24px;
+    &.no-padding {
+        padding: 8px;
+    }
 }
 
 .dashboard-card-heading {
@@ -84,4 +87,35 @@
         padding: 8px 32px;
         border-radius: 4px;
     }
+}
+
+label {
+    color: rgba(52, 56, 62, 0.54);
+    font-weight: 500;
+}
+  
+.form-control {
+    background-color: rgba(52, 56, 62, 0.05);
+    border: 1px solid rgba(52, 56, 62, 0.05);
+}
+  
+.form-control:focus {
+    background-color: #fff;
+    border-color: transparent;
+    box-shadow: 0 0 0 2px rgba(18, 196, 99, .25);
+}
+  
+.form-action {
+    display: flex;
+    height: 64px;
+    width: 100%;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 0 8px;
+    margin: 12px 0;
+}
+  
+.form-tip {
+    padding: 12px 12px 0;
+    color: red;
 }

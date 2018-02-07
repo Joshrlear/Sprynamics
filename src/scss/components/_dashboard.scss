@@ -183,21 +183,6 @@
     letter-spacing: .5px;
 }
 
-label {
-    color: rgba(52, 56, 62, 0.54);
-    font-weight: 500;
-}
-
-.form-control {
-    background-color: rgba(52, 56, 62, 0.05);
-    border: 1px solid rgba(52, 56, 62, 0.05);
-}
-
-.form-control:focus {
-    border-color: transparent;
-    box-shadow: 0 0 0 2px rgba(104, 153, 227, 0.18);
-}
-
 .form-action {
     display: flex;
     height: 64px;
