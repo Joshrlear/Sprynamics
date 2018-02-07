@@ -92,6 +92,21 @@ export class AppComponent implements OnInit {
 
   }
 
+  smoothScroll(hash) {
+    if (this.router.url.split('#')[0] === '/') {
+      hash = '#' + hash;
+      $('html, body').animate({
+        scrollTop: $(hash).offset().top
+      }, 800, function () {
+  
+        // Add hash (#) to URL when done scrolling (default click behavior)
+        if (hash !== '#home') {
+          window.location.hash = hash;
+        }
+      });
+    }
+  }
+
   
   
 }

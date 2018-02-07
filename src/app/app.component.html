@@ -30,9 +30,9 @@
       </a>
       <div class="top-menu">
         <div class="top-menu-left">
-          <a routerLink="/" fragment="top-of-page" mat-button>Home</a>
-          <a routerLink="/" fragment="about-us" mat-button>About Us</a>
-          <a routerLink="/" fragment="contact-us" mat-button>Contact Us</a>
+          <a routerLink="/" fragment="top-of-page" (click)="smoothScroll('home')" mat-button>Home</a>
+          <a routerLink="/" fragment="about-us" (click)="smoothScroll('about-us')" mat-button>About Us</a>
+          <a routerLink="/" fragment="contact-us" (click)="smoothScroll('contact-us')" mat-button>Contact Us</a>
           
         </div>
         <div class="top-menu-right">
@@ -43,7 +43,7 @@
               </ng-container>
               <ng-template #loggedIn>
                 <div class="dropdown-container" ngbDropdown>
-                  <a class="top-menu-account" id="account-dropdown" ngbDropdownToggle><i class="fas fa-user" style="margin-right: 6px;"></i> {{ (user.firstName||'') + ' ' + (user.lastName||'') }} Your Account</a>
+                  <a class="top-menu-account" id="account-dropdown" ngbDropdownToggle><i class="fas fa-user" style="margin-right: 6px;"></i> {{ ((user.firstName||'') + ' ' + (user.lastName||'')) || 'Your Account' }}</a>
                   <div ngbDropdownMenu aria-labelledby="account-dropdown">
                       <button class="dropdown-item" routerLink="/profile">Your Profile</button>
                       <button class="dropdown-item" (click)="logout()" routerLink="/">Logout</button>
@@ -64,7 +64,8 @@
       <spry-sidenav></spry-sidenav>
     </mat-sidenav>
   
-    <section class="sidenav-content" [id]="pageId" role="content">
+    <!-- <section class="sidenav-content" [id]="pageId" role="content"> -->
+    <section class="sidenav-content" role="content">
         <router-outlet></router-outlet>
     </section>
   

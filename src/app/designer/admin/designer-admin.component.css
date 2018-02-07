@@ -12,7 +12,12 @@
 .designer-container {
   height: 100vh;
   display: flex;
-  padding-top: 64px;
+  padding-top: 80px;
+  color: black;
+}
+
+label {
+  color: white;
 }
 
 .designer-content {

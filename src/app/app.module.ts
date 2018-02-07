@@ -14,7 +14,8 @@ import { AppRoutingModule } from './app-routing.module';
 
 import { AppComponent } from './app.component';
 import { SignupComponent } from './signup/signup.component';
-// import { LoginComponent } from './login/login.component';
+import { LoginComponent } from './login/login.component';
+import { LoginComponent as OtherLoginComponent } from './account/login/login.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { HomeComponent } from './home/home.component';
 import { DesignerAdminComponent } from './designer/admin/designer-admin.component';
@@ -28,28 +29,32 @@ import { ButtonsModule } from 'ngx-bootstrap';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { TabsModule } from 'ngx-bootstrap';
 
-import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NavigationService } from './navigation.service';
 import { SidenavComponent } from './sidenav/sidenav.component';
 import { ProfileComponent } from './dashboard/profile/profile.component';
 import { DesignComponent } from './dashboard/design/design.component';
 import { AccountComponent } from './account/account.component';
-import { LoginComponent } from './account/login/login.component';
 import { RegisterComponent } from './account/register/register.component';
 import { ObjectFactoryService } from './designer/object-factory.service';
 import { BreadcrumbsComponent } from './breadcrumbs/breadcrumbs.component';
-import { TextComponent } from './designer/client/text/text.component';
-import { PhotosComponent } from './designer/client/photos/photos.component';
-import { ColorsComponent } from './designer/client/colors/colors.component';
-import { ContactInfoComponent } from './designer/client/contact-info/contact-info.component';
-import { DesignsComponent } from './designer/designs/designs.component';
+import { TextComponent } from './designer/sidebar/text/text.component';
+import { PhotosComponent } from './designer/sidebar/photos/photos.component';
+import { ColorsComponent } from './designer/sidebar/colors/colors.component';
+import { ContactInfoComponent } from './designer/sidebar/contact-info/contact-info.component';
+import { DesignsComponent } from './designer/sidebar/designs/designs.component';
 import { ScrollService } from './core/scroll.service';
+import { AgentsComponent } from './dashboard/agents/agents.component';
+import { OrdersComponent } from './dashboard/orders/orders.component';
+import { ListsComponent } from './dashboard/lists/lists.component';
+import { CropDialogComponent } from './designer/crop-dialog/crop-dialog.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     SignupComponent,
     LoginComponent,
+    OtherLoginComponent,
     DashboardComponent,
     HomeComponent,
     DesignerAdminComponent,
@@ -68,6 +73,11 @@ import { ScrollService } from './core/scroll.service';
     ColorsComponent,
     ContactInfoComponent,
     DesignsComponent,
+    RegisterComponent,
+    AgentsComponent,
+    OrdersComponent,
+    ListsComponent,
+    CropDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -86,10 +96,10 @@ import { ScrollService } from './core/scroll.service';
     HttpModule,
     CommonModule
   ],
-  entryComponents: [
+  entryComponents: [ 
+    CropDialogComponent
   ],
-  providers: [NavigationService],
-  providers: [ObjectFactoryService, ScrollService],
+  providers: [NavigationService, ObjectFactoryService, ScrollService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -8,7 +8,7 @@ import {
   MatDialogModule,
   MatProgressSpinnerModule,
   MatSidenavModule,
-  MatToolbarModule
+  MatToolbarModule,
   MatTooltipModule,
 } from '@angular/material';
 
@@ -21,7 +21,7 @@ const modules = [
   MatDialogModule,
   MatProgressSpinnerModule,
   MatSidenavModule,
-  MatToolbarModule
+  MatToolbarModule,
   MatTooltipModule,
 ];
 

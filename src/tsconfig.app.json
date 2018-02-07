@@ -4,7 +4,11 @@
     "outDir": "../out-tsc/app",
     "baseUrl": "./",
     "module": "es2015",
-    "types": []
+    "types": [],
+    "paths": {
+      "#core/*": ["app/core/*"],
+      "#app/*": ["app/*"]
+    }
   },
   "exclude": [
     "test.ts",

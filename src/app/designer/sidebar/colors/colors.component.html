@@ -1,5 +1,5 @@
 <div class="color-container">
-  <div class="color wide" [style.background]="bgColor" [colorPicker]="bgColor" [cpCancelButton]="true" [cpOKButton]="true"
+  <div *ngIf="showBackground" class="color wide" [style.background]="bgColor" [colorPicker]="bgColor" [cpCancelButton]="true" [cpOKButton]="true"
     cpAlphaChannel="always" (colorPickerChange)="onBgColorChange($event)" (cpSliderDragEnd)="onChange()">
     <div class="color-title">Background Color</div>
   </div>

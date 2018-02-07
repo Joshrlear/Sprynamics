@@ -1,5 +1,6 @@
 import { Component, AfterViewInit, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { MatDialog } from '@angular/material';
 
 import { FirestoreService } from '../../core/firestore.service';
 import { StorageService } from '../../core/storage.service';
@@ -49,7 +50,8 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
     private firestore: FirestoreService,
     private storage: StorageService,
     private auth: AuthService,
-    private factory: ObjectFactoryService
+    private factory: ObjectFactoryService,
+    private MatDialog: MatDialog,
   ) { }
 
   ngOnInit() {
