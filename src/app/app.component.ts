@@ -10,6 +10,7 @@ import 'rxjs/add/operator/first';
 
 import { NavigationService } from './navigation.service';
 
+declare const $;
 
 const sideNavView = 'SideNav';
 
