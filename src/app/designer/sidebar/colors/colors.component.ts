@@ -20,9 +20,7 @@ export class ColorsComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit() {
-    console.log(this.bgColor);
-  }
+  ngOnInit() { }
 
   onColorChange(color: string, index: number) {
     this.colorChange.emit({ color, index });

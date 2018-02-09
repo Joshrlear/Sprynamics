@@ -38,28 +38,30 @@
         <mat-icon>view_carousel</mat-icon>
         <div class="tab-title"> Designs </div>
       </div>
-      <div class="tab" [class.selected]="currentTab === 'text'" (click)="currentTab = 'text'; currentTabIndex = 1;">
-        <mat-icon>subject</mat-icon>
-        <div class="tab-title"> Text </div>
-      </div>
-      <div class="tab" [class.selected]="currentTab === 'photos'" (click)="currentTab = 'photos'; currentTabIndex = 2;">
-        <mat-icon>photo_library</mat-icon>
-        <div class="tab-title"> Photos </div>
-      </div>
-      <div class="tab" [class.selected]="currentTab === 'colors'" (click)="currentTab = 'colors'; currentTabIndex = 3;">
-        <mat-icon>color_lens</mat-icon>
-        <div class="tab-title"> Colors </div>
-      </div>
-      <div class="tab" [class.selected]="currentTab === 'contact'" (click)="currentTab = 'contact'; currentTabIndex = 4;">
-        <mat-icon>contact_mail</mat-icon>
-        <div class="tab-title"> Contact </div>
-      </div>
+      <ng-container *ngIf="template">
+        <div class="tab" [class.selected]="currentTab === 'text'" (click)="currentTab = 'text'; currentTabIndex = 1;">
+          <mat-icon>subject</mat-icon>
+          <div class="tab-title"> Text </div>
+        </div>
+        <div class="tab" [class.selected]="currentTab === 'photos'" (click)="currentTab = 'photos'; currentTabIndex = 2;">
+          <mat-icon>photo_library</mat-icon>
+          <div class="tab-title"> Photos </div>
+        </div>
+        <div class="tab" [class.selected]="currentTab === 'colors'" (click)="currentTab = 'colors'; currentTabIndex = 3;">
+          <mat-icon>color_lens</mat-icon>
+          <div class="tab-title"> Colors </div>
+        </div>
+        <div class="tab" [class.selected]="currentTab === 'contact'" (click)="currentTab = 'contact'; currentTabIndex = 4;">
+          <mat-icon>contact_mail</mat-icon>
+          <div class="tab-title"> Contact </div>
+        </div>
+      </ng-container>
     </div>
     <div class="form-container">
       <app-designs *ngIf="currentTab === 'designs'" [size]="size" (select)="loadTemplate($event)"></app-designs>
       <app-text *ngIf="currentTab === 'text'" [productName]="productSizes[size]?.name" [size]="productSizes[size]?.width + ' x ' + productSizes[size]?.height + ' in.'"
-        [formFields]="formFields" (change)="saveUndo()"></app-text>
-      <app-photos *ngIf="currentTab === 'photos'" (change)="saveUndo()"></app-photos>
+        [formFields]="formFields" (change)="saveUndo()" (render)="canvas.renderAll()"></app-text>
+      <app-photos *ngIf="currentTab === 'photos'" [photos]="template[viewSide].userImages" (photoChange)="changePhoto($event)"></app-photos>
       <app-colors *ngIf="currentTab === 'colors'" [colors]="template.presetColors" (colorChange)="onColorChange($event)" [bgColor]="background.fill"
         (bgColorChange)="onBgColorChange($event)" (change)="saveUndo()"></app-colors>
       <app-contact-info *ngIf="currentTab === 'contact'" (change)="saveUndo()" ></app-contact-info>

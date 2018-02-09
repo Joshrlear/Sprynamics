@@ -189,7 +189,10 @@
             <ng-container *ngSwitchCase="'image'">
               <ng-container *ngIf="!selection.isLogo">
                 <h4>
-                  <span *ngIf="selection.isUserImage">User</span> Image</h4>
+                  <span *ngIf="selection.isUserImage">User</span> Image
+                </h4>
+                <button class="btn green" (click)="userImageInput.click()">Change Default Image</button>
+                <input #userImageInput style="display:none;" type="file" onclick="this.value = null" (change)="uploadImage(userImageInput.files[0]);">
               </ng-container>
               <ng-container *ngIf="selection.isLogo">
                 <h4>Logo</h4>

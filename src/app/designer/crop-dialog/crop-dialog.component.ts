@@ -17,13 +17,15 @@ export class CropDialogComponent implements OnInit {
   ngOnInit() {
     const el = document.getElementById('cropper');
     this.cropper = new Croppie(el, {
-      viewport: { width: 350, height: 350 },
+      viewport: { width: this.data.width, height: this.data.height },
       boundary: { width: 600, height: 600 },
       showZoomer: true,
-      enableOrientation: true
+      enableOrientation: true,
+      enforceBoundary: false
     });
     this.cropper.bind({
-      url: 'assets/bg/aboutbg_XL.jpg'
+      url: this.data.url,
+      zoom: false
     });
   }
 
@@ -32,7 +34,18 @@ export class CropDialogComponent implements OnInit {
   }
 
   save() {
-    this.dialogRef.close
+    this.cropper.result({
+      type: 'base64',
+      size: 'viewport',
+      format: 'png',
+      quality: 1
+    }).then(data => {
+      this.dialogRef.close(data);
+    });
+  }
+
+  cancel() {
+    this.dialogRef.close();
   }
 
 }

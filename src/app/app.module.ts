@@ -48,6 +48,8 @@ import { AgentsComponent } from './dashboard/agents/agents.component';
 import { OrdersComponent } from './dashboard/orders/orders.component';
 import { ListsComponent } from './dashboard/lists/lists.component';
 import { CropDialogComponent } from './designer/crop-dialog/crop-dialog.component';
+import { AlignmentService } from '#app/designer/admin/alignment.service';
+import { SidebarComponent } from './designer/sidebar/sidebar.component';
 
 @NgModule({
   declarations: [
@@ -78,6 +80,7 @@ import { CropDialogComponent } from './designer/crop-dialog/crop-dialog.componen
     OrdersComponent,
     ListsComponent,
     CropDialogComponent,
+    SidebarComponent,
   ],
   imports: [
     BrowserModule,
@@ -99,7 +102,7 @@ import { CropDialogComponent } from './designer/crop-dialog/crop-dialog.componen
   entryComponents: [ 
     CropDialogComponent
   ],
-  providers: [NavigationService, ObjectFactoryService, ScrollService],
+  providers: [NavigationService, ObjectFactoryService, ScrollService, AlignmentService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

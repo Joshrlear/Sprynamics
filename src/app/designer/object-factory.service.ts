@@ -34,7 +34,7 @@ export class ObjectFactoryService {
     canvas.add(obj).setActiveObject(obj);
     if (center) canvas.centerObject(obj);
     obj.stateProperties.push('isHidden', 'isBoundBox', 'isBackground', 'selectable', 'hasControls', 'textContentType', 'textUserData',
-      'textFieldName', 'userEditable', 'isLogo', 'logoType', 'isUserData');
+      'textFieldName', 'userEditable', 'isLogo', 'logoType', 'isUserData', 'isUserImage');
     return obj;
   }
 

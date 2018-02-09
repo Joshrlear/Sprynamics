@@ -1,94 +1,99 @@
 <div class="row fill">
-    <div class="col-xs-12 col col-md-8">
-      <div class="dashboard-card">
-        <p class="dashboard-card-heading">Edit Profile</p>
-        <form>
-          <div class="form-row">
-            <div class="form-group col-md-6">
-              <label for="exampleInputEmail1">Company Name</label>
-              <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Enter company name" value="{{user?.company}}">
-            </div>
-            <div class="form-group col-md-6">
-              <label for="exampleInputEmail1">Email address</label>
-              <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email" value="{{user?.email}}">
-              <!-- <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> -->
-            </div>
+  <div class="col-xs-12 col col-md-8">
+    <div class="dashboard-card">
+      <p class="dashboard-card-heading">Edit Profile</p>
+      <form *ngIf="userForm" [formGroup]="userForm" (ngSubmit)="saveForm()">
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="company">Company Name</label>
+            <input type="text" class="form-control" id="company" placeholder="Enter company name" formControlName="company" value="{{user?.company}}">
           </div>
-          <div class="form-row">
-            <div class="form-group col-md-6">
-              <label for="exampleInputEmail1">First Name</label>
-              <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Enter first name" value="{{user?.firstName}}">
-            </div>
-            <div class="form-group col-md-6">
-              <label for="exampleInputEmail1">Last Name</label>
-              <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Enter last name" value="{{user?.lastName}}">
-            </div>
+          <div class="form-group col-md-6">
+            <label for="email">Email address</label>
+            <input type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email" formControlName="email" value="{{user?.email}}">
+            <!-- <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> -->
           </div>
-          <div class="form-row">
+        </div>
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="firstName">First Name</label>
+            <input type="text" class="form-control" id="firstName" placeholder="Enter first name" formControlName="firstName" value="{{user?.firstName}}">
+          </div>
+          <div class="form-group col-md-6">
+            <label for="lastName">Last Name</label>
+            <input type="text" class="form-control" id="lastName" placeholder="Enter last name" formControlName="lastName" value="{{user?.lastName}}">
+          </div>
+        </div>
+        <div class="form-row">
           <div class="form-group col-sm-12">
-            <label for="exampleInputEmail1">Address</label>
-            <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Enter address" value="{{(user?.address1||'') + (user?.address2 ? ' '+user.address2 : '')}}">
-          </div>  
-          </div>
-          <div class="form-row">
-            <div class="form-group col-md-4">
-              <label for="exampleInputEmail1">City</label>
-              <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Enter city" value="{{user?.city}}">
-            </div>
-            <div class="form-group col-md-4">
-              <label for="exampleInputEmail1">State</label>
-              <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Enter state" value="{{user?.state}}">
-            </div>
-            <div class="form-group col-md-4">
-              <label for="exampleInputEmail1">Zip Code</label>
-              <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Enter zip code" value="{{user?.zipCode}}">
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group col-sm-12">
-              <label for="exampleInputEmail1">License ID</label>
-              <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Enter license id" value="{{user?.licenseId}}">
-            </div>  
-            </div>
-            <div class="form-action">
-                <button mat-button type="button" class="dashboard-button">Save Changes</button>
-            </div>
-
-              
-        </form>
-      </div>
-    </div>
-    <div class="col-xs-12 col col-md-4">
-      <div class="dashboard-card">
-        <div class="profile-photo">
-          <img style="width:96px;height:96px;" [src]="user?.avatarUrl || ''">
-          <p>Your Profile Photo</p>
-          <button class="btn btn-link">Upload New Image</button>
-        </div>
-      </div>
-      <div class="dashboard-card no-padding">
-          <p class="dashboard-card-heading" style="margin-left:12px;margin-top:6px;margin-bottom:6px;">Brand Colors</p>
-        <app-colors [colors]="user?.brandColors" [showAddButton]="true" [showBackground]="false" (addColor)="addColor()"></app-colors>
-      </div>
-      <div class="row" style="margin:0">
-        <div class="col col-xs-12 col-md-6">
-          <div class="dashboard-card">
-            <div class="profile-photo">
-              <img style="width:96px;height:96px;" [src]="user?.companyLogoUrl || ''">
-              <p>Company Logo</p>
-              <button class="btn btn-link">Upload New Image</button>
-            </div>
+            <label for="address1">Address Line 1</label>
+            <input type="text" class="form-control" id="address1" placeholder="Enter address line 1" formControlName="address1" value="{{user?.address1}}">
           </div>
         </div>
-        <div class="col col-xs-12 col-md-6">
-          <div class="dashboard-card">
-            <div class="profile-photo">
-              <img style="width:96px;height:96px;" [src]="user?.brokerageLogoUrl || ''">
-              <p>Brokerage Logo</p>
-              <button class="btn btn-link">Upload New Image</button>
-            </div>
+        <div class="form-row">
+          <div class="form-group col-sm-12">
+            <label for="address2">Address Line 2</label>
+            <input type="text" class="form-control" id="address2" placeholder="(optional) Enter address line 2" formControlName="address2" value="{{user?.address2}}">
           </div>
         </div>
-      </div>
+        <div class="form-row">
+          <div class="form-group col-md-4">
+            <label for="city">City</label>
+            <input type="text" class="form-control" id="city" placeholder="Enter city" formControlName="city" value="{{user?.city}}">
+          </div>
+          <div class="form-group col-md-4">
+            <label for="state">State</label>
+            <input type="text" class="form-control" id="state" placeholder="Enter state" formControlName="state" value="{{user?.state}}">
+          </div>
+          <div class="form-group col-md-4">
+            <label for="zipCode">Zip Code</label>
+            <input type="text" class="form-control" id="zipCode" placeholder="Enter zip code" formControlName="zipCode" value="{{user?.zipCode}}">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group col-sm-12">
+            <label for="licenseId">License ID</label>
+            <input type="text" class="form-control" id="licenseId" placeholder="Enter license id" formControlName="licenseId" value="{{user?.licenseId}}">
+          </div>
+        </div>
+        <div class="form-action">
+          <button mat-button type="submit" class="dashboard-button">Save Changes</button>
+        </div>
+      </form>
     </div>
   </div>
+  <div class="col-xs-12 col col-md-4">
+    <div class="dashboard-card">
+      <div class="profile-photo">
+        <img style="width:96px;height:96px;" [src]="user?.avatarUrl || ''">
+        <p>Your Profile Photo</p>
+        <button class="btn btn-link">Upload New Image</button>
+      </div>
+    </div>
+    <div class="row" style="margin:0">
+      <div class="col col-xs-12 col-md-6" style="padding: 0;padding-right:6px;">
+        <div class="dashboard-card">
+          <div class="profile-photo">
+            <img style="width:96px;height:96px;" [src]="user?.companyLogoUrl || ''">
+            <p>Company Logo</p>
+            <button class="btn btn-link">Upload New Image</button>
+          </div>
+        </div>
+      </div>
+      <div class="col col-xs-12 col-md-6" style="padding: 0;padding-left:6px">
+        <div class="dashboard-card">
+          <div class="profile-photo">
+            <img style="width:96px;height:96px;" [src]="user?.brokerageLogoUrl || ''">
+            <p>Brokerage Logo</p>
+            <button class="btn btn-link">Upload New Image</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="dashboard-card no-padding">
+      <p class="dashboard-card-heading" style="margin-left:12px;margin-top:6px;margin-bottom:6px;">Brand Colors</p>
+      <app-colors [colors]="user?.brandColors" [showAddButton]="true" [showBackground]="false" (addColor)="addColor()" (colorChange)="setColor($event)"
+        (change)="saveColors()"></app-colors>
+    </div>
+  </div>
+</div>

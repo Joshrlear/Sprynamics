@@ -33,7 +33,7 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
 
   @ViewChild('designerView') view: ElementRef;
   canvas: any;
-  template: any = {};
+  template: any;
   boundBox: any;
   userData: any;
   formFields: any = [];
@@ -77,11 +77,15 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
     });
   }
 
+  canvasToJSON() {
+    return this.canvas.toJSON(['isHidden', 'isBoundBox', 'isBackground', 'selectable', 'hasControls', 'textContentType', 'textUserData',
+    'textFieldName', 'userEditable', 'isLogo', 'logoType', 'isUserImage']);
+  }
+
   saveUndo() {
     if (this.disableHistory) return;
     this.past.push(this.present);
-    this.present = this.canvas.toJSON(['isHidden', 'isBoundBox', 'isBackground', 'selectable', 'hasControls', 'textContentType', 'textUserData',
-      'textFieldName', 'userEditable', 'isLogo', 'logoType']);
+    this.present = this.canvasToJSON();
     this.future = [];
   }
 
@@ -187,6 +191,12 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
     this.canvas.renderAll();
   }
 
+  changePhoto(event) {
+    const obj = this.template[this.viewSide].userImages[event.index];
+    console.log(event.photo);
+    obj.setSrc(event.photo, _ => this.canvas.renderAll());
+  }
+
   saveAndContinue() {
     this.getDataURL('front', front => {
       this.getDataURL('back', back => {
@@ -206,8 +216,7 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
     this.viewSide = side;
     // keep track of whether the lastside was processed
     const processed = this.template[lastSide] && this.template[lastSide].processed;
-    this.template[lastSide] = Object.assign(this.canvas.toJSON(['isHidden', 'isBoundBox', 'isBackground', 'selectable', 'hasControls', 'textContentType', 'textUserData',
-      'textFieldName', 'userEditable', 'isLogo', 'logoType']), { processed });
+    this.template[lastSide] = Object.assign(this.canvasToJSON(), { processed });
     this.canvas.clear();
     if (this.template[this.viewSide]) {
       this.canvas.loadFromJSON(this.template[this.viewSide], _ => {
@@ -266,6 +275,8 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
     const offset = this.boundBox.getCenterPoint();
     const xdiff = offset.x - center.left;
     const ydiff = offset.y - center.top;
+    // prepare list of user images
+    this.template[this.viewSide].userImages = [];
     // modify all objects
     this.canvas.forEachObject(obj => {
       obj.left -= xdiff;
@@ -299,6 +310,13 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
           obj: obj,
         });
       }
+      console.log(obj);
+      // load user image
+      if (obj.isUserImage) {
+        console.log(obj);
+        this.template[this.viewSide].userImages.push(obj);
+      }
+
       // inject user photos in images
       if (obj.isLogo) {
         let src;

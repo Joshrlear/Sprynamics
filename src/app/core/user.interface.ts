@@ -7,6 +7,7 @@ export interface User {
   address2: string;
   city: string;
   state: string;
+  zipCode: string;
   country: string;
   company: string;
   licenseId: string;

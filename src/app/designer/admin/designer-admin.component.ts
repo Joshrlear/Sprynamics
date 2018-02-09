@@ -6,6 +6,9 @@ import { FirestoreService } from '../../core/firestore.service';
 import { StorageService } from '../../core/storage.service';
 import { productTypes, productSpecs, thumbnailSizes } from '../products';
 import { ObjectFactoryService } from '../object-factory.service';
+import { AlignmentService } from '#app/designer/admin/alignment.service';
+import { CropDialogComponent } from '#app/designer/crop-dialog/crop-dialog.component';
+import { MatDialog } from '@angular/material';
 
 import 'webfontloader';
 declare let WebFont;
@@ -69,7 +72,9 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
     private auth: AuthService,
     private http: Http,
     private route: ActivatedRoute,
-    public factory: ObjectFactoryService
+    public factory: ObjectFactoryService,
+    private aligner: AlignmentService,
+    private dialog: MatDialog
   ) { }
 
   ngOnInit() {
@@ -112,8 +117,7 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
       backgroundColor: '#fff'
     });
 
-    this.present = this.canvas.toJSON(['isHidden', 'isBoundBox', 'isBackground', 'selectable', 'hasControls', 'textContentType', 'textUserData',
-      'textFieldName', 'userEditable', 'isLogo', 'logoType']);
+    this.present = this.canvasToJSON();
 
     fabric.Object.prototype.set({
       borderColor: '#12C463',
@@ -144,7 +148,7 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
 
     // Fix rectangle scaling
     this.canvas.on('object:modified', (event) => {
-      if (event.target.type === 'rect') {
+      if (event.target.type === 'rect' || event.target.type === 'image') {
         event.target.width = Math.floor(event.target.width * event.target.scaleX);
         event.target.height = Math.floor(event.target.height * event.target.scaleY);
         event.target.scaleX = 1;
@@ -164,118 +168,18 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
 
     // Auto-align object when dragged
     this.canvas.on("object:moving", (event) => {
-      if (event.e.ctrlKey) {
-        // ignore alignment when the ctrl key is held down
-        return;
+      // ignore alignment when the ctrl key is held down
+      if (!event.e.ctrlKey) {
+        this.aligner.alignDragging(event.target, this.canvas);
       }
-      const target = event.target;
-
-      this.canvas.forEachObject(obj => {
-        if (obj.isBoundBox || (obj.id !== target.id && !obj.isBackground)) {
-          const bound = obj;
-          target.right = target.left + target.getWidth();
-          target.bottom = target.top + target.getHeight();
-          bound.right = bound.left + bound.width;
-          bound.bottom = bound.top + bound.height;
-          // top/top alignment
-          if (target.top > bound.top - 10 && target.top < bound.top + 10) {
-            target.setTop(bound.top);
-          }
-          // top/bottom alignment
-          if (target.top > bound.bottom - 10 && target.top < bound.bottom + 10) {
-            target.setTop(bound.bottom);
-          }
-          // left/left alignment
-          if (target.left > bound.left - 10 && target.left < bound.left + 10) {
-            target.setLeft(bound.left);
-          }
-          // left/right alignment
-          if (target.left > bound.right - 10 && target.left < bound.right + 10) {
-            target.setLeft(bound.right);
-          }
-          // right/right alignment
-          if (target.right > bound.right - 10 && target.right < bound.right + 10) {
-            target.left = bound.right - target.getWidth();
-          }
-          // right/left alignment
-          if (target.right > bound.left - 10 && target.right < bound.left + 10) {
-            target.left = bound.left - target.getWidth();
-          }
-          // bottom/bottom alignment
-          if (target.bottom > bound.bottom - 10 && target.bottom < bound.bottom + 10) {
-            target.top = bound.bottom - target.getHeight();
-          }
-          // bottom/top alignment
-          if (target.bottom > bound.top - 10 && target.bottom < bound.top + 10) {
-            target.top = bound.top - target.getHeight();
-          }
-          // center x alignment
-          const middleX = target.left + target.getWidth() / 2;
-          const boundMiddleX = bound.left + bound.width / 2;
-          if (middleX > boundMiddleX - 10 && middleX < boundMiddleX + 10) {
-            target.left = boundMiddleX - target.getWidth() / 2;
-          }
-          // center y alignment
-          const middleY = target.top + target.getHeight() / 2;
-          const boundMiddleY = bound.top + bound.height / 2;
-          if (middleY > boundMiddleY - 10 && middleY < boundMiddleY + 10) {
-            target.top = boundMiddleY - target.getHeight() / 2;
-          }
-        }
-      });
-      target.setCoords();
     });
 
     // Auto-align when scaling
     this.canvas.on('object:scaling', (event) => {
-      if (event.e.ctrlKey) {
-        // ignore alignment when the ctrl key is held down
-        return;
+      // ignore alignment when the ctrl key is held down
+      if (!event.e.ctrlKey) {
+        this.aligner.alignScaling(event.target, this.canvas);
       }
-
-      const target = event.target;
-      const targetBound = target.getBoundingRect();
-
-      this.canvas.forEachObject(obj => {
-        if (obj.id !== target.id) {
-          const bound = obj.getBoundingRect();
-
-          switch (target.__corner) {
-            // top
-            case 'mt':
-              if (target.top > bound.top - 10 && target.top < bound.top + 10) {
-                const h = target.height * target.scaleY;
-                target.scaleY = (h - (bound.top - target.top)) / target.height;
-                target.top = bound.top;
-              }
-              break;
-            // left
-            case 'ml':
-              if (target.left > bound.left - 10 && target.left < bound.left + 10) {
-                const w = target.width * target.scaleX;
-                target.scaleX = (w - (bound.left - target.left)) / target.width;
-                target.left = bound.left;
-              }
-              break;
-            // right
-            case 'mr':
-              const right = target.left + target.getWidth();
-              const boundRight = bound.left + bound.width;
-              if (right > boundRight - 10 && right < boundRight + 10) {
-                target.scaleX = (boundRight - target.left) / target.width;
-              }
-              break;
-            // bottom
-            case 'mb':
-              const bottom = target.top + target.getHeight();
-              const boundBottom = bound.top + bound.width;
-              if (bottom > boundBottom - 10 && bottom < boundBottom + 10) {
-                target.scaleY = (boundBottom - target.top) / target.height;
-              }
-              break;
-          }
-        }
-      });
     });
 
     // initialize the canvas
@@ -294,6 +198,10 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
     // });
   }
 
+  canvasToJSON() {
+    return this.canvas.toJSON(['isHidden', 'isBoundBox', 'isBackground', 'selectable', 'hasControls', 'textContentType', 'textUserData',
+    'textFieldName', 'userEditable', 'isLogo', 'logoType', 'isUserImage']);
+  }
 
   /**
    * Deletes all content and clears the canvas, then recreates the bounding box.
@@ -335,8 +243,7 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
   saveUndo() {
     if (this.disableHistory) return;
     this.past.push(this.present);
-    this.present = this.canvas.toJSON(['isHidden', 'isBoundBox', 'isBackground', 'selectable', 'hasControls', 'textContentType', 'textUserData',
-      'textFieldName', 'userEditable', 'isLogo', 'logoType']);
+    this.present = this.canvasToJSON();
     this.future = [];
   }
 
@@ -368,11 +275,35 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
     this.template.presetColors.push(this.selection.fill);
   }
 
+  uploadImage(file: File) {
+    const obj = this.selection;
+    const reader = new FileReader();
+    reader.addEventListener('load', () => {
+      this.openDialog(reader.result, obj)
+    });
+    reader.readAsDataURL(file);
+  }
+
+  openDialog(dataURL, obj) {
+    const dialogRef = this.dialog.open(CropDialogComponent, {
+      data: {
+        url: dataURL,
+        width: obj.width * obj.scaleX,
+        height: obj.height * obj.scaleY
+      }
+    });
+
+    dialogRef.afterClosed().take(1).subscribe((data) => {
+      if (data) {
+        obj.setSrc(data, _ => this.canvas.renderAll());
+      }
+    });
+  }
+
   setViewSide(side: 'front' | 'back') {
     const lastSide = this.viewSide;
     this.viewSide = side;
-    this.template[lastSide] = this.canvas.toJSON(['isHidden', 'isBoundBox', 'isBackground', 'selectable', 'hasControls', 'textContentType', 'textUserData',
-      'textFieldName', 'userEditable', 'isLogo', 'logoType']);
+    this.template[lastSide] = this.canvasToJSON();
     console.log(this.template);
     this.clearCanvas();
     if (this.template[this.viewSide]) {
@@ -394,8 +325,7 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
       alert('You need to set a name for this design!');
       return;
     }
-    this.template[this.viewSide] = this.canvas.toJSON(['isHidden', 'isBoundBox', 'isBackground', 'selectable', 'hasControls', 'textContentType', 'textUserData',
-      'textFieldName', 'userEditable', 'isLogo', 'logoType']);
+    this.template[this.viewSide] = this.canvasToJSON();
     const canvasData = {
       front: this.template.front,
       back: this.template.back
