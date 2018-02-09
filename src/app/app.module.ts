@@ -48,6 +48,10 @@ import { AgentsComponent } from './dashboard/agents/agents.component';
 import { OrdersComponent } from './dashboard/orders/orders.component';
 import { ListsComponent } from './dashboard/lists/lists.component';
 import { CropDialogComponent } from './designer/crop-dialog/crop-dialog.component';
+import { ShippingComponent } from './checkout/shipping/shipping.component';
+import { PaymentComponent } from './checkout/payment/payment.component';
+import { ConfirmComponent } from './checkout/confirm/confirm.component';
+import { OrderSummaryComponent } from './checkout/order-summary/order-summary.component';
 
 @NgModule({
   declarations: [
@@ -78,6 +82,10 @@ import { CropDialogComponent } from './designer/crop-dialog/crop-dialog.componen
     OrdersComponent,
     ListsComponent,
     CropDialogComponent,
+    ShippingComponent,
+    PaymentComponent,
+    ConfirmComponent,
+    OrderSummaryComponent
   ],
   imports: [
     BrowserModule,
