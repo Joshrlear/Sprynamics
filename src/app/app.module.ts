@@ -48,15 +48,12 @@ import { AgentsComponent } from './dashboard/agents/agents.component';
 import { OrdersComponent } from './dashboard/orders/orders.component';
 import { ListsComponent } from './dashboard/lists/lists.component';
 import { CropDialogComponent } from './designer/crop-dialog/crop-dialog.component';
-<<<<<<< HEAD
 import { AlignmentService } from '#app/designer/admin/alignment.service';
 import { SidebarComponent } from './designer/sidebar/sidebar.component';
-=======
 import { ShippingComponent } from './checkout/shipping/shipping.component';
 import { PaymentComponent } from './checkout/payment/payment.component';
 import { ConfirmComponent } from './checkout/confirm/confirm.component';
 import { OrderSummaryComponent } from './checkout/order-summary/order-summary.component';
->>>>>>> 09d01634959868bfe1c6fbac2fce53ce6bc6e4d6
 
 @NgModule({
   declarations: [
