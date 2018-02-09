@@ -11,7 +11,11 @@ import { RegisterComponent } from './account/register/register.component';
 
 import { SignupComponent } from './signup/signup.component';
 import { ProductsComponent } from './products/products.component';
+
 import { CheckoutComponent } from './checkout/checkout.component';
+import { ShippingComponent } from './checkout/shipping/shipping.component';
+import { PaymentComponent } from './checkout/payment/payment.component';
+import { ConfirmComponent } from './checkout/confirm/confirm.component';
 
 import { ProfileComponent } from './dashboard/profile/profile.component';
 
@@ -41,7 +45,13 @@ const routes: Routes = [
     ]
   },
   { path: 'cart', component: CartComponent },
-  { path: 'checkout', component: CheckoutComponent },
+  { path: 'checkout', component: CheckoutComponent, 
+    children: [
+      { path: '', redirectTo: 'shipping-info', pathMatch: 'full' },
+      { path: 'shipping-info', component: ShippingComponent },
+      { path: 'payment-method', component: PaymentComponent },
+      { path: 'confirm-order', component: ConfirmComponent },
+    ] },
   { path: 'admin-designer', component: DesignerAdminComponent },
   {
     path: 'profile', component: DashboardComponent, canActivate: [AuthGuard],
