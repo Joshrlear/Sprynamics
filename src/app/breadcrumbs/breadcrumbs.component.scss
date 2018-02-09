@@ -4,6 +4,8 @@
   align-items: center;
   justify-content: center;
   background-color: #e0dfdf;
+  background-color: #fff;
+  box-shadow: 0 0.125rem 0.25rem 0 rgba(0,0,0,.05);
   position: relative;
   z-index: 99;
   @media screen and (max-width: 500px) {

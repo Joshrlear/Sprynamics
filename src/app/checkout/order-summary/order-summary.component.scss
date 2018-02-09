@@ -1,0 +1,92 @@
+.order-summary-container {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.order-summary-wrap {
+    background-color: #fff;
+    height: auto;
+    width: 100%;
+    min-width: 364px;
+    display: flex;
+    flex-direction: column;
+    margin: 24px 0;
+}
+
+.order-summary-header {
+    height: 48px;
+    background-color: #34383e;
+    width: 400px;
+    margin-left: -6px;
+    margin-right: -6px;
+}
+
+.order-summary-header span {
+    font-size: 14px;
+    color: #fff;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.order-summary {
+    padding: 24px;
+}
+
+
+.subtotal {
+    display: flex;
+    height: 48px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.shipping {
+    display: flex;
+    height: 48px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid #f4f4f4;
+}
+
+.total {
+    display: flex;
+    height: 48px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid #f4f4f4;
+}
+
+.checkout {
+    margin: 24px 0 0 0;
+}
+
+.checkout-button {
+    background-color: #36cc7b;
+    color: #fff;
+    width: 100%;
+}
+
+.or {
+    border-top: 1px solid #f2f2f2;
+    margin: 32px 0;
+    position: relative;
+}
+
+.or:after {
+    background: #fff;
+    content: 'OR';
+    color: #a0a0a0;
+    font-size: 12px;
+    line-height: 1;
+    left: 50%;
+    margin: -.6em 0 0 -1em;
+    padding: 0 .5em;
+    position: absolute;
+    top: 0;
+}
