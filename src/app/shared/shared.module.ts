@@ -34,9 +34,26 @@ const components: any[] = [
   SidenavComponent,
 ];
 
+const everything = modules.concat(components);
+
 @NgModule({
   imports: modules,
   declarations: components,
-  exports: modules.concat(components)
+  exports: [
+    // angular modules
+    CommonModule,
+    HttpModule,
+    FormsModule,
+    ReactiveFormsModule,
+    // package modules
+    NgbModule,
+    RecaptchaFormsModule,
+    ColorPickerModule,
+    // local modules
+    MaterialModule,
+    BreadcrumbsComponent,
+    ColorsComponent,
+    SidenavComponent,
+  ]
 })
 export class SharedModule { }

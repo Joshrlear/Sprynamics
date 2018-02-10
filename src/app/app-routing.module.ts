@@ -14,8 +14,7 @@ import { AuthGuard } from './core/auth.guard';
 const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'products', component: ProductsComponent },
-  { path: 'designer', component: DesignerClientComponent },
-  { path: 'admin-designer', component: DesignerAdminComponent },
+  { path: 'designer', loadChildren: 'app/designer/designer.module#DesignerModule' },
   {
     path: 'account', 
     component: AccountComponent,

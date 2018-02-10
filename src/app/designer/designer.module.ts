@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 
 import { SharedModule } from '#app/shared/shared.module';
 
@@ -15,10 +15,14 @@ import { TextComponent } from './sidebar/text/text.component';
 import { AlignmentService } from './admin/alignment.service';
 import { ObjectFactoryService } from './object-factory.service';
 
+const routes: Routes = [
+  { path: '', component: DesignerClientComponent },
+  { path: 'admin', component: DesignerAdminComponent }
+]
 
 @NgModule({
   imports: [
-    RouterModule,
+    RouterModule.forChild(routes),
     SharedModule
   ],
   declarations: [
