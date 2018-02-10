@@ -13,20 +13,20 @@ export class ProductsComponent implements OnInit {
 
   product: string;
 
-  constructor(private route: ActivatedRoute, private scroll: ScrollService) { }
+  constructor(private route: ActivatedRoute) { }
 
   ngOnInit() {
     this.route.queryParamMap.take(1).subscribe((queryParamMap: any) => {
       const queryProduct = queryParamMap.params['product'];
       if (queryProduct) {
         this.product = queryProduct;
-        this.scroll.scrollToTop();
+        // this.scroll.scrollToTop();
       }
     });
   }
 
   scrollUp() {
-    this.scroll.scrollToTop();
+    // this.scroll.scrollToTop();
   }
 
 }

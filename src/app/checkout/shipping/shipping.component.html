@@ -1,57 +1,70 @@
-
-
 <div class="ss-card">
   <div class="form-container">
-    <form class="ss-form">
+    <form class="ss-form" *ngIf="shippingForm" [formGroup]="shippingForm" (ngSubmit)="submitForm()">
       <div class="form-row" style="padding: 12px 24px 24px 24px;">
         <div class="form-check col-md-6">
-          <input type="radio" name="shipType" class="form-check-input" id="singleAddress" value="true" (click)="chooseSingleAddress()" checked>
+          <input type="radio" name="shipType" class="form-check-input" id="singleAddress" value="true" (click)="chooseSingleAddress()"
+            checked>
           <label class="form-check-label" for="singleAddress">Ship to a single address</label>
         </div>
         <div class="form-check col-md-6">
           <input type="radio" name="shipType" class="form-check-input" id="mailingList" value="true" (click)="chooseMailingList()">
           <label class="form-check-label" for="mailingList">Ship to a mailing list</label>
         </div>
-        </div>
+      </div>
       <div *ngIf="singleAddress === true" id="single-address">
+        <h5>Order Quantity</h5>
+        <p style="color: rgba(0,0,0,.54);font-weight: 600;font-size: 10px; text-transform: uppercase;">How many items we should send</p>
+        <div class="form-row">
+          <div class="form-group col-xs-12">
+            <input type="number" class="form-control" placeholder="Enter order quantity" autofocus>
+          </div>
+        </div>
+        <br>
         <h5>Shipping Address</h5>
         <p style="color: rgba(0,0,0,.54);font-weight: 600;font-size: 10px; text-transform: uppercase;">Where you would like your items shipped</p>
-      <div class="form-row">
-        <div class="form-group col-md-6">
-          <label>First Name</label>
-          <input type="text" class="form-control" placeholder="Enter first name" autofocus>
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="firstName">First Name</label>
+            <input id="firstName" formControlName="firstName" type="text" class="form-control" placeholder="Enter first name" [value]="">
+          </div>
+          <div class="form-group col-md-6">
+            <label for="lastName">Last Name</label>
+            <input id="lastName" formControlName="lastName" type="text" class="form-control" placeholder="Enter last name">
+          </div>
         </div>
-        <div class="form-group col-md-6">
-          <label>Last Name</label>
-          <input type="text" class="form-control" placeholder="Enter last name">
+        <div class="form-row">
+          <div class="form-group col-xs-12">
+            <label for="address1">Address Line 1</label>
+            <input id="address1" formControlName="address1" type="text" class="form-control" placeholder="Enter address line 1">
+          </div>
         </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group col-xs-12">
-          <label for="">Address</label>
-          <input type="text" class="form-control" placeholder="Enter address">
+        <div class="form-row">
+          <div class="form-group col-xs-12">
+            <label for="address2">Address Line 2</label>
+            <input id="address2" formControlName="address2" type="text" class="form-control" placeholder="(optional)">
+          </div>
         </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group col-md-4">
-          <label for="">City</label>
-          <input type="text" class="form-control" placeholder="Enter city">
+        <div class="form-row">
+          <div class="form-group col-md-4">
+            <label for="city">City</label>
+            <input id="city" formControlName="city" type="text" class="form-control" placeholder="Enter city">
+          </div>
+          <div class="form-group col-md-4">
+            <label for="state">State</label>
+            <input id="state" formControlName="state" type="text" class="form-control" placeholder="Enter state">
+          </div>
+          <div class="form-group col-md-4">
+            <label for="zipCode">Zip Code</label>
+            <input id="zipCode" formControlName="zipCode" type="text" class="form-control" placeholder="Enter zip code">
+          </div>
         </div>
-        <div class="form-group col-md-4">
-          <label for="">State</label>
-          <input type="text" class="form-control" placeholder="Enter state">
-        </div>
-        <div class="form-group col-md-4">
-          <label for="">Zip Code</label>
-          <input type="text" class="form-control" placeholder="Enter zip code">
-        </div>
-      </div>
-      <div class="form-row" style="padding: 12px;">
-        <div class="form-check">
-          <input type="checkbox" class="form-check-input" id="exampleCheck1">
-          <label class="form-check-label" for="exampleCheck1">Update profile with this information</label>
-        </div>
-      </div>
+        <!-- <div class="form-row" style="padding: 12px;">
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="exampleCheck1">
+            <label class="form-check-label" for="exampleCheck1">Save changes to my profile</label>
+          </div>
+        </div> -->
       </div>
       <div *ngIf="mailingList === true" id="mailingList">
         fuck off

@@ -292,7 +292,7 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
         height: obj.height * obj.scaleY
       }
     });
-
+1
     dialogRef.afterClosed().take(1).subscribe((data) => {
       if (data) {
         obj.setSrc(data, _ => this.canvas.renderAll());

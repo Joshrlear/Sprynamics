@@ -12,21 +12,18 @@ import {
   MatTooltipModule,
 } from '@angular/material';
 
-const modules = [
-  MatButtonModule,
-  MatStepperModule,
-  MatFormFieldModule,
-  MatInputModule,
-  MatIconModule,
-  MatDialogModule,
-  MatProgressSpinnerModule,
-  MatSidenavModule,
-  MatToolbarModule,
-  MatTooltipModule,
-];
-
 @NgModule({
-  imports: modules,
-  exports: modules,
+  exports: [
+    MatButtonModule,
+    MatStepperModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatIconModule,
+    MatDialogModule,
+    MatProgressSpinnerModule,
+    MatSidenavModule,
+    MatToolbarModule,
+    MatTooltipModule,
+  ]
 })
 export class MaterialModule { }

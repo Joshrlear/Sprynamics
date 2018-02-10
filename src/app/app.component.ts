@@ -8,7 +8,7 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { combineLatest } from 'rxjs/observable/combineLatest';
 import 'rxjs/add/operator/first';
 
-import { NavigationService } from './navigation.service';
+import { NavigationService } from '#core/navigation/navigation.service';
 
 declare const $;
 

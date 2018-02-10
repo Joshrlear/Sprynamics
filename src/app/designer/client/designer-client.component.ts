@@ -198,6 +198,7 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
   }
 
   saveAndContinue() {
+    this.router.navigate(['/checkout']);
     this.getDataURL('front', front => {
       this.getDataURL('back', back => {
         console.log(front);
@@ -208,7 +209,6 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
         doc.save('template.pdf');
       });
     });
-    this.router.navigate(['/cart']);
   }
 
   setViewSide(side: 'front' | 'back') {
