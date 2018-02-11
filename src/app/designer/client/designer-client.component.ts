@@ -148,7 +148,6 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
       this.canvas.forEachObject(obj => {
         obj.left -= offsetX;
         obj.top -= offsetY;
-        console.log(obj.left);
       });
       this.canvas.getObjects('rect').forEach(obj => {
         if (obj.strokeDashArray && obj.strokeDashArray[0] === 5 && obj.strokeDashArray[1] === 5) {
@@ -193,7 +192,6 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
 
   changePhoto(event) {
     const obj = this.template[this.viewSide].userImages[event.index];
-    console.log(event.photo);
     obj.setSrc(event.photo, _ => this.canvas.renderAll());
   }
 
@@ -201,12 +199,11 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
     this.router.navigate(['/checkout']);
     this.getDataURL('front', front => {
       this.getDataURL('back', back => {
-        console.log(front);
         const doc = new jspdf('l', 'in', [this.template.productType.width + productSpecs.bleedInches * 2, this.template.productType.height + productSpecs.bleedInches * 2]);
         doc.addImage(front, 'PNG', 0, 0);
         doc.addPage();
         doc.addImage(back, 'PNG', 0, 0);
-        doc.save('template.pdf');
+        // doc.save('template.pdf');
       });
     });
   }
@@ -253,7 +250,6 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
     this.template[this.viewSide].processed = true;
     let imagesToLoad = 0;
     this.background = this.canvas.getObjects('rect').filter(obj => obj.isBackground)[0];
-    console.log(this.background);
     // find the boundbox
     this.boundBox = this.canvas.getObjects('rect').filter(obj => {
       return obj.isBoundBox === true
@@ -310,10 +306,8 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
           obj: obj,
         });
       }
-      console.log(obj);
       // load user image
       if (obj.isUserImage) {
-        console.log(obj);
         this.template[this.viewSide].userImages.push(obj);
       }
 

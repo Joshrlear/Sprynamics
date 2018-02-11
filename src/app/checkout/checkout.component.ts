@@ -18,8 +18,9 @@ export class CheckoutComponent implements OnInit {
   constructor(public checkout: CheckoutService, public router: Router) { }
 
   ngOnInit() {
+    console.log('init');
     this.order = this.checkout.order;
-    this.checkout.initCustomer();
+    this.checkout.initOrder();
   }
 
 }

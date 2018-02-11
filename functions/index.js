@@ -94,7 +94,9 @@ exports.checkout = functions.https.onRequest((req, res) => {
       } else {
         res.status(200).send({ message: 'Success!' });
         // store into the orders database
-        admin.firestore().collection('orders').add(req.body)
+        delete req.body.token$; // remove the client token observable
+        req.body.createdAt = admin.firestore.FieldValue.serverTimestamp(); // add timestamp
+        admin.firestore().doc(`orders/${req.body.orderId}`).set(req.body); // add order to database
       }
     })
   })

@@ -26,6 +26,7 @@ export class CheckoutService {
     // create an order ID
     const orderId = this.afs.collection('orders').ref.doc().id;
     this.updateOrder('orderId', orderId);
+    this.updateOrder('submitted', false);
 
     this.auth.user.take(1).subscribe(user => {
       this.updateOrder('uid', user.uid);
@@ -50,13 +51,13 @@ export class CheckoutService {
   }
 
   updateOrder(key, value) {
+    console.log(key, value);
     const data = this._order.getValue();
     data[key] = value;
     this._order.next(data);
   }
 
   generateToken() {
-    console.log(this._order.getValue().customerId);
     const token$ = this.http.post('https://us-central1-sprynamics.cloudfunctions.net/getClientToken',
       { customerId: this._order.getValue().customerId })
       .map((res: any) => JSON.parse(res._body).token);
@@ -69,12 +70,15 @@ export class CheckoutService {
   }
 
   submitOrder() {
-    this.router.navigate(['/checkout/confirm-order']);
-    this.http.post('https://us-central1-sprynamics.cloudfunctions.net/checkout', this._order.getValue())
-      .take(1).subscribe((res: any) => {
-        window.alert((JSON.parse(res._body)).message);
-        this.loading = false;
-      })
+    if (!this._order.getValue().submitted) {
+      this.updateOrder('submitted', true);
+      this.router.navigate(['/checkout/confirm-order']);
+      this.http.post('https://us-central1-sprynamics.cloudfunctions.net/checkout', this._order.getValue())
+        .take(1).subscribe((res: any) => {
+          // window.alert((JSON.parse(res._body)).message);
+          this.loading = false;
+        })
+    }
   }
 
   calculatePricing(amt: number) {

@@ -23,5 +23,10 @@ service cloud.firestore {
       allow read;
       allow write: if get(/databases/$(database)/documents/users/$(request.auth.uid)).data.admin == true;
     }
+
+    // Match orders
+    match /orders/{orderId} {
+      allow read, write: if request.auth.uid == resource.data.uid || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.admin == true;
+    }
   }
 }

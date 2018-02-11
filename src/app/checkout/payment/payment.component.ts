@@ -18,6 +18,7 @@ export class PaymentComponent implements OnInit {
     this.checkout.loading = true;
     this.checkout.order.take(1).subscribe(order => {
       if (!order.shipping) {
+        // return to shipping page if we landed here first
         this.router.navigate(['/checkout/shipping-info']);
       } else {
         this.checkout.generateToken().take(1).subscribe(token => {

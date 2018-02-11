@@ -17,4 +17,6 @@ export interface Order {
     state: string;
     zipCode: string;
   }
+  createdAt?: any;
+  submitted?: boolean;
 }
