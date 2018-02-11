@@ -1,4 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, Inject } from '@angular/core';
+
+import * as dropin from 'braintree-web-drop-in';
+import { Observable } from 'rxjs/Observable';
+import { CheckoutService } from '#app/checkout/checkout.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-payment',
@@ -7,9 +12,24 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PaymentComponent implements OnInit {
 
-  constructor() { }
+  constructor(public checkout: CheckoutService, private router: Router) { }
 
   ngOnInit() {
+    this.checkout.loading = true;
+    this.checkout.order.take(1).subscribe(order => {
+      if (!order.shipping) {
+        this.router.navigate(['/checkout/shipping-info']);
+      } else {
+        this.checkout.generateToken().take(1).subscribe(token => {
+          this.checkout.loading = false;
+          dropin.create({
+            container: '#dropin',
+            authorization: token
+          }, (err, instance) => {
+            this.checkout.braintreeInit(instance);
+          });
+        });
+      }
+    })
   }
-
 }

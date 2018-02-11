@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "braintree": "^2.6.0",
+    "cors": "^2.8.4",
     "firebase-admin": "~5.4.2",
     "firebase-functions": "^0.8.1",
     "mailgun-js": "^0.14.1"

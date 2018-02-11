@@ -16,6 +16,7 @@ import { AuthService } from './auth.service';
 import { StorageService } from './storage.service';
 import { FirestoreService } from './firestore.service';
 import { NavigationService } from './navigation/navigation.service';
+import { CheckoutService } from '#app/checkout/checkout.service';
 
 @NgModule({
   imports: [
@@ -34,6 +35,7 @@ import { NavigationService } from './navigation/navigation.service';
     StorageService, 
     FirestoreService,
     NavigationService,
+    CheckoutService
   ]
 })
 export class CoreModule { }

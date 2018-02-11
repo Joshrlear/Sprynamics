@@ -15,4 +15,5 @@ export interface User {
   companyLogoUrl: string;
   brokerageLogoUrl: string;
   admin: boolean;
+  braintreeId?: string;
 }

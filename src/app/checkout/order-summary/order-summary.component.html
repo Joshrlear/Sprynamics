@@ -7,18 +7,18 @@
           <div class="order-summary">
             <div class="subtotal">
               <span>Subtotal</span>
-              <span>$19.99</span>
+              <span>${{(subtotal||0).toFixed(2)}}</span>
             </div>
             <div class="shipping">
               <span>Shipping</span>
-              <span>$0.00</span>
+              <span>${{(shipping||0).toFixed(2)}}</span>
             </div>
             <div class="total">
               <span>Total</span>
-              <span>$19.99</span>
+              <span>${{(total||0).toFixed(2)}}</span>
             </div>
             <div class="checkout">
-              <a href="#" class="btn checkout-button">Continue Checkout</a>
+              <a *ngIf="router.url.endsWith('payment-method')" (click)="clickCheckout()" class="btn checkout-button" style="color:white" [class.disabled]="router.url.endsWith('payment-method') && !instance">{{ router.url.endsWith('payment-method') ? 'Place Your Order' : 'Continue Checkout' }}</a>
             </div>
           </div>
         </div>

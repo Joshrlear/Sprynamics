@@ -12,12 +12,20 @@
           <label class="form-check-label" for="mailingList">Ship to a mailing list</label>
         </div>
       </div>
-      <div *ngIf="singleAddress === true" id="single-address">
+      <div [hidden]="singleAddress === false" id="single-address">
         <h5>Order Quantity</h5>
         <p style="color: rgba(0,0,0,.54);font-weight: 600;font-size: 10px; text-transform: uppercase;">How many items we should send</p>
         <div class="form-row">
           <div class="form-group col-xs-12">
-            <input type="number" class="form-control" placeholder="Enter order quantity" autofocus>
+            <select #quantity type="number" max="10000" class="form-control" (input)="updateQuantity(quantity.value)" autofocus>
+              <option value="" selected disabled hidden>Select a quantity</option>
+              <option value="100">100</option>
+              <option value="250">250</option>
+              <option value="500">500</option>
+              <option value="1000">1000</option>
+              <option value="2500">2500</option>
+              <option value="5000">5000</option>
+            </select>
           </div>
         </div>
         <br>
@@ -66,11 +74,11 @@
           </div>
         </div> -->
       </div>
-      <div *ngIf="mailingList === true" id="mailingList">
-        fuck off
+      <div [hidden]="mailingList === false" id="mailingList">
+        mailing list
       </div>
       <div class="form-action">
-        <button class="btn checkout-button">Continue Checkout</button>
+        <button class="btn checkout-button" type="button" (click)="continue()">Continue Checkout</button>
       </div>
     </form>
   </div>

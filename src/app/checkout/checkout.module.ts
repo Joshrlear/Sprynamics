@@ -27,6 +27,7 @@ const routes: Routes = [
     PaymentComponent,
     ConfirmComponent,
     OrderSummaryComponent
-  ]
+  ],
+  providers: [  ]
 })
 export class CheckoutModule { }

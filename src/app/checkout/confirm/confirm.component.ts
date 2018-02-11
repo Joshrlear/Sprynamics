@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { CheckoutService } from '#app/checkout/checkout.service';
 
 @Component({
   selector: 'app-confirm',
@@ -7,9 +8,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ConfirmComponent implements OnInit {
 
-  constructor() { }
+  constructor(public checkout: CheckoutService) { }
 
   ngOnInit() {
+    this.checkout.initOrder();
   }
 
 }

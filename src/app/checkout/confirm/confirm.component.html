@@ -1,3 +1,7 @@
-<p>
-  confirm works!
-</p>
+<div style="height:350;display:flex;align-items:center;justify-content:center;">
+  <mat-spinner *ngIf="checkout.loading"></mat-spinner>
+</div>
+<ng-container *ngIf="!checkout.loading">
+  <h2>Thank you for your order!</h2>
+  <h5>Your order number is: {{ (checkout.order | async)?.orderId }}</h5>
+</ng-container>

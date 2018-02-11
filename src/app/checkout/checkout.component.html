@@ -1,42 +1,34 @@
 <div class="checkout-container">
     <div class="checkout-wrap">
         <div class="checkout-headline">
-            <h1>Shipping Info</h1>
+            <h1>{{router.url === '/checkout/shipping-info' ? 'Shipping Info' : 
+                (router.url === '/checkout/payment-method' ? 'Payment Method' : 'Order Receipt')}}</h1>
         </div>
         <div class="checkout-breadcrumbs">
             <ul>
                 <li>
-                    <a routerLinkActive="active" [routerLink]="['/cart']">Cart</a>
+                    <!-- <a routerLinkActive="active" [routerLink]="['/checkout/shipping-info']">Shipping Info</a> -->
+                    <a [class.active]="router.url === '/checkout/shipping-info'">Shipping Info</a>
                 </li>
                 <mat-icon>keyboard_arrow_right</mat-icon>
                 <li>
-                    <a routerLinkActive="active" [routerLink]="['/checkout/shipping-info']">Shipping Info</a>
+                    <!-- <a routerLinkActive="active" [routerLink]="['/checkout/payment-method']">Payment Method</a> -->
+                    <a [class.active]="router.url === '/checkout/payment-method'">Payment & Review</a>
                 </li>
                 <mat-icon>keyboard_arrow_right</mat-icon>
                 <li>
-                    <a routerLinkActive="active" [routerLink]="['/checkout/payment-method']">Payment Method</a>
-                </li>
-                <mat-icon>keyboard_arrow_right</mat-icon>
-                <li>
-                    <a routerLinkActive="active" [routerLink]="['/checkout/confirm-order']">Confirm Order</a>
+                    <!-- <a routerLinkActive="active" [routerLink]="['/checkout/confirm-order']">Confirm Order</a> -->
+                    <a [class.active]="router.url === '/checkout/confirm-order'">Order Receipt</a>
                 </li>
             </ul>
         </div>
         <div class="row fill">
-            <div class="col-xs-7">
+            <div [class]="router.url !== '/checkout/confirm-order' ? 'col-xs-7' : 'col-xs-12'">
                 <div class="checkout-view-container">
                     <router-outlet></router-outlet>
                 </div>
-                <div class="checkout-breadcrumbs">
-                        <ul>
-                            <mat-icon>arrow_back</mat-icon>
-                            <li>
-                                <a routerLinkActive="active" [routerLink]="['/cart']">Return to cart</a>
-                            </li>
-                        </ul>
-                    </div>
             </div>
-            <div class="col-xs-5">
+            <div *ngIf="router.url !== '/checkout/confirm-order'" class="col-xs-5">
                 <order-summary></order-summary>
             </div>
         </div>
