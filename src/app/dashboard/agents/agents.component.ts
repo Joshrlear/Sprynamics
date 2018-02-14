@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { FirestoreService } from '#core/firestore.service';
+import { Observable } from 'rxjs/Observable';
+import { AuthService } from '#core/auth.service';
 
 @Component({
   selector: 'app-agents',
@@ -7,9 +10,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AgentsComponent implements OnInit {
 
-  constructor() { }
+  agents: Observable<any[]>
+
+  constructor(private firestore: FirestoreService,
+    private auth: AuthService) { }
 
   ngOnInit() {
+    this.auth.user.take(1).subscribe(user => {
+      this.agents = this.firestore.colWithIds$('users', ref => ref.where(`managers.${user.uid}`, '==', true));
+    });
   }
 
 }

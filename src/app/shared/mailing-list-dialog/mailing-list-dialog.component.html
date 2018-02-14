@@ -1,0 +1,32 @@
+<h2 mat-dialog-title>Import mailing list</h2>
+<mat-dialog-content>
+
+  <ng-container *ngIf="!isLoading; else loading">
+
+    <form class="ss-form">
+      <label>List title
+        <input class="form-control" style="margin-top:4px" [(ngModel)]="title" [ngModelOptions]="{standalone: true}" placeholder="Enter a title for this list">
+      </label>
+      <hr>
+      <ng-container *ngFor="let column of columns; let i = index">
+        <div>
+          <span>{{ column + ':' }}</span>
+          <select class="form-control" (change)="setColumn(i, $event.target.value)">
+            <option selected hidden disabled>Select a field</option>
+            <option *ngFor="let field of csvData[0]; let col = index" [value]="col">{{ field }}</option>
+          </select>
+        </div>
+      </ng-container>
+    </form>
+  </ng-container>
+
+  <br>
+
+  <ng-template #loading>
+    <mat-spinner></mat-spinner>
+  </ng-template>
+
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button class="btn green" (click)="saveList()" [disabled]="isLoading">Save</button>
+</mat-dialog-actions>

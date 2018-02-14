@@ -1,3 +1,26 @@
-<p>
-  lists works!
-</p>
+<h2>Mailing Lists</h2>
+<br>
+
+<button class="btn green" (click)="fileInput.click()">Import new list</button>
+<input #fileInput type="file" accept=".csv" style="display: none;" onclick="this.value=null" (change)="uploadFile(fileInput.files[0])">
+<br>
+<br>
+
+<table class="table">
+  <thead>
+    <td>#</td>
+    <td>List Title</td>
+    <td>View List</td>
+    <td>Download CSV</td>
+    <td>Date Created</td>
+  </thead>
+  <tbody>
+    <tr *ngFor="let list of lists | async; let i = index">
+      <td>{{ i + 1 }}</td>
+      <td>{{ list.title }}</td>
+      <td><a style="color: #12C463; cursor: pointer" (click)="viewList(list)">View List</a></td>
+      <td><a style="color: #12C463; cursor: pointer" (click)="downloadCSV(list)">Download CSV</a></td>
+      <td>{{ list.createdAt }}</td>
+    </tr>
+  </tbody>
+</table>

@@ -1,0 +1,49 @@
+<h2 mat-dialog-title>{{list.title}}
+  <a *ngIf="!isLoading" style="color:#dd0063;cursor:pointer;float:right" (click)="deleteList()">Delete List</a>
+</h2>
+<!-- <ng-container *ngIf="!isLoading">
+  <button class="btn green">Add row</button>
+  <br>
+  <br>
+</ng-container> -->
+<mat-dialog-content>
+
+  <ng-container *ngIf="!isLoading; else loading">
+
+    <div style="max-height: 400px">
+      <table class="table">
+        <thead>
+          <td>#</td>
+          <td>Owner Name</td>
+          <td>Address</td>
+          <td>City</td>
+          <td>State</td>
+          <td>Zip Code</td>
+          <!-- <td>Delete</td> -->
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of rows | async; let i = index">
+            <td>{{ i + 1 }}</td>
+            <td>{{ row['Owner Name'] }}</td>
+            <td>{{ row['Mailing Address'] }}</td>
+            <td>{{ row['Mailing City'] }}</td>
+            <td>{{ row['Mailing State'] }}</td>
+            <td>{{ row['Mailing Zip Code'] }}</td>
+            <!-- <td>
+              <a style="color: #dd0063; cursor:pointer;" (click)="deleteRow(row.id)">Delete</a>
+            </td> -->
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </ng-container>
+
+  <ng-template #loading>
+    <mat-spinner></mat-spinner>
+  </ng-template>
+
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button class="btn green" (click)="closeDialog()">Close</button>
+</mat-dialog-actions>

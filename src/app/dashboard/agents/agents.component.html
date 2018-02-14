@@ -1,3 +1,26 @@
-<p>
-  agents works!
-</p>
+<h2>Agents</h2>
+<br>
+
+<button class="btn green" (click)="fileInput.click()">Add new agent</button>
+<input #fileInput type="file" accept=".csv" style="display: none;" onclick="this.value=null" (change)="uploadFile(fileInput.files[0])">
+<br>
+<br>
+
+<table class="table">
+  <thead>
+    <td>#</td>
+    <td>Name</td>
+    <td>View Agent</td>
+    <td>User ID</td>
+  </thead>
+  <tbody>
+    <tr *ngFor="let agent of agents | async; let i = index">
+      <td>{{ i + 1 }}</td>
+      <td>{{ (agent.firstName ? agent.firstName + ' ' : '') + (agent.lastName||'') }}</td>
+      <td>
+        <a style="color: #12C463; cursor: pointer" (click)="viewAgent(agent)">View Agent</a>
+      </td>
+      <td>{{ agent.id }}</td>
+    </tr>
+  </tbody>
+</table>

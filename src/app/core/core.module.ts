@@ -7,9 +7,8 @@ import { AngularFireModule } from 'angularfire2';
 import { AngularFireAuthModule } from 'angularfire2/auth';
 import { AngularFirestoreModule } from 'angularfire2/firestore';
 import { AngularFireStorageModule } from 'angularfire2/storage';
-// ng-bootstrap
+// misc packages
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-// ng-recaptcha
 import { RecaptchaModule } from 'ng-recaptcha';
 // services
 import { AuthService } from './auth.service';
@@ -25,9 +24,8 @@ import { CheckoutService } from '#app/checkout/checkout.service';
     AngularFireAuthModule,
     AngularFirestoreModule,
     AngularFireStorageModule,
-    // ng-bootstrap
+    // misc packages
     NgbModule.forRoot(),
-    // ng-recaptcha
     RecaptchaModule.forRoot(),
   ],
   providers: [

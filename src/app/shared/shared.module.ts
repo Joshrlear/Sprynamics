@@ -8,12 +8,15 @@ import { RouterModule } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { RecaptchaFormsModule } from 'ng-recaptcha/forms';
 import { ColorPickerModule } from 'ngx-color-picker';
+import { PapaParseModule } from 'ngx-papaparse';
 // local modules
 import { MaterialModule } from './material.module';
 // components
 import { BreadcrumbsComponent } from './breadcrumbs/breadcrumbs.component';
 import { ColorsComponent } from './colors/colors.component';
 import { SidenavComponent } from './sidenav/sidenav.component';
+import { MailingListDialogComponent } from './mailing-list-dialog/mailing-list-dialog.component';
+import { ViewListDialogComponent } from '#app/shared/view-list-dialog/view-list-dialog.component';
 
 const modules: any[] = [
   // angular modules
@@ -26,6 +29,7 @@ const modules: any[] = [
   NgbModule,
   RecaptchaFormsModule,
   ColorPickerModule,
+  PapaParseModule,
   // local modules
   MaterialModule,
 ];
@@ -34,6 +38,8 @@ const components: any[] = [
   BreadcrumbsComponent,
   ColorsComponent,
   SidenavComponent,
+  MailingListDialogComponent,
+  ViewListDialogComponent,
 ];
 
 const everything = modules.concat(components);
@@ -41,6 +47,7 @@ const everything = modules.concat(components);
 @NgModule({
   imports: modules,
   declarations: components,
+  entryComponents: [MailingListDialogComponent, ViewListDialogComponent],
   exports: [
     // angular modules
     CommonModule,

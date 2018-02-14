@@ -19,7 +19,8 @@
     "baseUrl": "src",
     "paths": {
       "#core/*": ["app/core/*"],
-      "#app/*": ["app/*"]
+      "#app/*": ["app/*"],
+      "#shared/*": ["app/shared/*"]
     }
   }
 }

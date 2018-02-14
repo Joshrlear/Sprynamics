@@ -1,7 +1,7 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 admin.initializeApp(functions.config().firebase);
-const cors = require('cors')({origin: true});
+const cors = require('cors')({ origin: true });
 
 // Mailgun
 
@@ -71,7 +71,7 @@ exports.customer = functions.https.onRequest((req, res) => {
       } else {
         res.status(201).send({ message: 'success', customerId: result.customer.id });
       }
-    });  
+    });
   })
 })
 
@@ -97,6 +97,16 @@ exports.checkout = functions.https.onRequest((req, res) => {
         delete req.body.token$; // remove the client token observable
         req.body.createdAt = admin.firestore.FieldValue.serverTimestamp(); // add timestamp
         admin.firestore().doc(`orders/${req.body.orderId}`).set(req.body); // add order to database
+        // send email receipt
+        const email = {
+          from: 'Sprynamics <noreply@notifications.sprynamics.com>',
+          to: 'audererm@gmail.com',
+          subject: 'Welcome to Sprynamics!',
+          html: require('./mail_templates/order_receipt')
+        }
+        mailgun.messages().send(email, function (err, body) {
+          console.log(body);
+        });
       }
     })
   })
