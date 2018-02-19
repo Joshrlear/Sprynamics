@@ -294,8 +294,7 @@
 }
 
 .campaign-graphics_card-image img {
-    max-width: 150px;
-    margin-top: 10px;
+    max-width: 120px;
     vertical-align: middle;
 }
 
@@ -309,6 +308,9 @@
     .campaign-graphics_card-image {
         width: 275px;
         height: 275px;
+    }
+    .campaign-graphics_card-image img {
+        max-width: 175px;
     }
   }
 
@@ -493,6 +495,10 @@
     text-overflow: ellipsis;
     position: relative;
     transition: transform 0.2s ease-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
 }
 .social-icon-btn:hover {
     transform: scale(1.2);

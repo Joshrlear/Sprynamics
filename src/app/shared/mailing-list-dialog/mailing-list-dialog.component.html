@@ -5,7 +5,7 @@
 
     <form class="ss-form">
       <label>List title
-        <input class="form-control" style="margin-top:4px" [(ngModel)]="title" [ngModelOptions]="{standalone: true}" placeholder="Enter a title for this list">
+        <input #titleInput class="form-control" style="margin-top:4px" [(ngModel)]="title" [ngModelOptions]="{standalone: true}" placeholder="Enter a title for this list">
       </label>
       <hr>
       <ng-container *ngFor="let column of columns; let i = index">
@@ -16,6 +16,7 @@
             <option *ngFor="let field of csvData[0]; let col = index" [value]="col">{{ field }}</option>
           </select>
         </div>
+        <div style="height:10px"></div>
       </ng-container>
     </form>
   </ng-container>
@@ -28,5 +29,5 @@
 
 </mat-dialog-content>
 <mat-dialog-actions>
-  <button class="btn green" (click)="saveList()" [disabled]="isLoading">Save</button>
+  <button class="btn green" (click)="saveList()" [disabled]="isLoading || titleInput.value === ''">Save</button>
 </mat-dialog-actions>
