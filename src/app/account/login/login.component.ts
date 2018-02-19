@@ -15,7 +15,7 @@ export class LoginComponent implements OnInit {
 
   error: string;
 
-  constructor( public fb: FormBuilder, public auth: AuthService, private router: Router ) { }
+  constructor(public fb: FormBuilder, public auth: AuthService, private router: Router) { }
 
   ngOnInit() {
     this.error = '';
@@ -40,6 +40,29 @@ export class LoginComponent implements OnInit {
       .then(login => {
         this.router.navigate(['/profile']);
       }).catch(error => {
+        window.alert(error);
+        console.log(error);
+        this.error = error;
+      });
+  }
+
+  googleLogin() {
+    this.auth.googleLogin()
+      .then(login => {
+        this.router.navigate(['/profile']);
+      }).catch(error => {
+        window.alert(error);
+        console.log(error);
+        this.error = error;
+      });
+  }
+
+  facebookLogin() {
+    this.auth.facebookLogin()
+      .then(login => {
+        this.router.navigate(['/profile']);
+      }).catch(error => {
+        window.alert(error);
         console.log(error);
         this.error = error;
       });

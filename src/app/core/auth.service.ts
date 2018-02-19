@@ -46,6 +46,34 @@ export class AuthService {
     return this.afAuth.auth.signInWithEmailAndPassword(username, password);
   }
 
+  googleLogin() {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    return this.afAuth.auth.signInWithPopup(provider)
+      .then((credential) => {
+        console.log(credential.user);
+        this.updateUserData(credential.user, {
+          uid: credential.user.uid,
+          email: credential.user.email,
+          firstName: credential.user.displayName.split(' ')[0],
+          lastName: credential.user.displayName.split(' ')[1] || ''
+        });
+      });
+  }
+
+  facebookLogin() {
+    const provider = new firebase.auth.FacebookAuthProvider();
+    return this.afAuth.auth.signInWithPopup(provider)
+      .then((credential) => {
+        console.log(credential.user);
+        this.updateUserData(credential.user, {
+          uid: credential.user.uid,
+          email: credential.user.email,
+          firstName: credential.user.displayName.split(' ')[0],
+          lastName: credential.user.displayName.split(' ')[1] || ''
+        });
+      });
+  }
+
   // update properties on user document
   updateUserData(user: User, data: Partial<User>) {
     return this.afs.doc<User>(`users/${user.uid}`).update(data);

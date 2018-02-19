@@ -67,4 +67,26 @@ export class RegisterComponent implements OnInit {
 
   }
 
+  googleLogin() {
+    this.auth.googleLogin()
+      .then(login => {
+        this.router.navigate(['/profile']);
+      }).catch(error => {
+        window.alert(error);
+        console.log(error);
+        this.error = error;
+      });
+  }
+
+  facebookLogin() {
+    this.auth.facebookLogin()
+      .then(login => {
+        this.router.navigate(['/profile']);
+      }).catch(error => {
+        window.alert(error);
+        console.log(error);
+        this.error = error;
+      });
+  }
+
 }

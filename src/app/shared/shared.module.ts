@@ -6,6 +6,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 // package modules
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { RecaptchaModule } from 'ng-recaptcha';
 import { RecaptchaFormsModule } from 'ng-recaptcha/forms';
 import { ColorPickerModule } from 'ngx-color-picker';
 import { PapaParseModule } from 'ngx-papaparse';
@@ -27,6 +28,7 @@ const modules: any[] = [
   RouterModule,
   // package modules
   NgbModule,
+  RecaptchaModule,
   RecaptchaFormsModule,
   ColorPickerModule,
   PapaParseModule,
@@ -56,6 +58,7 @@ const everything = modules.concat(components);
     ReactiveFormsModule,
     // package modules
     NgbModule,
+    RecaptchaModule,
     RecaptchaFormsModule,
     ColorPickerModule,
     // local modules
