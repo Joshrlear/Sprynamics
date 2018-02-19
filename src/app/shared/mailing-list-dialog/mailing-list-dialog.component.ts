@@ -54,6 +54,7 @@ export class MailingListDialogComponent implements OnInit {
     this.isLoading = true;
 
     const results = [];
+    const rowCount = this.csvData.length;
     this.csvData.forEach((row, i) => {
       if (i === 0) return; // skip first row (column headers)
       const obj = {};
@@ -71,6 +72,8 @@ export class MailingListDialogComponent implements OnInit {
       this.firestore.add('lists', {
         uid: user.uid,
         title: this.title,
+        rowCount: rowCount,
+        usage: 0
       }).then(ref => {
         const batch = firebase.firestore().batch();
         results.forEach(addressData => {

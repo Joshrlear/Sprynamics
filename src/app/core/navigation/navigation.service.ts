@@ -13,7 +13,7 @@ export class NavigationService {
               this.isSideNavDash = true;
           } else {
               this.isSideNavDash = false;
-          }        
+          }
       }
   });
   }

@@ -34,7 +34,7 @@ export class AppComponent implements OnInit {
   private sideBySideWidth = 992;
 
   get isOpened() { return this.isSideBySide && this.ns.isSideNavDash; }
-  get mode() { return this.isSideBySide ? 'side' : 'over'; }
+  get mode() { return this.ns.isSideNavDash ? (this.isSideBySide ? 'side' : 'over') : 'over'; }
 
   @ViewChild(MatSidenav)
   sidenav: MatSidenav;

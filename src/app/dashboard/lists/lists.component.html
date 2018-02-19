@@ -10,6 +10,8 @@
   <thead>
     <td>#</td>
     <td>Title</td>
+    <td>Row Count</td>
+    <td>Usage</td>
     <td>View List</td>
     <td>Download List</td>
     <td>Date Created</td>
@@ -18,6 +20,8 @@
     <tr *ngFor="let list of lists | async; let i = index">
       <td>{{ i + 1 }}</td>
       <td>{{ list.title }}</td>
+      <td>{{ list.rowCount }}</td>
+      <td>{{ list.usage || 0 }} order{{ list.usage != 1 ? 's' : '' }}</td>
       <td><a style="color: #12C463; cursor: pointer" (click)="viewList(list)">View List</a></td>
       <td><a style="color: #12C463; cursor: pointer" (click)="downloadCSV(list)">Download List</a></td>
       <td>{{ formatDate(list.createdAt) }}</td>
