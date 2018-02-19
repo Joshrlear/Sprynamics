@@ -116,7 +116,7 @@ export class ProfileComponent implements OnInit {
       this.storage.getDownloadURL(path).subscribe(url => {
         if (this.user.isCreated) {
           console.log(this.user);
-          this.firestore.update(`users/${this.user.managerId}/agents/${this.agent.id}`, { avatarUrl: url });
+          this.firestore.update(`users/${this.user.managerId}/agents/${this.agent.id}`, { companyLogoUrl: url });
         } else {
           this.firestore.update(`users/${this.user.uid}`, { companyLogoUrl: url });
         }
@@ -130,7 +130,7 @@ export class ProfileComponent implements OnInit {
     this.storage.putFile(file, path).then().then(_ => {
       this.storage.getDownloadURL(path).subscribe(url => {
         if (this.user.isCreated) {
-          this.firestore.update(`users/${this.user.managerId}/agents/${this.agent.id}`, { avatarUrl: url });
+          this.firestore.update(`users/${this.user.managerId}/agents/${this.agent.id}`, { brokerageLogoUrl: url });
         } else {
           this.firestore.update(`users/${this.user.uid}`, { brokerageLogoUrl: url });
         }
