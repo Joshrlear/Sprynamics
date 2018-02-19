@@ -15,6 +15,7 @@ import 'fabric';
 declare let fabric;
 
 import * as jspdf from 'jspdf';
+import { CheckoutService } from '#app/checkout/checkout.service';
 declare let jsPDF;
 
 @Component({
@@ -38,6 +39,7 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
   userData: any;
   formFields: any = [];
   loading: boolean;
+  loadingPdf: boolean;
   viewSide: 'front' | 'back' = 'front';
 
   past = [];
@@ -52,6 +54,7 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
     private auth: AuthService,
     private factory: ObjectFactoryService,
     private MatDialog: MatDialog,
+    private checkout: CheckoutService
   ) { }
 
   ngOnInit() {
@@ -70,16 +73,19 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
+    fabric.Object.prototype.objectCaching = false;
     this.canvas = fabric.canvas = new fabric.Canvas('canvas', {
       width: this.view.nativeElement.clientWidth,
       height: this.view.nativeElement.clientHeight,
       preserveObjectStacking: true,
     });
+
+    this.canvas.zoomToPoint(new fabric.Point(this.canvas.width / 2, this.canvas.height / 2), 0.35);
   }
 
   canvasToJSON() {
     return this.canvas.toJSON(['isHidden', 'isBoundBox', 'isBackground', 'selectable', 'hasControls', 'textContentType', 'textUserData',
-    'textFieldName', 'userEditable', 'isLogo', 'logoType', 'isUserImage']);
+      'textFieldName', 'userEditable', 'isLogo', 'logoType', 'isUserImage']);
   }
 
   saveUndo() {
@@ -133,42 +139,6 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
     }
   }
 
-  getDataURL(side: 'front' | 'back', callback) {
-    this.canvas.clear();
-    this.canvas.loadFromJSON(this.template[side], _ => {
-      if (!this.template[side].processed) {
-        // this.processCanvas();
-      }
-      const boundBox = this.canvas.getObjects('rect').filter(obj => obj.stroke === '#f00' && obj.strokeDashArray[0] === 5 && obj.strokeDashArray[1] === 5)[0];
-      this.canvas.clipTo = null;
-      this.canvas.imageSmoothingEnabled = false;
-      const offsetX = boundBox.left - productSpecs.bleedInches * productSpecs.dpi;
-      const offsetY = boundBox.top - productSpecs.bleedInches * productSpecs.dpi;
-      // console.log(offsetX, offsetY);
-      this.canvas.forEachObject(obj => {
-        obj.left -= offsetX;
-        obj.top -= offsetY;
-      });
-      this.canvas.getObjects('rect').forEach(obj => {
-        if (obj.strokeDashArray && obj.strokeDashArray[0] === 5 && obj.strokeDashArray[1] === 5) {
-          this.canvas.remove(obj);
-        }
-      }); // remove the dashed lines
-      const bg = new fabric.Rect({
-        left: 0,
-        top: 0,
-        width: (this.template.productType.width + productSpecs.bleedInches * 2) * productSpecs.dpi,
-        height: (this.template.productType.height + productSpecs.bleedInches * 2) * productSpecs.dpi,
-        fill: '#ffffff'
-      });
-      this.canvas.add(bg);
-      this.canvas.sendToBack(bg);
-      this.canvas.renderAll();
-
-      callback(this.canvas.toDataURL());
-    });
-  }
-
   onColorChange(event) {
     const index = event.index;
     const color = new fabric.Color(event.color);
@@ -195,15 +165,117 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
     obj.setSrc(event.photo, _ => this.canvas.renderAll());
   }
 
+  getDataURL(side: 'front' | 'back', canvas, options?) {
+    return new Promise((resolve, reject) => {
+      canvas.clear();
+      canvas.zoomToPoint(new fabric.Point(canvas.width / 2, canvas.height / 2), 1);
+      canvas.loadFromJSON(this.template[side], _ => {
+        if (!this.template[side].processed) {
+          // this.processCanvas();
+        }
+        const boundBox = canvas.getObjects('rect').filter(obj => obj.stroke === '#f00' && obj.strokeDashArray[0] === 5 && obj.strokeDashArray[1] === 5)[0];
+        canvas.clipTo = null;
+        // canvas.imageSmoothingEnabled = false;
+        const offsetX = boundBox.left - productSpecs.bleedInches * productSpecs.dpi;
+        const offsetY = boundBox.top - productSpecs.bleedInches * productSpecs.dpi;
+        // console.log(offsetX, offsetY);
+        canvas.forEachObject(obj => {
+          obj.left -= offsetX;
+          obj.top -= offsetY;
+        });
+        canvas.getObjects('rect').forEach(obj => {
+          if (obj.strokeDashArray && obj.strokeDashArray[0] === 5 && obj.strokeDashArray[1] === 5) {
+            canvas.remove(obj);
+          }
+        }); // remove the dashed lines
+        const bg = new fabric.Rect({
+          left: 0,
+          top: 0,
+          width: (this.template.productType.width + productSpecs.bleedInches * 2) * productSpecs.dpi,
+          height: (this.template.productType.height + productSpecs.bleedInches * 2) * productSpecs.dpi,
+          fill: '#ffffff'
+        });
+        canvas.add(bg);
+        canvas.sendToBack(bg);
+        canvas.renderAll();
+
+        resolve(canvas.toDataURL(options));
+      });
+    })
+  }
+
   saveAndContinue() {
-    this.router.navigate(['/checkout']);
-    this.getDataURL('front', front => {
-      this.getDataURL('back', back => {
-        const doc = new jspdf('l', 'in', [this.template.productType.width + productSpecs.bleedInches * 2, this.template.productType.height + productSpecs.bleedInches * 2]);
-        doc.addImage(front, 'PNG', 0, 0);
-        doc.addPage();
-        doc.addImage(back, 'PNG', 0, 0);
-        // doc.save('template.pdf');
+    const canvas = document.createElement('canvas');
+    canvas.id = 'pdf_canvas';
+    canvas.width = (this.template.productType.width + productSpecs.bleedInches * 2) * productSpecs.dpi;
+    canvas.height = (this.template.productType.height + productSpecs.bleedInches * 2) * productSpecs.dpi;
+    document.body.appendChild(canvas);
+    console.log(canvas);
+    const pdfCanvas = new fabric.Canvas('pdf_canvas', {
+      width: canvas.width,
+      height: canvas.height,
+      preserveObjectStacking: true
+    });
+    canvas.style.display = 'none';
+    pdfCanvas.loadFromJSON(this.template['front'], _ => {
+      const boundBox = this.canvas.getObjects('rect').filter(obj => obj.stroke === '#f00' && obj.strokeDashArray[0] === 5 && obj.strokeDashArray[1] === 5)[0];
+      console.log(boundBox);
+      pdfCanvas.clipTo = null;
+      // pdfCanvas.imageSmoothingEnabled = false;
+      const offsetX = boundBox.left - productSpecs.bleedInches * productSpecs.dpi;
+      const offsetY = boundBox.top - productSpecs.bleedInches * productSpecs.dpi;
+      // console.log(offsetX, offsetY);
+      pdfCanvas.forEachObject(obj => {
+        obj.left -= offsetX;
+        obj.top -= offsetY;
+      });
+      pdfCanvas.getObjects('rect').forEach(obj => {
+        if (obj.strokeDashArray && obj.strokeDashArray[0] === 5 && obj.strokeDashArray[1] === 5) {
+          pdfCanvas.remove(obj);
+        }
+      }); // remove the dashed lines
+      const bg = new fabric.Rect({
+        left: 0,
+        top: 0,
+        width: (this.template.productType.width + productSpecs.bleedInches * 2) * productSpecs.dpi,
+        height: (this.template.productType.height + productSpecs.bleedInches * 2) * productSpecs.dpi,
+        fill: '#ffffff'
+      });
+      pdfCanvas.add(bg);
+      pdfCanvas.sendToBack(bg);
+      pdfCanvas.renderAll();
+
+      const front = pdfCanvas.toDataURL();
+      this.loadingPdf = true;
+      this.getDataURL('front', pdfCanvas).then((front: string) => {
+        this.getDataURL('back', pdfCanvas).then((back: string) => {
+          const doc = new jspdf('l', 'in', [this.template.productType.width + productSpecs.bleedInches * 2, this.template.productType.height + productSpecs.bleedInches * 2]);
+          doc.addImage(front, 'PNG', 0, 0, this.template.productType.width + productSpecs.bleedInches * 2, this.template.productType.height + productSpecs.bleedInches * 2);
+          doc.addPage();
+          doc.addImage(back, 'PNG', 0, 0, this.template.productType.width + productSpecs.bleedInches * 2, this.template.productType.height + productSpecs.bleedInches * 2);
+          const pdfDataUrl: Blob = doc.output('blob');
+          this.getDataURL('front', pdfCanvas, {multiplier: 0.15}).then((frontSmall: string) => {
+            this.getDataURL('back', pdfCanvas, {multiplier: 0.15}).then((backSmall: string) => {
+              this.storage.putBase64(frontSmall, 'front.png', 'image/png').then().then(frontSnapshot => {
+                this.storage.putBase64(backSmall, 'back.png', 'image/png').then().then(backSnapshot => {
+                  this.storage.putFile(pdfDataUrl, 'design.pdf', { contentType: 'application/pdf' }).then().then(pdfSnapshot => {
+                    this.firestore.update(`users/${this.userData.uid}`, {
+                      currentOrder: { 
+                        frontUrl: frontSnapshot.downloadURL, 
+                        backUrl: backSnapshot.downloadURL, 
+                        pdfUrl: pdfSnapshot.downloadURL
+                      }
+                    }).then(_ => {
+                      pdfCanvas.dispose();
+                      canvas.remove();
+                      this.router.navigate(['/checkout']);
+                    })
+                  });
+                });
+              });
+            });
+          });
+        });
       });
     });
   }
@@ -342,12 +414,12 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
       }
     });
     this.canvas.getObjects('rect').forEach(obj => {
-      if (obj.isHidden) {
-        obj.set({
-          stroke: '#eeeeee00'
-        });
-        this.canvas.sendToBack(obj);
-      }
+      // if (obj.isHidden) {
+      //   obj.set({
+      //     stroke: '#eeeeee00'
+      //   });
+      //   this.canvas.sendToBack(obj);
+      // }
     });
     if (imagesToLoad <= 0) {
       this.loading = false;

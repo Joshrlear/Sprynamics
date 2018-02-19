@@ -9,9 +9,9 @@
 <table class="table">
   <thead>
     <td>#</td>
-    <td>List Title</td>
+    <td>Title</td>
     <td>View List</td>
-    <td>Download CSV</td>
+    <td>Download List</td>
     <td>Date Created</td>
   </thead>
   <tbody>
@@ -19,8 +19,8 @@
       <td>{{ i + 1 }}</td>
       <td>{{ list.title }}</td>
       <td><a style="color: #12C463; cursor: pointer" (click)="viewList(list)">View List</a></td>
-      <td><a style="color: #12C463; cursor: pointer" (click)="downloadCSV(list)">Download CSV</a></td>
-      <td>{{ list.createdAt }}</td>
+      <td><a style="color: #12C463; cursor: pointer" (click)="downloadCSV(list)">Download List</a></td>
+      <td>{{ formatDate(list.createdAt) }}</td>
     </tr>
   </tbody>
 </table>

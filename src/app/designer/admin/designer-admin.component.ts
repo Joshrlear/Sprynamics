@@ -81,7 +81,7 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
     this.loadingFonts = true;
     this.http.get('https://www.googleapis.com/webfonts/v1/webfonts?sort=popularity&key=AIzaSyA-kEmBuQZhfrdS1Rije3syG3tCu8OGVcM')
       .take(1).subscribe(res => {
-        this.fonts = res.json().items.map(font => font.family).slice(0, 1);
+        this.fonts = res.json().items.map(font => font.family).slice(0, 100);
         // console.log(this.fonts);
         WebFont.load({
           google: {
@@ -116,6 +116,8 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
       preserveObjectStacking: true,
       backgroundColor: '#fff'
     });
+
+    this.canvas.zoomToPoint(new fabric.Point(this.canvas.width / 2, this.canvas.height / 2), 0.35);
 
     this.present = this.canvasToJSON();
 
@@ -222,12 +224,12 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
   refreshCanvasSize() {
     const productType = this.template.productType;
     this.background.set({
-      width: productType.width * productSpecs.dpi + productSpecs.bleedInches * productSpecs.dpi,
-      height: productType.height * productSpecs.dpi + productSpecs.bleedInches * productSpecs.dpi
+      width: productType.width * productSpecs.dpi + productSpecs.bleedInches * productSpecs.dpi * 2,
+      height: productType.height * productSpecs.dpi + productSpecs.bleedInches * productSpecs.dpi * 2
     });
     this.safeArea.set({
-      width: productType.width * productSpecs.dpi - productSpecs.safeInches * productSpecs.dpi,
-      height: productType.height * productSpecs.dpi - productSpecs.safeInches * productSpecs.dpi
+      width: productType.width * productSpecs.dpi - productSpecs.safeInches * productSpecs.dpi * 2,
+      height: productType.height * productSpecs.dpi - productSpecs.safeInches * productSpecs.dpi * 2
     });
     this.printArea.set({
       width: productType.width * productSpecs.dpi,
@@ -340,12 +342,16 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
     });
     this.template.fonts = fonts;
     (new Promise((resolve, reject) => {
+      const docData = this.template;
+      delete docData.front;
+      delete docData.back;
       if (this.template.id) {
-        this.firestore.update(`templates/${this.template.id}`, this.template).then(_ => {
+        this.firestore.update(`templates/${this.template.id}`, docData).then(_ => {
           resolve(this.template.id);
         });
       } else {
-        this.firestore.add('templates', this.template).then(ref => {
+        this.firestore.add('templates', docData).then(ref => {
+          this.template.id = ref.id;
           resolve(ref.id);
         });
       }
@@ -354,6 +360,8 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
         .take(1).subscribe(url => {
           // this.canvas.remove(this.printArea);
           // this.canvas.remove(this.safeArea);
+          this.canvas.zoomToPoint(new fabric.Point(this.canvas.width / 2, this.canvas.height / 2), 1);
+          console.log(this.printArea);
           this.canvas.deactivateAll().renderAll();
           const ctx = this.canvas.getContext('2d');
           const imgData = ctx.getImageData(this.printArea.left, this.printArea.top, this.printArea.width, this.printArea.height);
@@ -379,8 +387,8 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
             this.canvas.renderAll();
             // store thumbnail
             this.storage.putBase64(jpg, `thumbnails/${id}.jpg`)
-              .take(1).subscribe(thumbnail => {
-                this.template.thumbnail = thumbnail;
+              .then().then(thumbnail => {
+                this.template.thumbnail = thumbnail.downloadURL;
                 this.template.url = url;
                 this.firestore.update(`templates/${id}`, { url, thumbnail });
               });
@@ -391,15 +399,16 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
   }
 
   loadTemplate(template: any) {
+    console.log(template);
     this.disableHistory = true;
     this.template = template;
     this.viewSide = 'front';
     this.storage.getFile(template.url).take(1).subscribe(data => {
-      console.log(data);
-      this.canvas.loadFromJSON(template['front'], _ => {
+      this.canvas.loadFromJSON(data['front'], _ => {
         this.background = this.canvas.getObjects('rect').filter(obj => obj.isBackground)[0];
+        console.log('done');
         this.disableHistory = false;
-      });
+      }, (o, obj) => console.log(o, obj));
     });
   }
 

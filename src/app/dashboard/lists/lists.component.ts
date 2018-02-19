@@ -7,6 +7,8 @@ import { FirestoreService } from '#core/firestore.service';
 import { AuthService } from '#core/auth.service';
 import { PapaParseService } from 'ngx-papaparse';
 
+import * as moment from 'moment';
+
 @Component({
   selector: 'app-lists',
   templateUrl: './lists.component.html',
@@ -23,7 +25,7 @@ export class ListsComponent implements OnInit {
 
   ngOnInit() {
     this.auth.user.take(1).subscribe(user => {
-      this.lists = this.firestore.colWithIds$('lists', ref => ref.where('uid', '==', user.uid));
+      this.lists = this.firestore.colWithIds$('lists', ref => ref.where('uid', '==', user.uid).orderBy('createdAt', 'desc'));
     });
   }
 
@@ -33,7 +35,7 @@ export class ListsComponent implements OnInit {
       data: { file }
     });
     dialogRef.afterClosed().take(1).subscribe((result: any) => {
-
+      
     });
   }
 
@@ -65,15 +67,20 @@ export class ListsComponent implements OnInit {
           csvRows.push(arr[i].join(','));
         }
 
-        var csvString = csvRows.join('\r\n');
+        var csvString = csvRows.join('\r\n').replace(/ /g, '%20');
+        console.log(csvString);
         var a = document.createElement('a');
         a.href = 'data:attachment/csv,' + csvString;
         a.target = '_blank';
-        a.download = 'myFile.csv';
+        a.download = `${list.title}.csv`;
 
         document.body.appendChild(a);
         a.click();
       })
+  }
+
+  formatDate(dateString: string) {
+    return moment(dateString).format('MMM Do YYYY, [at] h:mm:ss a') + ` (${moment(dateString).fromNow()})`;
   }
 
 }

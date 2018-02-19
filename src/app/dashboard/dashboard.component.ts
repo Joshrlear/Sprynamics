@@ -73,7 +73,7 @@ export class DashboardComponent implements OnInit {
   uploadAvatar(user, file: File) {
     const extension = file.name.split('.').pop();
     const path = `avatars/${user.uid}.${extension}`;
-    this.storage.putFile(file, path).toPromise().then(_ => {
+    this.storage.putFile(file, path).then().then(_ => {
       this.storage.getDownloadURL(path).subscribe(url => {
         this.auth.updateUserData(user, { avatarUrl: url });
       });
@@ -83,7 +83,7 @@ export class DashboardComponent implements OnInit {
   uploadCompany(user, file: File) {
     const extension = file.name.split('.').pop();
     const path = `companyLogos/${user.uid}.${extension}`;
-    this.storage.putFile(file, path).toPromise().then(_ => {
+    this.storage.putFile(file, path).then().then(_ => {
       this.storage.getDownloadURL(path).subscribe(url => {
         this.auth.updateUserData(user, { companyLogoUrl: url });
       });
@@ -93,7 +93,7 @@ export class DashboardComponent implements OnInit {
   uploadBrokerage(user, file: File) {
     const extension = file.name.split('.').pop();
     const path = `brokerageLogos/${user.uid}.${extension}`;
-    this.storage.putFile(file, path).toPromise().then(_ => {
+    this.storage.putFile(file, path).then().then(_ => {
       this.storage.getDownloadURL(path).subscribe(url => {
         this.auth.updateUserData(user, { brokerageLogoUrl: url });
       });

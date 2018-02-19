@@ -41,6 +41,7 @@
   flex-basis: 360px;
   background: #3f4652;
   color: white;
+  overflow-y: auto;
 }
 
 .form {

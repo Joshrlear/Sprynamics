@@ -1,3 +1,6 @@
+<h2>Orders</h2>
+<br>
+
 <table class="table">
   <thead>
     <td>#</td>
@@ -12,7 +15,7 @@
       <td>{{ order.orderId }}</td>
       <td>{{ order.quantity }}</td>
       <td>{{ order.total }}</td>
-      <td>{{ order.createdAt }}</td>
+      <td>{{ formatDate(order.createdAt) }}</td>
     </tr>
   </tbody>
 </table>

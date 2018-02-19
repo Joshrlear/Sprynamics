@@ -1,4 +1,7 @@
 <div class="pusher"></div>
+<div *ngIf="loadingPdf" style="display:flex; align-items: center; justify-content: center;position:absolute;top:0;left:0;width:100vw;height:100vh;z-index:999999;background-color:rgba(0,0,0,0.3)">
+  <mat-spinner></mat-spinner>
+</div>
 <app-breadcrumbs [step]="3"></app-breadcrumbs>
 <div class="back">
   <div style="flex-basis: 430px">

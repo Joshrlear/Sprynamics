@@ -1,0 +1,26 @@
+<h2>View Agent</h2>
+<button class="btn" routerLink="/profile/agents">Back to Agents</button>
+<br>
+<br>
+<ng-container *ngIf="agent | async as agent">
+
+  <ngb-tabset (tabChange)="tabChange($event)">
+    <ngb-tab title="Agent Profile">
+      <ng-template ngbTabContent>
+        <br>
+        <app-profile [agent]="agent"></app-profile>
+      </ng-template>
+    </ngb-tab>
+    <ngb-tab title="Agent Payment">
+      <ng-template ngbTabContent>
+        <div style="height:350;display:flex;align-items:center;justify-content:center;">
+          <mat-spinner *ngIf="loading"></mat-spinner>
+        </div>
+        <div id="dropin"></div>
+        <br>
+        <button class="btn green" (click)="clickButton()">Submit</button>
+      </ng-template>
+    </ngb-tab>
+  </ngb-tabset>
+
+</ng-container>

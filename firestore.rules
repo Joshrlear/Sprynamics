@@ -18,6 +18,12 @@ service cloud.firestore {
       // allow read: if request.auth.uid == userId;
       // allow write: if request.auth.uid == userId;
     }
+    match /users/{userId}/agents {
+      allow read, write;
+    }
+    match /users/{userId}/agents/{agentId} {
+      allow read, write;
+    }
     
     // Match design templates
     match /templates/{template} {

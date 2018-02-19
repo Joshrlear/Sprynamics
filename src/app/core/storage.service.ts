@@ -8,17 +8,17 @@ export class StorageService {
 
   constructor(private storage: AngularFireStorage) { }
 
-  putFile(file: File, path: string) {
+  putFile(file: File | Blob, path: string, metadata?) {
     // return this.storage.ref(path).put(file).downloadURL();
-    return this.storage.upload(path, file).downloadURL();
+    return this.storage.upload(path, file, metadata);
   }
 
   putJSON(data: any, path: string) {
     return this.storage.ref(path).putString(JSON.stringify(data)).downloadURL();
   }
 
-  putBase64(data: string, path: string) {
-    return this.storage.ref(path).putString(data, 'data_url', {contentType:'image/jpeg'}).downloadURL();
+  putBase64(data: string, path: string, contentType?: string) {
+    return this.storage.ref(path).putString(data, 'data_url', {contentType: contentType || 'image/jpeg'})
   }
 
   getDownloadURL(path) {

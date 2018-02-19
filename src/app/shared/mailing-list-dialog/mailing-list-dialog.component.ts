@@ -34,6 +34,7 @@ export class MailingListDialogComponent implements OnInit {
     const reader = new FileReader();
     reader.onload = (event: any) => {
       this.papa.parse(event.target.result, {
+        skipEmptyLines: true,
         complete: (results, file) => {
           this.csvData = results.data;
           this.isLoading = false;
@@ -79,7 +80,7 @@ export class MailingListDialogComponent implements OnInit {
         batch.commit()
           .then(success => {
             this.isLoading = false
-            this.dialogRef.close(results);
+            this.dialogRef.close(ref.id);
           })
           .catch(err => {
             window.alert(err.message);

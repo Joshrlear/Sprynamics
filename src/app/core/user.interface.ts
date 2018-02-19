@@ -16,4 +16,9 @@ export interface User {
   brokerageLogoUrl: string;
   admin: boolean;
   braintreeId?: string;
+  currentOrder?: {
+    frontUrl?: string,
+    backUrl?: string,
+    pdfUrl?: string,
+  }
 }

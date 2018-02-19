@@ -75,7 +75,19 @@
         </div> -->
       </div>
       <div [hidden]="mailingList === false" id="mailingList">
-        mailing list
+        <h5>Mailing List</h5>
+        <p style="color: rgba(0,0,0,.54);font-weight: 600;font-size: 10px; text-transform: uppercase;">Select a list to send your items to</p>
+        <div class="form-row">
+          <div class="form-group col-xs-12">
+            <select type="number" max="10000" class="form-control" formControlName="mailingListId" autofocus>
+              <option value="" selected disabled hidden>Select a mailing list</option>
+              <option *ngFor="let list of lists | async" [value]="list.id">{{ list.title }}</option>
+            </select>
+            <br>
+            <button class="btn" (click)="listFileInput.click()">Import new list</button>
+            <input #listFileInput type="file" accept=".csv" style="display: none;" onclick="this.value=null" (change)="uploadList(listFileInput.files[0])">
+          </div>
+        </div>
       </div>
       <div class="form-action">
         <button class="btn checkout-button" type="button" (click)="continue()">Continue Checkout</button>

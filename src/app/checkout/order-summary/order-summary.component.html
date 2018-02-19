@@ -1,26 +1,28 @@
 <div class="order-summary-container">
   <div class="ss-card">
-      <div class="order-summary-wrap">
-          <div class="order-summary-header row center-xs middle-xs">
-            <span>Order Summary</span>
-          </div>
-          <div class="order-summary">
-            <div class="subtotal">
-              <span>Subtotal</span>
-              <span>${{(subtotal||0).toFixed(2)}}</span>
-            </div>
-            <div class="shipping">
-              <span>Shipping</span>
-              <span>${{(shipping||0).toFixed(2)}}</span>
-            </div>
-            <div class="total">
-              <span>Total</span>
-              <span>${{(total||0).toFixed(2)}}</span>
-            </div>
-            <div class="checkout">
-              <a *ngIf="router.url.endsWith('payment-method')" (click)="clickCheckout()" class="btn checkout-button" style="color:white" [class.disabled]="router.url.endsWith('payment-method') && !instance">{{ router.url.endsWith('payment-method') ? 'Place Your Order' : 'Continue Checkout' }}</a>
-            </div>
-          </div>
+    <div class="order-summary-wrap">
+      <div class="order-summary-header row center-xs middle-xs">
+        <span>Order Summary</span>
+      </div>
+      <img style="width: 340px; margin-top:12px" class="row center-xs middle-xs" [src]="(user | async)?.currentOrder?.frontUrl || 'https://via.placeholder.com/300x200'">
+      <div class="order-summary">
+        <div class="subtotal">
+          <span>Subtotal</span>
+          <span>${{(subtotal||0).toFixed(2)}}</span>
         </div>
+        <div class="shipping">
+          <span>Shipping</span>
+          <span>${{(shipping||0).toFixed(2)}}</span>
+        </div>
+        <div class="total">
+          <span>Total</span>
+          <span>${{(total||0).toFixed(2)}}</span>
+        </div>
+        <div class="checkout">
+          <a *ngIf="router.url.endsWith('payment-method')" (click)="clickCheckout()" class="btn checkout-button" style="color:white"
+            [class.disabled]="router.url.endsWith('payment-method') && !instance">{{ router.url.endsWith('payment-method') ? 'Place Your Order' : 'Continue Checkout' }}</a>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

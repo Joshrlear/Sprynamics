@@ -65,27 +65,30 @@
   <div class="col-xs-12 col col-md-4">
     <div class="dashboard-card">
       <div class="profile-photo">
-        <img style="width:96px;height:96px;" [src]="user?.avatarUrl || ''">
+        <img style="width:96px;height:96px;" [src]="user?.avatarUrl || 'https://via.placeholder.com/96x96'">
         <p>Your Profile Photo</p>
-        <button class="btn btn-link">Upload New Image</button>
+        <button class="btn btn-link" (click)="profilePhotoInput.click()">Upload New Image</button>
+        <input type="file" #profilePhotoInput style="display:none" (change)="uploadAvatar(profilePhotoInput.files[0])" accept="image/*">
       </div>
     </div>
     <div class="row" style="margin:0">
       <div class="col col-xs-12 col-md-6" style="padding: 0;padding-right:6px;">
         <div class="dashboard-card">
           <div class="profile-photo">
-            <img style="width:96px;height:96px;" [src]="user?.companyLogoUrl || ''">
+            <img style="width:96px;height:96px;" [src]="user?.companyLogoUrl || 'https://via.placeholder.com/96x96'">
             <p>Company Logo</p>
-            <button class="btn btn-link">Upload New Image</button>
+            <button class="btn btn-link" (click)="companyLogoInput.click()">Upload New Image</button>
+            <input type="file" #companyLogoInput style="display:none" (change)="uploadCompany(companyLogoInput.files[0])" accept="image/*">
           </div>
         </div>
       </div>
       <div class="col col-xs-12 col-md-6" style="padding: 0;padding-left:6px">
         <div class="dashboard-card">
           <div class="profile-photo">
-            <img style="width:96px;height:96px;" [src]="user?.brokerageLogoUrl || ''">
+            <img style="width:96px;height:96px;" [src]="user?.brokerageLogoUrl || 'https://via.placeholder.com/96x96'">
             <p>Brokerage Logo</p>
-            <button class="btn btn-link">Upload New Image</button>
+            <button class="btn btn-link" (click)="brokerageLogoInput.click()">Upload New Image</button>
+            <input type="file" #brokerageLogoInput style="display:none" (change)="uploadBrokerage(brokerageLogoInput.files[0])" accept="image/*">
           </div>
         </div>
       </div>

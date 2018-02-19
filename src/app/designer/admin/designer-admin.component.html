@@ -193,6 +193,8 @@
                 </h4>
                 <button class="btn green" (click)="userImageInput.click()">Change Default Image</button>
                 <input #userImageInput style="display:none;" type="file" onclick="this.value = null" (change)="uploadImage(userImageInput.files[0]);">
+                <br>
+                <ng-container *ngTemplateOutlet="measurements"></ng-container>
               </ng-container>
               <ng-container *ngIf="selection.isLogo">
                 <h4>Logo</h4>
@@ -291,11 +293,11 @@
       </button>
       <button class="btn green" (click)="factory.createText(canvas);">+ Text</button>
       <button class="btn green" (click)="factory.createParagraph(canvas);">+ Paragraph</button>
-      <div class="btn-group" dropdown>
-        <button dropdownToggle class="btn green dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <div class="btn-group" ngbDropdown>
+        <button ngbDropdownToggle class="btn green dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           + Shape
         </button>
-        <div *dropdownMenu class="dropdown-menu" role="menu">
+        <div ngbDropdownMenu class="dropdown-menu" role="menu">
           <button class="dropdown-item" (click)="factory.createRectangle(canvas);">+ Rectangle</button>
           <a class="dropdown-item" (click)="factory.createPolygon(3, canvas)">+ Triangle</a>
           <a class="dropdown-item" (click)="factory.createPolygon(5, canvas)">+ Pentagon</a>

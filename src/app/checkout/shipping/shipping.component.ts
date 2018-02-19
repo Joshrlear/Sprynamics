@@ -4,6 +4,10 @@ import { Subscription } from 'rxjs/Subscription';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { CheckoutService } from '#app/checkout/checkout.service';
 import { Router } from '@angular/router';
+import { Observable } from 'rxjs/Observable';
+import { FirestoreService } from '#core/firestore.service';
+import { MailingListDialogComponent } from '#app/shared/mailing-list-dialog/mailing-list-dialog.component';
+import { MatDialog } from '@angular/material';
 
 @Component({
   selector: 'app-shipping',
@@ -20,12 +24,20 @@ export class ShippingComponent implements OnInit, OnDestroy {
   userSub: Subscription;
   user: any;
 
+  lists: Observable<any[]>;
+
   shippingForm: FormGroup;
 
-  constructor(public auth: AuthService, private fb: FormBuilder, public checkout: CheckoutService, private router: Router) { }
+  constructor(public auth: AuthService,
+    private fb: FormBuilder,
+    public checkout: CheckoutService,
+    private firestore: FirestoreService,
+    private dialog: MatDialog,
+    private router: Router) { }
 
   ngOnInit() {
     this.userSub = this.auth.user.subscribe(user => {
+      this.lists = this.firestore.colWithIds$('lists', ref => ref.where('uid', '==', user.uid).orderBy('createdAt', 'desc'));
       this.checkout.order.take(1).subscribe(order => {
         if (order.shipping) {
           this.buildForm(order.shipping);
@@ -49,7 +61,8 @@ export class ShippingComponent implements OnInit, OnDestroy {
       'address2': [obj.address2 || ''],
       'city': [obj.city || '', Validators.required],
       'state': [obj.state || '', Validators.required],
-      'zipCode': [obj.zipCode || '', Validators.required]
+      'zipCode': [obj.zipCode || '', Validators.required],
+      'mailingListId': ['']
     });
   }
 
@@ -61,6 +74,16 @@ export class ShippingComponent implements OnInit, OnDestroy {
   chooseMailingList() {
     this.singleAddress = false;
     this.mailingList = true;
+  }
+
+  uploadList(file: File) {
+    const dialogRef = this.dialog.open(MailingListDialogComponent, {
+      width: '500px',
+      data: { file }
+    });
+    dialogRef.afterClosed().take(1).subscribe((result: any) => {
+      this.shippingForm.get('mailingListId').setValue(result);
+    });
   }
 
   submitForm() {

@@ -2,6 +2,9 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { CheckoutService } from '#app/checkout/checkout.service';
 import { Subscription } from 'rxjs/Subscription';
+import { AuthService } from '#core/auth.service';
+import { Observable } from 'rxjs/Observable';
+import { User } from '#core/user.interface';
 
 @Component({
   selector: 'order-summary',
@@ -28,9 +31,13 @@ export class OrderSummaryComponent implements OnInit, OnDestroy {
 
   instance: any;
 
-  constructor(public router: Router, private checkout: CheckoutService) { }
+  user: Observable<User>;
+
+  constructor(public router: Router, private checkout: CheckoutService, private auth: AuthService) { }
 
   ngOnInit() {
+    this.user = this.auth.user;
+
     this.orderSub = this.checkout.order.subscribe(order => {
       this.subtotal = order.subtotal;
       this.shipping = order.shippingCost;

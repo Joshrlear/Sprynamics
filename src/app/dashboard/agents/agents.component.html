@@ -1,8 +1,9 @@
 <h2>Agents</h2>
 <br>
 
-<button class="btn green" (click)="fileInput.click()">Add new agent</button>
-<input #fileInput type="file" accept=".csv" style="display: none;" onclick="this.value=null" (change)="uploadFile(fileInput.files[0])">
+<button class="btn green" (click)="createAgent()">Create new agent</button>
+&nbsp;
+<button class="btn green" (click)="addAgent()">Request agent access</button>
 <br>
 <br>
 
@@ -11,14 +12,18 @@
     <td>#</td>
     <td>Name</td>
     <td>View Agent</td>
+    <td>Delete Agent</td>
     <td>User ID</td>
   </thead>
   <tbody>
-    <tr *ngFor="let agent of agents | async; let i = index">
+    <tr *ngFor="let agent of agents; let i = index">
       <td>{{ i + 1 }}</td>
       <td>{{ (agent.firstName ? agent.firstName + ' ' : '') + (agent.lastName||'') }}</td>
       <td>
         <a style="color: #12C463; cursor: pointer" (click)="viewAgent(agent)">View Agent</a>
+      </td>
+      <td>
+        <a style="color: #aa0022; cursor: pointer" (click)="deleteAgent(agent)">Delete Agent</a>
       </td>
       <td>{{ agent.id }}</td>
     </tr>
