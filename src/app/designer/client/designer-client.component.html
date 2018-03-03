@@ -1,6 +1,11 @@
 <div class="pusher"></div>
-<div *ngIf="loadingPdf" style="display:flex; align-items: center; justify-content: center;position:absolute;top:0;left:0;width:100vw;height:100vh;z-index:999999;background-color:rgba(0,0,0,0.3)">
-  <mat-spinner></mat-spinner>
+<div *ngIf="loadingPdf" class="loading-pdf-overlay">
+  <div style="width: 50%">
+    <mat-progress-bar [mode]="loadingMessage === 'Uploading finished design...' ? 'determinate' : 'query'" [value]="loadingProgress"></mat-progress-bar>
+    <div class="loading-message">
+      {{ loadingMessage || '' }}
+    </div>
+  </div>
 </div>
 <app-breadcrumbs [step]="3"></app-breadcrumbs>
 <div class="back">
@@ -16,10 +21,10 @@
     <button mat-icon-button matTooltip="redo" (click)="redo()" [disabled]="future.length === 0">
       <mat-icon>redo</mat-icon>
     </button>
-    <button class="btn" [class.green]="viewSide === 'front'" (click)="setViewSide('front')">
+    <button class="btn" [class.green]="viewSide === 'front'" (click)="changeViewSide('front')">
       Front
     </button>
-    <button class="btn" [class.green]="viewSide === 'back'" (click)="setViewSide('back')">
+    <button class="btn" [class.green]="viewSide === 'back'" (click)="changeViewSide('back')">
       Back
     </button>
   </div>
@@ -37,37 +42,39 @@
       <span class="bottom"></span>
     </span>
     <div class="side-nav">
-      <div class="tab" [class.selected]="currentTab === 'designs'" (click)="currentTab = 'designs'; currentTabIndex = 0;">
+      <div class="tab" [class.selected]="currentTab === 'agent'" (click)="currentTab = 'agent'; currentTabIndex = 0;">
+        <mat-icon>contact_mail</mat-icon>
+        <div class="tab-title"> Agent </div>
+      </div>
+      <div class="tab" [class.selected]="currentTab === 'designs'" (click)="currentTab = 'designs'; currentTabIndex = 1;">
         <mat-icon>view_carousel</mat-icon>
         <div class="tab-title"> Designs </div>
       </div>
       <ng-container *ngIf="template">
-        <div class="tab" [class.selected]="currentTab === 'text'" (click)="currentTab = 'text'; currentTabIndex = 1;">
+        <div class="tab" [class.selected]="currentTab === 'property'" (click)="currentTab = 'property'; currentTabIndex = 2;">
+          <mat-icon>home</mat-icon>
+          <div class="tab-title"> Property </div>
+        </div>
+        <div class="tab" [class.selected]="currentTab === 'text'" (click)="currentTab = 'text'; currentTabIndex = 3;">
           <mat-icon>subject</mat-icon>
           <div class="tab-title"> Text </div>
         </div>
-        <div class="tab" [class.selected]="currentTab === 'photos'" (click)="currentTab = 'photos'; currentTabIndex = 2;">
-          <mat-icon>photo_library</mat-icon>
-          <div class="tab-title"> Photos </div>
-        </div>
-        <div class="tab" [class.selected]="currentTab === 'colors'" (click)="currentTab = 'colors'; currentTabIndex = 3;">
+        <div class="tab" [class.selected]="currentTab === 'colors'" (click)="currentTab = 'colors'; currentTabIndex = 4;">
           <mat-icon>color_lens</mat-icon>
           <div class="tab-title"> Colors </div>
-        </div>
-        <div class="tab" [class.selected]="currentTab === 'contact'" (click)="currentTab = 'contact'; currentTabIndex = 4;">
-          <mat-icon>contact_mail</mat-icon>
-          <div class="tab-title"> Contact </div>
         </div>
       </ng-container>
     </div>
     <div class="form-container">
-      <app-designs *ngIf="currentTab === 'designs'" [size]="size" (select)="loadTemplate($event)"></app-designs>
+      <app-designs *ngIf="currentTab === 'designs'" [size]="size" (select)="loadDesign($event)"></app-designs>
       <app-text *ngIf="currentTab === 'text'" [productName]="productSizes[size]?.name" [size]="productSizes[size]?.width + ' x ' + productSizes[size]?.height + ' in.'"
-        [formFields]="formFields" (change)="saveUndo()" (render)="canvas.renderAll()"></app-text>
-      <app-photos *ngIf="currentTab === 'photos'" [photos]="template[viewSide].userImages" (photoChange)="changePhoto($event)"></app-photos>
-      <app-colors *ngIf="currentTab === 'colors'" [colors]="template.presetColors" (colorChange)="onColorChange($event)" [bgColor]="background.fill"
-        (bgColorChange)="onBgColorChange($event)" (change)="saveUndo()"></app-colors>
-      <app-contact-info *ngIf="currentTab === 'contact'" (change)="saveUndo()" ></app-contact-info>
+        [formFields]="textFields" (change)="saveUndo()" (render)="canvas.renderAll()"></app-text>
+      <app-property *ngIf="currentTab === 'property'" [photos]="template[viewSide].userImages" (photoChange)="changePhoto($event)"
+        (addressChange)="changeAddress($event)"></app-property>
+      <app-colors *ngIf="currentTab === 'colors'" [colors]="template.presetColors" (colorChange)="changeColor($event)" [bgColor]="background.fill"
+        (bgColorChange)="changeBackgroundColor($event)" (change)="saveUndo()"></app-colors>
+      <app-agent-info *ngIf="currentTab === 'agent'" (changeAgent)="changeAgent($event)" [user]="userData" [agents]="agents" [(selectedAgent)]="selectedAgent"
+        [loading]="loadingAgents"></app-agent-info>
     </div>
     <div #designerView class="designer-view">
       <div class="loading-overlay" *ngIf="loading">

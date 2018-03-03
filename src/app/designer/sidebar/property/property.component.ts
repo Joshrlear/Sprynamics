@@ -3,21 +3,32 @@ import { MatDialog } from '@angular/material';
 
 import { CropDialogComponent } from '../../crop-dialog/crop-dialog.component';
 
+declare let google;
+
 @Component({
-  selector: 'app-photos',
-  templateUrl: './photos.component.html',
-  styleUrls: ['./photos.component.scss']
+  selector: 'app-property',
+  templateUrl: './property.component.html',
+  styleUrls: ['./property.component.scss']
 })
-export class PhotosComponent implements OnInit {
+export class PropertyComponent implements OnInit {
 
   @Input('photos') photos: any[]; 
   @Output('photoChange') changeEvent = new EventEmitter();
+  @Output('addressChange') addressChangeEvent = new EventEmitter();
 
   selectedIndex: number;
 
+  autocomplete;
+
   constructor(private dialog: MatDialog) { }
 
-  ngOnInit() { }
+  ngOnInit() {
+    this.autocomplete = new google.maps.places.Autocomplete(
+      (document.getElementById('propertyAddressInput')),
+      {types: ['geocode']}
+    );
+    this.autocomplete.addListener('place_changed', this.onChangeAddress.bind(this));
+  }
 
   uploadImage(file: File) {
     const reader = new FileReader();
@@ -46,6 +57,10 @@ export class PhotosComponent implements OnInit {
         });
       }
     });
+  }
+
+  onChangeAddress() {
+    this.addressChangeEvent.emit(this.autocomplete.getPlace());
   }
 
 }

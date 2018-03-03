@@ -128,12 +128,15 @@
                 <label style="margin-left:8px;">
                   <input type="radio" name="textContentType" id="optionsRadios1" value="data" [(ngModel)]="selection.textContentType"> User data
                 </label>
+                <label style="margin-left:8px;">
+                  <input type="radio" name="textContentType" id="optionsRadios1" value="address" [(ngModel)]="selection.textContentType"> Address
+                </label>
               </div>
               <div class="radio">
 
               </div>
               <!-- Text Content -->
-              <div class="form-field" style="display:flex;align-items:center;margin-bottom:16px;" *ngIf="selection.textContentType === 'plain'">
+              <div class="form-field" style="display:flex;align-items:center;margin-bottom:16px;" *ngIf="selection.textContentType !== 'data'">
                 <mat-icon matTooltip="Plain text content">message</mat-icon>
                 <textarea #textInput id="textInput" style="margin-left:8px;flex:1;" [(ngModel)]="selection.text" (keyup)="canvas.renderAll()"
                   (click)="clickTextInput($event.target)" (blur)="blurTextInput($event.target)"></textarea>

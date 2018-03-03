@@ -57,7 +57,8 @@ export class ObjectFactoryService {
         'textContentType',
         'textUserData',
         'textFieldName',
-        'userEditable'
+        'userEditable',
+        'isUserData'
       ]);
     return this.addObject(text, canvas);
   }

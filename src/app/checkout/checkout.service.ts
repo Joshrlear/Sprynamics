@@ -18,20 +18,49 @@ export class CheckoutService {
   public braintreeUI = this._braintreeUI.asObservable();
 
   loading: boolean;
+  initialized: boolean;
 
-  constructor(private http: Http, private auth: AuthService, private firestore: FirestoreService, private router: Router, private afs: AngularFirestore) {
+  constructor(private http: Http,
+    private auth: AuthService,
+    private firestore: FirestoreService,
+    private router: Router,
+    private afs: AngularFirestore) {
   }
 
   initOrder() {
-    // create an order ID
-    const orderId = this.afs.collection('orders').ref.doc().id;
-    this.updateOrder('orderId', orderId);
-    this.updateOrder('submitted', false);
+    return new Promise((resolve, reject) => {
+      this.auth.user.take(1).subscribe(user => {
+        if (user.currentOrder) {
+          this.firestore.doc$(`orders/${user.currentOrder}`).take(1).subscribe(order => {
+            this._order.next(order);
+            this.initialized = true;
+            resolve();
+          });
+        } else {
+          // create an order ID
+          const orderId = this.afs.collection('orders').ref.doc().id;
+          this.firestore.set(`orders/${orderId}`, { id: orderId, uid: user.uid, submitted: false }).then(_ => {
+            this.firestore.update(`users/${user.uid}`, { currentOrder: orderId }).then(_ => {
+              this.updateOrder('orderId', orderId);
+              this.updateOrder('submitted', false);
+              this.updateOrder('name', user.firstName + (user.lastName? ' ' + user.lastName : ''))
+              this.setUser(user).then(_ => {
+                this.initialized = true;
+                resolve();
+              });
+            });
+          })
+        }
+      });
+    });
+  }
 
-    this.auth.user.take(1).subscribe(user => {
+  setUser(user) {
+    return new Promise((resolve, reject) => {
       this.updateOrder('uid', user.uid);
       if (user.braintreeId) {
         this.updateOrder('customerId', user.braintreeId);
+        resolve(this._order.value);
       } else {
         // init braintree customer for this user
         const data = {
@@ -44,22 +73,27 @@ export class CheckoutService {
             console.log(res);
             const id = JSON.parse(res._body).customerId;
             this.updateOrder('customerId', id);
-            this.firestore.update(`users/${user.uid}`, { braintreeId: id });
+            this.firestore.update(`users/${user.uid}`, { braintreeId: id }).then(_ => {
+              resolve(this._order.value);
+            })
           });
       }
-    });
+    })
   }
 
   updateOrder(key, value) {
-    console.log(key, value);
     const data = this._order.getValue();
     data[key] = value;
     this._order.next(data);
   }
 
-  generateToken() {
+  /**
+   * Generates a token for braintree payment
+   * @param uid Optional user ID, if not given this will use the agent set in the order
+   */
+  generateToken(uid?: string) {
     const token$ = this.http.post('https://us-central1-sprynamics.cloudfunctions.net/getClientToken',
-      { customerId: this._order.getValue().customerId })
+      { customerId: uid || this._order.getValue().customerId })
       .map((res: any) => JSON.parse(res._body).token);
     this.updateOrder('token$', token$);
     return token$;
@@ -73,11 +107,16 @@ export class CheckoutService {
     if (!this._order.getValue().submitted) {
       this.updateOrder('submitted', true);
       this.router.navigate(['/checkout/confirm-order']);
+      // this.firestore.update(`orders/${this._order.getValue().orderId}`, this._order.getValue());
       this.http.post('https://us-central1-sprynamics.cloudfunctions.net/checkout', this._order.getValue())
         .take(1).subscribe((res: any) => {
           // window.alert((JSON.parse(res._body)).message);
           this.loading = false;
-        })
+          // remove the current order from the user, since it's been submitted
+          this.auth.user.take(1).subscribe(user => {
+            this.firestore.update(`users/${user.uid}`, { currentOrder: null });
+          });
+        });
     }
   }
 

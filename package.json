@@ -46,6 +46,7 @@
     "roboto-npm-webfont": "^1.0.1",
     "rxjs": "^5.5.2",
     "webfontloader": "^1.6.28",
+    "xml2js": "^0.4.19",
     "zone.js": "^0.8.14"
   },
   "devDependencies": {

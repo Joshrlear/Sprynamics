@@ -1,0 +1,49 @@
+<div class="agent-container" *ngIf="!loading; else loadingSpinner">
+
+  <label>Select an agent:</label>
+  <select class="form-control" [(ngModel)]="selectedAgent" (change)="onChangeAgent()">
+    <option [ngValue]="user">This design is for me</option>
+    <option *ngFor="let agent of agents" [ngValue]="agent">{{ (agent.firstName || 'No Name') + (agent.lastName ? ' ' + agent.lastName : '') }}</option>
+  </select>
+
+  <br>
+
+  <div>
+    <label>First Name:
+      <input class="form-control" [(ngModel)]="selectedAgent.firstName" (input)="onChangeAgent()">
+    </label>
+  </div>
+  <div>
+    <label>Last Name:
+      <input class="form-control" [(ngModel)]="selectedAgent.lastName" (input)="onChangeAgent()">
+    </label>
+  </div>
+  <div>
+    <label>Company:
+      <input class="form-control" [(ngModel)]="selectedAgent.company" (input)="onChangeAgent()">
+    </label>
+  </div>
+  <div>
+    <label>Email:
+      <input class="form-control" type="email" [(ngModel)]="selectedAgent.email" (input)="onChangeAgent()">
+    </label>
+  </div>
+  <div>
+    <label>Phone Number:
+      <input class="form-control" type="tel" [(ngModel)]="selectedAgent.phoneNumber" (input)="onChangeAgent()">
+    </label>
+  </div>
+  <div>
+    <label>License ID:
+      <input class="form-control" [(ngModel)]="selectedAgent.licenseId" (input)="onChangeAgent()">
+    </label>
+  </div>
+
+
+</div>
+
+<ng-template #loadingSpinner>
+  <div style="width: 100%; margin-top: 64px; display: flex; align-items: center; justify-content: center;">
+    <mat-spinner></mat-spinner>
+  </div>
+</ng-template>

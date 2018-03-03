@@ -1,6 +1,7 @@
 import { Observable } from "rxjs/Observable";
 
 export interface Order {
+  uid?: string;
   orderId?: number;
   token$?: Observable<string>;
   quantity?: number;
@@ -19,4 +20,5 @@ export interface Order {
   }
   createdAt?: any;
   submitted?: boolean;
+  propertyAddress?: any;
 }

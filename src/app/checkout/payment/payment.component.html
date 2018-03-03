@@ -1,4 +1,19 @@
-<div style="height:350;display:flex;align-items:center;justify-content:center;">
-  <mat-spinner *ngIf="checkout.loading"></mat-spinner>
+<div class="ss-card">
+  <div class="form-container">
+    <form class="ss-form">
+      <div class="form-row" style="padding: 12px 24px 24px 24px;">
+        <div class="form-check col-md-6">
+          <input type="radio" name="shipType" class="form-check-input" id="singleAddress" value="true" (click)="payWithMyMethod()"
+            checked>
+          <label class="form-check-label" for="singleAddress">Pay with my method</label>
+        </div>
+        <div class="form-check col-md-6">
+          <input type="radio" name="shipType" class="form-check-input" id="mailingList" value="true" (click)="payWithAgentMethod()">
+          <label class="form-check-label" for="mailingList">Pay with agent's method</label>
+        </div>
+      </div>
+      <mat-spinner *ngIf="checkout.loading"></mat-spinner>
+      <div #dropinContainer id="dropin"></div>
+    </form>
+  </div>
 </div>
-<div id="dropin"></div>

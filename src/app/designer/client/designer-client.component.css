@@ -37,6 +37,32 @@
   z-index: 99;
 }
 
+.loading-pdf-overlay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 999999999;
+  background-color:#12c463;
+}
+
+.loading-message {
+  color: white;
+  margin-top: 8px;
+}
+
+::ng-deep .mat-progress-bar-buffer {
+  background-color: #fff;
+}
+
+::ng-deep .mat-progress-bar-fill::after {
+  background-color: #00823C;
+}
+
 .form-container {
   flex-basis: 360px;
   background: #3f4652;

@@ -8,6 +8,7 @@ import { Observable } from 'rxjs/Observable';
 import { FirestoreService } from '#core/firestore.service';
 import { MailingListDialogComponent } from '#app/shared/mailing-list-dialog/mailing-list-dialog.component';
 import { MatDialog } from '@angular/material';
+import { Order } from '#app/checkout/order.interface';
 
 @Component({
   selector: 'app-shipping',
@@ -37,15 +38,32 @@ export class ShippingComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.userSub = this.auth.user.subscribe(user => {
+      console.log(user);
+      if (!user.currentOrder) {
+        this.router.navigate(['/products']);
+      }
       this.lists = this.firestore.colWithIds$('lists', ref => ref.where('uid', '==', user.uid).orderBy('createdAt', 'desc'));
-      this.checkout.order.take(1).subscribe(order => {
-        if (order.shipping) {
-          this.buildForm(order.shipping);
-        } else {
-          this.user = user;
-          this.buildForm(user);
-        }
-      });
+      if (this.checkout.initialized) {
+        this.loadOrder();
+      } else {
+        this.checkout.initOrder().then(_ => {
+          this.loadOrder();
+        });
+      }
+    });
+  }
+
+  loadOrder() {
+    this.checkout.order.take(1).subscribe((order: Order) => {
+      if (order.shipping) {
+        this.buildForm(order.shipping);
+      } else {
+        console.log(order);
+        this.firestore.doc$(`users/${order.uid}`).take(1).subscribe(agent => {
+          this.user = agent;
+          this.buildForm(agent);
+        });
+      }
     });
   }
 
@@ -101,6 +119,7 @@ export class ShippingComponent implements OnInit, OnDestroy {
 
   continue() {
     this.checkout.updateOrder('shipping', this.shippingForm.value);
+    this.checkout.updateOrder('isMailingList', this.mailingList);
     this.router.navigate(['/checkout/payment-method']);
   }
 

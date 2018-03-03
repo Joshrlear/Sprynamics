@@ -20,7 +20,7 @@ export class CheckoutComponent implements OnInit {
   ngOnInit() {
     console.log('init');
     this.order = this.checkout.order;
-    this.checkout.initOrder();
+    // this.checkout.initOrder();
   }
 
 }

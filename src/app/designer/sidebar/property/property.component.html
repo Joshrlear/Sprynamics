@@ -1,5 +1,14 @@
 <div class="photos-container">
-  <h6>Click an image below to replace it:</h6>
+
+  <div>
+    <label style="width: 100%;">Property Address:
+      <input id="propertyAddressInput" class="form-control">
+    </label>
+  </div>
+
+  <br>
+
+  <h6>Property Photos (click an image to replace it)</h6>
 
   <ng-container *ngFor="let photo of photos; let i = index;">
     <img class="photo" [src]="photo.toDataURL()" (click)="selectedIndex = i; fileInput.click()">

@@ -7,9 +7,9 @@ import { DesignerAdminComponent } from './admin/designer-admin.component';
 import { DesignerClientComponent } from './client/designer-client.component';
 import { CropDialogComponent } from './crop-dialog/crop-dialog.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
-import { ContactInfoComponent } from './sidebar/contact-info/contact-info.component';
+import { AgentInfoComponent } from './sidebar/agent-info/agent-info.component';
 import { DesignsComponent } from './sidebar/designs/designs.component';
-import { PhotosComponent } from './sidebar/photos/photos.component';
+import { PropertyComponent } from './sidebar/property/property.component';
 import { TextComponent } from './sidebar/text/text.component';
 
 import { AlignmentService } from './admin/alignment.service';
@@ -30,9 +30,9 @@ const routes: Routes = [
     DesignerClientComponent,
     CropDialogComponent,
     SidebarComponent,
-    ContactInfoComponent,
+    AgentInfoComponent,
     DesignsComponent,
-    PhotosComponent,
+    PropertyComponent,
     TextComponent,
   ],
   entryComponents: [ 

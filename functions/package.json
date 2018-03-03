@@ -13,7 +13,8 @@
     "cors": "^2.8.4",
     "firebase-admin": "~5.4.2",
     "firebase-functions": "^0.8.1",
-    "mailgun-js": "^0.14.1"
+    "mailgun-js": "^0.14.1",
+    "pdf-image": "^1.0.5"
   },
   "private": true
 }

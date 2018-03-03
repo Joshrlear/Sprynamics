@@ -388,9 +388,11 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
             // store thumbnail
             this.storage.putBase64(jpg, `thumbnails/${id}.jpg`)
               .then().then(thumbnail => {
+                // zoom back out again
+                this.canvas.zoomToPoint(new fabric.Point(this.canvas.width / 2, this.canvas.height / 2), 0.35);
                 this.template.thumbnail = thumbnail.downloadURL;
                 this.template.url = url;
-                this.firestore.update(`templates/${id}`, { url, thumbnail });
+                this.firestore.update(`templates/${id}`, { url, thumbnail: thumbnail.downloadURL });
               });
           }
           img.src = dataUrl;

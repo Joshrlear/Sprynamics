@@ -2,6 +2,10 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 admin.initializeApp(functions.config().firebase);
 const cors = require('cors')({ origin: true });
+const path = require('path');
+const fs = require('fs');
+const os = require('os');
+const PDFImage = require('pdf-image').PDFImage;
 
 // Mailgun
 
@@ -77,7 +81,8 @@ exports.customer = functions.https.onRequest((req, res) => {
 
 // POST transaction
 exports.checkout = functions.https.onRequest((req, res) => {
-  cors(req, res, () => {
+  return cors(req, res, () => {
+    console.log(req.body);
     const nonce = req.body.nonce;
     const quantity = req.body.quantity;
     const totalPrice = calculatePricing(quantity).total;
@@ -98,14 +103,51 @@ exports.checkout = functions.https.onRequest((req, res) => {
         req.body.createdAt = admin.firestore.FieldValue.serverTimestamp(); // add timestamp
         admin.firestore().doc(`orders/${req.body.orderId}`).set(req.body); // add order to database
         // send email receipt
-        const email = {
+        const emailReceipt = {
           from: 'Sprynamics <noreply@notifications.sprynamics.com>',
           to: 'audererm@gmail.com',
-          subject: 'Welcome to Sprynamics!',
-          html: require('./mail_templates/order_receipt')
+          subject: 'Your order with Sprynamics',
+          html: require('./mail_templates/order_receipt')(req.body)
         }
-        mailgun.messages().send(email, function (err, body) {
+        console.log('sending email');
+        mailgun.messages().send(emailReceipt, function (err, body) {
+          if (err) console.error(err);
           console.log(body);
+          console.log('email sent');
+        });
+
+        const shipping = req.body.shipping;
+
+        const emailToPrinter = {
+          from: 'Sprynamics <noreply@notifications.sprynamics.com>',
+          // to: 'jeffrey.wallace@comcast.net',
+          to: 'audererm@gmail.com',
+          subject: `${req.body.name}, ${req.body.propertyAddress}, ${req.body.product} ${req.body.size}`,
+          html: `
+            <div>Hi Jeff,</div>
+            <br>
+            <div>
+              ${req.body.isMailingList ? 
+                'Please print and mail the attached. Bill me.' :
+                `Please print the attached and ship to ${shipping.address1} ${shipping.address2}, ${shipping.city}, ${shipping.state} ${shipping.zipCode}`
+              }
+            </div>
+            <br>
+            <div>Thank you</div>
+            <br>
+            <br>
+            <hr>
+            <div>
+              This is an automated email. If you have any questions, please contact Josh Lear at joshrlear@gmail.com or by phone at 619-507-6807.
+            </div>
+          `
+        }
+
+        console.log('sending email to printer');
+        mailgun.messages().send(emailToPrinter, function (err, body) {
+          if (err) console.error(err);
+          console.log(body);
+          console.log('email sent to printer');
         });
       }
     })
@@ -138,3 +180,17 @@ function calculatePricing(amt) {
 
   return pricing;
 }
+
+/** 
+ * When a PDF is uploaded to 
+*/
+exports.generateThumbnail = functions.firestore.document('users/{userId}').onUpdate(event => {
+  const user = event.data.data();
+
+  // if this user is making an order that doesn't have thumbnails yet
+  if (user.currentOrder && user.currentOrder.pdfUrl && !user.currentOrder.frontUrl && !user.currentOrder.backUrl) {
+    const pdfUrl = user.currentOrder.pdfUrl;
+    const file = admin.storage().bucket().file().download()
+    const tempLocalDir = path.join(os.tmpdir(), 'filenamehere')
+  }
+})
