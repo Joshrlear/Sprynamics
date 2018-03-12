@@ -59,8 +59,7 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
 
   get selection() {
     if (this.canvas) {
-      // console.log(this.canvas.getActiveObject());
-      return this.canvas.getActiveGroup() || this.canvas.getActiveObject() || null;
+      return this.canvas.getActiveObject() || null;
     } else {
       return null;
     }
@@ -150,6 +149,7 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
 
     // Fix rectangle scaling
     this.canvas.on('object:modified', (event) => {
+      console.log(event.target.isUserImage);
       if (event.target.type === 'rect' || event.target.type === 'image') {
         event.target.width = Math.floor(event.target.width * event.target.scaleX);
         event.target.height = Math.floor(event.target.height * event.target.scaleY);
@@ -202,7 +202,7 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
 
   canvasToJSON() {
     return this.canvas.toJSON(['isHidden', 'isBoundBox', 'isBackground', 'selectable', 'hasControls', 'textContentType', 'textUserData',
-    'textFieldName', 'userEditable', 'isLogo', 'logoType', 'isUserImage']);
+      'textFieldName', 'userEditable', 'isLogo', 'logoType', 'isUserImage']);
   }
 
   /**
@@ -294,7 +294,7 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
         height: obj.height * obj.scaleY
       }
     });
-1
+    1
     dialogRef.afterClosed().take(1).subscribe((data) => {
       if (data) {
         obj.setSrc(data, _ => this.canvas.renderAll());
@@ -483,7 +483,7 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
           .discardActiveGroup()
           .renderAll();
       } else {
-        this.selection.remove();
+        this.canvas.remove(this.selection);
       }
     }
   }

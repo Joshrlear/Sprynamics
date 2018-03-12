@@ -33,7 +33,7 @@ export class OrderSummaryComponent implements OnInit, OnDestroy {
 
   user: Observable<User>;
 
-  constructor(public router: Router, private checkout: CheckoutService, private auth: AuthService) { }
+  constructor(public router: Router, public checkout: CheckoutService, private auth: AuthService) { }
 
   ngOnInit() {
     this.user = this.auth.user;

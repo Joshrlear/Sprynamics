@@ -19,6 +19,9 @@ declare let fabric;
 import * as jspdf from 'jspdf';
 declare let jsPDF;
 
+import * as JSZip from 'jszip';
+import { NewUserPopupComponent } from '#app/designer/new-user-popup/new-user-popup.component';
+
 @Component({
   selector: 'app-designer-client',
   templateUrl: './designer-client.component.html',
@@ -67,7 +70,8 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
     private factory: ObjectFactoryService,
     private MatDialog: MatDialog,
     private checkout: CheckoutService,
-    private zillow: ZillowService
+    private zillow: ZillowService,
+    private dialog: MatDialog
   ) { }
 
   ngOnInit() {
@@ -98,6 +102,16 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
           this.router.navigate(['/products']);
         }
       });
+      this.firestore.colWithIds$('templates').take(1).subscribe(templates => {
+        this.loadDesign(templates[0]);
+        this.auth.authState.take(1).subscribe(userState => {
+          if (userState.isAnonymous) {
+            this.dialog.open(NewUserPopupComponent, {
+              disableClose: true
+            });
+          }
+        })
+      });
     });
   }
 
@@ -109,22 +123,24 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
       preserveObjectStacking: true,
     });
 
-    this.canvas.zoomToPoint(new fabric.Point(this.canvas.width / 2, this.canvas.height / 2), 0.35);
+    // this.canvas.zoomToPoint(new fabric.Point(this.canvas.width / 2, this.canvas.height / 2), 0.35);
+    this.onResize();
   }
 
   @HostListener('window:resize', ['$event'])
-  onResize(event) {
+  onResize(event?) {
     this.canvas.setWidth(this.view.nativeElement.clientWidth);
     this.canvas.setHeight(this.view.nativeElement.clientHeight);
-    this.canvas.calcOffset();
+    // this.canvas.calcOffset();
     const objects = this.canvas.getObjects();
     const selection = new fabric.ActiveSelection(objects, { canvas: this.canvas });
     const width = selection.width;
     const height = selection.height;
-    const scale = this.canvas.width / width;
-    selection.scale(scale);
+    const scale = this.canvas.height / height;
+    // selection.scale(scale);
     selection.center();
     selection.destroy();
+    this.canvas.zoomToPoint(new fabric.Point(this.canvas.width / 2, this.canvas.height / 2), Math.min(scale, 1));
   }
 
   canvasToJSON() {
@@ -212,6 +228,9 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
   }
 
   changeViewSide(side: 'front' | 'back') {
+    if (side === this.viewSide) {
+      return;
+    }
     const lastSide = this.viewSide;
     this.viewSide = side;
     // keep track of whether the lastside was processed
@@ -330,6 +349,7 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
           imagesToLoad--;
           if (imagesToLoad <= 0) {
             this.loading = false;
+            this.onResize();
             this.canvas.renderAll();
           }
         }
@@ -356,17 +376,18 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
     });
     if (imagesToLoad <= 0) {
       this.loading = false;
+      this.onResize();
       this.canvas.renderAll();
     }
   }
 
   saveAndContinue() {
+    console.log('saving');
     const canvas = document.createElement('canvas');
     canvas.id = 'pdf_canvas';
     canvas.width = (this.template.productType.width + productSpecs.bleedInches * 2) * productSpecs.dpi;
     canvas.height = (this.template.productType.height + productSpecs.bleedInches * 2) * productSpecs.dpi;
     document.body.appendChild(canvas);
-    console.log(canvas);
     const pdfCanvas = new fabric.Canvas('pdf_canvas', {
       width: canvas.width,
       height: canvas.height,
@@ -375,7 +396,6 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
     canvas.style.display = 'none';
     pdfCanvas.loadFromJSON(this.template['front'], _ => {
       const boundBox = this.canvas.getObjects('rect').filter(obj => obj.stroke === '#f00' && obj.strokeDashArray[0] === 5 && obj.strokeDashArray[1] === 5)[0];
-      console.log(boundBox);
       pdfCanvas.clipTo = null;
       // pdfCanvas.imageSmoothingEnabled = false;
       const offsetX = boundBox.left - productSpecs.bleedInches * productSpecs.dpi;
@@ -407,24 +427,42 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
       this.getDataURL('front', pdfCanvas).then((front: string) => {
         this.loadingMessage = 'Processing back side...';
         this.getDataURL('back', pdfCanvas).then((back: string) => {
-          const doc = new jspdf('l', 'in', [this.template.productType.width + productSpecs.bleedInches * 2, this.template.productType.height + productSpecs.bleedInches * 2]);
-          doc.addImage(front, 'PNG', 0, 0, this.template.productType.width + productSpecs.bleedInches * 2, this.template.productType.height + productSpecs.bleedInches * 2);
-          doc.addPage();
-          doc.addImage(back, 'PNG', 0, 0, this.template.productType.width + productSpecs.bleedInches * 2, this.template.productType.height + productSpecs.bleedInches * 2);
-          const pdfDataUrl: Blob = doc.output('blob');
-          const task = this.storage.putFile(pdfDataUrl, 'design.pdf', { contentType: 'application/pdf' });
-          // log upload progress
-          this.loadingMessage = 'Uploading finished design...';
-          task.percentageChanges().subscribe(snap => {
-            this.loadingProgress = snap;
-          });
-          task.then().then(pdfSnapshot => {
-            this.checkout.updateOrder('pdfUrl', pdfSnapshot.downloadURL);
-            this.checkout.updateOrder('pdfUrl', 'test');
-            this.checkout.updateOrder('propertyAddress', this.propertyAddress ? this.propertyAddress.formatted_address : '');
-            pdfCanvas.dispose();
-            canvas.remove();
-            this.router.navigate(['/checkout']);
+          this.checkout.thumbnail = front;
+          // generate PDF
+          // this.loadingMessage = 'Generating PDF...';
+          // const doc = new jspdf('l', 'in', [this.template.productType.width + productSpecs.bleedInches * 2, this.template.productType.height + productSpecs.bleedInches * 2]);
+          // doc.addImage(front, 'PNG', 0, 0, this.template.productType.width + productSpecs.bleedInches * 2, this.template.productType.height + productSpecs.bleedInches * 2);
+          // doc.addPage();
+          // doc.addImage(back, 'PNG', 0, 0, this.template.productType.width + productSpecs.bleedInches * 2, this.template.productType.height + productSpecs.bleedInches * 2);
+          // const pdfDataUrl: string = doc.output('blob');
+
+          // compress files
+          this.loadingMessage = 'Compressing files...';
+          const zip = new JSZip();
+          zip.file('front.png', front.replace(/data:image\/png;base64,/, ''), { base64: true });
+          zip.file('back.png', back.replace(/data:image\/png;base64,/, ''), { base64: true });
+          // zip.file('design.pdf', pdfDataUrl, { base64: true });
+          zip.generateAsync({
+            type: 'base64',
+            compression: 'DEFLATE',
+            compressionOptions: {
+              level: 1
+            }
+          }).then(zipDataUrl => {
+            // upload the design
+            this.loadingMessage = 'Uploading finished design...';
+            zipDataUrl = 'data:application/zip;base64,' + zipDataUrl;
+            const task = this.storage.putBase64(zipDataUrl, 'design.zip', 'application/zip');
+            task.percentageChanges().subscribe(snap => {
+              this.loadingProgress = snap;
+            });
+            task.then().then(pdfSnapshot => {
+              this.checkout.updateOrder('pdfUrl', pdfSnapshot.downloadURL);
+              this.checkout.updateOrder('propertyAddress', this.propertyAddress ? this.propertyAddress.formatted_address : '');
+              pdfCanvas.dispose();
+              canvas.remove();
+              this.router.navigate(['/checkout']);
+            });
           });
         });
       });
@@ -434,7 +472,7 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
   getDataURL(side: 'front' | 'back', canvas, options?) {
     return new Promise((resolve, reject) => {
       canvas.clear();
-      canvas.zoomToPoint(new fabric.Point(canvas.width / 2, canvas.height / 2), 1);
+      // canvas.zoomToPoint(new fabric.Point(canvas.width / 2, canvas.height / 2), 1);
       canvas.loadFromJSON(this.template[side], _ => {
         if (!this.template[side].processed) {
           // this.processCanvas();
@@ -467,7 +505,6 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
 
         resolve(canvas.toDataURL(options));
       });
-    })
+    });
   }
-
 }

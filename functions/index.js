@@ -128,9 +128,13 @@ exports.checkout = functions.https.onRequest((req, res) => {
             <br>
             <div>
               ${req.body.isMailingList ? 
-                'Please print and mail the attached. Bill me.' :
-                `Please print the attached and ship to ${shipping.address1} ${shipping.address2}, ${shipping.city}, ${shipping.state} ${shipping.zipCode}`
+                'Please print and mail the PDF below. Bill me.' :
+                `Please print the PDF below and ship to ${shipping.address1} ${shipping.address2}, ${shipping.city}, ${shipping.state} ${shipping.zipCode}`
               }
+            </div>
+            <br>
+            <div>
+              Design PDF for this order: ${req.body.pdfUrl}
             </div>
             <br>
             <div>Thank you</div>

@@ -33,7 +33,8 @@ service cloud.firestore {
 
     // Match orders
     match /orders/{orderId} {
-      allow read, write: if request.auth.uid == resource.data.uid || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.admin == true;
+      allow read, update, delete: if request.auth.uid == resource.data.uid || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.admin == true;
+      allow create;
     }
 
     // Match lists

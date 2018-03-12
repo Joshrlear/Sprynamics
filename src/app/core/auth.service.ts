@@ -13,6 +13,7 @@ import { User } from './user.interface';
 @Injectable()
 export class AuthService {
 
+  authState: Observable<firebase.User>;
   user: Observable<User>;
 
   constructor(private afAuth: AngularFireAuth,
@@ -20,6 +21,7 @@ export class AuthService {
               private router: Router) {
 
     // Get auth data, then get firestore user document || null
+    this.authState = this.afAuth.authState;
     this.user = this.afAuth.authState
       .switchMap(user => {
         if (user) {
@@ -72,6 +74,10 @@ export class AuthService {
           lastName: credential.user.displayName.split(' ')[1] || ''
         });
       });
+  }
+
+  anonLogin() {
+    return this.afAuth.auth.signInAnonymously();
   }
 
   // update properties on user document

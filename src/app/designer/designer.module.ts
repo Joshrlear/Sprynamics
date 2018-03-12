@@ -14,6 +14,7 @@ import { TextComponent } from './sidebar/text/text.component';
 
 import { AlignmentService } from './admin/alignment.service';
 import { ObjectFactoryService } from './object-factory.service';
+import { NewUserPopupComponent } from './new-user-popup/new-user-popup.component';
 
 const routes: Routes = [
   { path: '', component: DesignerClientComponent },
@@ -34,9 +35,11 @@ const routes: Routes = [
     DesignsComponent,
     PropertyComponent,
     TextComponent,
+    NewUserPopupComponent,
   ],
   entryComponents: [ 
-    CropDialogComponent
+    CropDialogComponent,
+    NewUserPopupComponent
   ],
   providers: [AlignmentService, ObjectFactoryService]
 })

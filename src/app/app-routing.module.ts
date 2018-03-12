@@ -10,25 +10,26 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { CheckoutComponent } from './checkout/checkout.component';
 
 import { AuthGuard } from './core/auth.guard';
+import { DesignerModule } from '#app/designer/designer.module';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'products', component: ProductsComponent },
-  { path: 'designer', loadChildren: 'app/designer/designer.module#DesignerModule' },
+  { path: 'designer', loadChildren: () => DesignerModule },
   {
     path: 'account', 
     component: AccountComponent,
-    loadChildren: 'app/account/account.module#AccountModule',
+    loadChildren: './account/account.module#AccountModule',
   },
   {
     path: 'checkout',
     component: CheckoutComponent,
-    loadChildren: 'app/checkout/checkout.module#CheckoutModule',
+    loadChildren: './checkout/checkout.module#CheckoutModule',
   },
   {
     path: 'profile',
     component: DashboardComponent,
-    loadChildren: 'app/dashboard/dashboard.module#DashboardModule',
+    loadChildren: './dashboard/dashboard.module#DashboardModule',
     canActivate: [AuthGuard]
   },
   { path: '**', redirectTo: '', pathMatch: 'full' }

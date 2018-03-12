@@ -4,7 +4,7 @@
       <div class="order-summary-header row center-xs middle-xs">
         <span>Order Summary</span>
       </div>
-      <img style="width: 340px; margin-top:12px" class="row center-xs middle-xs" [src]="(user | async)?.currentOrder?.frontUrl || 'https://via.placeholder.com/300x200'">
+      <img style="width: 340px; margin-top:12px" class="row center-xs middle-xs" [src]="checkout.thumbnail">
       <div class="order-summary">
         <div class="subtotal">
           <span>Subtotal</span>

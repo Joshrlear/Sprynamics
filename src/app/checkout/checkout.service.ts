@@ -20,6 +20,8 @@ export class CheckoutService {
   loading: boolean;
   initialized: boolean;
 
+  thumbnail: string;
+
   constructor(private http: Http,
     private auth: AuthService,
     private firestore: FirestoreService,
@@ -30,29 +32,51 @@ export class CheckoutService {
   initOrder() {
     return new Promise((resolve, reject) => {
       this.auth.user.take(1).subscribe(user => {
-        if (user.currentOrder) {
-          this.firestore.doc$(`orders/${user.currentOrder}`).take(1).subscribe(order => {
-            this._order.next(order);
-            this.initialized = true;
-            resolve();
+        if (!user) {
+          this.auth.anonLogin().then(user => {
+            this.firestore.set(`users/${user.uid}`, {
+              firstName: 'John',
+              lastName: 'Doe',
+              company: 'DemoAgency',
+              email: 'john.doe@demo.email',
+              phoneNumber: '555-555-5555',
+              licenseId: '0000000'
+            }).then(_ => {
+              this._initialize(user).then(_ => resolve());
+            })
           });
         } else {
-          // create an order ID
-          const orderId = this.afs.collection('orders').ref.doc().id;
-          this.firestore.set(`orders/${orderId}`, { id: orderId, uid: user.uid, submitted: false }).then(_ => {
-            this.firestore.update(`users/${user.uid}`, { currentOrder: orderId }).then(_ => {
-              this.updateOrder('orderId', orderId);
-              this.updateOrder('submitted', false);
-              this.updateOrder('name', user.firstName + (user.lastName? ' ' + user.lastName : ''))
-              this.setUser(user).then(_ => {
-                this.initialized = true;
-                resolve();
-              });
-            });
-          })
+          this._initialize(user).then(_ => resolve());
         }
       });
     });
+  }
+
+  private _initialize(user) {
+    console.log(user);
+    return new Promise((resolve, reject) => {
+      if (user.currentOrder) {
+        this.firestore.doc$(`orders/${user.currentOrder}`).take(1).subscribe(order => {
+          this._order.next(order);
+          this.initialized = true;
+          resolve();
+        });
+      } else {
+        // create an order ID
+        const orderId = this.afs.collection('orders').ref.doc().id;
+        this.firestore.set(`orders/${orderId}`, { id: orderId, uid: user.uid, submitted: false }).then(_ => {
+          this.firestore.upsert(`users/${user.uid}`, { currentOrder: orderId }).then(_ => {
+            this.updateOrder('orderId', orderId);
+            this.updateOrder('submitted', false);
+            this.updateOrder('name', user.firstName + (user.lastName ? ' ' + user.lastName : ''))
+            this.setUser(user).then(_ => {
+              this.initialized = true;
+              resolve();
+            });
+          });
+        })
+      }
+    })
   }
 
   setUser(user) {
