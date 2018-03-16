@@ -151,7 +151,7 @@ export class ObjectFactoryService {
   }
 
   createUserImage(canvas) {
-    const userImage = new fabric.Image.fromURL('/assets/300x250.png',
+    const userImage = new fabric.Image.fromURL('https://sprynamics.com/assets/300x250.png',
       (img) => {
         img.scaleToHeight(250);
         img.isUserImage = true;

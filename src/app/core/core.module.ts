@@ -16,7 +16,7 @@ import { StorageService } from './storage.service';
 import { FirestoreService } from './firestore.service';
 import { NavigationService } from './navigation/navigation.service';
 import { CheckoutService } from '#app/checkout/checkout.service';
-import { ZillowService } from '#core/zillow.service';
+import { SlipstreamService } from './slipstream.service';
 
 @NgModule({
   imports: [
@@ -35,7 +35,7 @@ import { ZillowService } from '#core/zillow.service';
     FirestoreService,
     NavigationService,
     CheckoutService,
-    ZillowService
+    SlipstreamService,
   ]
 })
 export class CoreModule { }

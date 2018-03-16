@@ -2,6 +2,8 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { MatDialog } from '@angular/material';
 
 import { CropDialogComponent } from '../../crop-dialog/crop-dialog.component';
+import { AuthService } from '#core/auth.service';
+import { SlipstreamService } from '#core/slipstream.service';
 
 declare let google;
 
@@ -12,22 +14,54 @@ declare let google;
 })
 export class PropertyComponent implements OnInit {
 
-  @Input('photos') photos: any[]; 
+  @Input('agent') agent: any;
+  @Input('photos') photos: any[];
   @Output('photoChange') changeEvent = new EventEmitter();
   @Output('addressChange') addressChangeEvent = new EventEmitter();
 
   selectedIndex: number;
+  selectedListing: any;
+  listings: any[];
+
+  loading: boolean;
 
   autocomplete;
 
-  constructor(private dialog: MatDialog) { }
+  constructor(private dialog: MatDialog,
+    private auth: AuthService,
+    private slipstream: SlipstreamService) { }
 
   ngOnInit() {
-    this.autocomplete = new google.maps.places.Autocomplete(
-      (document.getElementById('propertyAddressInput')),
-      {types: ['geocode']}
-    );
-    this.autocomplete.addListener('place_changed', this.onChangeAddress.bind(this));
+    this.loading = true;
+    if (this.agent.licenseId) {
+      this.slipstream.getSlipstreamToken()
+        .then(apiRes => {
+          console.log(apiRes.token);
+          return this.slipstream.getListings(this.agent.licenseId, apiRes.token);
+        })
+        .then((data: any) => {
+          console.log(data);
+          this.listings = data.listings;
+          this.selectedListing = data.listings[0];
+          this.loading = false;
+        });
+    } else {
+      this.listings = [];
+    }
+    // this.autocomplete = new google.maps.places.Autocomplete(
+    //   (document.getElementById('propertyAddressInput')),
+    //   {types: ['geocode']}
+    // );
+    // this.autocomplete.addListener('place_changed', this.onChangeAddress.bind(this));
+  }
+
+  loadImagesFromListing() {
+    this.photos.forEach((photo, i) => {
+      this.changeEvent.emit({
+        index: i,
+        photo: this.selectedListing.images[i]
+      })
+    })
   }
 
   uploadImage(file: File) {
@@ -51,7 +85,7 @@ export class PropertyComponent implements OnInit {
 
     dialogRef.afterClosed().take(1).subscribe((data) => {
       if (data) {
-        this.changeEvent.emit({ 
+        this.changeEvent.emit({
           index: this.selectedIndex,
           photo: data
         });
@@ -60,7 +94,12 @@ export class PropertyComponent implements OnInit {
   }
 
   onChangeAddress() {
-    this.addressChangeEvent.emit(this.autocomplete.getPlace());
+    const addr = this.selectedListing.address;
+    const addressObj = {
+      address: addr,
+      formatted_address: `${addr.street}, ${addr.city}, ${addr.state} ${addr.zip}`
+    }
+    this.addressChangeEvent.emit(addressObj);
   }
 
 }

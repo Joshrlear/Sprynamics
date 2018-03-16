@@ -1,14 +1,34 @@
-<div class="photos-container">
+<div class="photos-container" *ngIf="!loading; else loadingSpinner">
 
-  <div>
+  <!-- <div>
     <label style="width: 100%;">Property Address:
       <input id="propertyAddressInput" class="form-control">
     </label>
-  </div>
+  </div> -->
 
-  <br>
+  
+  <ng-container *ngIf="listings.length > 0; else noListings">
+      <label>Select a listing:</label>
+    <select class="form-control" [(ngModel)]="selectedListing" (change)="onChangeAddress()">
+      <option *ngFor="let listing of listings" [ngValue]="listing">{{ listing.id }}</option>
+    </select>
+
+    <div>
+      Street: {{ selectedListing?.address.street }}
+      <br> City: {{ selectedListing?.address.city }}
+      <br> State: {{ selectedListing?.address.state }}
+      <br> Zip Code: {{ selectedListing?.address.zip }}
+    </div>
+  </ng-container>
+  <ng-template #noListings>
+    Your License ID is not associated with any listings in MLS!
+  </ng-template>
+
+  <hr style="background-color: white;">
 
   <h6>Property Photos (click an image to replace it)</h6>
+
+  <button class="btn" (click)="loadImagesFromListing()">Load Images From Listing</button>
 
   <ng-container *ngFor="let photo of photos; let i = index;">
     <img class="photo" [src]="photo.toDataURL()" (click)="selectedIndex = i; fileInput.click()">
@@ -20,3 +40,9 @@
 <!-- <button class="btn green" (click)="uploadImage()">
   Upload Image
 </button> -->
+
+<ng-template #loadingSpinner>
+  <div style="width: 100%; margin-top: 64px; display: flex; align-items: center; justify-content: center;">
+    <mat-spinner></mat-spinner>
+  </div>
+</ng-template>

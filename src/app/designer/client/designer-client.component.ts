@@ -8,7 +8,8 @@ import { AuthService } from '../../core/auth.service';
 import { productSizes, productSpecs } from '../products';
 import { ObjectFactoryService } from '../object-factory.service';
 import { CheckoutService } from '#app/checkout/checkout.service';
-import { ZillowService } from '#core/zillow.service';
+import { NewUserPopupComponent } from '#app/designer/new-user-popup/new-user-popup.component';
+import { SlipstreamService } from '#core/slipstream.service';
 
 import 'webfontloader';
 declare let WebFont;
@@ -20,7 +21,6 @@ import * as jspdf from 'jspdf';
 declare let jsPDF;
 
 import * as JSZip from 'jszip';
-import { NewUserPopupComponent } from '#app/designer/new-user-popup/new-user-popup.component';
 
 @Component({
   selector: 'app-designer-client',
@@ -70,7 +70,7 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
     private factory: ObjectFactoryService,
     private MatDialog: MatDialog,
     private checkout: CheckoutService,
-    private zillow: ZillowService,
+    private slipstream: SlipstreamService,
     private dialog: MatDialog
   ) { }
 
@@ -196,6 +196,7 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
   }
 
   changeAddress(address) {
+    console.log(address);
     this.propertyAddress = address;
     this.addressObj.text = address.formatted_address;
     this.canvas.renderAll();

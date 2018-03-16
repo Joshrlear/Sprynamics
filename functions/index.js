@@ -6,6 +6,7 @@ const path = require('path');
 const fs = require('fs');
 const os = require('os');
 const PDFImage = require('pdf-image').PDFImage;
+const rp = require('request-promise');
 
 // Mailgun
 
@@ -127,10 +128,10 @@ exports.checkout = functions.https.onRequest((req, res) => {
             <div>Hi Jeff,</div>
             <br>
             <div>
-              ${req.body.isMailingList ? 
-                'Please print and mail the PDF below. Bill me.' :
-                `Please print the PDF below and ship to ${shipping.address1} ${shipping.address2}, ${shipping.city}, ${shipping.state} ${shipping.zipCode}`
-              }
+              ${req.body.isMailingList ?
+              'Please print and mail the PDF below. Bill me.' :
+              `Please print the PDF below and ship to ${shipping.address1} ${shipping.address2}, ${shipping.city}, ${shipping.state} ${shipping.zipCode}`
+            }
             </div>
             <br>
             <div>
@@ -156,7 +157,26 @@ exports.checkout = functions.https.onRequest((req, res) => {
       }
     })
   })
-})
+});
+
+// Get SlipStream Token
+exports.getSlipstreamToken = functions.https.onRequest((req, res) => {
+  cors(req, res, () => {
+    const endpoint = 'https://slipstream.homejunction.com/ws/api/authenticate?license=1BF9-C13B-D5BE-7F36';
+    return rp.get(endpoint, {json: true})
+      .then(apiRes => {
+        const result = {
+          token: apiRes.result.token,
+          expires: apiRes.result.expires
+        };
+        res.send(result);
+      })
+      .catch(err => {
+        console.error(err);
+        res.send({ error: err.message })
+      });
+  });
+});
 
 function calculatePricing(amt) {
   const pricing = {};

@@ -150,7 +150,7 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
     // Fix rectangle scaling
     this.canvas.on('object:modified', (event) => {
       console.log(event.target.isUserImage);
-      if (event.target.type === 'rect' || event.target.type === 'image') {
+      if (event.target.type === 'rect') {
         event.target.width = Math.floor(event.target.width * event.target.scaleX);
         event.target.height = Math.floor(event.target.height * event.target.scaleY);
         event.target.scaleX = 1;

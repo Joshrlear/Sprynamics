@@ -69,7 +69,7 @@
       <app-designs *ngIf="currentTab === 'designs'" [size]="size" (select)="loadDesign($event)"></app-designs>
       <app-text *ngIf="currentTab === 'text'" [productName]="productSizes[size]?.name" [size]="productSizes[size]?.width + ' x ' + productSizes[size]?.height + ' in.'"
         [formFields]="textFields" (change)="saveUndo()" (render)="canvas.renderAll()"></app-text>
-      <app-property *ngIf="currentTab === 'property'" [photos]="template[viewSide].userImages" (photoChange)="changePhoto($event)"
+      <app-property *ngIf="currentTab === 'property'" [agent]="selectedAgent" [photos]="template[viewSide].userImages" (photoChange)="changePhoto($event)"
         (addressChange)="changeAddress($event)"></app-property>
       <app-colors *ngIf="currentTab === 'colors'" [colors]="template.presetColors" (colorChange)="changeColor($event)" [bgColor]="background.fill"
         (bgColorChange)="changeBackgroundColor($event)" (change)="saveUndo()"></app-colors>
