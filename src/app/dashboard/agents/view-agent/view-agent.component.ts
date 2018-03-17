@@ -73,6 +73,7 @@ export class ViewAgentComponent implements OnInit {
   }
 
   getClientToken(braintreeId) {
+    console.log('getClientToken');
     this.token = this.http.post('https://us-central1-sprynamics.cloudfunctions.net/getClientToken',
       { customerId: braintreeId })
       .map((res: any) => JSON.parse(res._body).token)
@@ -87,14 +88,24 @@ export class ViewAgentComponent implements OnInit {
   createDropin(token) {
     dropin.create({
       container: '#dropin',
-      authorization: token
+      authorization: token,
+      paypal: {
+        flow: 'vault'
+      },
+      venmo: true,
+      applePay: {
+
+      },
+      googlePay: {
+        
+      }
     }, (err, instance) => {
       this.instance = instance;
     });
   }
 
   tabChange(tab) {
-    if (tab.nextId === 'ngb-tab-1') {
+    if (tab.nextId === 'tab-payment') {
       this.loading = true;
       if (this.braintreeId) {
         this.getClientToken(this.braintreeId);

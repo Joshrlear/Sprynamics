@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { MailingListDialogComponent } from '#shared/mailing-list-dialog/mailing-list-dialog.component';
 import { ViewListDialogComponent } from '#shared/view-list-dialog/view-list-dialog.component';
@@ -18,30 +18,37 @@ export class ListsComponent implements OnInit {
 
   lists: Observable<any[]>
 
+  @Input('agent') agent: any;
+
   constructor(private dialog: MatDialog,
     private firestore: FirestoreService,
     private auth: AuthService,
     private papa: PapaParseService) { }
 
   ngOnInit() {
+
     this.auth.user.take(1).subscribe(user => {
-      this.lists = this.firestore.colWithIds$('lists', ref => ref.where('uid', '==', user.uid).orderBy('createdAt', 'desc'));
+      if (this.agent) {
+        this.lists = this.firestore.colWithIds$(`users/${user.uid}/agents/${this.agent.id}/lists`);
+      } else {
+        this.lists = this.firestore.colWithIds$('lists', ref => ref.where('uid', '==', user.uid).orderBy('createdAt', 'desc'));
+      }
     });
   }
 
   uploadFile(file: File) {
     const dialogRef = this.dialog.open(MailingListDialogComponent, {
       width: '500px',
-      data: { file }
+      data: { file, agent: this.agent }
     });
     dialogRef.afterClosed().take(1).subscribe((result: any) => {
-      
+
     });
   }
 
   viewList(list) {
     const dialogRef = this.dialog.open(ViewListDialogComponent, {
-      data: { list }
+      data: { list, agent: this.agent }
     });
   }
 

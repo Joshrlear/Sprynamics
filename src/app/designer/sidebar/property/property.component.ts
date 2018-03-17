@@ -56,11 +56,15 @@ export class PropertyComponent implements OnInit {
   }
 
   loadImagesFromListing() {
-    this.photos.forEach((photo, i) => {
-      this.changeEvent.emit({
-        index: i,
-        photo: this.selectedListing.images[i]
-      })
+    // this.photos.forEach((photo, i) => {
+    //   this.changeEvent.emit({
+    //     index: i,
+    //     photo: this.selectedListing.images[i]
+    //   })
+    // });
+    this.changeEvent.emit({
+      index: 0,
+      photo: this.selectedListing.images[0]
     })
   }
 

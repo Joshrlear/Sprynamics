@@ -96,6 +96,7 @@ export class AppComponent implements OnInit {
   smoothScroll(hash) {
     if (this.router.url.split('#')[0] === '/') {
       hash = '#' + hash;
+      console.log(hash);
       $('html, body').animate({
         scrollTop: $(hash).offset().top
       }, 800, function () {

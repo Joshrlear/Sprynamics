@@ -72,9 +72,9 @@ export class ProfileComponent implements OnInit {
   }
 
   saveForm() {
-    console.log(this.user);
+    console.log(this.agent);
     if (this.user.isCreated) {
-      this.firestore.update(`users/${this.user.managerId}/agents/${this.user.id}`, this.userForm.value)
+      this.firestore.update(`users/${this.agent.managerId}/agents/${this.agent.id}`, this.userForm.value)
     } else {
       this.firestore.update(`users/${this.user.uid}`, this.userForm.value);
     }

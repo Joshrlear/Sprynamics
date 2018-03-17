@@ -43,6 +43,7 @@ export class ScrollService {
    * Don't scroll if hash not found.
    */
   scroll() {
+    console.log('scroll');
     const hash = this.getCurrentHash();
     const element: HTMLElement = hash
         ? this.document.getElementById(hash)

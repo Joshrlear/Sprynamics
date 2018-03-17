@@ -22,7 +22,7 @@ export class MailingListDialogComponent implements OnInit {
   mappedColumns = []; // this will end up being an array of column numbers corresponding to the above names
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) private data: any, 
+    @Inject(MAT_DIALOG_DATA) private data: any,
     private dialogRef: MatDialogRef<MailingListDialogComponent>,
     private papa: PapaParseService,
     private firestore: FirestoreService,
@@ -67,29 +67,49 @@ export class MailingListDialogComponent implements OnInit {
       results.push(obj);
     });
 
-    this.auth.user.take(1).subscribe(user => {
-      console.log(results);
-      this.firestore.add('lists', {
-        uid: user.uid,
+    this.auth.user.take(1).subscribe(currentUser => {
+      const user = this.data.agent || currentUser;
+      let listPath: string;
+      if (this.data.agent) {
+        listPath = `users/${currentUser.uid}/agents/${this.data.agent.id}/lists`;
+      } else {
+        listPath = `lists`;
+      }
+      console.log(listPath);
+      this.firestore.add(listPath, {
+        uid: user.uid || user.id,
         title: this.title,
         rowCount: rowCount,
         usage: 0
-      }).then(ref => {
-        const batch = firebase.firestore().batch();
-        results.forEach(addressData => {
-          const addressRef = firebase.firestore().collection(`lists/${ref.id}/addresses`).doc();
-          batch.set(addressRef, addressData);
-        });
-        batch.commit()
-          .then(success => {
-            this.isLoading = false
-            this.dialogRef.close(ref.id);
-          })
-          .catch(err => {
-            window.alert(err.message);
-            console.log(err.message);
+      })
+        .then(ref => {
+          const batch = firebase.firestore().batch();
+          results.forEach(addressData => {
+            let addressRef;
+            if (this.data.agent) {
+              addressRef = firebase.firestore().collection(`users/${currentUser.uid}/agents/${this.data.agent.id}/lists/${ref.id}/addresses`).doc();
+            } else {
+              addressRef = firebase.firestore().collection(`lists/${ref.id}/addresses`).doc();
+            }
+            console.log(addressRef);
+            batch.set(addressRef, addressData);
           });
-      });
+          batch.commit()
+            .then(success => {
+              console.log('success');
+              this.isLoading = false
+              this.dialogRef.close(ref.id);
+              console.log(ref.id);
+            })
+            .catch(err => {
+              window.alert(err.message);
+              console.log(err.message);
+            });
+        })
+        .catch(err => {
+          window.alert(err.message);
+          console.log(err.message);
+        })
     })
   }
 
