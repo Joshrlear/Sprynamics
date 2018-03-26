@@ -29,14 +29,7 @@ export class ProfileComponent implements OnInit {
 
   ngOnInit() {
     if (this.agent) {
-      let agentPath;
-      if (this.agent.isCreated) {
-        agentPath = `users/${this.agent.managerId}/agents/${this.agent.id}`;
-        console.log(agentPath);
-      } else {
-        agentPath = `users/${this.agent.uid}`;
-      }
-      this.userSub = this.firestore.doc$(agentPath).subscribe(user => {
+      this.userSub = this.firestore.doc$(`users/${this.agent.uid}`).subscribe(user => {
         this.user = user;
         this.buildForm();
         console.log(this.user);
@@ -73,11 +66,7 @@ export class ProfileComponent implements OnInit {
 
   saveForm() {
     console.log(this.agent);
-    if (this.user.isCreated) {
-      this.firestore.update(`users/${this.agent.managerId}/agents/${this.agent.id}`, this.userForm.value)
-    } else {
-      this.firestore.update(`users/${this.user.uid}`, this.userForm.value);
-    }
+    this.firestore.update(`users/${this.user.uid}`, this.userForm.value);
     window.alert('Your changes have been saved.');
   }
 
@@ -100,11 +89,7 @@ export class ProfileComponent implements OnInit {
     const path = `avatars/${this.user.uid}.${extension}`;
     this.storage.putFile(file, path).then().then(_ => {
       this.storage.getDownloadURL(path).subscribe(url => {
-        if (this.user.isCreated) {
-          this.firestore.update(`users/${this.user.managerId}/agents/${this.agent.id}`, { avatarUrl: url });
-        } else {
-          this.firestore.update(`users/${this.user.uid}`, { avatarUrl: url });
-        }
+        this.firestore.update(`users/${this.user.uid}`, { avatarUrl: url });
       });
     });
   }
@@ -114,12 +99,7 @@ export class ProfileComponent implements OnInit {
     const path = `companyLogos/${this.user.uid}.${extension}`;
     this.storage.putFile(file, path).then().then(_ => {
       this.storage.getDownloadURL(path).subscribe(url => {
-        if (this.user.isCreated) {
-          console.log(this.user);
-          this.firestore.update(`users/${this.user.managerId}/agents/${this.agent.id}`, { companyLogoUrl: url });
-        } else {
-          this.firestore.update(`users/${this.user.uid}`, { companyLogoUrl: url });
-        }
+        this.firestore.update(`users/${this.user.uid}`, { companyLogoUrl: url });
       });
     });
   }
@@ -129,11 +109,7 @@ export class ProfileComponent implements OnInit {
     const path = `brokerageLogos/${this.user.uid}.${extension}`;
     this.storage.putFile(file, path).then().then(_ => {
       this.storage.getDownloadURL(path).subscribe(url => {
-        if (this.user.isCreated) {
-          this.firestore.update(`users/${this.user.managerId}/agents/${this.agent.id}`, { brokerageLogoUrl: url });
-        } else {
-          this.firestore.update(`users/${this.user.uid}`, { brokerageLogoUrl: url });
-        }
+        this.firestore.update(`users/${this.user.uid}`, { brokerageLogoUrl: url });
       });
     });
   }

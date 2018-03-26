@@ -69,14 +69,7 @@ export class MailingListDialogComponent implements OnInit {
 
     this.auth.user.take(1).subscribe(currentUser => {
       const user = this.data.agent || currentUser;
-      let listPath: string;
-      if (this.data.agent) {
-        listPath = `users/${currentUser.uid}/agents/${this.data.agent.id}/lists`;
-      } else {
-        listPath = `lists`;
-      }
-      console.log(listPath);
-      this.firestore.add(listPath, {
+      this.firestore.add('lists', {
         uid: user.uid || user.id,
         title: this.title,
         rowCount: rowCount,
@@ -85,21 +78,13 @@ export class MailingListDialogComponent implements OnInit {
         .then(ref => {
           const batch = firebase.firestore().batch();
           results.forEach(addressData => {
-            let addressRef;
-            if (this.data.agent) {
-              addressRef = firebase.firestore().collection(`users/${currentUser.uid}/agents/${this.data.agent.id}/lists/${ref.id}/addresses`).doc();
-            } else {
-              addressRef = firebase.firestore().collection(`lists/${ref.id}/addresses`).doc();
-            }
-            console.log(addressRef);
+            const addressRef = firebase.firestore().collection(`lists/${ref.id}/addresses`).doc();
             batch.set(addressRef, addressData);
           });
           batch.commit()
             .then(success => {
-              console.log('success');
               this.isLoading = false
               this.dialogRef.close(ref.id);
-              console.log(ref.id);
             })
             .catch(err => {
               window.alert(err.message);

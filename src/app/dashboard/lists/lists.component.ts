@@ -16,7 +16,7 @@ import * as moment from 'moment';
 })
 export class ListsComponent implements OnInit {
 
-  lists: Observable<any[]>
+  lists: Observable<any[]>;
 
   @Input('agent') agent: any;
 
@@ -26,13 +26,19 @@ export class ListsComponent implements OnInit {
     private papa: PapaParseService) { }
 
   ngOnInit() {
-
     this.auth.user.take(1).subscribe(user => {
-      if (this.agent) {
-        this.lists = this.firestore.colWithIds$(`users/${user.uid}/agents/${this.agent.id}/lists`);
-      } else {
-        this.lists = this.firestore.colWithIds$('lists', ref => ref.where('uid', '==', user.uid).orderBy('createdAt', 'desc'));
-      }
+      this.firestore.colWithIds$('users', ref => ref.where(`managers.${user.uid}`, '==', true))
+        .take(1).subscribe(agents => {
+          const userLists$ = this.firestore.colWithIds$('lists', ref => ref.where('uid', '==', user.uid).orderBy('createdAt', 'desc'))
+            .map((lists: any) => { lists.forEach(list => list.agent = 'Me'); return lists });
+          const listObservables = [userLists$];
+          agents.forEach(agent => {
+            const agentLists$ = this.firestore.colWithIds$('lists', ref => ref.where('uid', '==', agent.uid).orderBy('createdAt', 'desc'))
+              .map((lists: any) => { lists.forEach(list => list.agent = agent.firstName + ' ' + agent.lastName); return lists });
+            listObservables.push(agentLists$);
+          });
+          this.lists = this.firestore.combine(listObservables);
+        });
     });
   }
 

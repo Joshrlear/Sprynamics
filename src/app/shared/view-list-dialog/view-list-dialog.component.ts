@@ -27,12 +27,7 @@ export class ViewListDialogComponent implements OnInit {
     this.isLoading = true;
     this.auth.user.take(1).subscribe(currentUser => {
       let addressesPath: string;
-      if (this.data.agent) {
-        addressesPath = `users/${currentUser.uid}/agents/${this.data.agent.id}/lists/${this.list.id}/addresses`;
-      } else {
-        addressesPath = `lists`;
-      }
-      this.rows = this.firestore.colWithIds$(addressesPath);
+      this.rows = this.firestore.colWithIds$(`lists/${this.list.id}/addresses`);
       this.rows.take(1).subscribe(_ => this.isLoading = false);
     })
   }

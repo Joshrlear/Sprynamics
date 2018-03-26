@@ -30,18 +30,9 @@ export class ViewAgentComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.agentId = params.agentId;
       this.route.queryParams.subscribe(queryParams => {
-        if (queryParams.isCreated) {
-          this.auth.user.take(1).subscribe(user => {
-            this.agent = this.firestore.doc$(`users/${user.uid}/agents/${params.agentId}`)
-              .map((agent: any) => { agent.id = params.agentId; this.braintreeId = agent.braintreeId; return agent });
-
-            this.loadPaymentMethods(params.agentId);
-          });
-        } else {
-          this.agent = this.firestore.doc$(`users/${params.agentId}`)
-            .map((agent: any) => { agent.id = params.agentId; this.braintreeId = agent.braintreeId; return agent });
-          this.loadPaymentMethods(params.agentId);
-        }
+        this.agent = this.firestore.doc$(`users/${params.agentId}`)
+          .map((agent: any) => { agent.id = params.agentId; this.braintreeId = agent.braintreeId; return agent });
+        this.loadPaymentMethods(params.agentId);
       });
     });
   }
@@ -61,11 +52,7 @@ export class ViewAgentComponent implements OnInit {
           .take(1).subscribe((res: any) => {
             const id = JSON.parse(res._body).customerId;
             this.braintreeId = id;
-            if (agent.isCreated) {
-              this.firestore.update(`users/${agent.managerId}/agents/${agent.id}`, { braintreeId: id })
-            } else {
-              this.firestore.update(`users/${agent.uid}`, { braintreeId: id });
-            }
+            this.firestore.update(`users/${agent.uid}`, { braintreeId: id });
             this.getClientToken(id);
           });
       }
@@ -81,7 +68,7 @@ export class ViewAgentComponent implements OnInit {
         this.token = token;
         this.loading = false;
         this.createDropin(token);
-        
+
       });
   }
 
@@ -97,7 +84,7 @@ export class ViewAgentComponent implements OnInit {
 
       },
       googlePay: {
-        
+
       }
     }, (err, instance) => {
       this.instance = instance;
