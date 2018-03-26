@@ -51,6 +51,13 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
+    const xhr = new XMLHttpRequest()
+    xhr.responseType = 'blob'
+    xhr.onload = () => {
+      console.log(xhr.response)
+    }
+    xhr.open('GET', 'http://photos.listhub.net/MRIS/TA7445097/0?lm=20120331T041918')
+    xhr.send()
     this.onResize(window.innerWidth);
     this.auth.authState.subscribe(userAuth => {
       if (userAuth) {
@@ -63,14 +70,14 @@ export class AppComponent implements OnInit {
               res.listings.forEach(listing => {
                 console.log(listing)
                 listing.images.forEach(image => {
-                  console.log(image)
-                  const xhr = new XMLHttpRequest()
-                  xhr.responseType = 'blob'
-                  xhr.onload = () => {
-                    console.log(xhr.response)
-                  }
-                  xhr.open('GET', image)
-                  xhr.send()
+                  // console.log(image)
+                  // const xhr = new XMLHttpRequest()
+                  // xhr.responseType = 'blob'
+                  // xhr.onload = () => {
+                  //   console.log(xhr.response)
+                  // }
+                  // xhr.open('GET', 'http://photos.listhub.net/MRIS/TA7445097/0?lm=20120331T041918')
+                  // xhr.send()
                 })
               })
             })

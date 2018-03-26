@@ -35,9 +35,8 @@ export class PropertyComponent implements OnInit {
     this.loading = true
     if (this.agent.licenseId) {
       this.slipstream.getSlipstreamToken()
-        .then(apiRes => {
-          console.log(apiRes.token)
-          return this.slipstream.getListings(this.agent.licenseId, apiRes.token)
+        .then(token => {
+          return this.slipstream.getListings(this.agent.licenseId, token)
         })
         .then((data: any) => {
           console.log(data)
