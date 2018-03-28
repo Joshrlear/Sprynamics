@@ -225,7 +225,11 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
 
   changePhoto(event) {
     const obj = this.template[this.viewSide].userImages[event.index];
-    obj.setSrc(event.photo, _ => this.canvas.renderAll());
+    console.log(event.photo)
+    obj.setSrc(event.photo, _ => {
+      this.canvas.renderAll();
+      console.log(obj);
+    }, {crossOrigin: 'Anonymous'});
   }
 
   changeViewSide(side: 'front' | 'back') {

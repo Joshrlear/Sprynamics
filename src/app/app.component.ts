@@ -9,6 +9,8 @@ import { combineLatest } from 'rxjs/observable/combineLatest';
 import 'rxjs/add/operator/first';
 
 import { NavigationService } from '#core/navigation/navigation.service';
+import { SlipstreamService } from '#core/slipstream.service';
+import { FirestoreService } from '#core/firestore.service';
 
 declare const $;
 
@@ -23,30 +25,67 @@ export class AppComponent implements OnInit {
 
   @HostBinding('class')
   hostClasses = '';
-  
+
   isFetching = false;
   isStarting = true;
   isTransitioning = true;
   isSideBySide = false;
-  private isFetchingTimeout: any;
   isSideNavDash = false;
 
+  private isFetchingTimeout: any;
   private sideBySideWidth = 992;
 
-  get isOpened() { return this.isSideBySide && this.ns.isSideNavDash; }
-  get mode() { return this.ns.isSideNavDash ? (this.isSideBySide ? 'side' : 'over') : 'over'; }
+  @ViewChild(MatSidenav) sidenav: MatSidenav;
 
-  @ViewChild(MatSidenav)
-  sidenav: MatSidenav;
+  get isOpened() { return this.isSideBySide && this.ns.isSideNavDash }
+  get mode() { return this.ns.isSideNavDash ? (this.isSideBySide ? 'side' : 'over') : 'over' }
 
-  constructor(public auth: AuthService, private ns: NavigationService, private router: Router ) { }
+  constructor(public auth: AuthService,
+    private ns: NavigationService,
+    private router: Router,
+    private slipstream: SlipstreamService,
+    private firestore: FirestoreService) { }
 
   public logout() {
     this.auth.logout();
   }
 
   ngOnInit() {
+    const xhr = new XMLHttpRequest()
+    xhr.responseType = 'blob'
+    xhr.onload = () => {
+      console.log(xhr.response)
+    }
+    xhr.open('GET', 'http://photos.listhub.net/MRIS/TA7445097/0?lm=20120331T041918')
+    xhr.send()
     this.onResize(window.innerWidth);
+    this.auth.authState.subscribe(userAuth => {
+      if (userAuth) {
+        this.firestore.doc$(`users/${userAuth.uid}`).take(1).subscribe((user: any) => {
+          this.slipstream.getSlipstreamToken()
+            .then(token => {
+              return this.slipstream.getListings(user.licenseId, token)
+            })
+            .then(res => {
+              res.listings.forEach(listing => {
+                console.log(listing)
+                listing.images.forEach(image => {
+                  // console.log(image)
+                  // const xhr = new XMLHttpRequest()
+                  // xhr.responseType = 'blob'
+                  // xhr.onload = () => {
+                  //   console.log(xhr.response)
+                  // }
+                  // xhr.open('GET', 'http://photos.listhub.net/MRIS/TA7445097/0?lm=20120331T041918')
+                  // xhr.send()
+                })
+              })
+            })
+        })
+      } else {
+        console.log('no user')
+      }
+    })
   }
 
   @HostListener('window:resize', ['$event.target.innerWidth'])
@@ -96,10 +135,11 @@ export class AppComponent implements OnInit {
   smoothScroll(hash) {
     if (this.router.url.split('#')[0] === '/') {
       hash = '#' + hash;
+      console.log(hash);
       $('html, body').animate({
         scrollTop: $(hash).offset().top
       }, 800, function () {
-  
+
         // Add hash (#) to URL when done scrolling (default click behavior)
         if (hash !== '#home') {
           window.location.hash = hash;
@@ -108,6 +148,6 @@ export class AppComponent implements OnInit {
     }
   }
 
-  
-  
+
+
 }

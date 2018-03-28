@@ -17,7 +17,7 @@
         <p style="color: rgba(0,0,0,.54);font-weight: 600;font-size: 10px; text-transform: uppercase;">How many items we should send</p>
         <div class="form-row">
           <div class="form-group col-xs-12">
-            <select #quantity type="number" max="10000" class="form-control" (input)="updateQuantity(quantity.value)" autofocus>
+            <select #quantity type="number" max="10000" class="form-control" [class.ng-invalid]="!quantity.value" (input)="updateQuantity(quantity.value)" autofocus>
               <option value="" selected disabled hidden>Select a quantity</option>
               <option value="100">100</option>
               <option value="250">250</option>
@@ -90,7 +90,7 @@
         </div>
       </div>
       <div class="form-action">
-        <button class="btn checkout-button" type="button" (click)="continue()">Continue Checkout</button>
+        <button class="btn checkout-button" type="button" (click)="continue()" [disabled]="shippingForm.invalid || !quantity.value">Continue Checkout</button>
       </div>
     </form>
   </div>

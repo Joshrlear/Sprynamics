@@ -1,0 +1,613 @@
+{
+  "Address": [
+    {
+      "commons:preference-order": [
+        "1"
+      ],
+      "commons:address-preference-order": [
+        "1"
+      ],
+      "commons:FullStreetAddress": [
+        "346 RIVER"
+      ],
+      "commons:City": [
+        "DENTON"
+      ],
+      "commons:StateOrProvince": [
+        "MD"
+      ],
+      "commons:PostalCode": [
+        "21629"
+      ],
+      "commons:Country": [
+        "US"
+      ]
+    }
+  ],
+  "ListPrice": [
+    {
+      "_": "68000",
+      "$": {
+        "commons:isgSecurityClass": "Public"
+      }
+    }
+  ],
+  "ListingURL": [
+    "http://listings.listhub.net/pages/MRIS/CM6531761/?channel=bjl"
+  ],
+  "ProviderName": [
+    "Long & Foster Real Estate"
+  ],
+  "ProviderURL": [
+    "http://www.longandfoster.com"
+  ],
+  "ProviderCategory": [
+    "Broker"
+  ],
+  "LeadRoutingEmail": [
+    "phil.riordan@lnf.com"
+  ],
+  "Bedrooms": [
+    "0"
+  ],
+  "Bathrooms": [
+    "0"
+  ],
+  "PropertyType": [
+    {
+      "_": "Lots And Land",
+      "$": {
+        "otherDescription": "Lot-Land"
+      }
+    }
+  ],
+  "PropertySubType": [
+    {
+      "_": "Other",
+      "$": {
+        "otherDescription": "Recreation,Residential"
+      }
+    }
+  ],
+  "ListingKey": [
+    "3yd-MRIS-CM6531761"
+  ],
+  "ListingCategory": [
+    "Purchase"
+  ],
+  "ListingStatus": [
+    "Active"
+  ],
+  "MarketingInformation": [
+    {
+      "commons:PermitAddressOnInternet": [
+        {
+          "_": "true",
+          "$": {
+            "commons:isgSecurityClass": "Public"
+          }
+        }
+      ],
+      "commons:VOWAddressDisplay": [
+        {
+          "_": "true",
+          "$": {
+            "commons:isgSecurityClass": "Public"
+          }
+        }
+      ],
+      "commons:VOWAutomatedValuationDisplay": [
+        {
+          "_": "true",
+          "$": {
+            "commons:isgSecurityClass": "Public"
+          }
+        }
+      ],
+      "commons:VOWConsumerComment": [
+        {
+          "_": "true",
+          "$": {
+            "commons:isgSecurityClass": "Public"
+          }
+        }
+      ]
+    }
+  ],
+  "Photos": [
+    {
+      "Photo": [
+        {
+          "MediaModificationTimestamp": [
+            {
+              "_": "2012-08-13T20:23:30+00:00",
+              "$": {
+                "commons:isgSecurityClass": "Public"
+              }
+            }
+          ],
+          "MediaURL": [
+            "http://photos.listhub.net/MRIS/CM6531761/0?lm=20120813T202330"
+          ]
+        },
+        {
+          "MediaModificationTimestamp": [
+            {
+              "_": "2012-08-13T20:23:30+00:00",
+              "$": {
+                "commons:isgSecurityClass": "Public"
+              }
+            }
+          ],
+          "MediaURL": [
+            "http://photos.listhub.net/MRIS/CM6531761/2?lm=20120813T202330"
+          ]
+        },
+        {
+          "MediaModificationTimestamp": [
+            {
+              "_": "2012-08-13T20:23:30+00:00",
+              "$": {
+                "commons:isgSecurityClass": "Public"
+              }
+            }
+          ],
+          "MediaURL": [
+            "http://photos.listhub.net/MRIS/CM6531761/3?lm=20120813T202330"
+          ]
+        },
+        {
+          "MediaModificationTimestamp": [
+            {
+              "_": "2012-08-13T20:23:30+00:00",
+              "$": {
+                "commons:isgSecurityClass": "Public"
+              }
+            }
+          ],
+          "MediaURL": [
+            "http://photos.listhub.net/MRIS/CM6531761/4?lm=20120813T202330"
+          ]
+        },
+        {
+          "MediaModificationTimestamp": [
+            {
+              "_": "2012-08-13T20:23:30+00:00",
+              "$": {
+                "commons:isgSecurityClass": "Public"
+              }
+            }
+          ],
+          "MediaURL": [
+            "http://photos.listhub.net/MRIS/CM6531761/5?lm=20120813T202330"
+          ]
+        },
+        {
+          "MediaModificationTimestamp": [
+            {
+              "_": "2012-08-13T20:23:30+00:00",
+              "$": {
+                "commons:isgSecurityClass": "Public"
+              }
+            }
+          ],
+          "MediaURL": [
+            "http://photos.listhub.net/MRIS/CM6531761/6?lm=20120813T202330"
+          ]
+        },
+        {
+          "MediaModificationTimestamp": [
+            {
+              "_": "2012-08-13T20:23:30+00:00",
+              "$": {
+                "commons:isgSecurityClass": "Public"
+              }
+            }
+          ],
+          "MediaURL": [
+            "http://photos.listhub.net/MRIS/CM6531761/7?lm=20120813T202330"
+          ]
+        },
+        {
+          "MediaModificationTimestamp": [
+            {
+              "_": "2012-08-13T20:23:30+00:00",
+              "$": {
+                "commons:isgSecurityClass": "Public"
+              }
+            }
+          ],
+          "MediaURL": [
+            "http://photos.listhub.net/MRIS/CM6531761/8?lm=20120813T202330"
+          ]
+        },
+        {
+          "MediaModificationTimestamp": [
+            {
+              "_": "2012-08-13T20:23:30+00:00",
+              "$": {
+                "commons:isgSecurityClass": "Public"
+              }
+            }
+          ],
+          "MediaURL": [
+            "http://photos.listhub.net/MRIS/CM6531761/9?lm=20120813T202330"
+          ]
+        },
+        {
+          "MediaModificationTimestamp": [
+            {
+              "_": "2012-08-13T20:23:30+00:00",
+              "$": {
+                "commons:isgSecurityClass": "Public"
+              }
+            }
+          ],
+          "MediaURL": [
+            "http://photos.listhub.net/MRIS/CM6531761/10?lm=20120813T202330"
+          ]
+        },
+        {
+          "MediaModificationTimestamp": [
+            {
+              "_": "2012-08-13T20:23:30+00:00",
+              "$": {
+                "commons:isgSecurityClass": "Public"
+              }
+            }
+          ],
+          "MediaURL": [
+            "http://photos.listhub.net/MRIS/CM6531761/11?lm=20120813T202330"
+          ]
+        },
+        {
+          "MediaModificationTimestamp": [
+            {
+              "_": "2012-08-13T20:23:30+00:00",
+              "$": {
+                "commons:isgSecurityClass": "Public"
+              }
+            }
+          ],
+          "MediaURL": [
+            "http://photos.listhub.net/MRIS/CM6531761/12?lm=20120813T202330"
+          ]
+        }
+      ]
+    }
+  ],
+  "DiscloseAddress": [
+    "true"
+  ],
+  "ListingDescription": [
+    "2.63 AC BY DENTON & 404 ABOUT 30 MINUTES TO BAY BRIDGE.  BUILD YOUR DREAM HOME GREAT PRIVATE SETTING AND START ENJOY THE CCOUNTRY LIFE. PART WOODED BALANCE FIELD APPROVED PERC, A GREAT PLACE TO HAVE HORSES.  CALL COUNTY HEALTH DEPARTMENT WITH QUESTIONS.  \"NO DEED RESTRICTIONS\" LOCATED OFF A PRIVATE RIGHT-A-WAY. CALL FOR PLAT & COMPLETE INFORMATION. \"PRICED TO SELL QUICKLY!LETS MAKE A DEAL TODAY!!\""
+  ],
+  "MlsId": [
+    "MRIS"
+  ],
+  "MlsName": [
+    "Metropolitan Regional Information Systems, Inc."
+  ],
+  "MlsNumber": [
+    "CM6531761"
+  ],
+  "LotSize": [
+    {
+      "_": "2.63",
+      "$": {
+        "commons:areaUnits": "acre"
+      }
+    }
+  ],
+  "ListingDate": [
+    "2007-09-10"
+  ],
+  "ListingTitle": [
+    "Recreation,Residential - DENTON, MD"
+  ],
+  "FullBathrooms": [
+    "0"
+  ],
+  "ThreeQuarterBathrooms": [
+    "0"
+  ],
+  "HalfBathrooms": [
+    "0"
+  ],
+  "OneQuarterBathrooms": [
+    "0"
+  ],
+  "PartialBathrooms": [
+    "0"
+  ],
+  "ListingParticipants": [
+    {
+      "Participant": [
+        {
+          "ParticipantKey": [
+            "3yd-MRIS-63473"
+          ],
+          "ParticipantId": [
+            "63473"
+          ],
+          "FirstName": [
+            "Philip"
+          ],
+          "LastName": [
+            "Riordan"
+          ],
+          "Role": [
+            "Listing"
+          ],
+          "PrimaryContactPhone": [
+            "4103102951"
+          ],
+          "OfficePhone": [
+            "4108207707"
+          ],
+          "Email": [
+            "phil.riordan@lnf.com"
+          ],
+          "WebsiteURL": [
+            "http://www.philriordan.com"
+          ]
+        }
+      ]
+    }
+  ],
+  "VirtualTours": [
+    {
+      "VirtualTour": [
+        {
+          "MediaModificationTimestamp": [
+            {
+              "$": {
+                "commons:isgSecurityClass": "Public"
+              }
+            }
+          ],
+          "MediaURL": [
+            "http://slideshow.mris.com/slideshow/slideshow.htm?ListingKey=10428147671"
+          ]
+        }
+      ]
+    }
+  ],
+  "Offices": [
+    {
+      "Office": [
+        {
+          "OfficeKey": [
+            "3yd-MRIS-LCMD1"
+          ],
+          "OfficeId": [
+            "LCMD1"
+          ],
+          "OfficeCode": [
+            {
+              "OfficeCodeId": [
+                "LCMD1"
+              ]
+            }
+          ],
+          "Name": [
+            "Lacaze Meredith Real Estate"
+          ],
+          "CorporateName": [
+            "Lacaze Meredith Real Estate"
+          ],
+          "BrokerId": [
+            "LCMD1"
+          ],
+          "MainOfficeId": [
+            "LCMD1"
+          ],
+          "PhoneNumber": [
+            "4108207707"
+          ],
+          "Address": [
+            {
+              "commons:preference-order": [
+                "1"
+              ],
+              "commons:address-preference-order": [
+                "1"
+              ],
+              "commons:FullStreetAddress": [
+                "111 DOVER ST E"
+              ],
+              "commons:City": [
+                "EASTON"
+              ],
+              "commons:StateOrProvince": [
+                "MD"
+              ],
+              "commons:PostalCode": [
+                "21601"
+              ],
+              "commons:Country": [
+                "US"
+              ]
+            }
+          ],
+          "OfficeEmail": [
+            "lacaze@toad.net"
+          ],
+          "Website": [
+            "http://www.longandfoster.com"
+          ]
+        }
+      ]
+    }
+  ],
+  "Brokerage": [
+    {
+      "Name": [
+        "Long & Foster Real Estate"
+      ],
+      "Phone": [
+        "(866) 677-6937"
+      ],
+      "Email": [
+        "longandfoster@broker1suite.com"
+      ],
+      "WebsiteURL": [
+        "http://www.longandfoster.com"
+      ],
+      "LogoURL": [
+        "http://brokerlogos.listhub.net/MRIS/c5ababc31ef5c9fd011ef5db72ae0048/20100713113338607.png"
+      ],
+      "Address": [
+        {
+          "commons:preference-order": [
+            "1"
+          ],
+          "commons:address-preference-order": [
+            "1"
+          ],
+          "commons:FullStreetAddress": [
+            "14501 George Carter Way"
+          ],
+          "commons:City": [
+            "Chantilly"
+          ],
+          "commons:StateOrProvince": [
+            "VA"
+          ],
+          "commons:PostalCode": [
+            "20151"
+          ],
+          "commons:Country": [
+            "US"
+          ]
+        }
+      ]
+    }
+  ],
+  "Location": [
+    {
+      "Latitude": [
+        "38.90223"
+      ],
+      "Longitude": [
+        "-75.837293"
+      ],
+      "Directions": [
+        "404 TO RIVER ROAD SHORT DISTANCE TO SIGN ON RIGHT.  SIGN IS LCOATED WHERE THE DRIVEWAY RIGHT-A-WAY IS.  WALK BACK AND LOT IS STRAIGHT BACK.  BE SURE TO HAVE PLAT BEFORE VISITING PROPERTY"
+      ],
+      "County": [
+        "CAROLINE"
+      ],
+      "ParcelId": [
+        "346"
+      ],
+      "Community": [
+        {
+          "commons:Subdivision": [
+            {
+              "_": "NONE",
+              "$": {
+                "commons:isgSecurityClass": "Public"
+              }
+            }
+          ],
+          "commons:Schools": [
+            {
+              "commons:School": [
+                {
+                  "commons:SchoolCategory": [
+                    "Elementary"
+                  ],
+                  "commons:District": [
+                    {
+                      "$": {
+                        "commons:isgSecurityClass": "Public"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "commons:SchoolCategory": [
+                    "High"
+                  ],
+                  "commons:District": [
+                    {
+                      "$": {
+                        "commons:isgSecurityClass": "Public"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "commons:SchoolCategory": [
+                    "JuniorHigh"
+                  ],
+                  "commons:District": [
+                    {
+                      "$": {
+                        "commons:isgSecurityClass": "Public"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "commons:SchoolCategory": [
+                    "Middle"
+                  ],
+                  "commons:District": [
+                    {
+                      "$": {
+                        "commons:isgSecurityClass": "Public"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "Zoning": [
+        "R"
+      ]
+    }
+  ],
+  "DetailedCharacteristics": [
+    {
+      "ArchitectureStyle": [
+        {
+          "_": "Other",
+          "$": {
+            "otherDescription": ""
+          }
+        }
+      ],
+      "IsNewConstruction": [
+        "false"
+      ],
+      "RoofTypes": [
+        {
+          "RoofType": [
+            "Unknown"
+          ]
+        }
+      ]
+    }
+  ],
+  "ModificationTimestamp": [
+    {
+      "_": "2012-08-27T11:55:18-04:00",
+      "$": {
+        "commons:isgSecurityClass": "Public"
+      }
+    }
+  ],
+  "Disclaimer": [
+    {
+      "_": "Copyright © 2012 Long & Foster Real Estate. All rights reserved. All information provided by the listing agent/broker is deemed reliable but is not guaranteed and should be independently verified.",
+      "$": {
+        "commons:isgSecurityClass": "Public"
+      }
+    }
+  ]
+}

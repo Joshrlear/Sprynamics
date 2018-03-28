@@ -5,13 +5,13 @@
 <ng-container *ngIf="agent | async as agent">
 
   <ngb-tabset (tabChange)="tabChange($event)">
-    <ngb-tab title="Agent Profile">
+    <ngb-tab id="tab-profile" title="Agent Profile">
       <ng-template ngbTabContent>
         <br>
         <app-profile [agent]="agent"></app-profile>
       </ng-template>
     </ngb-tab>
-    <ngb-tab title="Agent Payment">
+    <ngb-tab id="tab-payment" title="Agent Payment">
       <ng-template ngbTabContent>
         <div style="height:350;display:flex;align-items:center;justify-content:center;">
           <mat-spinner *ngIf="loading"></mat-spinner>
@@ -19,6 +19,12 @@
         <div id="dropin"></div>
         <br>
         <button class="btn green" (click)="clickButton()">Submit</button>
+      </ng-template>
+    </ngb-tab>
+    <ngb-tab id="tab-mailing" title="Agent Mailing Lists">
+      <ng-template ngbTabContent>
+        <br>
+        <app-lists [agent]="agent"></app-lists>
       </ng-template>
     </ngb-tab>
   </ngb-tabset>

@@ -27,11 +27,8 @@ export class AgentsComponent implements OnInit {
     this.auth.user.take(1).subscribe(user => {
       this.uid = user.uid;
       const managedAgents = this.firestore.colWithIds$('users', ref => ref.where(`managers.${user.uid}`, '==', true));
-      const createdAgents = this.firestore.colWithIds$(`users/${user.uid}/agents`);
-      managedAgents.subscribe(agents1 => {
-        createdAgents.subscribe(agents2 => {
-          this.agents = agents1.concat(agents2);
-        });
+      managedAgents.subscribe(agents => {
+        this.agents = agents;
       });
     });
   }
@@ -41,28 +38,33 @@ export class AgentsComponent implements OnInit {
   }
 
   createAgent() {
-    this.firestore.add(`users/${this.uid}/agents`, {isCreated: true, managerId: this.uid}).then(ref => {
-      this.viewAgent({id: ref.id, isCreated: true, managerId: this.uid});
-    });
+    const doc = this.firestore.col('users').ref.doc();
+    const managers = {};
+    managers[this.uid] = true;
+    const agent = {
+      id: doc.id,
+      uid: doc.id,
+      isCreated: true,
+      managerId: this.uid,
+      managers: managers
+    };
+    this.firestore.set(`users/${doc.id}`, agent)
+      .then(ref => {
+        this.viewAgent(agent);
+      });
   }
 
   viewAgent(agent) {
     let path;
-    this.router.navigate([`/profile/agents/${agent.id}`], { queryParams: { isCreated: agent.isCreated }});
+    this.router.navigate([`/profile/agents/${agent.id}`], { queryParams: { isCreated: agent.isCreated } });
   }
-  
+
   deleteAgent(agent) {
-    if (agent.isCreated) {
-      if (window.confirm('Are you sure you want to delete this agent?')) {
-        this.firestore.delete(`users/${this.uid}/agents/${agent.id}`);
-      }
-    } else {
-      if (window.confirm('Are you sure you want to remove your access to this agent?')) {
-        this.firestore.doc$(`users/${agent.uid}`).take(1).subscribe((agent: any) => {
-          agent.managers[this.uid] = false;
-          this.firestore.update(`users/${agent.uid}`, agent);
-        });
-      }
+    if (window.confirm('Are you sure you want to remove your access to this agent?')) {
+      this.firestore.doc$(`users/${agent.uid}`).take(1).subscribe((agent: any) => {
+        agent.managers[this.uid] = false;
+        this.firestore.update(`users/${agent.uid}`, agent);
+      });
     }
     window.alert('Successfully removed agent.');
   }
