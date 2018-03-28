@@ -1,0 +1,24 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node --max-old-space-size=4096 index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.3",
+    "json-parse-async": "^1.0.3",
+    "node-json-db": "^0.7.5",
+    "request": "^2.85.0",
+    "request-promise": "^4.2.2",
+    "simple-json-db": "^1.2.1",
+    "xml2js": "^0.4.19"
+  },
+  "engines": {
+    "node": "8.10"
+  }
+}

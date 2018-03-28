@@ -9,6 +9,7 @@
 <table class="table">
   <thead>
     <td>#</td>
+    <td>Agent</td>
     <td>Title</td>
     <td>Row Count</td>
     <td>Usage</td>
@@ -19,6 +20,7 @@
   <tbody>
     <tr *ngFor="let list of lists | async; let i = index">
       <td>{{ i + 1 }}</td>
+      <td>{{ list.agent }}</td>
       <td>{{ list.title }}</td>
       <td>{{ list.rowCount }}</td>
       <td>{{ list.usage || 0 }} order{{ list.usage != 1 ? 's' : '' }}</td>

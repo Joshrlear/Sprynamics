@@ -1,0 +1,20 @@
+<div class="account-card">
+    <div class="header">
+      <img src="assets/logo.png" height="52" alt="Sprynamics">
+    </div>
+    <br><br>
+    <h5 style="text-align: center">Enter your email to receive a password reset.</h5>
+    <br>
+    <form [formGroup]="emailForm" (ngSubmit)="submit()">
+      <div class="form-group col-xs-12">
+        <input type="email" class="form-control" formControlName="email" id="email" placeholder="Email address">
+      </div>
+      <div class="form-action">
+        <button type="submit" class="submit" [disabled]="!emailForm.valid" mat-button>Submit</button>
+      </div>
+      <div class="change-method">
+        <button routerLink="/account/login" class="btn btn-link">Return to login</button>
+      </div>
+    </form>
+
+  </div>

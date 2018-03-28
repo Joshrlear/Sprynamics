@@ -1,16 +1,18 @@
 import { Injectable } from '@angular/core';
 import * as firebase from 'firebase/app';
-import { 
+import {
   AngularFirestore,
   AngularFirestoreDocument,
   AngularFirestoreCollection
 } from 'angularfire2/firestore';
 import { Observable } from 'rxjs/Observable';
+import { map } from 'rxjs/operators';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/take';
 import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/switchMap';
+import 'rxjs/add/observable/combineLatest';
 
 type CollectionPredicate<T> = string | AngularFirestoreCollection<T>;
 type DocPredicate<T> = string | AngularFirestoreDocument<T>;
@@ -34,12 +36,12 @@ export class FirestoreService {
   /// **************
   /// Get Data
   /// **************
-  public doc$<T>(ref:  DocPredicate<T>): Observable<T> {
+  public doc$<T>(ref: DocPredicate<T>): Observable<T> {
     return this.doc(ref).snapshotChanges().map(doc => {
       return doc.payload.data() as T
     })
   }
-  
+
   public col$<T>(ref: CollectionPredicate<T>, queryFn?): Observable<T[]> {
     return this.col(ref, queryFn).snapshotChanges().map(docs => {
       return docs.map(a => a.payload.doc.data()) as T[]
@@ -55,6 +57,26 @@ export class FirestoreService {
         return { id, ...data };
       });
     });
+  }
+
+  // as Promise
+
+  public promiseDoc<T>(ref: DocPredicate<T>): Promise<T> {
+    return this.doc$<T>(ref).toPromise()
+  }
+
+  public promiseCol<T>(ref: CollectionPredicate<T>): Promise<T[]> {
+    return this.col$<T>(ref).toPromise()
+  }
+
+  public promiseColWithIds<T>(ref: CollectionPredicate<T>): Promise<T[]> {
+    return this.colWithIds$<T>(ref).toPromise()
+  }
+
+  // Combine multiple observables collections into one array - similar to UNION in sql
+  public combine(observables: Observable<any>[]) {
+    return Observable.combineLatest(observables)
+      .pipe(map(arr => arr.reduce((acc, cur) => acc.concat(cur))))
   }
 
   /// **************
@@ -112,23 +134,23 @@ export class FirestoreService {
   inspectDoc(ref: DocPredicate<any>): void {
     const tick = new Date().getTime()
     this.doc(ref).snapshotChanges()
-        .take(1)
-        .do(d => {
-          const tock = new Date().getTime() - tick
-          console.log(`Loaded Document in ${tock}ms`, d)
-        })
-        .subscribe()
+      .take(1)
+      .do(d => {
+        const tock = new Date().getTime() - tick
+        console.log(`Loaded Document in ${tock}ms`, d)
+      })
+      .subscribe()
   }
 
   inspectCol(ref: CollectionPredicate<any>): void {
     const tick = new Date().getTime()
     this.col(ref).snapshotChanges()
-        .take(1)
-        .do(c => {
-          const tock = new Date().getTime() - tick
-          console.log(`Loaded Collection in ${tock}ms`, c)
-        })
-        .subscribe()
+      .take(1)
+      .do(c => {
+        const tock = new Date().getTime() - tick
+        console.log(`Loaded Collection in ${tock}ms`, c)
+      })
+      .subscribe()
   }
   /// **************
   /// Create and read doc references

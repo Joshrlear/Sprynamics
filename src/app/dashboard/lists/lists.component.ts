@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { MailingListDialogComponent } from '#shared/mailing-list-dialog/mailing-list-dialog.component';
 import { ViewListDialogComponent } from '#shared/view-list-dialog/view-list-dialog.component';
@@ -16,7 +16,9 @@ import * as moment from 'moment';
 })
 export class ListsComponent implements OnInit {
 
-  lists: Observable<any[]>
+  lists: Observable<any[]>;
+
+  @Input('agent') agent: any;
 
   constructor(private dialog: MatDialog,
     private firestore: FirestoreService,
@@ -25,23 +27,34 @@ export class ListsComponent implements OnInit {
 
   ngOnInit() {
     this.auth.user.take(1).subscribe(user => {
-      this.lists = this.firestore.colWithIds$('lists', ref => ref.where('uid', '==', user.uid).orderBy('createdAt', 'desc'));
+      this.firestore.colWithIds$('users', ref => ref.where(`managers.${user.uid}`, '==', true))
+        .take(1).subscribe(agents => {
+          const userLists$ = this.firestore.colWithIds$('lists', ref => ref.where('uid', '==', user.uid).orderBy('createdAt', 'desc'))
+            .map((lists: any) => { lists.forEach(list => list.agent = 'Me'); return lists });
+          const listObservables = [userLists$];
+          agents.forEach(agent => {
+            const agentLists$ = this.firestore.colWithIds$('lists', ref => ref.where('uid', '==', agent.uid).orderBy('createdAt', 'desc'))
+              .map((lists: any) => { lists.forEach(list => list.agent = agent.firstName + ' ' + agent.lastName); return lists });
+            listObservables.push(agentLists$);
+          });
+          this.lists = this.firestore.combine(listObservables);
+        });
     });
   }
 
   uploadFile(file: File) {
     const dialogRef = this.dialog.open(MailingListDialogComponent, {
       width: '500px',
-      data: { file }
+      data: { file, agent: this.agent }
     });
     dialogRef.afterClosed().take(1).subscribe((result: any) => {
-      
+
     });
   }
 
   viewList(list) {
     const dialogRef = this.dialog.open(ViewListDialogComponent, {
-      data: { list }
+      data: { list, agent: this.agent }
     });
   }
 

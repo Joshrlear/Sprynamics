@@ -3,56 +3,59 @@
 <div class="main-container">
 
 
-<mat-toolbar class="app-toolbar" [class.transitioning]="isTransitioning">
-    
+  <mat-toolbar class="app-toolbar" [class.transitioning]="isTransitioning">
+
     <mat-toolbar-row>
       <button mat-button class="hamburger" (click)="sidenav.toggle()" title="Menu">
-          <i class="fas fa-bars menu"></i>
+        <i class="fas fa-bars menu"></i>
       </button>
-       <a class="nav-link home" routerLink="/" fragment="top-of-page" [ngSwitch]="isSideBySide">
+      <a class="nav-link home" routerLink="/" fragment="top-of-page" [ngSwitch]="isSideBySide">
         <img *ngSwitchCase="true" src="assets/logo.png" width="140" height="52" title="Home" alt="Home">
         <img *ngSwitchDefault src="assets/logo.png" width="140" height="52" title="Home" alt="Home">
       </a>
       <div class="top-menu">
         <div class="top-menu-left">
-          <a routerLink="/" fragment="top-of-page" (click)="smoothScroll('home')" mat-button>Home</a>
+          <a routerLink="/" fragment="top-of-page" (click)="smoothScroll('top-of-page')" mat-button>Home</a>
           <a routerLink="/" fragment="about-us" (click)="smoothScroll('about-us')" mat-button>About Us</a>
           <a routerLink="/" fragment="contact-us" (click)="smoothScroll('contact-us')" mat-button>Contact Us</a>
-          
+
         </div>
         <div class="top-menu-right">
           <a routerLink="products" class="design-link" mat-button>Start Designing</a>
           <ng-container *ngIf="(auth.user | async) || {} as user">
-              <ng-container *ngIf="!user.uid; else loggedIn">
-                <a routerLink="account/login" class="top-menu-account"><i class="fas fa-sign-in-alt"></i> Login / Sign Up</a>
-              </ng-container>
-              <ng-template #loggedIn>
-                <div class="dropdown-container" ngbDropdown>
-                  <a class="top-menu-account" id="account-dropdown" ngbDropdownToggle><i class="fas fa-user" style="margin-right: 6px;"></i> {{ ((user.firstName||'') + ' ' + (user.lastName||'')) || 'Your Account' }}</a>
-                  <div ngbDropdownMenu aria-labelledby="account-dropdown">
-                      <button class="dropdown-item" routerLink="/profile">Your Profile</button>
-                      <button class="dropdown-item" (click)="logout()" routerLink="/">Logout</button>
-                    </div>
+            <ng-container *ngIf="!user.uid; else loggedIn">
+              <a routerLink="account/login" class="top-menu-account">
+                <i class="fas fa-sign-in-alt"></i> Login / Sign Up</a>
+            </ng-container>
+            <ng-template #loggedIn>
+              <div class="dropdown-container" ngbDropdown>
+                <a class="top-menu-account" id="account-dropdown" ngbDropdownToggle>
+                  <i class="fas fa-user" style="margin-right: 6px;"></i> {{ ((user.firstName||'') + ' ' + (user.lastName||'')) || 'Your Account' }}</a>
+                <div ngbDropdownMenu aria-labelledby="account-dropdown">
+                  <button class="dropdown-item" routerLink="/profile">Your Profile</button>
+                  <button class="dropdown-item" (click)="logout()" routerLink="/">Logout</button>
                 </div>
-                
-              </ng-template>
+              </div>
+
+            </ng-template>
           </ng-container>
         </div>
-        
+
       </div>
 
     </mat-toolbar-row>
   </mat-toolbar>
-<mat-sidenav-container class="sidenav-container" [class.starting]="isStarting" role="main">
+  <mat-sidenav-container class="sidenav-container" [class.starting]="isStarting" role="main">
 
-    <mat-sidenav [ngClass]="{'collapsed': !isSideBySide}" #sidenav class="sidenav" [opened]="isOpened" [mode]="mode" (open)="updateHostClasses()" (close)="updateHostClasses()">
+    <mat-sidenav [ngClass]="{'collapsed': !isSideBySide}" #sidenav class="sidenav" [opened]="isOpened" [mode]="mode" (open)="updateHostClasses()"
+      (close)="updateHostClasses()">
       <spry-sidenav></spry-sidenav>
     </mat-sidenav>
-  
+
     <!-- <section class="sidenav-content" [id]="pageId" role="content"> -->
     <section class="sidenav-content" role="content">
-        <router-outlet></router-outlet>
+      <router-outlet></router-outlet>
     </section>
-  
+
   </mat-sidenav-container>
 </div>
