@@ -9,7 +9,6 @@ import { combineLatest } from 'rxjs/observable/combineLatest';
 import 'rxjs/add/operator/first';
 
 import { NavigationService } from '#core/navigation/navigation.service';
-import { SlipstreamService } from '#core/slipstream.service';
 import { FirestoreService } from '#core/firestore.service';
 
 declare const $;
@@ -43,7 +42,6 @@ export class AppComponent implements OnInit {
   constructor(public auth: AuthService,
     private ns: NavigationService,
     private router: Router,
-    private slipstream: SlipstreamService,
     private firestore: FirestoreService) { }
 
   public logout() {
@@ -51,41 +49,7 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-    const xhr = new XMLHttpRequest()
-    xhr.responseType = 'blob'
-    xhr.onload = () => {
-      console.log(xhr.response)
-    }
-    xhr.open('GET', 'http://photos.listhub.net/MRIS/TA7445097/0?lm=20120331T041918')
-    xhr.send()
     this.onResize(window.innerWidth);
-    this.auth.authState.subscribe(userAuth => {
-      if (userAuth) {
-        this.firestore.doc$(`users/${userAuth.uid}`).take(1).subscribe((user: any) => {
-          this.slipstream.getSlipstreamToken()
-            .then(token => {
-              return this.slipstream.getListings(user.licenseId, token)
-            })
-            .then(res => {
-              res.listings.forEach(listing => {
-                console.log(listing)
-                listing.images.forEach(image => {
-                  // console.log(image)
-                  // const xhr = new XMLHttpRequest()
-                  // xhr.responseType = 'blob'
-                  // xhr.onload = () => {
-                  //   console.log(xhr.response)
-                  // }
-                  // xhr.open('GET', 'http://photos.listhub.net/MRIS/TA7445097/0?lm=20120331T041918')
-                  // xhr.send()
-                })
-              })
-            })
-        })
-      } else {
-        console.log('no user')
-      }
-    })
   }
 
   @HostListener('window:resize', ['$event.target.innerWidth'])

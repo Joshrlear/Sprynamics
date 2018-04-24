@@ -10,7 +10,8 @@
 <app-breadcrumbs [step]="3"></app-breadcrumbs>
 <div class="back">
   <div style="flex-basis: 430px">
-    <button mat-icon-button routerLink="/products" [queryParams]="{product: productSizes[size]?.product}">
+    <!-- <button mat-icon-button routerLink="/products" [queryParams]="{product: productSizes[size]?.product}"> -->
+    <button mat-icon-button routerLink="/products">
       <mat-icon>arrow_back</mat-icon>
     </button>
   </div>
@@ -42,40 +43,84 @@
       <span class="bottom"></span>
     </span>
     <div class="side-nav">
+
       <div class="tab" [class.selected]="currentTab === 'agent'" (click)="currentTab = 'agent'; currentTabIndex = 0;">
         <mat-icon>contact_mail</mat-icon>
         <div class="tab-title"> Agent </div>
       </div>
+
       <div class="tab" [class.selected]="currentTab === 'designs'" (click)="currentTab = 'designs'; currentTabIndex = 1;">
         <mat-icon>view_carousel</mat-icon>
         <div class="tab-title"> Designs </div>
       </div>
+
       <ng-container *ngIf="template">
+
         <div class="tab" [class.selected]="currentTab === 'property'" (click)="currentTab = 'property'; currentTabIndex = 2;">
           <mat-icon>home</mat-icon>
           <div class="tab-title"> Property </div>
         </div>
+
         <div class="tab" [class.selected]="currentTab === 'text'" (click)="currentTab = 'text'; currentTabIndex = 3;">
           <mat-icon>subject</mat-icon>
           <div class="tab-title"> Text </div>
         </div>
+
         <div class="tab" [class.selected]="currentTab === 'colors'" (click)="currentTab = 'colors'; currentTabIndex = 4;">
           <mat-icon>color_lens</mat-icon>
           <div class="tab-title"> Colors </div>
         </div>
+
       </ng-container>
+
     </div>
+    
     <div class="form-container">
-      <app-designs *ngIf="currentTab === 'designs'" [size]="size" (select)="loadDesign($event)"></app-designs>
-      <app-text *ngIf="currentTab === 'text'" [productName]="productSizes[size]?.name" [size]="productSizes[size]?.width + ' x ' + productSizes[size]?.height + ' in.'"
-        [formFields]="textFields" (change)="saveUndo()" (render)="canvas.renderAll()"></app-text>
-      <app-property *ngIf="currentTab === 'property'" [agent]="selectedAgent" [photos]="template[viewSide].userImages" (photoChange)="changePhoto($event)"
-        (addressChange)="changeAddress($event)"></app-property>
-      <app-colors *ngIf="currentTab === 'colors'" [colors]="template.presetColors" (colorChange)="changeColor($event)" [bgColor]="background.fill"
-        (bgColorChange)="changeBackgroundColor($event)" (change)="saveUndo()"></app-colors>
-      <app-agent-info *ngIf="currentTab === 'agent'" (changeAgent)="changeAgent($event)" [user]="userData" [agents]="agents" [(selectedAgent)]="selectedAgent"
-        [loading]="loadingAgents"></app-agent-info>
+
+      <app-designs [hidden]="currentTab !== 'designs'"
+        [size]="size"
+        (select)="loadDesign($event)">
+      </app-designs>
+
+      <app-text [hidden]="currentTab !== 'text'" 
+        [productName]="productSizes[size]?.name" 
+        [size]="productSizes[size]?.width + ' x ' + productSizes[size]?.height + ' in.'"
+        [formFields]="textFields" 
+        (change)="saveUndo()" 
+        (render)="canvas.renderAll()">
+      </app-text>
+
+      <ng-container *ngIf="!loading && template && selectedAgent">
+
+        <app-property [hidden]="currentTab !== 'property'" 
+          [agent]="selectedAgent" 
+          [photos]="template[viewSide]?.userImages" 
+          [listingId]="listingId"
+          [(listing)]="selectedListing"
+          (photoChange)="changePhoto($event)"
+          (addressChange)="changeAddress($event)">
+        </app-property>
+        
+        <app-colors [hidden]="currentTab !== 'colors'" 
+          [colors]="template.presetColors" 
+          [bgColor]="background.fill"
+          (colorChange)="changeColor($event)" 
+          (bgColorChange)="changeBackgroundColor($event)" 
+          (change)="saveUndo()">
+        </app-colors>
+        
+        <app-agent-info [hidden]="currentTab !== 'agent'" 
+          [user]="userData" 
+          [agents]="agents" 
+          [loading]="loadingAgents"
+          (changeAgent)="changeAgent($event)" 
+          [(selectedAgent)]="selectedAgent">
+        </app-agent-info>
+
+      </ng-container>
+
     </div>
+
     <div #designerView class="designer-view">
       <div class="loading-overlay" *ngIf="loading">
         <mat-spinner></mat-spinner>

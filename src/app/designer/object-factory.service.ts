@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { fabricObjectFields } from './fabric-object-fields';
 
 import 'fabric';
 declare let fabric;
@@ -33,8 +34,7 @@ export class ObjectFactoryService {
     obj.setShadow(this.defaultShadow);
     canvas.add(obj).setActiveObject(obj);
     if (center) canvas.centerObject(obj);
-    obj.stateProperties.push('isHidden', 'isBoundBox', 'isBackground', 'selectable', 'hasControls', 'textContentType', 'textUserData',
-      'textFieldName', 'userEditable', 'isLogo', 'logoType', 'isUserData', 'isUserImage');
+    obj.stateProperties = obj.stateProperties.concat(fabricObjectFields);
     return obj;
   }
 
@@ -73,7 +73,7 @@ export class ObjectFactoryService {
       left: 50,
       top: 50,
       width: 150,
-      strokeWidth: 0,      
+      strokeWidth: 0,
       fontSize: 20,
       fontFamily: 'Roboto',
       hasRotatingPoint: true,
@@ -156,11 +156,24 @@ export class ObjectFactoryService {
         img.scaleToHeight(250);
         img.isUserImage = true;
 
-        img.toObject = this.extendFabricObject(img, ['isUserImage']);
+        img.toObject = this.extendFabricObject(img, ['isUserImage', 'cx1', 'cx2', 'cx3', 'cx4', 'cy1', 'cy2', 'cy3', 'cy4']);
 
         this.addObject(img, canvas);
       }, { crossOrigin: 'Anonymous' });
     return userImage;
+  }
+
+  createMapImage(canvas) {
+    const mapImage = new fabric.Image.fromURL('https://maps.googleapis.com/maps/api/staticmap?center=32.7320492,-117.1706642&zoom=12&size=400x400&key=AIzaSyCZVNyrdx6wsVpCCnVuvawW2ZlhTDaRg9s&markers=32.7320492,-117.1706642',
+      (img) => {
+        // img.scaleToHeight(250);
+        img.isMapImage = true;
+
+        img.toObject = this.extendFabricObject(img, ['isMapImage', 'cx1', 'cx2', 'cx3', 'cx4', 'cy1', 'cy2', 'cy3', 'cy4']);
+
+        this.addObject(img, canvas);
+      }, { crossOrigin: 'Anonymous' });
+    return mapImage;
   }
 
   createClone(obj: any, canvas) {
@@ -225,8 +238,8 @@ export class ObjectFactoryService {
     }));
     printArea.toObject = this.extendFabricObject(printArea,
       baseExt.concat(['isHidden', 'isBoundBox']));
-    
-      console.log(printArea.toObject());
+
+    console.log(printArea.toObject());
 
     // Add objects to center of canvas
     this.addObject(background, canvas, true);

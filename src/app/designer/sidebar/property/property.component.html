@@ -6,18 +6,106 @@
     </label>
   </div> -->
 
-  
+
   <ng-container *ngIf="listings.length > 0; else noListings">
-      <label>Select a listing:</label>
+    <label>Select a listing:</label>
     <select class="form-control" [(ngModel)]="selectedListing" (change)="onChangeAddress()">
-      <option *ngFor="let listing of listings" [ngValue]="listing">{{ listing.id }}</option>
+      <option *ngFor="let listing of listings" [ngValue]="listing">{{ listing.fullStreetAddress }}</option>
     </select>
 
-    <div>
-      Street: {{ selectedListing?.address.street }}
-      <br> City: {{ selectedListing?.address.city }}
-      <br> State: {{ selectedListing?.address.state }}
-      <br> Zip Code: {{ selectedListing?.address.zip }}
+    <br>
+
+    <div style="font-size: 12px">
+      <div>
+        <label>
+          Street:
+        </label>
+        <input [value]="selectedListing?.fullStreetAddress">
+      </div>
+      <div>
+        <label>
+          Unit Number:
+        </label>
+        <input [value]="selectedListing?.unitNumber">
+      </div>
+      <div>
+        <label>
+          City:
+        </label>
+        <input [value]="selectedListing?.city">
+      </div>
+      <div>
+        <label>
+          State/Province:
+        </label>
+        <input [value]="selectedListing?.stateOrProvince">
+      </div>
+      <div>
+        <label>
+          Postal Code:
+        </label>
+        <input [value]="selectedListing?.postalCode">
+      </div>
+      <div>
+        <label>
+          Unit Number:
+        </label>
+        <input [value]="selectedListing?.unitNumber">
+      </div>
+      <div>
+        <label>
+          # Bedrooms:
+        </label>
+        <input [value]="selectedListing?.bedrooms">
+      </div>
+      <div>
+        <label>
+          # Bathrooms:
+        </label>
+        <input [value]="selectedListing?.bathrooms">
+      </div>
+      <div>
+        <label>
+          List Price:
+        </label>
+        <input [value]="selectedListing?.listPrice">
+      </div>
+      <div>
+        <label>
+          Brokerage Name:
+        </label>
+        <input [value]="selectedListing?.brokerageName">
+      </div>
+      <div>
+        <label>
+          Brokerage Phone Number:
+        </label>
+        <input [value]="selectedListing?.brokerageNumber">
+      </div>
+      <div>
+        <label>
+          Listing Status:
+        </label>
+        <input [value]="selectedListing?.listingStatus">
+      </div>
+      <div>
+        <label>
+          Living Area:
+        </label>
+        <input [value]="selectedListing?.livingArea">
+      </div>
+      <div>
+        <label>
+          Listing Key:
+        </label>
+        <input [value]="selectedListing?.listingKey">
+      </div>
+      <div>
+        <label>
+          MLS Number:
+        </label>
+        <input [value]="selectedListing?.mlsNumber">
+      </div>
     </div>
   </ng-container>
   <ng-template #noListings>
@@ -30,9 +118,9 @@
 
   <button class="btn" (click)="loadImagesFromListing()">Load Images From Listing</button>
 
-  <ng-container *ngFor="let photo of photos; let i = index;">
+  <!-- <ng-container *ngFor="let photo of photos; let i = index;">
     <img class="photo" [src]="photo.toDataURL()" (click)="selectedIndex = i; fileInput.click()">
-  </ng-container>
+  </ng-container> -->
 
   <input #fileInput type="file" style="display:none;" onclick="this.value = null" (change)="uploadImage(fileInput.files[0]); fileInput.files = null;">
 </div>

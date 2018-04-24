@@ -21,6 +21,10 @@ import * as jspdf from 'jspdf';
 declare let jsPDF;
 
 import * as JSZip from 'jszip';
+import { CropDialogComponent } from '#app/designer/crop-dialog/crop-dialog.component';
+import { ImageSelectDialogComponent } from '#app/designer/image-select-dialog/image-select-dialog.component';
+import { fabricObjectFields } from '#app/designer/fabric-object-fields';
+import { GoogleMapsService } from '#core/gmaps.service';
 
 @Component({
   selector: 'app-designer-client',
@@ -35,7 +39,7 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
   background: any = {};
 
   productSizes = productSizes;
-  size: string;
+  size;
 
   @ViewChild('designerView') view: ElementRef;
   canvas: any;
@@ -49,6 +53,8 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
   loadingPdf: boolean;
   viewSide: 'front' | 'back' = 'front';
   propertyAddress: any;
+  listingId: string;
+  selectedListing: any;
 
   past = [];
   present;
@@ -70,8 +76,8 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
     private factory: ObjectFactoryService,
     private MatDialog: MatDialog,
     private checkout: CheckoutService,
-    private slipstream: SlipstreamService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private gmaps: GoogleMapsService
   ) { }
 
   ngOnInit() {
@@ -90,17 +96,25 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
           });
         });
         // this.template.presetColors = user.presetColors || [];
-      });
-      this.route.queryParamMap.take(1).subscribe((queryParamMap: any) => {
-        const queryProduct = queryParamMap.params['product'];
-        const querySize = queryParamMap.params['size'];
-        if (queryProduct && querySize) {
-          this.size = querySize;
-          this.checkout.updateOrder('product', queryProduct);
-          this.checkout.updateOrder('size', querySize);
-        } else {
-          this.router.navigate(['/products']);
-        }
+        this.route.queryParamMap.take(1).subscribe((queryParamMap: any) => {
+          const queryProduct = queryParamMap.params['product'];
+          const querySize = queryParamMap.params['size'];
+          if (queryProduct && querySize) {
+            this.size = querySize;
+            this.checkout.updateOrder('product', queryProduct);
+            this.checkout.updateOrder('size', querySize);
+          } else {
+            this.router.navigate(['/products']);
+          }
+          const queryAgent = queryParamMap.params['agent'];
+          const queryListing = queryParamMap.params['listing'];
+          if (queryAgent) {
+            this.selectedAgent.licenseId = queryAgent;
+          }
+          if (queryListing) {
+            this.listingId = queryListing;
+          }
+        });
       });
       this.firestore.colWithIds$('templates').take(1).subscribe(templates => {
         this.loadDesign(templates[0]);
@@ -123,7 +137,12 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
       preserveObjectStacking: true,
     });
 
-    // this.canvas.zoomToPoint(new fabric.Point(this.canvas.width / 2, this.canvas.height / 2), 0.35);
+    this.canvas.on('mouse:down', (event) => {
+      if (event.target && event.target.isUserImage) {
+        this.clickImage(event.target);
+      }
+    });
+
     this.onResize();
   }
 
@@ -131,21 +150,20 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
   onResize(event?) {
     this.canvas.setWidth(this.view.nativeElement.clientWidth);
     this.canvas.setHeight(this.view.nativeElement.clientHeight);
-    // this.canvas.calcOffset();
+
     const objects = this.canvas.getObjects();
     const selection = new fabric.ActiveSelection(objects, { canvas: this.canvas });
     const width = selection.width;
     const height = selection.height;
     const scale = this.canvas.height / height;
-    // selection.scale(scale);
+
     selection.center();
     selection.destroy();
     this.canvas.zoomToPoint(new fabric.Point(this.canvas.width / 2, this.canvas.height / 2), Math.min(scale, 1));
   }
 
   canvasToJSON() {
-    return this.canvas.toJSON(['isHidden', 'isBoundBox', 'isBackground', 'selectable', 'hasControls', 'textContentType', 'textUserData',
-      'textFieldName', 'userEditable', 'isLogo', 'logoType', 'isUserImage']);
+    return this.canvas.toJSON(fabricObjectFields);
   }
 
   saveUndo() {
@@ -181,6 +199,47 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
     }
   }
 
+  clickImage(obj) {
+    console.log(obj)
+    const imageDialogRef = this.dialog.open(ImageSelectDialogComponent, {
+      data: {
+        listing: this.selectedListing
+      }
+    });
+    imageDialogRef.afterClosed().subscribe(photo => {
+      if (photo) {
+        const cropDialogRef = this.dialog.open(CropDialogComponent, {
+          data: {
+            url: photo,
+            width: obj.width * obj.scaleX,
+            height: obj.height * obj.scaleY
+          }
+        });
+        cropDialogRef.afterClosed().subscribe(croppedPhoto => {
+          obj.setSrc(croppedPhoto, () => {
+            console.log('done');
+            // scale x clip paths
+            obj.cx1 *= obj.scaleX;
+            obj.cx2 *= obj.scaleX;
+            obj.cx3 *= obj.scaleX;
+            obj.cx4 *= obj.scaleX;
+            // scale y clip paths
+            obj.cy1 *= obj.scaleY;
+            obj.cy2 *= obj.scaleY;
+            obj.cy3 *= obj.scaleY;
+            obj.cy4 *= obj.scaleY;
+            // reset scale
+            obj.set({
+              scaleX: 1,
+              scaleY: 1
+            })
+            this.canvas.renderAll();
+          });
+        })
+      }
+    });
+  }
+
   changeAgent(agent) {
     this.selectedAgent = agent;
     this.checkout.setUser(agent);
@@ -196,10 +255,48 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
   }
 
   changeAddress(address) {
-    console.log(address);
-    this.propertyAddress = address;
-    this.addressObj.text = address.formatted_address;
-    this.canvas.renderAll();
+    console.log('changeAdrress', address);
+    this.selectedListing = address.listing;
+    if (this.addressObj) {
+      this.propertyAddress = address;
+      this.addressObj.text = address.formatted_address;
+      this.canvas.renderAll();
+    }
+    const location = address.location;
+    this.canvas.forEachObject(obj => {
+      if (obj.isMapImage) {
+        const desiredWidth = obj.width * obj.scaleX;
+        const desiredHeight = obj.height * obj.scaleY;
+        const left = obj.left;
+        let width, height;
+        if (desiredWidth > desiredHeight) {
+          width = 400;
+          height = Math.floor(400 * (desiredWidth / desiredHeight));
+        } else {
+          width = Math.floor(desiredWidth * (400 / desiredHeight));
+          height = 400;
+        }
+        const mapImageUrl = this.gmaps.getStaticMapUrl(location.lat, location.lng, 12, 400, 400);
+        fetch(mapImageUrl)
+          .then(res => res.blob())
+          .then(blob => {
+            const reader = new FileReader();
+            reader.onload = () => {
+              obj.setSrc(reader.result, _ => {
+                // if (!obj.isFetched) {
+                //   console.log('resizing');
+                //   obj.left += width;
+                //   obj.scaleX = desiredWidth / 400;
+                //   obj.scaleY = desiredHeight / 400;
+                // }
+                // obj.isFetched = true;
+                this.canvas.renderAll();
+              }, { crossOrigin: 'Anonymous' });
+            }
+            reader.readAsDataURL(blob);
+          });
+      }
+    });
   }
 
   changeColor(event) {
@@ -228,8 +325,7 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
     console.log(event.photo)
     obj.setSrc(event.photo, _ => {
       this.canvas.renderAll();
-      console.log(obj);
-    }, {crossOrigin: 'Anonymous'});
+    }, { crossOrigin: 'Anonymous' });
   }
 
   changeViewSide(side: 'front' | 'back') {
@@ -256,17 +352,26 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
     if (!this.template.fonts || this.template.fonts.length === 0) { this.template.fonts = ['Roboto']; }
     WebFont.load({
       google: {
-        families: template.fonts
+        families: this.template.fonts
       },
       active: () => {
+        console.log(template);
         this.storage.getFile(template.url).take(1).subscribe((data: { front: any, back: any }) => {
           this.template.front = data.front;
           this.template.back = data.back;
           this.canvas.loadFromJSON(template[this.viewSide], _ => {
             this.processCanvas();
             this.disableHistory = false;
+            if (this.listingId) {
+              this.currentTab = 'property';
+              this.currentTabIndex = 2;
+            }
           });
         });
+      },
+      fontinactive: (e) => {
+        console.log(e);
+        console.log('error with a font');
       }
     });
   }
@@ -289,8 +394,8 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
       const c = this.boundBox.getCoords();
       const x = c[0].x;
       const y = c[0].y;
-      ctx.strokeStyle = '#ffffff';
-      ctx.fillStyle = '#ffffff';
+      // ctx.strokeStyle = '#000000';
+      // ctx.fillStyle = '#000000';
       ctx.rect(this.boundBox.left, this.boundBox.top,
         this.boundBox.width, this.boundBox.height);
     }
@@ -313,6 +418,12 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
         lockMovementY: true,
         objectCaching: false
       });
+      // set hover cursor
+      if (obj.isUserImage) {
+        obj.hoverCursor = 'pointer';
+      } else {
+        obj.hoverCursor = 'default';
+      }
       if (obj.textContentType === 'address') {
         this.addressObj = obj;
         console.log(obj);
@@ -361,7 +472,7 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
         img.src = src;
       }
     });
-    // inject user data into data fielBds
+    // inject user data into data fields
     const agent = this.selectedAgent;
     this.agentFields.forEach(field => {
       if (field.obj.textUserData === 'name') {
@@ -372,12 +483,12 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
     });
     // hide objects that should be hidden
     this.canvas.getObjects('rect').forEach(obj => {
-      // if (obj.isHidden) {
-      //   obj.set({
-      //     stroke: '#eeeeee00'
-      //   });
-      //   this.canvas.sendToBack(obj);
-      // }
+      if (obj.isHidden) {
+        obj.set({
+          stroke: '#eeeeee00'
+        });
+        this.canvas.sendToBack(obj);
+      }
     });
     if (imagesToLoad <= 0) {
       this.loading = false;
@@ -400,7 +511,8 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
     });
     canvas.style.display = 'none';
     pdfCanvas.loadFromJSON(this.template['front'], _ => {
-      const boundBox = this.canvas.getObjects('rect').filter(obj => obj.stroke === '#f00' && obj.strokeDashArray[0] === 5 && obj.strokeDashArray[1] === 5)[0];
+      // const boundBox = this.canvas.getObjects('rect').filter(obj => obj.stroke === '#f00' && obj.strokeDashArray[0] === 5 && obj.strokeDashArray[1] === 5)[0];
+      const boundBox = this.canvas.getObjects('rect').filter(obj => obj.isBoundBox)[0];
       pdfCanvas.clipTo = null;
       // pdfCanvas.imageSmoothingEnabled = false;
       const offsetX = boundBox.left - productSpecs.bleedInches * productSpecs.dpi;

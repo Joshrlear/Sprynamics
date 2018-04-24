@@ -1,0 +1,18 @@
+.listing-photos-container {
+  max-width: 800px;
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.listing-photo {
+  min-height: 70px;
+  width: 140px;
+  margin: 8px;
+  background-color: rgba(0,0,0,0.2);
+  cursor: pointer;
+  transition: transform 0.1s ease;
+  image-rendering: pixelated;
+  &:hover {
+    transform: scale(1.1);
+  }
+}

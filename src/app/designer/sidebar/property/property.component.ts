@@ -3,7 +3,10 @@ import { MatDialog } from '@angular/material'
 
 import { CropDialogComponent } from '../../crop-dialog/crop-dialog.component'
 import { AuthService } from '#core/auth.service'
-import { SlipstreamService } from '#core/slipstream.service'
+import { MlsService } from '#core/mls.service'
+import { productSpecs } from '#app/designer/products';
+import { FormBuilder } from '@angular/forms';
+import { GoogleMapsService } from '#core/gmaps.service';
 
 declare let google
 
@@ -16,11 +19,12 @@ export class PropertyComponent implements OnInit {
 
   @Input('agent') agent: any
   @Input('photos') photos: any[]
+  @Input('listingId') listingId: any
   @Output('photoChange') changeEvent = new EventEmitter()
   @Output('addressChange') addressChangeEvent = new EventEmitter()
 
   selectedIndex: number
-  selectedListing: any
+  @Input('listing') selectedListing: any
   listings: any[]
 
   loading: boolean;
@@ -29,43 +33,50 @@ export class PropertyComponent implements OnInit {
 
   constructor(private dialog: MatDialog,
     private auth: AuthService,
-    private slipstream: SlipstreamService,
-    private mls: MlsService) { }
+    private mls: MlsService,
+    private fb: FormBuilder,
+    private gmaps: GoogleMapsService) { }
 
   ngOnInit() {
     this.loading = true
     if (this.agent.licenseId) {
-      // this.slipstream.getSlipstreamToken()
-      //   .then(token => {
-      //     return this.slipstream.getListings(this.agent.licenseId, token)
-      //   })
-      //   .then((data: any) => {
-      //     console.log(data)
-      //     this.listings = data.listings
-      //     this.selectedListing = data.listings[0]
-      //     this.loading = false
-      //   })
+      this.mls.getListings(this.agent.licenseId)
+        .take(1)
+        .subscribe((listings: any[]) => {
+          console.log(listings)
+          this.listings = listings
+          if (this.listingId) {
+            this.selectedListing = listings.find((listing) => {
+              return listing.id === this.listingId
+            })
+          }
+          if (!this.selectedListing) {
+            this.selectedListing = listings[0]
+            this.onChangeAddress();
+          }
+          this.loading = false
+        })
     } else {
       this.listings = []
     }
-    // this.autocomplete = new google.maps.places.Autocomplete(
-    //   (document.getElementById('propertyAddressInput')),
-    //   {types: ['geocode']}
-    // );
-    // this.autocomplete.addListener('place_changed', this.onChangeAddress.bind(this));
   }
 
   loadImagesFromListing() {
     // this.photos.forEach((photo, i) => {
-    //   this.changeEvent.emit({
-    //     index: i,
-    //     photo: this.selectedListing.images[i]
-    //   })
+    //   if (i < this.selectedListing.photos.length) {
+    //     console.log(i)
+    //     this.changeEvent.emit({
+    //       index: i,
+    //       photo: this.selectedListing.photos[i]
+    //     })
+    //   }
     // });
-    this.changeEvent.emit({
-      index: 0,
-      photo: this.selectedListing.images[0]
-    })
+    this.selectedIndex = 0;
+    this.openDialog(this.selectedListing.photos[0])
+    // this.changeEvent.emit({
+    //   index: 0,
+    //   photo: this.selectedListing.photos[0]
+    // })
   }
 
   uploadImage(file: File) {
@@ -78,12 +89,15 @@ export class PropertyComponent implements OnInit {
 
   openDialog(dataURL) {
     const obj = this.photos[this.selectedIndex]
+    obj.width = obj.width * obj.scaleX;
+    obj.height = obj.height * obj.scaleY;
+    obj.scaleX = obj.scaleY = 1;
     console.log(obj)
     const dialogRef = this.dialog.open(CropDialogComponent, {
       data: {
         url: dataURL,
-        width: obj.width * obj.scaleX,
-        height: obj.height * obj.scaleY
+        width: obj.width * productSpecs.dpi,
+        height: obj.height * productSpecs.dpi
       }
     })
 
@@ -98,12 +112,17 @@ export class PropertyComponent implements OnInit {
   }
 
   onChangeAddress() {
-    const addr = this.selectedListing.address
-    const addressObj = {
-      address: addr,
-      formatted_address: `${addr.street}, ${addr.city}, ${addr.state} ${addr.zip}`
-    }
-    this.addressChangeEvent.emit(addressObj)
+    const listing = this.selectedListing;
+    this.gmaps.geocodeAddress(listing.fullStreetAddress, listing.postalCode, null, listing.stateOrProvince).take(1).subscribe(res => {
+      const location = res.results[0].geometry.location;
+      const addressObj = {
+        listing,
+        location,
+        formatted_address: `${listing.fullStreetAddress}, ${listing.city}, ${listing.stateOrProvince} ${listing.postalCode}`
+      };
+      this.addressChangeEvent.emit(addressObj);
+    });
+
   }
 
 }

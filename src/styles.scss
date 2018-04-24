@@ -15,12 +15,14 @@ body {
 }
 
 .green {
-  background-color: #12C463 !important;
+  // background-color: #12C463 !important;
+  background-color: #75d84f !important;
   color: white !important;
 }
 
 .btn-greenBg {
-  background-color: #12C463 !important;
+  // background-color: #12C463 !important;
+  background-color: #75d84f !important;
   opacity: 1.5 !important;
   text-transform: uppercase;
   padding: 15px 35px;
@@ -110,7 +112,8 @@ body {
     border-radius: 6px !important;
     font-size: 14px !important;
     box-shadow: 0 0.25rem 0.125rem #167843;
-    background-color: #12c463 !important;
+    // background-color: #12c463 !important;
+    background-color: #75d84f !important;
     color: #fff !important;
 }
 
@@ -123,7 +126,8 @@ body {
   min-width: 164px;
 
   &:hover {
-    color: #12c463 !important;
+    // color: #12c463 !important;
+    color: #75d84f !important;
     cursor: pointer;
   }
 }

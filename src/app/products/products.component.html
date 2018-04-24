@@ -12,17 +12,20 @@
     <div id="product" *ngIf="!product">
       <h1 class="heading">Choose A Product</h1>
       <div class="product-container row">
-        <div class="col-xs-12 col-md-4 product-padding">
-          <div (click)="product = 'postcard'" class="product postcard">
+        <div class="col-xs-12 col-md-4 product-padding no-focus" routerLink="/designer" [queryParams]="{product: 'postcard', size: '9x6'}">
+          <!-- <div (click)="product = 'postcard'" class="product postcard"> -->
+          <div class="product postcard">
           </div>
           <h1>Postcards</h1>
         </div>
-        <div class="col-xs-12 col-md-4 product-padding">
-          <div (click)="product = 'flyer'" class="product flyer">
+        <div class="col-xs-12 col-md-4 product-padding no-focus" routerLink="/designer" [queryParams]="{product: 'flyer', size: '8.5x11'}">
+          <!-- <div (click)="product = 'flyer'" class="product flyer"> -->
+          <div class="product flyer">
+          <!-- </div> -->
           </div>
           <h1>Flyers</h1>
         </div>
-        <div class="col-xs-12 col-md-4 product-padding no-focus" routerLink="/designer" [queryParams]="{product: product, size: '3.5x8.5'}" (click)="scrollUp()">
+        <div class="col-xs-12 col-md-4 product-padding no-focus" routerLink="/designer" [queryParams]="{product: 'doorhanger', size: '3.5x8.5'}" (click)="scrollUp()">
           <div class="product doorhanger">
           </div>
           <h1>Door Hangers</h1>

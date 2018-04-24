@@ -1,0 +1,11 @@
+#cropper-container {
+  max-width: 600px;
+  max-height: 600px;
+  width: 600px;
+  height: 600px;
+  overflow: hidden;
+}
+
+img {
+  max-width: 100%;
+}

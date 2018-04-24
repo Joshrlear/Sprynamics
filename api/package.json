@@ -1,5 +1,5 @@
 {
-  "name": "api",
+  "name": "sprynamics-api",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -10,15 +10,24 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "btoa": "^1.2.1",
+    "cors": "^2.8.4",
     "express": "^4.16.3",
+    "firebase-admin": "^5.11.0",
     "json-parse-async": "^1.0.3",
+    "node-fetch": "^2.1.2",
     "node-json-db": "^0.7.5",
     "request": "^2.85.0",
     "request-promise": "^4.2.2",
     "simple-json-db": "^1.2.1",
-    "xml2js": "^0.4.19"
+    "xml2js": "^0.4.19",
+    "xml2js-expat": "^0.3.0"
   },
   "engines": {
     "node": "8.10"
+  },
+  "devDependencies": {
+    "eslint": "^4.19.1",
+    "eslint-config-google": "^0.9.1"
   }
 }

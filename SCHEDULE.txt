@@ -1,9 +1,0 @@
-1/18 - Template + Product designers completed
-1/20 - User + Admin Dashboards completed
-1/21 - Linked to payment APIs, email notifications, google maps
-1/22 - Mailing list + import from CSV completed
-==Review==
-1/22 - Earliest release date
-1/26 - Target release date
-1/30 - Latest release date
-2/15 - Final deadline

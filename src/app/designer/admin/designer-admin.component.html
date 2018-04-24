@@ -33,6 +33,9 @@
         <button class="btn btn-sm green" (click)="clickNew()">New</button>
         <button class="btn btn-sm green" (click)="currentTab = 'designs'; currentTabIndex = 3;">Open</button>
         <button class="btn btn-sm green" (click)="clickSave()">Save</button>
+        <button class="btn btn-sm green" (click)="clickSaveNew()">Save New</button>
+        <button class="btn btn-sm green" (click)="createThumbnail()">thumb</button>
+        <button class="btn btn-sm green" (click)="removeExtraLines()">fix</button>
         <br>
         <br>
         <!-- Template metadata -->
@@ -46,9 +49,9 @@
         <label>Product Type:
           <select name="productType" id="productType" class="form-control" [(ngModel)]="template.productType" (change)="refreshCanvasSize()">
             <option [ngValue]="productTypes.postcard_small">Postcard: 9x6</option>
-            <option [ngValue]="productTypes.postcard_large">Postcard: 11.5x6</option>
+            <!-- <option [ngValue]="productTypes.postcard_large">Postcard: 11.5x6</option> -->
             <option [ngValue]="productTypes.flyer_portrait">Flyer: 8.5x11</option>
-            <option [ngValue]="productTypes.flyer_landscape">Flyer: 11x8.5</option>
+            <!-- <option [ngValue]="productTypes.flyer_landscape">Flyer: 11x8.5</option> -->
             <option [ngValue]="productTypes.door_hanger">Door hanger: 3.5x8.5</option>
           </select>
         </label>
@@ -131,6 +134,9 @@
                 <label style="margin-left:8px;">
                   <input type="radio" name="textContentType" id="optionsRadios1" value="address" [(ngModel)]="selection.textContentType"> Address
                 </label>
+                <label style="margin-left:8px;">
+                  <input type="radio" name="textContentType" id="optionsRadios1" value="property" [(ngModel)]="selection.textContentType"> Property data
+                </label>
               </div>
               <div class="radio">
 
@@ -150,6 +156,15 @@
                   <option [value]="'address'">Address</option>
                   <option [value]="'company'">Company</option>
                   <option [value]="'licenseId'">License ID</option>
+                </select>
+              </div>
+              <!-- Text Property Data -->
+              <div class="form-field" style="display:flex;align-items:center;margin-bottom:16px;width:200px" *ngIf="selection.textContentType === 'property'">
+                <mat-icon matTooltip="Property data field">contact_mail</mat-icon>
+                <select name="textUserData" id="textUserData" style="margin-left:8px;flex:1;" [(ngModel)]="selection.textUserData" (change)="changeUserData()">
+                  <option [value]="'bedrooms'"># Bedrooms</option>
+                  <option [value]="'bathrooms'"># Bathrooms</option>
+                  <option [value]="'livingArea'">Square Footage</option>
                 </select>
               </div>
               <!-- Text Editable -->
@@ -209,6 +224,33 @@
                   <option value="brokerage">User Brokerage Logo</option>
                 </select>
               </ng-container>
+              <!-- ClipTo path -->
+              <div>
+                <label>x1:</label>
+                <input [(ngModel)]="selection.cx1" (input)="changeClipPath()">
+                <br>
+                <label>y1:</label>
+                <input [(ngModel)]="selection.cy1" (input)="changeClipPath()">
+                <br>
+                <label>x2:</label>
+                <input [(ngModel)]="selection.cx2" (input)="changeClipPath()">
+                <br>
+                <label>y2:</label>
+                <input [(ngModel)]="selection.cy2" (input)="changeClipPath()">
+                <br>
+                <label>x3:</label>
+                <input [(ngModel)]="selection.cx3" (input)="changeClipPath()">
+                <br>
+                <label>y3:</label>
+                <input [(ngModel)]="selection.cy3" (input)="changeClipPath()">
+                <br>
+                <label>x4:</label>
+                <input [(ngModel)]="selection.cx4" (input)="changeClipPath()">
+                <br>
+                <label>y4:</label>
+                <input [(ngModel)]="selection.cy4" (input)="changeClipPath()">
+                <br>
+              </div>
             </ng-container>
 
             <!-- LOGO selected -->
@@ -310,15 +352,16 @@
       <button class="btn green" (click)="factory.createLogo(canvas)">+ Logo</button>
       <button class="btn green" (click)="addImageInput.click()">+ Static Image</button>
       <button class="btn green" (click)="factory.createUserImage(canvas)">+ User Image</button>
+      <button class="btn green" (click)="factory.createMapImage(canvas)">+ Map Image</button>
       <input #addImageInput type="file" (change)="addImageFiles(addImageInput.files)" multiple hidden>
       <ng-container *ngIf="selection">
         <button class="btn" (click)="deleteSelection()">Remove</button>
         <button class="btn" (click)="factory.createClone(selection, canvas)">Clone</button>
-        <div class="btn-group" dropdown>
-          <button dropdownToggle class="btn dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <div class="btn-group" ngbDropdown>
+          <button ngbDropdownToggle class="btn dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Arrange
           </button>
-          <div *dropdownMenu class="dropdown-menu" role="menu">
+          <div ngbDropdownMenu class="dropdown-menu" role="menu">
             <button class="btn dropdown-item" (click)="bringToFront()">To Front</button>
             <button class="btn dropdown-item" (click)="bringForward()">Forward</button>
             <button class="btn dropdown-item" (click)="sendBackward()">Backward</button>

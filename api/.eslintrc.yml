@@ -1,0 +1,22 @@
+env:
+  es6: true
+  node: true
+extends: ['google']
+parserOptions:
+  sourceType: module
+rules:
+  linebreak-style:
+    - error
+    - windows
+  semi:
+    - error
+    - never
+  require-jsdoc: 'off'
+  eol-last: 'off'
+  max-len: 'off'
+  comma-dangle: 'off'
+  object-curly-spacing: 'off'
+  no-trailing-spaces: 'off'
+  no-undef: error
+  block-spacing: 'off'
+  brace-style: 'off'

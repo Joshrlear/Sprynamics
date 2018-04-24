@@ -193,3 +193,7 @@
 .tab-title {
   font-size: 12px;
 }
+
+#canvas {
+  cursor: default !important;
+}

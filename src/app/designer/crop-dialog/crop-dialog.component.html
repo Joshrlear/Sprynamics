@@ -1,4 +1,7 @@
-<div id="cropper"></div>
+<div [style.visibility]="loading ? 'hidden' : 'visible'" id="cropper-container"></div>
+<div *ngIf="loading" style="position: absolute; top:0; width: 600px; height: 688px; display: flex; align-items: center; justify-content: center;">
+  <mat-spinner></mat-spinner>
+</div>
 <button mat-icon-button (click)="rotate(-90)">
   <mat-icon>rotate_left</mat-icon>
 </button>

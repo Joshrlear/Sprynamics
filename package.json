@@ -10,7 +10,8 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "dev": "ng build && firebase use dev && firebase deploy",
-    "prod": "ng build --prod && firebase use prod && firebase deploy"
+    "prod": "ng build --prod && firebase use prod && firebase deploy",
+    "deploy": "ng build && rm -rf public/dist && mv dist public/dist && cd public && now && now alias"
   },
   "private": true,
   "dependencies": {
@@ -30,6 +31,7 @@
     "bootstrap": "^4.0.0",
     "braintree-web-drop-in": "^1.9.4",
     "core-js": "^2.4.1",
+    "cropperjs": "^1.3.4",
     "croppie": "^2.6.1",
     "fabric": "^2.1.0",
     "firebase": "4.8.0",

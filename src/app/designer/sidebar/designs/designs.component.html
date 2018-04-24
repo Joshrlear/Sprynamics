@@ -2,9 +2,9 @@
 
   <select *ngIf="showDropdown" class="form-control" #productType (change)="updateProduct(productType.value)">
     <option value="9x6">Postcard: 6x9</option>
-    <option value="11.5x6">Postcard: 6x11.5</option>
+    <!-- <option value="11.5x6">Postcard: 6x11.5</option> -->
     <option value="8.5x11">Flyer: 8.5x11</option>
-    <option value="11x8.5">Flyer: 11x8.5</option>
+    <!-- <option value="11x8.5">Flyer: 11x8.5</option> -->
     <option value="3.5x8.5">Door hanger: 3.5x8.5</option>
   </select>
   <br><br>
@@ -19,10 +19,12 @@
     <div style="margin-right: 16px; margin-bottom: 16px;">There are no designs for this product yet.</div>
   </ng-container>
 
-  <ng-container *ngFor="let template of templates | async">
-    <div class="template" (click)="select(template)" 
-      [ngStyle]="{'background-image': 'url(' + template.thumbnail + ')', width: thumbnailSizes[size].width+'px', height: thumbnailSizes[size].height+'px'}">
-      <div class="template-title">{{ template.name }}</div>
-    </div>
+  <ng-container *ngIf="size">
+      <ng-container *ngFor="let template of templates | async">
+        <div class="template" (click)="select(template)"
+        [ngStyle]="{'background-image': 'url(' + template.thumbnail + ')', width: thumbnailSizes[size]?.width+'px', height: thumbnailSizes[size]?.height+'px'}">
+        <div class="template-title">{{ template.name }}</div>
+      </div>
+    </ng-container>
   </ng-container>
 </div>

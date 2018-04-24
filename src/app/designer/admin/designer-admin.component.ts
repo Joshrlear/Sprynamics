@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, HostListener } from '@angular/core';
 import { Http } from '@angular/http';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../core/auth.service';
@@ -14,6 +14,7 @@ import 'webfontloader';
 declare let WebFont;
 
 import 'fabric';
+import { fabricObjectFields } from '#app/designer/fabric-object-fields';
 declare let fabric;
 
 @Component({
@@ -77,6 +78,7 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
   ) { }
 
   ngOnInit() {
+    fabric.Object.prototype.transparentCorners = false;
     this.loadingFonts = true;
     this.http.get('https://www.googleapis.com/webfonts/v1/webfonts?sort=popularity&key=AIzaSyA-kEmBuQZhfrdS1Rije3syG3tCu8OGVcM')
       .take(1).subscribe(res => {
@@ -99,12 +101,35 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
     });
 
     // Load product type from query parameter
-    this.route.queryParamMap.take(1).subscribe((queryParamMap: any) => {
-      const product = queryParamMap.params['product'];
-      if (product) {
-        this.template.productType = this.productTypes[product];
-      }
-    })
+    // this.route.queryParamMap.take(1).subscribe((queryParamMap: any) => {
+    //   const product = queryParamMap.params['product'];
+    //   if (product) {
+    //     this.template.productType = this.productTypes[product];
+    //   }
+    // })
+  }
+
+  // @HostListener('window:resize', ['$event'])
+  // onResize(event?) {
+  //   this.canvas.setWidth(this.view.nativeElement.clientWidth);
+  //   this.canvas.setHeight(this.view.nativeElement.clientHeight);
+  //   // this.canvas.calcOffset();
+  //   const objects = this.canvas.getObjects();
+  //   const selection = new fabric.ActiveSelection(objects, { canvas: this.canvas });
+  //   const width = selection.width;
+  //   const height = selection.height;
+  //   const scale = this.canvas.height / height;
+  //   // selection.scale(scale);
+  //   selection.center();
+  //   selection.destroy();
+  //   this.canvas.zoomToPoint(new fabric.Point(this.canvas.width / 2, this.canvas.height / 2), Math.min(scale, 1));
+  // }
+
+  getCanvasWidth() {
+    return this.canvas.width / this.canvas.getZoom();
+  }
+  getCanvasHeight() {
+    return this.canvas.height / this.canvas.getZoom();
   }
 
   ngAfterViewInit() {
@@ -174,6 +199,7 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
       if (!event.e.ctrlKey) {
         this.aligner.alignDragging(event.target, this.canvas);
       }
+      console.log(event.target.left);
     });
 
     // Auto-align when scaling
@@ -188,21 +214,23 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
     this.clearCanvas();
     this.past = [];
 
-    // fabric.loadSVGFromURL('assets/flyer5.svg', (objects, options) => {
-    //   objects.forEach(obj => console.log(obj));
-    //   const shape = fabric.util.groupSVGElements(objects, options);
-    //   this.canvas.add(shape);
-    //   // shape.set({ left: 200, top: 100 }).setCoords();
-    //   this.canvas.renderAll();
-    // }, (el, obj) => {
-    //   obj.id = el.getAttribute('id');
-    //   console.log('svg element: ' + obj.id);
-    // });
+    // load svg
+    /*
+      fabric.loadSVGFromURL('assets/flyer5.svg', (objects, options) => {
+        objects.forEach(obj => console.log(obj));
+        const shape = fabric.util.groupSVGElements(objects, options);
+        this.canvas.add(shape);
+        // shape.set({ left: 200, top: 100 }).setCoords();
+        this.canvas.renderAll();
+      }, (el, obj) => {
+        obj.id = el.getAttribute('id');
+        console.log('svg element: ' + obj.id);
+      });
+    */
   }
 
   canvasToJSON() {
-    return this.canvas.toJSON(['isHidden', 'isBoundBox', 'isBackground', 'selectable', 'hasControls', 'textContentType', 'textUserData',
-      'textFieldName', 'userEditable', 'isLogo', 'logoType', 'isUserImage']);
+    return this.canvas.toJSON(fabricObjectFields);
   }
 
   /**
@@ -294,10 +322,15 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
         height: obj.height * obj.scaleY
       }
     });
-    1
     dialogRef.afterClosed().take(1).subscribe((data) => {
       if (data) {
-        obj.setSrc(data, _ => this.canvas.renderAll());
+        obj.setSrc(data, _ => {
+          obj.set({
+            scaleX: 1,
+            scaleY: 1
+          })
+          this.canvas.renderAll()
+        });
       }
     });
   }
@@ -322,16 +355,18 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
     }
   }
 
-  clickSave() {
+  clickSave(saveNew?: boolean) {
     if (!this.template.name) {
       alert('You need to set a name for this design!');
       return;
     }
+
     this.template[this.viewSide] = this.canvasToJSON();
     const canvasData = {
       front: this.template.front,
       back: this.template.back
     };
+
     // add required fonts to template data
     const fonts = [];
     this.canvas.forEachObject((obj: any) => {
@@ -341,63 +376,91 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
       }
     });
     this.template.fonts = fonts;
+
     (new Promise((resolve, reject) => {
       const docData = this.template;
       delete docData.front;
       delete docData.back;
-      if (this.template.id) {
+      if (this.template.id && !saveNew) {
         this.firestore.update(`templates/${this.template.id}`, docData).then(_ => {
           resolve(this.template.id);
         });
       } else {
-        this.firestore.add('templates', docData).then(ref => {
-          this.template.id = ref.id;
-          resolve(ref.id);
+        const doc = this.firestore.col('templates').ref.doc();
+        docData.id = doc.id;
+        this.firestore.set(`templates/${doc.id}`, docData).then(_ => {
+          this.template.id = doc.id;
+          resolve(doc.id);
         });
       }
     })).then(id => {
-      this.storage.putJSON(canvasData, `templates/${id}.json`)
-        .take(1).subscribe(url => {
-          // this.canvas.remove(this.printArea);
-          // this.canvas.remove(this.safeArea);
-          this.canvas.zoomToPoint(new fabric.Point(this.canvas.width / 2, this.canvas.height / 2), 1);
-          console.log(this.printArea);
-          this.canvas.deactivateAll().renderAll();
-          const ctx = this.canvas.getContext('2d');
-          const imgData = ctx.getImageData(this.printArea.left, this.printArea.top, this.printArea.width, this.printArea.height);
-          const buffer = document.createElement('canvas');
-          const bufferCtx = buffer.getContext('2d');
-          buffer.width = this.printArea.width;
-          buffer.height = this.printArea.height;
-          bufferCtx.putImageData(imgData, 0, 0);
-          const dataUrl = buffer.toDataURL('image/jpeg');
-          bufferCtx.clearRect(0, 0, buffer.width, buffer.height);
-          const sizes = thumbnailSizes[this.template.productType.size];
-          buffer.width = sizes.width;
-          buffer.height = sizes.height;
-          const img = document.createElement('img');
-          img.onload = () => {
-            bufferCtx.drawImage(img, 0, 0, sizes.width, sizes.height);
-            const jpg = buffer.toDataURL('jpg');
-            // const base = this.factory.createProductBase(this.canvas);
-            // Object.assign(this, base);
-            this.canvas.sendToBack(this.printArea);
-            this.canvas.sendToBack(this.safeArea);
-            this.canvas.sendToBack(this.background);
-            this.canvas.renderAll();
-            // store thumbnail
-            this.storage.putBase64(jpg, `thumbnails/${id}.jpg`)
+      console.log(`Saving template: ${id}`)
+      this.storage.putJSONNoDownloadURL(canvasData, `templates/${id}.json`)
+        .then().then(file => {
+          const url = file.downloadURL;
+          console.log('StorageService subscription returned URL: ' + url)
+          if (url) {
+            // create thumbnail
+            const thumbData = this.createThumbnail();
+            this.storage.putBase64(thumbData, `thumbnails/${id}.jpg`)
               .then().then(thumbnail => {
-                // zoom back out again
-                this.canvas.zoomToPoint(new fabric.Point(this.canvas.width / 2, this.canvas.height / 2), 0.35);
+                console.log('Uploaded thumbnail to storage at URL: ' + thumbnail.downloadURL);
                 this.template.thumbnail = thumbnail.downloadURL;
                 this.template.url = url;
-                this.firestore.update(`templates/${id}`, { url, thumbnail: thumbnail.downloadURL });
+                this.firestore.update(`templates/${id}`, { url, thumbnail: thumbnail.downloadURL })
+                  .then(() => {
+                    console.log('Finished saving template.');
+                  })
               });
           }
-          img.src = dataUrl;
         });
     });
+  }
+
+  createThumbnail() {
+    const sizes = thumbnailSizes[this.template.productType.size];
+
+    console.log('canvas width: ' + this.canvas.width);
+    console.log('print left: ' + this.printArea.left);
+    console.log('canvas height: ' + this.canvas.height);
+    console.log('print top: ' + this.printArea.top);
+
+    const cropTop = 82;
+
+    const dataUrl = this.canvas.toDataURL({
+      format: 'jpg',
+      left: this.canvas.width + this.printArea.left * 2,
+      top: cropTop,
+      width: this.printArea.width * this.canvas.getZoom(),
+      height: this.printArea.height * this.canvas.getZoom(),
+      multiplier: sizes.width / (this.printArea.width * this.canvas.getZoom())
+    });
+
+    // opens window for testing
+    /** 
+      const iframe = `
+        <div>
+          Canvas Height: ${this.canvas.height}
+        </div>
+        <div>
+          Print Top: ${this.printArea.top}
+        </div>
+        <div>
+          Crop Top: ${cropTop}
+        </div>
+        <iframe width='100%' height='100%' src=${dataUrl}></iframe>
+      `;
+      const x = window.open();
+      x.document.open();
+      x.document.write(iframe);
+      x.document.close();
+    */
+
+    return dataUrl;
+  }
+
+  clickSaveNew() {
+    this.clickSave(true);
   }
 
   loadTemplate(template: any) {
@@ -408,9 +471,9 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
     this.storage.getFile(template.url).take(1).subscribe(data => {
       this.canvas.loadFromJSON(data['front'], _ => {
         this.background = this.canvas.getObjects('rect').filter(obj => obj.isBackground)[0];
-        console.log('done');
         this.disableHistory = false;
-      }, (o, obj) => console.log(o, obj));
+      });
+      this.template['back'] = data['back'];
     });
   }
 
@@ -601,6 +664,44 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
       this.forceRender(this.selection);
     }
     img.src = src;
+  }
+
+  changeClipPath() {
+    const obj = this.selection;
+    if (obj.cx1 && obj.cy1 &&
+      obj.cx2 && obj.cy2 &&
+      obj.cx3 && obj.cy3 &&
+      obj.cx4 && obj.cy4) {
+
+      console.log(obj)
+
+      this.selection.set({
+        clipTo: function (ctx) {
+          // ctx.arc(0, 0, 50, 0, Math.PI * 2, true);
+          ctx.beginPath();
+          ctx.moveTo(this.cx1, this.cy1);
+          ctx.lineTo(this.cx2, this.cy2);
+          ctx.lineTo(this.cx3, this.cy3);
+          ctx.lineTo(this.cx4, this.cy4);
+          ctx.lineTo(this.cx1, this.cy1);
+          ctx.fill();
+        }
+      });
+
+      this.canvas.renderAll();
+    }
+  }
+
+  removeExtraLines() {
+    // reverse ability to edit
+    this.canvas.forEachObject((obj) => {
+      if (obj.isHidden) {
+        obj.set({
+          selectable: !obj.selectable,
+          hasControls: !obj.hasControls
+        })
+      }
+    });
   }
 
   addImageFiles(files: FileList) {

@@ -20,10 +20,12 @@
       "prefix": "app",
       "styles": [
         "styles.scss",
-        "sprynamics.theme.scss"
+        "sprynamics.theme.scss",
+        "../node_modules/cropperjs/dist/cropper.min.css"
       ],
       "scripts": [
-        "../node_modules/jquery/dist/jquery.min.js"
+        "../node_modules/jquery/dist/jquery.min.js",
+        "../node_modules/cropperjs/dist/cropper.min.js"
       ],
       "environmentSource": "environments/environment.ts",
       "environments": {
@@ -58,7 +60,6 @@
   },
   "defaults": {
     "styleExt": "scss",
-    "component": {
-    }
+    "component": {}
   }
 }
