@@ -390,14 +390,13 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
     })[0];
     this.factory.extendFabricObject(this.boundBox, ['isBoundBox']);
     this.canvas.clipTo = (ctx) => {
-      // this.canvas.getObjects('rect').filter(obj => obj.isBoundBox === true)[0].render(ctx);
       const c = this.boundBox.getCoords();
       const x = c[0].x;
       const y = c[0].y;
-      // ctx.strokeStyle = '#000000';
-      // ctx.fillStyle = '#000000';
-      ctx.rect(this.boundBox.left, this.boundBox.top,
-        this.boundBox.width, this.boundBox.height);
+      const canvasCenter = this.canvas.getCenter();
+      const zoom = this.canvas.getZoom();
+      const bound = this.boundBox.getBoundingRect(false);
+      ctx.rect(bound.left, bound.top, bound.width, bound.height);
     }
     // now we center all objects
     const center = this.canvas.getCenter();

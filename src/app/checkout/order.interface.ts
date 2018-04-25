@@ -9,6 +9,7 @@ export interface Order {
   shippingCost?: number;
   total?: number;
   customerId?: string;
+  product?: string;
   shipping?: {
     firstName: string;
     lastName: string;

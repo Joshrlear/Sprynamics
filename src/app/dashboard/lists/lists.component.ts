@@ -5,7 +5,6 @@ import { ViewListDialogComponent } from '#shared/view-list-dialog/view-list-dial
 import { Observable } from 'rxjs/Observable';
 import { FirestoreService } from '#core/firestore.service';
 import { AuthService } from '#core/auth.service';
-import { PapaParseService } from 'ngx-papaparse';
 
 import * as moment from 'moment';
 
@@ -20,10 +19,11 @@ export class ListsComponent implements OnInit {
 
   @Input('agent') agent: any;
 
-  constructor(private dialog: MatDialog,
+  constructor(
+    private dialog: MatDialog,
     private firestore: FirestoreService,
     private auth: AuthService,
-    private papa: PapaParseService) { }
+  ) { }
 
   ngOnInit() {
     this.auth.user.take(1).subscribe(user => {

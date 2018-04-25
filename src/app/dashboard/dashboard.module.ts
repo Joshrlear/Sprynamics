@@ -11,13 +11,15 @@ import { OrdersComponent } from './orders/orders.component';
 import { ProfileComponent } from './profile/profile.component';
 import { AddAgentDialogComponent } from './agents/add-agent-dialog/add-agent-dialog.component';
 import { ViewAgentComponent } from './agents/view-agent/view-agent.component';
+import { AdminComponent } from './admin/admin.component';
 
 const routes: Routes = [
   { path: '', component: ProfileComponent },
   { path: 'agents', component: AgentsComponent },
   { path: 'agents/:agentId', component: ViewAgentComponent },
   { path: 'orders', component: OrdersComponent },
-  { path: 'lists', component: ListsComponent }
+  { path: 'lists', component: ListsComponent },
+  { path: 'admin', component: AdminComponent }
 ];
 
 @NgModule({
@@ -34,6 +36,7 @@ const routes: Routes = [
     ProfileComponent,
     AddAgentDialogComponent,
     ViewAgentComponent,
+    AdminComponent,
   ],
   entryComponents: [
     AddAgentDialogComponent,

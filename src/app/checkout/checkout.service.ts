@@ -7,6 +7,7 @@ import { AuthService } from '#core/auth.service';
 import { FirestoreService } from '#core/firestore.service';
 import { Router } from '@angular/router';
 import { AngularFirestore } from 'angularfire2/firestore';
+import { StorageService } from '#core/storage.service';
 
 @Injectable()
 export class CheckoutService {
@@ -22,12 +23,16 @@ export class CheckoutService {
 
   thumbnail: string;
 
-  constructor(private http: Http,
+  pricing: any;
+
+  constructor(
+    private afs: AngularFirestore,
     private auth: AuthService,
     private firestore: FirestoreService,
+    private http: Http,
     private router: Router,
-    private afs: AngularFirestore) {
-  }
+    private storage: StorageService
+  ) { }
 
   initOrder() {
     return new Promise((resolve, reject) => {
@@ -55,6 +60,17 @@ export class CheckoutService {
   private _initialize(user) {
     console.log(user);
     return new Promise((resolve, reject) => {
+      // download pricing file
+      this.storage.getDownloadURL('pricing.json')
+        .take(1)
+        .subscribe((downloadUrl: string) => {
+          this.storage.getFile(downloadUrl)
+            .take(1)
+            .subscribe((pricing) => {
+              this.pricing = pricing;
+            });
+        });
+
       if (user.currentOrder) {
         this.firestore.doc$(`orders/${user.currentOrder}`).take(1).subscribe(order => {
           this._order.next(order);
@@ -145,6 +161,12 @@ export class CheckoutService {
   }
 
   calculatePricing(amt: number) {
+    const product = this._order.getValue().product || 'postcard';
+    // round up to the nearest 50
+    const roundedQuantity = Math.ceil(amt / 50) * 50;
+    const quantityPosition = roundedQuantity / 50;
+    const priceForQuantity = parseFloat(this.pricing[product][quantityPosition]);
+
     const pricing: any = {};
     if (!amt) {
       pricing.subtotal = 0;
@@ -154,7 +176,7 @@ export class CheckoutService {
     }
     amt *= 0.99;
     amt += 20; // design cost
-    pricing.subtotal = amt;
+    pricing.subtotal = priceForQuantity;
     if (amt <= 15) pricing.shipping = 4.99;
     else if (amt <= 20) pricing.shipping = 5.99;
     else if (amt <= 30) pricing.shipping = 6.49;
@@ -166,7 +188,7 @@ export class CheckoutService {
     else if (amt <= 300) pricing.shipping = 16.99;
     else if (amt <= 500) pricing.shipping = 23.99;
     else pricing.shipping = 23.99;
-    pricing.total = amt + pricing.shipping;
+    pricing.total = pricing.subtotal + pricing.shipping;
 
     return pricing;
   }

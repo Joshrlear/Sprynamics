@@ -17,6 +17,10 @@ export class StorageService {
     return this.storage.ref(path).putString(JSON.stringify(data)).downloadURL();
   }
 
+  putPrettyJSON(data: any, path: string, numSpaces: number = 2) {
+    return this.storage.ref(path).putString(JSON.stringify(data, null, numSpaces)).downloadURL();
+  }
+
   putJSONNoDownloadURL(data: any, path: string) {
     return this.storage.ref(path).putString(JSON.stringify(data));
   }
