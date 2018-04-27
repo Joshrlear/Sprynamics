@@ -305,7 +305,10 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
     const lastColor = new fabric.Color(this.template.presetColors[index]);
     this.canvas.forEachObject(obj => {
       if ((new fabric.Color(obj.fill)).toHexa() === lastColor.toHexa()) {
-        obj.set({ fill: event.color });
+        console.log(obj.type);
+        if (obj.type !== 'i-text' && obj.type !== 'textbox') {
+          obj.set({ fill: event.color });
+        }
       }
     });
     this.template.presetColors[index] = event.color;
