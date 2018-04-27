@@ -5,23 +5,33 @@
       <form class="ss-form" *ngIf="userForm" [formGroup]="userForm" (ngSubmit)="saveForm()">
         <div class="form-row">
           <div class="form-group col-md-6">
-            <label for="company">Company Name</label>
-            <input type="text" class="form-control" id="company" placeholder="Enter company name" formControlName="company" value="{{user?.company}}">
-          </div>
-          <div class="form-group col-md-6">
-            <label for="email">Email address</label>
-            <input type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email" formControlName="email" value="{{user?.email}}">
-            <!-- <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> -->
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group col-md-6">
             <label for="firstName">First Name</label>
             <input type="text" class="form-control" id="firstName" placeholder="Enter first name" formControlName="firstName" value="{{user?.firstName}}">
           </div>
           <div class="form-group col-md-6">
             <label for="lastName">Last Name</label>
             <input type="text" class="form-control" id="lastName" placeholder="Enter last name" formControlName="lastName" value="{{user?.lastName}}">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="email">Email address</label>
+            <input type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email" formControlName="email" value="{{user?.email}}">
+            <!-- <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> -->
+          </div>
+          <div class="form-group col-md-6">
+            <label for="phoneNumber">Phone Number</label>
+            <input type="tel" class="form-control" id="phoneNumber" placeholder="Enter phone number" formControlName="phoneNumber" value="{{user?.phoneNumber}}">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="company">Company Name</label>
+            <input type="text" class="form-control" id="company" placeholder="Enter company name" formControlName="company" value="{{user?.company}}">
+          </div>
+          <div class="form-group col-md-6">
+            <label for="website">Website</label>
+            <input type="text" class="form-control" id="website" placeholder="Enter website" formControlName="website" value="{{user?.website}}">
           </div>
         </div>
         <div class="form-row">

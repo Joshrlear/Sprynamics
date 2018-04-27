@@ -9,6 +9,8 @@ export interface User {
   state: string;
   zipCode: string;
   country: string;
+  phoneNumber: string;
+  website: string;
   company: string;
   licenseId: string;
   avatarUrl: string;

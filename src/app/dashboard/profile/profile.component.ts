@@ -50,22 +50,23 @@ export class ProfileComponent implements OnInit {
 
   buildForm() {
     this.userForm = this.fb.group({
-      'email': [this.user.email, Validators.email],
       'firstName': [this.user.firstName],
       'lastName': [this.user.lastName],
+      'email': [this.user.email, Validators.email],
+      'phoneNumber': [this.user.phoneNumber],
+      'company': [this.user.company],
+      'website': [this.user.website],
       'address1': [this.user.address1],
       'address2': [this.user.address2],
       'city': [this.user.city],
       'state': [this.user.state],
       'zipCode': [this.user.zipCode],
       'country': [this.user.country],
-      'company': [this.user.company],
       'licenseId': [this.user.licenseId]
     });
   }
 
   saveForm() {
-    console.log(this.agent);
     this.firestore.update(`users/${this.user.uid}`, this.userForm.value);
     window.alert('Your changes have been saved.');
   }

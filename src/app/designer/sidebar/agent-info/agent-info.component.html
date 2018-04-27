@@ -19,18 +19,23 @@
     </label>
   </div>
   <div>
-    <label>Company:
-      <input class="form-control" [(ngModel)]="selectedAgent.company" (input)="onChangeAgent()">
-    </label>
-  </div>
-  <div>
     <label>Email:
       <input class="form-control" type="email" [(ngModel)]="selectedAgent.email" (input)="onChangeAgent()">
     </label>
   </div>
   <div>
     <label>Phone Number:
-      <input class="form-control" type="tel" [(ngModel)]="selectedAgent.phoneNumber" (input)="onChangeAgent()">
+        <input class="form-control" type="tel" [(ngModel)]="selectedAgent.phoneNumber" (input)="onChangeAgent()">
+    </label>
+  </div>
+  <div>
+    <label>Company:
+      <input class="form-control" [(ngModel)]="selectedAgent.company" (input)="onChangeAgent()">
+    </label>
+  </div>
+  <div>
+    <label>Website:
+      <input class="form-control" [(ngModel)]="selectedAgent.website" (input)="onChangeAgent()">
     </label>
   </div>
   <div>
