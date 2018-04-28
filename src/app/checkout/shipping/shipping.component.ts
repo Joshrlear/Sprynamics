@@ -111,15 +111,19 @@ export class ShippingComponent implements OnInit, OnDestroy {
   updateQuantity(amt) {
     const quantity = parseInt(amt);
     const pricing = this.checkout.calculatePricing(quantity);
-    this.checkout.updateOrder('quantity', quantity);
-    this.checkout.updateOrder('subtotal', pricing.subtotal);
-    this.checkout.updateOrder('shippingCost', pricing.shipping);
-    this.checkout.updateOrder('total', pricing.total);
+    this.checkout.updateOrder({
+      quantity,
+      subtotal: pricing.subtotal,
+      shippingCost: pricing.shipping,
+      total: pricing.total
+    });
   }
 
   continue() {
-    this.checkout.updateOrder('shipping', this.shippingForm.value);
-    this.checkout.updateOrder('isMailingList', this.mailingList);
+    this.checkout.updateOrder({
+      shipping: this.shippingForm.value,
+      isMailingList: this.mailingList
+    });
     this.router.navigate(['/checkout/payment-method']);
   }
 

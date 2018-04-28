@@ -11,6 +11,9 @@ export class ConfirmComponent implements OnInit {
   constructor(public checkout: CheckoutService) { }
 
   ngOnInit() {
+    this.checkout.order.subscribe(order => {
+      console.log(order);
+    })
   }
 
 }

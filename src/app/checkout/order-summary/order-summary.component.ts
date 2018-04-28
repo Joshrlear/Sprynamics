@@ -64,7 +64,7 @@ export class OrderSummaryComponent implements OnInit, OnDestroy {
           if (err) {
             window.alert(err.message);
           } else {
-            this.checkout.updateOrder('nonce', payload.nonce);
+            this.checkout.updateOrder({ nonce: payload.nonce });
             this.checkout.submitOrder();
           }
         });

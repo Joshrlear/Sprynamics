@@ -2,7 +2,8 @@ import { Observable } from "rxjs/Observable";
 
 export interface Order {
   uid?: string;
-  orderId?: number;
+  id?: string;
+  nonce?: string;
   token$?: Observable<string>;
   quantity?: number;
   subtotal?: number;
@@ -22,4 +23,6 @@ export interface Order {
   createdAt?: any;
   submitted?: boolean;
   propertyAddress?: any;
+  isMailingList?: boolean;
+  pdfUrl?: string;
 }

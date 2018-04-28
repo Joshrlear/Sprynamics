@@ -101,8 +101,9 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
           const querySize = queryParamMap.params['size'];
           if (queryProduct && querySize) {
             this.size = querySize;
-            this.checkout.updateOrder('product', queryProduct);
-            this.checkout.updateOrder('size', querySize);
+            this.checkout.updateOrder({ 
+              product: queryProduct,
+            });
           } else {
             this.router.navigate(['/products']);
           }
@@ -576,8 +577,11 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
               this.loadingProgress = snap;
             });
             task.then().then(pdfSnapshot => {
-              this.checkout.updateOrder('pdfUrl', pdfSnapshot.downloadURL);
-              this.checkout.updateOrder('propertyAddress', this.propertyAddress ? this.propertyAddress.formatted_address : '');
+              console.log(this.propertyAddress);
+              this.checkout.updateOrder({
+                pdfUrl: pdfSnapshot.downloadURL,
+                propertyAddress: this.propertyAddress ? this.propertyAddress.formatted_address : ''
+              })
               pdfCanvas.dispose();
               canvas.remove();
               this.router.navigate(['/checkout']);

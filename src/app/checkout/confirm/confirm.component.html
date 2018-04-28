@@ -3,5 +3,6 @@
 </div>
 <ng-container *ngIf="!checkout.loading">
   <h2>Thank you for your order!</h2>
-  <h5>Your order ID is: {{ (checkout.order | async)?.orderId }}</h5>
+  <h5>Your order ID is: {{ (checkout.order | async)?.id }}</h5>
+  <app-order-receipt></app-order-receipt>
 </ng-container>

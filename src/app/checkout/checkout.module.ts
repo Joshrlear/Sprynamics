@@ -8,6 +8,7 @@ import { ShippingComponent } from './shipping/shipping.component';
 import { PaymentComponent } from './payment/payment.component';
 import { ConfirmComponent } from './confirm/confirm.component';
 import { OrderSummaryComponent } from './order-summary/order-summary.component';
+import { OrderReceiptComponent } from './order-receipt/order-receipt.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'shipping-info', pathMatch: 'full' },
@@ -26,7 +27,8 @@ const routes: Routes = [
     ShippingComponent,
     PaymentComponent,
     ConfirmComponent,
-    OrderSummaryComponent
+    OrderSummaryComponent,
+    OrderReceiptComponent
   ],
   providers: [  ]
 })
