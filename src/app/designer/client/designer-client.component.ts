@@ -502,6 +502,7 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
 
   saveAndContinue() {
     console.log('saving');
+    // create PDF from canvas
     const canvas = document.createElement('canvas');
     canvas.id = 'pdf_canvas';
     canvas.width = (this.template.productType.width + productSpecs.bleedInches * 2) * productSpecs.dpi;

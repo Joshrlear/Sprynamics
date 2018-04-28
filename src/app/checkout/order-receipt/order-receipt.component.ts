@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Order } from '#app/checkout/order.interface';
+import { Observable } from 'rxjs/Observable';
 
 @Component({
   selector: 'app-order-receipt',
@@ -8,7 +9,7 @@ import { Order } from '#app/checkout/order.interface';
 })
 export class OrderReceiptComponent implements OnInit {
 
-  @Input('order') order: Order;
+  @Input('order') order: Observable<Order>;
 
   constructor() { }
 

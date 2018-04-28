@@ -85,7 +85,7 @@ export class CheckoutService {
         const orderId = this.afs.collection('orders').ref.doc().id;
         this.firestore.set(`orders/${orderId}`, { id: orderId, uid: user.uid, submitted: false }).then(_ => {
           this.firestore.upsert(`users/${user.uid}`, { currentOrder: orderId }).then(_ => {
-            this.updateOrder({ id: orderId, submitted: false });
+            this.updateOrder({ id: orderId, firstName: user.firstName, lastName: user.lastName, submitted: false });
             this.setUser(user).then(_ => {
               this.initialized = true;
               resolve();
@@ -126,6 +126,7 @@ export class CheckoutService {
     const data = this._order.getValue();
     Object.assign(data, partialOrder);
     this._order.next(data);
+    this.firestore.update(`orders/${this._order.getValue().id}`, partialOrder);
   }
 
   /**
@@ -135,8 +136,11 @@ export class CheckoutService {
   generateToken(uid?: string) {
     const token$ = this.http.post('https://us-central1-sprynamics.cloudfunctions.net/getClientToken',
       { customerId: uid || this._order.getValue().customerId })
-      .map((res: any) => JSON.parse(res._body).token);
-    this.updateOrder({ token$ });
+        .map((res: any) => JSON.parse(res._body).token);
+    token$.take(1).subscribe(token => {
+      this.updateOrder({ token });
+    });
+    console.log('Generated token', token$);
     return token$;
   }
 

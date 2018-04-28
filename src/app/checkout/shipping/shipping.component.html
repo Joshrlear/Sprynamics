@@ -79,7 +79,7 @@
         <p style="color: rgba(0,0,0,.54);font-weight: 600;font-size: 10px; text-transform: uppercase;">Select a list to send your items to</p>
         <div class="form-row">
           <div class="form-group col-xs-12">
-            <select type="number" max="10000" class="form-control" formControlName="mailingListId" autofocus>
+            <select type="number" max="10000" class="form-control" [(ngModel)]="mailingListId" [ngModelOptions]="{standalone: true}" autofocus (change)="setMailingList()">
               <option value="" selected disabled hidden>Select a mailing list</option>
               <option *ngFor="let list of lists | async" [value]="list.id">{{ list.title }}</option>
             </select>
@@ -90,7 +90,7 @@
         </div>
       </div>
       <div class="form-action">
-        <button class="btn checkout-button" type="button" (click)="continue()" [disabled]="shippingForm.invalid || !quantity.value">Continue Checkout</button>
+        <button class="btn checkout-button" type="button" (click)="continue()" [disabled]="!isValid()">Continue Checkout</button>
       </div>
     </form>
   </div>

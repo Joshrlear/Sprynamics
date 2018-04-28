@@ -19,7 +19,7 @@
             <table border="0" cellpadding="24" cellspacing="0" width="100%" id="emailBody">
               <tr>
                 <td align="left" valign="top">
-                  Hey, {{order?.shipping.firstName}}.
+                  Hey, {{(order | async)?.firstName}}.
                   <br>
                   <br> We'd like to thank you for choosing Sprynamics. Your payment overview is below.
                 </td>
@@ -37,13 +37,13 @@
                           </tr>
                           <tr>
                             <td id="product-title" align="left" valign="top">
-                              <span style="color:#34383e; font-size: 14px; font-weight: 500;">Sprynamics Postcard (5 x 8)</span>
+                              <span style="color:#34383e; font-size: 14px; font-weight: 500;">Sprynamics {{(order | async)?.product}}</span>
                             </td>
                           </tr>
                           <tr>
                             <td id="product-qty" align="left" valign="top">
                               <span style="color:#34383e; font-size: 14px; font-weight: 500;">Qty:</span>
-                              <span style="font-size: 14px; color: #666;">1</span>
+                              <span style="font-size: 14px; color: #666;">{{(order | async)?.quantity}}</span>
                             </td>
                           </tr>
                           <hr>
@@ -55,7 +55,7 @@
                                     <span style="color:#34383e; font-size: 14px; font-weight: 500;">Subtotal:</span>
                                   </td>
                                   <td align="right" valign="top">
-                                    <span style="font-size: 14px; color: #36cc7b;">$19.99</span>
+                                    <span style="font-size: 14px; color: #36cc7b;">${{(order | async)?.subtotal}}</span>
                                   </td>
                                 </tr>
                                 <tr id="shipping">
@@ -63,7 +63,7 @@
                                     <span style="color:#34383e; font-size: 14px; font-weight: 500;">Shipping & Handling:</span>
                                   </td>
                                   <td align="right" valign="top">
-                                    <span style="font-size: 14px; color: #36cc7b;">$0.00</span>
+                                    <span style="font-size: 14px; color: #36cc7b;">${{(order | async)?.shippingCost}}</span>
                                   </td>
                                 </tr>
                                 <tr id="tax">
@@ -79,7 +79,7 @@
                                     <span style="color:#34383e; font-size: 14px; font-weight: 500;">Total:</span>
                                   </td>
                                   <td align="right" valign="top">
-                                    <span style="font-size: 14px; color: #36cc7b;">$22.98</span>
+                                    <span style="font-size: 14px; color: #36cc7b;">${{(order | async)?.total}}</span>
                                   </td>
                                 </tr>
                               </table>
@@ -96,15 +96,17 @@
                           </tr>
                           <tr>
                             <td align="left" valign="top">
-                              <span style="color: #666; font-size: 12px;">Royce Shayegan
-                                <br>
-                                <a href="">2299 65th PL N</a>
-                                <br>
-                                <a href="">Saint Petersburg,</a>
-                                <a href="">FL</a>
-                                <a href="">33702</a>
-                                <a href="">-6361</a>
-                              </span>
+                              <ng-container *ngIf="(order | async)?.shipping as shipping">
+                                <span style="color: #666; font-size: 12px;">{{shipping.firstName}} {{shipping.lastName}}
+                                  <br>
+                                  <span style="color: #36cc7b">{{shipping.address1}}</span>
+                                  <span style="color: #36cc7b" *ngIf="shipping.address2">{{shipping.address2}}</span>
+                                  <br>
+                                  <span style="color: #36cc7b">{{shipping.city}}</span>
+                                  <span style="color: #36cc7b">{{shipping.state}}</span>
+                                  <span style="color: #36cc7b">{{shipping.zipCode}}</span>
+                                </span>
+                              </ng-container>
                             </td>
                           </tr>
                           <hr style="margin-top: .1rem; margin-bottom: .1rem;">
@@ -120,7 +122,7 @@
                             <td align="left" valign="top">
                               <span style="color:#34383e; font-size: 14px; font-weight: 500;">Order Number:</span>
                               <br>
-                              <span style="color: #36cc7b; font-size: 12px;">C00020476708</span>
+                              <span style="color: #36cc7b; font-size: 12px;">{{(order | async)?.id}}</span>
                             </td>
                           </tr>
                           <hr style="margin-top: .1rem; margin-bottom: .1rem;">
@@ -128,7 +130,7 @@
                             <td align="left" valign="top">
                               <span style="color:#34383e; font-size: 14px; font-weight: 500;">Order Date:</span>
                               <br>
-                              <span style="color: #36cc7b; font-size: 12px;">02/10/2018</span>
+                              <span style="color: #36cc7b; font-size: 12px;">{{(order | async)?.createdAt}}</span>
                             </td>
                           </tr>
                         </table>

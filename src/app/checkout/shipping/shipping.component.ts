@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, ElementRef } from '@angular/core';
 import { AuthService } from '#core/auth.service';
 import { Subscription } from 'rxjs/Subscription';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -18,14 +18,15 @@ import { Order } from '#app/checkout/order.interface';
 export class ShippingComponent implements OnInit, OnDestroy {
 
   singleAddress = true;
-  mailingList = false;
+  isMailingList = false;
 
-  @ViewChild('quantity') quantityInput;
+  @ViewChild('quantity') quantityInput: ElementRef;
 
   userSub: Subscription;
   user: any;
 
   lists: Observable<any[]>;
+  mailingListId: string;
 
   shippingForm: FormGroup;
 
@@ -42,7 +43,22 @@ export class ShippingComponent implements OnInit, OnDestroy {
       if (!user.currentOrder) {
         this.router.navigate(['/products']);
       }
-      this.lists = this.firestore.colWithIds$('lists', ref => ref.where('uid', '==', user.uid).orderBy('createdAt', 'desc'));
+
+      // load mailing lists
+      this.firestore.colWithIds$('users', ref => ref.where(`managers.${user.uid}`, '==', true))
+        .take(1).subscribe(agents => {
+          const userLists$ = this.firestore.colWithIds$('lists', ref => ref.where('uid', '==', user.uid).orderBy('createdAt', 'desc'))
+            .map((lists: any) => { lists.forEach(list => list.agent = 'Me'); return lists });
+          const listObservables = [userLists$];
+          agents.forEach(agent => {
+            const agentLists$ = this.firestore.colWithIds$('lists', ref => ref.where('uid', '==', agent.uid).orderBy('createdAt', 'desc'))
+              .map((lists: any) => { lists.forEach(list => list.agent = agent.firstName + ' ' + agent.lastName); return lists });
+            listObservables.push(agentLists$);
+          });
+          this.lists = this.firestore.combine(listObservables);
+        });
+      
+      // load order
       if (this.checkout.initialized) {
         this.loadOrder();
       } else {
@@ -79,19 +95,18 @@ export class ShippingComponent implements OnInit, OnDestroy {
       'address2': [obj.address2 || ''],
       'city': [obj.city || '', Validators.required],
       'state': [obj.state || '', Validators.required],
-      'zipCode': [obj.zipCode || '', Validators.required],
-      'mailingListId': ['']
+      'zipCode': [obj.zipCode || '', Validators.required]
     });
   }
 
   chooseSingleAddress() {
     this.singleAddress = true;
-    this.mailingList = false;
+    this.isMailingList = false;
   }
 
   chooseMailingList() {
     this.singleAddress = false;
-    this.mailingList = true;
+    this.isMailingList = true;
   }
 
   uploadList(file: File) {
@@ -104,8 +119,14 @@ export class ShippingComponent implements OnInit, OnDestroy {
     });
   }
 
-  submitForm() {
-
+  setMailingList() {
+    if (!this.mailingListId) {
+      return;
+    }
+    this.firestore.doc$(`lists/${this.mailingListId}`)
+      .take(1).subscribe((mailingList: any) => {
+        this.updateQuantity(mailingList.rowCount);
+      });
   }
 
   updateQuantity(amt) {
@@ -120,11 +141,28 @@ export class ShippingComponent implements OnInit, OnDestroy {
   }
 
   continue() {
-    this.checkout.updateOrder({
-      shipping: this.shippingForm.value,
-      isMailingList: this.mailingList
-    });
+    if (this.isMailingList) {
+      this.checkout.updateOrder({
+        mailingListId: this.mailingListId,
+        isMailingList: true
+      });
+    } else {
+      this.checkout.updateOrder({
+        shipping: this.shippingForm.value,
+        isMailingList: false
+      });
+    }
     this.router.navigate(['/checkout/payment-method']);
+  }
+
+  isValid() {
+    if (this.isMailingList) {
+      return this.mailingListId;
+    } else if (this.quantityInput) {
+      return this.shippingForm.valid && this.quantityInput.nativeElement.value;
+    } else {
+      return false;
+    }
   }
 
 }
