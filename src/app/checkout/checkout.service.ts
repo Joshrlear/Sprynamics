@@ -155,6 +155,7 @@ export class CheckoutService {
       // this.firestore.update(`orders/${this._order.getValue().orderId}`, this._order.getValue());
       this.http.post('https://us-central1-sprynamics.cloudfunctions.net/checkout', this._order.getValue())
         .take(1).subscribe((res: any) => {
+          console.log(res);
           // window.alert((JSON.parse(res._body)).message);
           this.loading = false;
           // remove the current order from the user, since it's been submitted

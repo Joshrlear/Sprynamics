@@ -98,16 +98,15 @@ exports.checkout = functions.https.onRequest((req, res) => {
         console.error(err.message);
         res.status(400).send({ message: err.message });
       } else {
-        res.status(200).send({ message: 'Success!' });
         // store into the orders database
         delete req.body.token$; // remove the client token observable
         req.body.createdAt = admin.firestore.FieldValue.serverTimestamp(); // add timestamp
-        admin.firestore().doc(`orders/${req.body.orderId}`).set(req.body); // add order to database
+        //admin.firestore().doc(`orders/${req.body.id}`).set(req.body); // add order to database
         // send email receipt
         const emailReceipt = {
           from: 'Sprynamics <noreply@notifications.sprynamics.com>',
           to: 'audererm@gmail.com',
-          subject: 'Your order with Sprynamics',
+          subject: `Your order with Sprynamics: ${req.body.id}`,
           html: require('./mail_templates/order_receipt')(req.body)
         }
         console.log('sending email');
@@ -123,7 +122,7 @@ exports.checkout = functions.https.onRequest((req, res) => {
           from: 'Sprynamics <noreply@notifications.sprynamics.com>',
           // to: 'jeffrey.wallace@comcast.net',
           to: 'audererm@gmail.com',
-          subject: `${req.body.name}, ${req.body.propertyAddress}, ${req.body.product} ${req.body.size}`,
+          subject: `${req.body.firstName} ${req.body.lastName}, ${req.body.propertyAddress}, ${req.body.product} ${req.body.size}`,
           html: `
             <div>Hi Jeff,</div>
             <br>
@@ -153,6 +152,7 @@ exports.checkout = functions.https.onRequest((req, res) => {
           if (err) console.error(err);
           console.log(body);
           console.log('email sent to printer');
+          res.status(200).send({ message: 'Success!' });
         });
       }
     })

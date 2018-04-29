@@ -20,7 +20,7 @@ module.exports = function (order) {
                             <table border="0" cellpadding="24" cellspacing="0" width="100%" id="emailBody">
                                 <tr>
                                     <td align="left" valign="top">
-                                        Hey, Royce. 
+                                        Hey, ${order.firstName}. 
                                         <br><br>
                                         We'd like to thank you for choosing Sprynamics. Your payment overview is below.
                                     </td>
@@ -38,12 +38,12 @@ module.exports = function (order) {
                                             </tr>
                                             <tr>
                                               <td id="product-title" align="left" valign="top">
-                                                <span style="color:#34383e; font-size: 14px; font-weight: 500;">Sprynamics Postcard (5 x 8)</span>
+                                                <span style="color:#34383e; font-size: 14px; font-weight: 500;">Sprynamics ${order.product}</span>
                                               </td>
                                             </tr>
                                             <tr>
                                               <td id="product-qty" align="left" valign="top">
-                                                <span style="color:#34383e; font-size: 14px; font-weight: 500;">Qty:</span> <span style="font-size: 14px; color: #666;">1</span>
+                                                <span style="color:#34383e; font-size: 14px; font-weight: 500;">Qty:</span> <span style="font-size: 14px; color: #666;">${order.quantity}</span>
                                               </td>
                                             </tr>
                                             <hr>
@@ -55,7 +55,7 @@ module.exports = function (order) {
                                                       <span style="color:#34383e; font-size: 14px; font-weight: 500;">Subtotal:</span>
                                                     </td>
                                                     <td align="right" valign="top">
-                                                      <span style="font-size: 14px; color: #36cc7b;">$19.99</span>
+                                                      <span style="font-size: 14px; color: #36cc7b;">$${order.subtotal}</span>
                                                     </td>
                                                   </tr>
                                                   <tr id="shipping">
@@ -63,7 +63,7 @@ module.exports = function (order) {
                                                       <span style="color:#34383e; font-size: 14px; font-weight: 500;">Shipping & Handling:</span>
                                                     </td>
                                                     <td align="right" valign="top">
-                                                      <span style="font-size: 14px; color: #36cc7b;">$0.00</span>
+                                                      <span style="font-size: 14px; color: #36cc7b;">$${order.shippingCost}</span>
                                                     </td>
                                                   </tr>
                                                   <tr id="tax">
@@ -79,7 +79,7 @@ module.exports = function (order) {
                                                       <span style="color:#34383e; font-size: 14px; font-weight: 500;">Total:</span>
                                                     </td>
                                                     <td align="right" valign="top">
-                                                      <span style="font-size: 14px; color: #36cc7b;">$22.98</span>
+                                                      <span style="font-size: 14px; color: #36cc7b;">$${order.total}</span>
                                                     </td>
                                                   </tr>
                                                 </table>
@@ -96,11 +96,11 @@ module.exports = function (order) {
                                             </tr>
                                             <tr>
                                               <td align="left" valign="top">
-                                                <span style="color: #666; font-size: 12px;">Royce Shayegan
+                                                <span style="color: #666; font-size: 12px;">${order.shipping.firstName} ${order.shipping.lastName}
                                                   <br>
-                                                  <a href="">2299 65th PL N</a> 
+                                                  <a href="">${order.shipping.address1} ${order.shipping.address2}</a> 
                                                   <br>
-                                                  <a href="">Saint Petersburg,</a> <a href="">FL</a> <a href="">33702</a><a href="">-6361</a> 
+                                                  <a href="">${order.shipping.city},</a> <a href="">${order.shipping.state}</a> <a href="">${order.shipping.zipCode}</a><a href=""></a> 
                                                 </span>
                                               </td>
                                             </tr>
@@ -117,7 +117,7 @@ module.exports = function (order) {
                                               <td align="left" valign="top">
                                                 <span style="color:#34383e; font-size: 14px; font-weight: 500;">Order Number:</span>
                                                 <br>
-                                                <span style="color: #36cc7b; font-size: 12px;">C00020476708</span>
+                                                <span style="color: #36cc7b; font-size: 12px;">${order.id}</span>
                                               </td>
                                             </tr>
                                             <hr style="margin-top: .1rem; margin-bottom: .1rem;">
@@ -125,7 +125,7 @@ module.exports = function (order) {
                                               <td align="left" valign="top">
                                                 <span style="color:#34383e; font-size: 14px; font-weight: 500;">Order Date:</span>
                                                 <br>
-                                                <span style="color: #36cc7b; font-size: 12px;">02/10/2018</span>
+                                                <span style="color: #36cc7b; font-size: 12px;">${order.createdAt}</span>
                                               </td>
                                             </tr>
                                           </table>
