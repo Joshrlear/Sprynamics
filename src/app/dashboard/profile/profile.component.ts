@@ -31,13 +31,17 @@ export class ProfileComponent implements OnInit {
     if (this.agent) {
       this.userSub = this.firestore.doc$(`users/${this.agent.uid}`).subscribe(user => {
         this.user = user;
-        this.buildForm();
+        if (!this.userForm) {
+          this.buildForm();
+        }
         console.log(this.user);
       });
     } else {
       this.userSub = this.auth.user.subscribe(user => {
         this.user = user;
-        this.buildForm();
+        if (!this.userForm) {
+          this.buildForm();
+        }
       });
     }
   }
