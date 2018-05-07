@@ -82,7 +82,8 @@
         (select)="loadDesign($event)">
       </app-designs>
 
-      <app-text [hidden]="currentTab !== 'text'" 
+      <app-text 
+        [hidden]="currentTab !== 'text'" 
         [productName]="productSizes[size]?.name" 
         [size]="productSizes[size]?.width + ' x ' + productSizes[size]?.height + ' in.'"
         [formFields]="textFields" 
@@ -92,7 +93,8 @@
 
       <ng-container *ngIf="!loading && template && selectedAgent">
 
-        <app-property [hidden]="currentTab !== 'property'" 
+        <app-property 
+          [hidden]="currentTab !== 'property'" 
           [agent]="selectedAgent" 
           [photos]="template[viewSide]?.userImages" 
           [listingId]="listingId"
@@ -101,15 +103,20 @@
           (addressChange)="changeAddress($event)">
         </app-property>
         
-        <app-colors [hidden]="currentTab !== 'colors'" 
+        <app-colors 
+          [hidden]="currentTab !== 'colors'" 
           [colors]="template.presetColors" 
+          [showBackground]="false"
           [bgColor]="background.fill"
+          [presetColors]="selectedAgent?.brandColors"
+          cpAddColorButton=true
           (colorChange)="changeColor($event)" 
           (bgColorChange)="changeBackgroundColor($event)" 
           (change)="saveUndo()">
         </app-colors>
         
-        <app-agent-info [hidden]="currentTab !== 'agent'" 
+        <app-agent-info 
+          [hidden]="currentTab !== 'agent'" 
           [user]="userData" 
           [agents]="agents" 
           [loading]="loadingAgents"

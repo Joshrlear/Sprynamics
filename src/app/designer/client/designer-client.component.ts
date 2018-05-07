@@ -101,7 +101,7 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
           const querySize = queryParamMap.params['size'];
           if (queryProduct && querySize) {
             this.size = querySize;
-            this.checkout.updateOrder({ 
+            this.checkout.updateOrder({
               product: queryProduct,
             });
           } else {
@@ -300,15 +300,33 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
     });
   }
 
+  decimalToHexString(number) {
+    if (number < 0) {
+      number = 0xFFFFFFFF + number + 1;
+    }
+
+    return number.toString(16).toUpperCase();
+  }
+
+
   changeColor(event) {
     const index = event.index;
     const color = new fabric.Color(event.color);
     const lastColor = new fabric.Color(this.template.presetColors[index]);
     this.canvas.forEachObject(obj => {
-      if ((new fabric.Color(obj.fill)).toHexa() === lastColor.toHexa()) {
-        console.log(obj.type);
+      if (obj.isBackground) {
+        return;
+      }
+      let objColor = new fabric.Color(obj.fill)
+      objColor.setAlpha(obj.opacity);
+      if (objColor.toHex() === lastColor.toHex()) {
+        console.log(objColor.toHexa(), lastColor.toHexa())
         if (obj.type !== 'i-text' && obj.type !== 'textbox') {
-          obj.set({ fill: event.color });
+          const alphaHex = event.color.substr(-2)
+          const colorWithoutAlpha = event.color.substring(0, event.color.length - 2);
+          obj.fill = colorWithoutAlpha;
+          obj.opacity = parseInt(alphaHex, 16) / 255;
+          obj.set({ opacity: parseInt(alphaHex, 16) / 255 })
         }
       }
     });
@@ -551,7 +569,7 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
         this.loadingMessage = 'Processing back side...';
         this.getDataURL('back', pdfCanvas).then((back: string) => {
           // this.checkout.thumbnail = front;
-          
+
           /* Generate Thumbnail */
           var img = new Image;
           const resizeImage = () => {
@@ -608,19 +626,19 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
 
   imageToDataUri(img, width, height) {
 
-      // create an off-screen canvas
-      var canvas = document.createElement('canvas'),
-          ctx = canvas.getContext('2d');
+    // create an off-screen canvas
+    var canvas = document.createElement('canvas'),
+      ctx = canvas.getContext('2d');
 
-      // set its dimension to target size
-      canvas.width = width;
-      canvas.height = height;
+    // set its dimension to target size
+    canvas.width = width;
+    canvas.height = height;
 
-      // draw source image into the off-screen canvas:
-      ctx.drawImage(img, 0, 0, width, height);
+    // draw source image into the off-screen canvas:
+    ctx.drawImage(img, 0, 0, width, height);
 
-      // encode image to data-uri with base64 version of compressed image
-      return canvas.toDataURL();
+    // encode image to data-uri with base64 version of compressed image
+    return canvas.toDataURL();
   }
 
   getDataURL(side: 'front' | 'back', canvas, options?) {

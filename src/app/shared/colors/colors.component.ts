@@ -11,6 +11,7 @@ export class ColorsComponent implements OnInit {
   @Input('bgColor') bgColor: string;
   @Input('showAddButton') showAddButton: boolean;
   @Input('showBackground') showBackground = true;
+  @Input('presetColors') presetColors: any[];
   @Output('colorChange') colorChange = new EventEmitter();
   @Output('bgColorChange') bgColorChange = new EventEmitter();
   @Output('addColor') addColor = new EventEmitter();
