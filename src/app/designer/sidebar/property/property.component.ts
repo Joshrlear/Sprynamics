@@ -82,6 +82,10 @@ export class PropertyComponent implements OnInit {
     // })
   }
 
+  updatePropertyInfo() {
+    this.onChangeAddress()
+  }
+
   uploadImage(file: File) {
     const reader = new FileReader()
     reader.addEventListener('load', () => {

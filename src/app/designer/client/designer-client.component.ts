@@ -48,6 +48,8 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
   userData: any;
   textFields = [];
   agentFields = [];
+  propertyFields = [];
+
   addressObj: any;
   loading: boolean;
   loadingPdf: boolean;
@@ -264,6 +266,24 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
       this.canvas.renderAll();
     }
     const location = address.location;
+    this.propertyFields.forEach(field => {
+      if (this.selectedListing) {
+        field.obj.text = this.selectedListing[field.name];
+        switch (field.name) {
+          case 'bedrooms':
+            field.obj.text += ' BEDS';
+            break;
+          case 'bathrooms':
+            field.obj.text += ' BATHS';
+            break;
+          case 'livingArea':
+            field.obj.text += ' SQ. FT.';
+            break;
+          
+        }
+      }
+    });
+    // set map image
     this.canvas.forEachObject(obj => {
       if (obj.isMapImage) {
         const desiredWidth = obj.width * obj.scaleX;
@@ -450,10 +470,12 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
         this.addressObj = obj;
       }
       // create form field in "Text" tab if editable
-      if (obj.userEditable || obj.textContentType === 'data') {
-        const field = { name: obj.textFieldName, obj };
+      if (obj.userEditable || obj.textContentType === 'data' || obj.textContentType === 'property') {
+        const field = { name: obj.textFieldName || obj.textUserData, obj };
         if (obj.textContentType === 'plain') {
           this.textFields.push(field);
+        } else if (obj.textContentType === 'property') {
+          this.propertyFields.push(field);
         } else {
           this.agentFields.push(field);
         }

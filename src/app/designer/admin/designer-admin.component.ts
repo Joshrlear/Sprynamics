@@ -581,8 +581,11 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
         dataText = this.userData[dataName];
       }
 
-      this.selection.set({ text: dataText });
-      this.canvas.renderAll();
+      if (dataText) {
+        this.selection.set({ text: dataText });
+        this.canvas.renderAll();
+      }
+
     }
   }
 
