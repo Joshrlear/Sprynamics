@@ -10,7 +10,8 @@ fbAdmin.initializeApp({
 const bucket = fbAdmin.storage().bucket()
 
 function upload(url, destination, metadata) {
-  return bucket.upload(url, { destination, metadata })
+  return new Promise((resolve) => resolve())
+  // return bucket.upload(url, { destination, metadata })
 }
 
 const fs = fbAdmin.firestore()

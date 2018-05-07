@@ -20,3 +20,4 @@ rules:
   no-undef: error
   block-spacing: 'off'
   brace-style: 'off'
+  array-bracket-spacing: 'off'

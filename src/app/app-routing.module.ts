@@ -11,11 +11,15 @@ import { CheckoutComponent } from './checkout/checkout.component';
 
 import { AuthGuard } from './core/auth.guard';
 import { DesignerModule } from '#app/designer/designer.module';
+import { TermsAndConditionsComponent } from '#app/terms-and-conditions/terms-and-conditions.component';
+import { PrivacyPolicyComponent } from '#app/privacy-policy/privacy-policy.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'products', component: ProductsComponent },
   { path: 'designer', loadChildren: () => DesignerModule },
+  { path: 'terms', component: TermsAndConditionsComponent },
+  { path: 'privacy', component: PrivacyPolicyComponent },
   {
     path: 'account', 
     component: AccountComponent,

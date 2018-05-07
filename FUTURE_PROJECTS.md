@@ -2,16 +2,16 @@
 
 ## Top Priority
 
-- address selection on the map
+- address selection on the map: *30-50 hours*
   - 500 homes around this address
   - radius / diameter
   - select / deselect streets/houses
     - usps API
 
-- email blasts
+- email blasts: *3-15 hours*
   - prompt after submitting
 
-- infographics
+- infographics: *need more details*
   - ListReports
 
 ## Backlog
@@ -38,3 +38,5 @@
 - sales comparables
 
 - market updates
+
+- google vision API

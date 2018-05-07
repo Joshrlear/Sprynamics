@@ -32,7 +32,7 @@
                         <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 264px;">
                           <tr>
                             <td align="left" valign="top" style="padding-bottom: 8px;">
-                              <img src="http://via.placeholder.com/120x120" alt="">
+                              <img [src]="(order | async)?.thumbnail" alt="">
                             </td>
                           </tr>
                           <tr>
@@ -50,30 +50,30 @@
                           <tr>
                             <td align="left" valign="top">
                               <table border="0" cellpadding="0" cellspacing="0" width="100%">
-                                <tr id="subtotal">
+                                <!-- <tr id="subtotal">
                                   <td align="left" valign="top">
                                     <span style="color:#34383e; font-size: 14px; font-weight: 500;">Subtotal:</span>
                                   </td>
                                   <td align="right" valign="top">
                                     <span style="font-size: 14px; color: #36cc7b;">${{(order | async)?.subtotal}}</span>
                                   </td>
-                                </tr>
-                                <tr id="shipping">
+                                </tr> -->
+                                <!-- <tr id="shipping">
                                   <td align="left" valign="top">
                                     <span style="color:#34383e; font-size: 14px; font-weight: 500;">Shipping & Handling:</span>
                                   </td>
                                   <td align="right" valign="top">
                                     <span style="font-size: 14px; color: #36cc7b;">${{(order | async)?.shippingCost}}</span>
                                   </td>
-                                </tr>
-                                <tr id="tax">
+                                </tr> -->
+                                <!-- <tr id="tax">
                                   <td align="left" valign="top">
                                     <span style="color:#34383e; font-size: 14px; font-weight: 500;">Tax:</span>
                                   </td>
                                   <td align="right" valign="top">
                                     <span style="font-size: 14px; color: #36cc7b;">$2.99</span>
                                   </td>
-                                </tr>
+                                </tr> -->
                                 <tr id="total">
                                   <td align="left" valign="top">
                                     <span style="color:#34383e; font-size: 14px; font-weight: 500;">Total:</span>
@@ -107,14 +107,6 @@
                                   <span style="color: #36cc7b">{{shipping.zipCode}}</span>
                                 </span>
                               </ng-container>
-                            </td>
-                          </tr>
-                          <hr style="margin-top: .1rem; margin-bottom: .1rem;">
-                          <tr>
-                            <td align="left" valign="top">
-                              <span style="color:#34383e; font-size: 14px; font-weight: 500;">Shipping Method:</span>
-                              <br>
-                              <span style="color: #666; font-size: 12px;">UPS Ground</span>
                             </td>
                           </tr>
                           <hr style="margin-top: .1rem; margin-bottom: .1rem;">
@@ -163,8 +155,6 @@
               </tr>
               <tr>
                 <td align="left" valign="top" style="padding: 20px 30px;">
-                  <span style="color: #666; font-size: 12px;">Sprynamics. 1-25 Concord St, Lawrence, MA 01840</span>
-                  <br>
                   <span style="color: #666; font-size: 12px;">Please do not reply to this email. If you need to contact Sprynamics please</span>
                   <a href="" style="font-size: 12px;">click here</a>
                 </td>

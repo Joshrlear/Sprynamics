@@ -8,7 +8,8 @@ import { productSpecs } from '#app/designer/products';
 import { FormBuilder } from '@angular/forms';
 import { GoogleMapsService } from '#core/gmaps.service';
 
-declare let google
+declare const google;
+declare const lh;
 
 @Component({
   selector: 'app-property',
@@ -45,10 +46,12 @@ export class PropertyComponent implements OnInit {
         .subscribe((listings: any[]) => {
           console.log(listings)
           this.listings = listings
+          lh('submit', 'SEARCH_DISPLAY', listings.map(l => { return {lkey: l.listingKey}; }));
           if (this.listingId) {
             this.selectedListing = listings.find((listing) => {
               return listing.id === this.listingId
-            })
+            });
+            this.onChangeAddress();
           }
           if (!this.selectedListing) {
             this.selectedListing = listings[0]
@@ -113,6 +116,8 @@ export class PropertyComponent implements OnInit {
 
   onChangeAddress() {
     const listing = this.selectedListing;
+    lh('submit', 'DETAIL_PAGE_VIEWED', { lkey: listing.listingKey });
+    // geocode address and emit it
     this.gmaps.geocodeAddress(listing.fullStreetAddress, listing.postalCode, null, listing.stateOrProvince).take(1).subscribe(res => {
       const location = res.results[0].geometry.location;
       const addressObj = {
@@ -122,7 +127,6 @@ export class PropertyComponent implements OnInit {
       };
       this.addressChangeEvent.emit(addressObj);
     });
-
   }
 
 }

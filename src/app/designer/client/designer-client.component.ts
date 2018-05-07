@@ -5,7 +5,7 @@ import { MatDialog } from '@angular/material';
 import { FirestoreService } from '../../core/firestore.service';
 import { StorageService } from '../../core/storage.service';
 import { AuthService } from '../../core/auth.service';
-import { productSizes, productSpecs } from '../products';
+import { productSizes, productSpecs, thumbnailSizes } from '../products';
 import { ObjectFactoryService } from '../object-factory.service';
 import { CheckoutService } from '#app/checkout/checkout.service';
 import { NewUserPopupComponent } from '#app/designer/new-user-popup/new-user-popup.component';
@@ -121,9 +121,9 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
         this.loadDesign(templates[0]);
         this.auth.authState.take(1).subscribe(userState => {
           if (userState.isAnonymous) {
-            this.dialog.open(NewUserPopupComponent, {
-              disableClose: true
-            });
+            // this.dialog.open(NewUserPopupComponent, {
+            //   disableClose: true
+            // });
           }
         })
       });
@@ -427,11 +427,11 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
       } else {
         obj.hoverCursor = 'default';
       }
+      // store the address text object so we can bind it later
       if (obj.textContentType === 'address') {
         this.addressObj = obj;
-        console.log(obj);
       }
-      // create form field if editable
+      // create form field in "Text" tab if editable
       if (obj.userEditable || obj.textContentType === 'data') {
         const field = { name: obj.textFieldName, obj };
         if (obj.textContentType === 'plain') {
@@ -464,6 +464,7 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
         img.crossOrigin = 'Anonymous';
         imagesToLoad++;
         img.onload = () => {
+          const scaleX = obj.width * obj.scaleX;
           obj.setElement(img);
           imagesToLoad--;
           if (imagesToLoad <= 0) {
@@ -502,6 +503,7 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
 
   saveAndContinue() {
     console.log('saving');
+    this.template[this.viewSide] = this.canvasToJSON();
     // create PDF from canvas
     const canvas = document.createElement('canvas');
     canvas.id = 'pdf_canvas';
@@ -548,7 +550,18 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
       this.getDataURL('front', pdfCanvas).then((front: string) => {
         this.loadingMessage = 'Processing back side...';
         this.getDataURL('back', pdfCanvas).then((back: string) => {
-          this.checkout.thumbnail = front;
+          // this.checkout.thumbnail = front;
+          
+          /* Generate Thumbnail */
+          var img = new Image;
+          const resizeImage = () => {
+            var newDataUri = this.imageToDataUri(img, thumbnailSizes[this.size].width * 4, thumbnailSizes[this.size].height * 4);
+            this.checkout.thumbnail = newDataUri;
+            this.checkout.updateOrder({ thumbnail: newDataUri })
+          }
+          img.onload = resizeImage;
+          img.src = front;
+
           // generate PDF
           // this.loadingMessage = 'Generating PDF...';
           // const doc = new jspdf('l', 'in', [this.template.productType.width + productSpecs.bleedInches * 2, this.template.productType.height + productSpecs.bleedInches * 2]);
@@ -593,6 +606,23 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
     });
   }
 
+  imageToDataUri(img, width, height) {
+
+      // create an off-screen canvas
+      var canvas = document.createElement('canvas'),
+          ctx = canvas.getContext('2d');
+
+      // set its dimension to target size
+      canvas.width = width;
+      canvas.height = height;
+
+      // draw source image into the off-screen canvas:
+      ctx.drawImage(img, 0, 0, width, height);
+
+      // encode image to data-uri with base64 version of compressed image
+      return canvas.toDataURL();
+  }
+
   getDataURL(side: 'front' | 'back', canvas, options?) {
     return new Promise((resolve, reject) => {
       canvas.clear();
@@ -601,7 +631,8 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
         if (!this.template[side].processed) {
           // this.processCanvas();
         }
-        const boundBox = canvas.getObjects('rect').filter(obj => obj.stroke === '#f00' && obj.strokeDashArray[0] === 5 && obj.strokeDashArray[1] === 5)[0];
+        // const boundBox = canvas.getObjects('rect').filter(obj => obj.stroke === '#f00' && obj.strokeDashArray[0] === 5 && obj.strokeDashArray[1] === 5)[0];
+        const boundBox = canvas.getObjects('rect').filter(obj => obj.isBoundBox)[0];
         canvas.clipTo = null;
         // canvas.imageSmoothingEnabled = false;
         const offsetX = boundBox.left - productSpecs.bleedInches * productSpecs.dpi;

@@ -1,10 +1,14 @@
 const xml2js = require('xml2js-expat')
-const fs = require('fs')
 const firebase = require('./firebase')
 const request = require('request')
 const zlib = require('zlib')
-
 const parser = new xml2js.Parser()
+const csvStringify = require('csv-stringify')
+const fs = require('fs')
+const express = require('express')
+const app = express()
+const path = require('path')
+const schedule = require('node-schedule')
 
 function fetchListhubFeed() {
   return new Promise((resolve, reject) => {
@@ -27,12 +31,10 @@ function fetchListhubFeed() {
 
 function processData(jsonData) {
   return new Promise((resolve, reject) => {
-
     // find all photos
     const listings = []
     jsonData.Listing.forEach((listing, listingIndex) => {
-      if (listingIndex > 2) return
-
+      // if (listingIndex > 5) return
       const Address = listing.Address
       const Brokerage = listing.Brokerage
       // const Location = listing.Location[0]
@@ -56,6 +58,7 @@ function processData(jsonData) {
         listingStatus: listing.ListingStatus,
         livingArea: listing.LivingArea,
         listingKey: listing.ListingKey,
+        listingURL: listing.ListingURL,
         mlsNumber: listing.MlsNumber
       }
 
@@ -84,33 +87,24 @@ function processData(jsonData) {
   })
 }
 
-
-// function uploadAll(listingPhotos, index = 0) {
-//   if (index >= listingPhotos.length) {
-//     console.log('Finished uploading all photos.')
-//     return
-//   }
-//   const photo = listingPhotos[index]
-//   const uploadPath = 'listingPhotos/' + photo.id + '-' + photo.index + '.jpg'
-// const task = firebase.upload(photo.url, uploadPath, { contentType: 'image/jpg' })
-// task.then((res) => {
-//   console.log(`Finished uploading photo #${index}`)
-//   firebase.bucket.file(uploadPath).getSignedUrl({
-//     action: 'read',
-//     expires: '03-01-2500'
-//   }).then((downloadUrl) => {
-//     mockData[photo.agentId][photo.listingIndex].photos[photo.index] = downloadUrl[0]
-//   })
-//   uploadAll(listingPhotos, index + 1)
-// }).catch((err) => {
-//   console.error(err)
-// })
-// }
-
+let csvData = [['ListingKey', 'Status', 'URL', 'Message', 'Timestamp']]
 
 function uploadAll(listings, listingIndex = 0, photoIndex = 0) {
   if (listingIndex >= listings.length) {
     console.log('Finished looping over listings')
+    csvStringify(csvData, (err, output) => {
+      if (err) {
+        console.error(err)
+      } else {
+        const date = new Date()
+        const year = date.getFullYear()
+        const month = date.getMonth() + 1
+        const day = date.getDate()
+        console.log(`${year}-${month}-${day}`)
+        fs.writeFile(`listing_status_${year}-${month}-${day}.csv`, output)
+        csvData = [['ListingKey', 'Status', 'URL', 'Message', 'Timestamp']]
+      }
+    })
     return
   }
   const listing = listings[listingIndex]
@@ -126,21 +120,51 @@ function uploadAll(listings, listingIndex = 0, photoIndex = 0) {
   const uploadPath = `listingPhotos/${listing.id}/photo-${photoIndex}.jpg`
   firebase.upload(photo, uploadPath, { contentType: 'image/jpg' })
     .then((res) => {
-      console.log(`Finished uploading photo #${photoIndex + 1}`)
-      return firebase.bucket.file(uploadPath).getSignedUrl({
-        action: 'read',
-        expires: '03-01-2500'
-      })
+      return null
+      // console.log(`Finished uploading ${uploadPath}`)
+      // return firebase.bucket.file(uploadPath).getSignedUrl({
+      //   action: 'read',
+      //   expires: '03-01-2500'
+      // })
+    })
+    .catch((err) => {
+      console.error(err)
     })
     .then((downloadUrl) => {
-      listings[listingIndex].photos[photoIndex] = downloadUrl[0]
-      if (photoIndex >= listings[listingIndex].photos.length - 1) {
-        firebase.doc(`listings/${listing.id}`).update({ photos: listing.photos })
+      if (listing.photos && downloadUrl) {
+        listings[listingIndex].photos[photoIndex] = downloadUrl[0]
+        if (photoIndex >= listings[listingIndex].photos.length - 1) {
+          // all photos are finished, set this listing in firestore
+          firebase.doc(`listings/${listing.id}`).set(listing)
+            .then(() => {
+              uploadAll(listings, listingIndex + 1)
+            })
+            .catch((err) => {
+              console.error(err)
+            })
+        } else {
+          // continue uploading photos for this listing
+          uploadAll(listings, listingIndex, photoIndex + 1)
+        }
+      } else {
+        // skip photos for this listing if it has no photos
+        if (!downloadUrl) {
+          console.log(`Download URL not found for ${uploadPath}`)
+        }
+        firebase.doc(`listings/${listing.id}`).set(listing)
           .then(() => {
+            csvData.push([
+              listing.listingKey,
+              'SUCCESS',
+              `https://sprynamics.now.sh/designer?product=postcard&size=9x6&agent=${listing.agentId}&listing=${listing.id}`,
+              'Successfully imported',
+              ''
+            ])
             uploadAll(listings, listingIndex + 1)
           })
-      } else {
-        uploadAll(listings, listingIndex, photoIndex + 1)
+          .catch((err) => {
+            console.error(err)
+          })
       }
     })
     .catch((err) => {
@@ -148,42 +172,84 @@ function uploadAll(listings, listingIndex = 0, photoIndex = 0) {
     })
 }
 
-function batchUpload(listings) {
-  const batch = firebase.batch()
-  listings.forEach((listing) => {
-    const doc = firebase.doc(`listings/${listing.id}`)
-    batch.set(doc, listing)
-  })
-  console.log('Committing updates...')
-  batch.commit()
-    .then(() => {
-      console.log('Completed batch operation.')
+// function batchUpload(listings) {
+//   const batch = firebase.batch()
+//   listings.forEach((listing) => {
+//     const doc = firebase.doc(`listings/${listing.id}`)
+//     batch.set(doc, listing)
+//   })
+//   console.log('Committing updates...')
+//   batch.commit()
+//     .then(() => {
+//       console.log('Completed batch operation.')
+//     })
+//     .catch((err) => {
+//       console.log(err)
+//     })
+// }
+
+function runSyndication() {
+  console.log('Fetching feed from ListHub...')
+  fetchListhubFeed()
+    .then((data) => {
+      console.log('Processing data...')
+      return processData(data)
     })
     .catch((err) => {
-      console.log(err)
+      console.error(err)
+    })
+    .then((listings) => {
+      console.log('Creating listing status file...')
+      // const csvData = [ ['ListingKey', 'Status', 'URL', 'Message', 'Timestamp'] ]
+      // listings.forEach((listing) => {
+      //   csvData.push([
+      //     listing.listingKey,
+      //     'SUCCESS',
+      //     `https://sprynamics.now.sh/designer?product=postcard&size=9x6&agent=${listing.agentId}&listing=${listing.id}`,
+      //     'Successfully imported',
+      //     ''
+      //   ])
+      // })
+      // csvStringify(csvData, (err, output) => {
+      //   if (err) {
+      //     console.error(err)
+      //   } else {
+      //     const date = new Date()
+      //     const year = date.getFullYear()
+      //     const month = date.getMonth() + 1
+      //     const day = date.getDate()
+      //     console.log(`${year}-${month}-${day}`)
+      //     fs.writeFile(`listing_status_${year}-${month}-${day}.csv`, output)
+      //   }
+      // })
+      console.log('Uploading data to firebase...')
+      // batchUpload(listings)
+      uploadAll(listings)
+    })
+    .catch((err) => {
+      console.error(err)
     })
 }
 
-fetchListhubFeed()
-  .then((data) => {
-    return processData(data)
-  })
-  .then((listings) => {
-    batchUpload(listings)
-    // const photos = []
-    // listings.forEach((listing, listingIndex) => {
-    //   if (listing.photos) {
-    //     listing.photos.forEach((photo, photoIndex) => {
-    //       console.log('photo: ' + photo)
-    //       photos.push({
-    //         listingId: listing.id,
-    //         listingIndex,
-    //         photoIndex,
-    //         url: photo
-    //       })
-    //     })
-    //   }
-    // })
-    // console.log(photos[0])
-    uploadAll(listings)
-  })
+runSyndication()
+
+// Schedule jobs for 4:00am and 4:00pm every day
+schedule.scheduleJob('0 4 * * *', () => {
+  console.log('Running syndication at ' + new Date())
+  runSyndication()
+})
+schedule.scheduleJob('0 16 * * *', () => {
+  console.log('Running syndication at ' + new Date())
+  runSyndication()
+})
+
+app.get('/status', (req, res) => {
+  const date = new Date()
+  const year = date.getFullYear()
+  const month = date.getMonth() + 1
+  const day = date.getDate()
+  console.log(`${year}-${month}-${day}`)
+  res.download(path.resolve(__dirname, `listing_status_${year}-${month}-${day}.csv`))
+})
+
+app.listen(8080, () => console.log('Server listening on port 8080'))

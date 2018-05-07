@@ -106,6 +106,12 @@
         </label>
         <input [value]="selectedListing?.mlsNumber">
       </div>
+      <div>
+        <label>
+          Listing Source:
+        </label>
+        <a style="color: #7bbbff" [href]="selectedListing?.listingURL" target="_blank">Click here</a>
+      </div>
     </div>
   </ng-container>
   <ng-template #noListings>
@@ -114,15 +120,15 @@
 
   <hr style="background-color: white;">
 
-  <h6>Property Photos (click an image to replace it)</h6>
+  <!-- <h6>Property Photos (click an image to replace it)</h6>
 
-  <button class="btn" (click)="loadImagesFromListing()">Load Images From Listing</button>
+  <button class="btn" (click)="loadImagesFromListing()">Load Images From Listing</button> -->
 
   <!-- <ng-container *ngFor="let photo of photos; let i = index;">
     <img class="photo" [src]="photo.toDataURL()" (click)="selectedIndex = i; fileInput.click()">
   </ng-container> -->
 
-  <input #fileInput type="file" style="display:none;" onclick="this.value = null" (change)="uploadImage(fileInput.files[0]); fileInput.files = null;">
+  <!-- <input #fileInput type="file" style="display:none;" onclick="this.value = null" (change)="uploadImage(fileInput.files[0]); fileInput.files = null;"> -->
 </div>
 
 <!-- <button class="btn green" (click)="uploadImage()">

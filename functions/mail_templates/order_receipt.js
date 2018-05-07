@@ -9,7 +9,7 @@ module.exports = function (order) {
                             <table border="0" cellpadding="24" cellspacing="0" width="100%" id="emailHeader">
                                 <tr>
                                     <td align="left" valign="top">
-                                        <img src="assets/logo.png" width="180" alt="sprynamics">
+                                        <img src="http://sprynamics.com/assets/sprynamics%20logo.png" width="180" alt="sprynamics">
                                     </td>
                                 </tr>
                             </table>
@@ -50,7 +50,7 @@ module.exports = function (order) {
                                             <tr>
                                               <td align="left" valign="top">
                                                 <table border="0" cellpadding="0" cellspacing="0" width="100%">
-                                                  <tr id="subtotal">
+                                                  <!--<tr id="subtotal">
                                                     <td align="left" valign="top">
                                                       <span style="color:#34383e; font-size: 14px; font-weight: 500;">Subtotal:</span>
                                                     </td>
@@ -73,7 +73,7 @@ module.exports = function (order) {
                                                     <td align="right" valign="top">
                                                       <span style="font-size: 14px; color: #36cc7b;">$2.99</span>
                                                     </td>
-                                                  </tr>
+                                                  </tr>-->
                                                   <tr id="total">
                                                     <td align="left" valign="top">
                                                       <span style="color:#34383e; font-size: 14px; font-weight: 500;">Total:</span>
@@ -102,14 +102,6 @@ module.exports = function (order) {
                                                   <br>
                                                   <a href="">${order.shipping.city},</a> <a href="">${order.shipping.state}</a> <a href="">${order.shipping.zipCode}</a><a href=""></a> 
                                                 </span>
-                                              </td>
-                                            </tr>
-                                            <hr style="margin-top: .1rem; margin-bottom: .1rem;">
-                                            <tr>
-                                              <td align="left" valign="top">
-                                                <span style="color:#34383e; font-size: 14px; font-weight: 500;">Shipping Method:</span>
-                                                <br>
-                                                <span style="color: #666; font-size: 12px;">UPS Ground</span>
                                               </td>
                                             </tr>
                                             <hr style="margin-top: .1rem; margin-bottom: .1rem;">
@@ -158,8 +150,6 @@ module.exports = function (order) {
                                 </tr>
                                 <tr>
                                   <td align="left" valign="top" style="padding: 20px 30px;">
-                                    <span style="color: #666; font-size: 12px;">Sprynamics. 1-25 Concord St, Lawrence, MA 01840</span>
-                                    <br>
                                     <span style="color: #666; font-size: 12px;">Please do not reply to this email. If you need to contact Sprynamics please</span> <a href="" style="font-size: 12px;">click here</a>
                                   </td>
                                 </tr>

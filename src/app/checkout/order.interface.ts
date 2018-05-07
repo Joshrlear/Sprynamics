@@ -28,4 +28,5 @@ export interface Order {
   isMailingList?: boolean;
   mailingListId?: string;
   pdfUrl?: string;
+  thumbnail?: string;
 }

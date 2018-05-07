@@ -122,11 +122,11 @@ export class CheckoutService {
     })
   }
 
-  updateOrder(partialOrder: Partial<Order>) {
+  updateOrder(partialOrder: Partial<Order>): Promise<void> {
     const data = this._order.getValue();
     Object.assign(data, partialOrder);
     this._order.next(data);
-    this.firestore.update(`orders/${this._order.getValue().id}`, partialOrder);
+    return this.firestore.update(`orders/${this._order.getValue().id}`, partialOrder);
   }
 
   /**

@@ -15,6 +15,8 @@ app.get('*', (req, res) => {
   res.sendFile(path.resolve('dist', 'index.html'))
 })
 
+app.get('/')
+
 const server = app.listen(3000, () => {
   console.log(`listening on port ${server.address().port}`)
 })
