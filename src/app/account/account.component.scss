@@ -7,13 +7,18 @@
     align-items: center;
     background-color: #f1f1f1;
     flex-direction: column;
+    padding-top: 88px;
+    padding-bottom: 48px;
+    background-image: url("/assets/bg/loginbg.png");
+    background-size: cover;
+    background-attachment: fixed;
 }
 
 .account-header-bg {
     position: fixed;
     top: 80px;
     z-index: 0;
-    background-image: url("/assets/loginbg.jpg");
+    background-image: url("/assets/bg/loginbg.jpg");
     background-size: cover;
     background-attachment: fixed;
     background-position: center -200px;

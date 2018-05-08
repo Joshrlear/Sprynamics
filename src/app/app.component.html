@@ -3,21 +3,21 @@
 <div class="main-container">
 
 
-  <mat-toolbar class="app-toolbar" [class.transitioning]="isTransitioning">
+  <mat-toolbar *ngIf="auth.user | async" class="app-toolbar" [class.transitioning]="isTransitioning">
 
     <mat-toolbar-row>
-      <button mat-button class="hamburger" (click)="sidenav.toggle()" title="Menu">
+      <button *ngIf="auth.user | async" mat-button class="hamburger" (click)="sidenav.toggle()" title="Menu">
         <i class="fas fa-bars menu"></i>
       </button>
-      <a class="nav-link home" style="padding: 0;" routerLink="/" fragment="top-of-page" [ngSwitch]="isSideBySide">
+      <a class="nav-link home" [class.paddingLeft]="!(auth.user | async)" style="padding: 0;" routerLink="/" fragment="top-of-page" [ngSwitch]="isSideBySide">
         <img *ngSwitchCase="true" src="assets/sprynamics logo.png" height="36" title="Home" alt="Home">
         <img *ngSwitchDefault src="assets/sprynamics logo.png" height="36" title="Home" alt="Home">
       </a>
       <div class="top-menu">
         <div class="top-menu-left">
-          <a routerLink="/" fragment="top-of-page" (click)="smoothScroll('top-of-page')" mat-button>Home</a>
+          <!-- <a routerLink="/" fragment="top-of-page" (click)="smoothScroll('top-of-page')" mat-button>Home</a>
           <a routerLink="/" fragment="about-us" (click)="smoothScroll('about-us')" mat-button>About Us</a>
-          <a routerLink="/" fragment="contact-us" (click)="smoothScroll('contact-us')" mat-button>Contact Us</a>
+          <a routerLink="/" fragment="contact-us" (click)="smoothScroll('contact-us')" mat-button>Contact Us</a> -->
 
         </div>
         <div class="top-menu-right">
@@ -33,7 +33,7 @@
                   <i class="fas fa-user" style="margin-right: 6px;"></i> {{ ((user.firstName||'') + ' ' + (user.lastName||'')) || 'Your Account' }}</a>
                 <div ngbDropdownMenu aria-labelledby="account-dropdown">
                   <button class="dropdown-item" routerLink="/profile">Your Profile</button>
-                  <button class="dropdown-item" (click)="logout()" routerLink="/">Logout</button>
+                  <button class="dropdown-item" (click)="logout()" routerLink="/account/register">Logout</button>
                 </div>
               </div>
 

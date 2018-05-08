@@ -2,9 +2,9 @@
     padding: 24px;
     min-width: 500px;
     min-height: 400px;
-    background-color: #fff;
-    border-radius: 6px;
-    box-shadow: 0 0.25rem 0.125rem 0 rgba(0,0,0,.05);
+    background-color: rgb(252, 252, 252);
+    border-radius: 10px;
+    box-shadow: 0 0 150px 15px rgba(0,0,0,0.5);
     z-index: 1;
 
     .header {
@@ -17,13 +17,13 @@
 }
 
 .or {
-    border-top: 1px solid #f2f2f2;
+    border-top: 1px solid #dadada;
     margin: 32px 0;
     position: relative;
 }
 
 .or:after {
-    background: #fff;
+    background: rgb(252, 252, 252);
     content: 'OR';
     color: #a0a0a0;
     font-size: 12px;
@@ -95,8 +95,8 @@ label {
     width: 100%;
     border-radius: 4px !important;
     font-size: 20px !important;
-    box-shadow: 0 0.25rem 0.125rem #167843;
-    background-color: #12c463 !important;
+    // box-shadow: 0 0.25rem 0.125rem #167843;
+    background-color: #75d84f !important;
     color: #fff !important;
     min-height: 48px;
 

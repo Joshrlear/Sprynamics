@@ -14,9 +14,12 @@ import { DesignerModule } from '#app/designer/designer.module';
 import { TermsAndConditionsComponent } from '#app/terms-and-conditions/terms-and-conditions.component';
 import { PrivacyPolicyComponent } from '#app/privacy-policy/privacy-policy.component';
 import { LoginComponent } from '#app/account/login/login.component';
+import { AccountModule } from '#app/account/account.module';
+import { CheckoutModule } from '#app/checkout/checkout.module';
+import { DashboardModule } from '#app/dashboard/dashboard.module';
 
 const routes: Routes = [
-  { path: '', component: LoginComponent },
+  { path: '', component: DashboardComponent, loadChildren: () => DashboardModule, canActivate: [AuthGuard] },
   { path: 'products', component: ProductsComponent },
   { path: 'designer', loadChildren: () => DesignerModule },
   { path: 'terms', component: TermsAndConditionsComponent },
@@ -24,17 +27,17 @@ const routes: Routes = [
   {
     path: 'account', 
     component: AccountComponent,
-    loadChildren: './account/account.module#AccountModule',
+    loadChildren: () => AccountModule,
   },
   {
     path: 'checkout',
     component: CheckoutComponent,
-    loadChildren: './checkout/checkout.module#CheckoutModule',
+    loadChildren: () => CheckoutModule,
   },
   {
     path: 'profile',
     component: DashboardComponent,
-    loadChildren: './dashboard/dashboard.module#DashboardModule',
+    loadChildren: () => DashboardModule,
     canActivate: [AuthGuard]
   },
   { path: '**', redirectTo: '', pathMatch: 'full' }
