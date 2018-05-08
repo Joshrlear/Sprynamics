@@ -3,10 +3,10 @@ import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from
 
 import { AuthService } from './auth.service';
 
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
+
 import 'rxjs/add/operator/do';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/take';
+
 
 @Injectable()
 export class AuthGuard implements CanActivate {

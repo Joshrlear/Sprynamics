@@ -11,6 +11,9 @@ import { CheckoutService } from '#app/checkout/checkout.service';
 import { NewUserPopupComponent } from '#app/designer/new-user-popup/new-user-popup.component';
 import { SlipstreamService } from '#core/slipstream.service';
 
+import { take } from 'rxjs/operators';
+import 'rxjs/add/operator/take';
+
 import 'webfontloader';
 declare let WebFont;
 
@@ -86,7 +89,7 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
     this.loadingAgents = true;
 
     this.checkout.initOrder().then(_ => {
-      this.auth.user.take(1).subscribe((user: any) => {
+      this.auth.user.pipe(take(1)).subscribe((user: any) => {
         this.userData = user;
         this.selectedAgent = user;
         const managedAgents = this.firestore.colWithIds$('users', ref => ref.where(`managers.${user.uid}`, '==', true));
@@ -98,7 +101,7 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
           });
         });
         // this.template.presetColors = user.presetColors || [];
-        this.route.queryParamMap.take(1).subscribe((queryParamMap: any) => {
+        this.route.queryParamMap.pipe(take(1)).subscribe((queryParamMap: any) => {
           const queryProduct = queryParamMap.params['product'];
           const querySize = queryParamMap.params['size'];
           if (queryProduct && querySize) {
@@ -119,7 +122,7 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
           }
         });
       });
-      this.firestore.colWithIds$('templates').take(1).subscribe(templates => {
+      this.firestore.colWithIds$('templates').pipe(take(1)).subscribe(templates => {
         this.loadDesign(templates[0]);
         this.auth.authState.take(1).subscribe(userState => {
           if (userState.isAnonymous) {

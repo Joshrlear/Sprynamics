@@ -3,10 +3,8 @@ import { RouterModule, Routes, Router } from '@angular/router';
 import { AuthService } from './core/auth.service';
 import { MatSidenav } from '@angular/material/sidenav';
 
-import { Observable } from 'rxjs/Observable';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { combineLatest } from 'rxjs/observable/combineLatest';
-import 'rxjs/add/operator/first';
+import { Observable ,  BehaviorSubject ,  combineLatest } from 'rxjs';
+
 
 import { NavigationService } from '#core/navigation/navigation.service';
 import { FirestoreService } from '#core/firestore.service';
@@ -100,15 +98,15 @@ export class AppComponent implements OnInit {
     if (this.router.url.split('#')[0] === '/') {
       hash = '#' + hash;
       console.log(hash);
-      $('html, body').animate({
-        scrollTop: $(hash).offset().top
-      }, 800, function () {
+      // $('html, body').animate({
+      //   scrollTop: $(hash).offset().top
+      // }, 800, function () {
 
-        // Add hash (#) to URL when done scrolling (default click behavior)
-        if (hash !== '#home') {
-          window.location.hash = hash;
-        }
-      });
+      //   // Add hash (#) to URL when done scrolling (default click behavior)
+      //   if (hash !== '#home') {
+      //     window.location.hash = hash;
+      //   }
+      // });
     }
   }
 

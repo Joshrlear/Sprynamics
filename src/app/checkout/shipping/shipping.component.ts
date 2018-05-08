@@ -1,10 +1,9 @@
 import { Component, OnInit, ViewChild, OnDestroy, ElementRef } from '@angular/core';
 import { AuthService } from '#core/auth.service';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription ,  Observable } from 'rxjs';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { CheckoutService } from '#app/checkout/checkout.service';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
 import { FirestoreService } from '#core/firestore.service';
 import { MailingListDialogComponent } from '#app/shared/mailing-list-dialog/mailing-list-dialog.component';
 import { MatDialog } from '@angular/material';

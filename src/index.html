@@ -14,40 +14,41 @@
 
 <body>
   <app-root></app-root>
-</body>
-<script>
-  // When the user scrolls down 20px from the top of the document, show the button
-  window.onscroll = scrollFunction;
 
-  function scrollFunction() {
-    const scrollEl = document.getElementById("scrollTop");
-    if (scrollEl) {
-      if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-        scrollEl.style.display = "block";
-      } else {
-        scrollEl.style.display = "none";
+  <script>
+    var global = window;
+    // When the user scrolls down 20px from the top of the document, show the button
+    window.onscroll = scrollFunction;
+
+    function scrollFunction() {
+      const scrollEl = document.getElementById("scrollTop");
+      if (scrollEl) {
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+          scrollEl.style.display = "block";
+        } else {
+          scrollEl.style.display = "none";
+        }
       }
     }
-  }
 
-  $("a[href='#']").click(function () {
-    $("html, body").animate({ scrollTop: 0 }, "slow");
-    return false;
-  });
-</script>
+    // $("a[href='#']").click(function () {
+    //   $("html, body").animate({ scrollTop: 0 }, "slow");
+    //   return false;
+    // });
+  </script>
+  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA-kEmBuQZhfrdS1Rije3syG3tCu8OGVcM&libraries=places"></script>
 
-<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA-kEmBuQZhfrdS1Rije3syG3tCu8OGVcM&libraries=places"></script>
-
-<!-- ListHub Tracking API -->
-<script>
-  (function (l, i, s, t, h, u, b) {
-  l['ListHubAnalyticsObject'] = h; l[h] = l[h] || function () {
-    (l[h].q = l[h].q || []).push(arguments)
-  }, l[h].d = 1 * new Date(); u = i.createElement(s),
-    b = i.getElementsByTagName(s)[0]; u.async = 1; u.src = t; b.parentNode.insertBefore(u, b)
-  })(window, document, 'script', '//tracking.listhub.net/la.min.js', 'lh');
-
-  lh('init', { provider: 'M-####', test: true });
-</script>
+  <!-- ListHub Tracking API -->
+  <script>
+    (function (l, i, s, t, h, u, b) {
+    l['ListHubAnalyticsObject'] = h; l[h] = l[h] || function () {
+      (l[h].q = l[h].q || []).push(arguments)
+    }, l[h].d = 1 * new Date(); u = i.createElement(s),
+      b = i.getElementsByTagName(s)[0]; u.async = 1; u.src = t; b.parentNode.insertBefore(u, b)
+    })(window, document, 'script', '//tracking.listhub.net/la.min.js', 'lh');
+  
+    lh('init', { provider: 'M-####', test: true });
+  </script>
+</body>
 
 </html>

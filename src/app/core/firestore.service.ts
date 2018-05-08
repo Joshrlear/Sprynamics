@@ -5,14 +5,10 @@ import {
   AngularFirestoreDocument,
   AngularFirestoreCollection
 } from 'angularfire2/firestore';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/do';
-import 'rxjs/add/operator/take';
-import 'rxjs/add/operator/toPromise';
-import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/observable/combineLatest';
+import 'rxjs/add/operator/reduce';
 
 type CollectionPredicate<T> = string | AngularFirestoreCollection<T>;
 type DocPredicate<T> = string | AngularFirestoreDocument<T>;
@@ -76,7 +72,7 @@ export class FirestoreService {
   // Combine multiple observables collections into one array - similar to UNION in sql
   public combine(observables: Observable<any>[]) {
     return Observable.combineLatest(observables)
-      .pipe(map(arr => arr.reduce((acc, cur) => acc.concat(cur))))
+      .pipe(map((arr: any[]) => arr.reduce((acc, cur) => acc.concat(cur))))
   }
 
   /// **************

@@ -15,7 +15,6 @@
       "es2017",
       "dom"
     ],
-
     "baseUrl": "src",
     "paths": {
       "#core/*": ["app/core/*"],

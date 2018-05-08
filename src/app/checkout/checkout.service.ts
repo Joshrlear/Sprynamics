@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
-import { Observable } from 'rxjs/Observable';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Observable ,  BehaviorSubject } from 'rxjs';
 import { Order } from '#app/checkout/order.interface';
 import { AuthService } from '#core/auth.service';
 import { FirestoreService } from '#core/firestore.service';

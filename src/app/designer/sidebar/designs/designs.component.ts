@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, AfterViewInit } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { FirestoreService } from '#core/firestore.service';
 import { thumbnailSizes } from '#app/designer/products';
 

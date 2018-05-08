@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FirestoreService } from '#core/firestore.service';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/merge';
+import { Observable } from 'rxjs';
+
 import { AuthService } from '#core/auth.service';
 import { MatDialog } from '@angular/material';
 import { AddAgentDialogComponent } from '#app/dashboard/agents/add-agent-dialog/add-agent-dialog.component';

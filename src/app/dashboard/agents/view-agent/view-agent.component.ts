@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { FirestoreService } from '#core/firestore.service';
 import { AuthService } from '#core/auth.service';
 import { Http } from '@angular/http';

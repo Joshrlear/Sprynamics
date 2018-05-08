@@ -4,7 +4,7 @@ import { FormGroup } from '@angular/forms/src/model';
 import { FormBuilder, Validators } from '@angular/forms';
 import { StorageService } from '../core/storage.service';
 import { FirestoreService } from '../core/firestore.service';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',

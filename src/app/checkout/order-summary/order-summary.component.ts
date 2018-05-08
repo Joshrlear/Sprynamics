@@ -1,9 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { CheckoutService } from '#app/checkout/checkout.service';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription ,  Observable } from 'rxjs';
 import { AuthService } from '#core/auth.service';
-import { Observable } from 'rxjs/Observable';
 import { User } from '#core/user.interface';
 
 @Component({

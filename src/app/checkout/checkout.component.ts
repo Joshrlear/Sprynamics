@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 import { OrderSummaryComponent } from './order-summary/order-summary.component';
 import { CheckoutService } from '#app/checkout/checkout.service';

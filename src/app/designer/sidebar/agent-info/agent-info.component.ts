@@ -1,6 +1,6 @@
 import { Component, OnInit, EventEmitter, Output, Input } from '@angular/core';
 import { AuthService } from '#core/auth.service';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { FirestoreService } from '#core/firestore.service';
 import { User } from '#core/user.interface';
 

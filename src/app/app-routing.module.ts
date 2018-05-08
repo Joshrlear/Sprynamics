@@ -13,9 +13,10 @@ import { AuthGuard } from './core/auth.guard';
 import { DesignerModule } from '#app/designer/designer.module';
 import { TermsAndConditionsComponent } from '#app/terms-and-conditions/terms-and-conditions.component';
 import { PrivacyPolicyComponent } from '#app/privacy-policy/privacy-policy.component';
+import { LoginComponent } from '#app/account/login/login.component';
 
 const routes: Routes = [
-  { path: '', component: HomeComponent },
+  { path: '', component: LoginComponent },
   { path: 'products', component: ProductsComponent },
   { path: 'designer', loadChildren: () => DesignerModule },
   { path: 'terms', component: TermsAndConditionsComponent },

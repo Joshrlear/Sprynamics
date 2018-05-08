@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Order } from '#app/checkout/order.interface';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-order-receipt',

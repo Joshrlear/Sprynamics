@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { AuthService } from '../../core/auth.service';
 import { PasswordMatchValidation } from './password-match-validation.class';
 import { Router } from '@angular/router';

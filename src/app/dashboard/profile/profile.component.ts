@@ -1,9 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FirestoreService } from '../../core/firestore.service';
-import { Observable } from 'rxjs/Observable';
+import { Observable ,  Subscription } from 'rxjs';
 import { AuthService } from '../../core/auth.service';
 import { User } from '../../core/user.interface';
-import { Subscription } from 'rxjs/Subscription';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { StorageService } from '#core/storage.service';
 

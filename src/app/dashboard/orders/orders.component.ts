@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FirestoreService } from '#core/firestore.service';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { Order } from '#app/checkout/order.interface';
 import { AuthService } from '#core/auth.service';
 

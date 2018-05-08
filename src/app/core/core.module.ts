@@ -9,7 +9,7 @@ import { AngularFirestoreModule } from 'angularfire2/firestore';
 import { AngularFireStorageModule } from 'angularfire2/storage';
 // misc packages
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { RecaptchaModule } from 'ng-recaptcha';
+// import { RecaptchaModule } from 'ng-recaptcha';
 // services
 import { AuthService } from './auth.service';
 import { StorageService } from './storage.service';
@@ -30,7 +30,7 @@ import { GoogleMapsService } from '#core/gmaps.service';
     AngularFireStorageModule,
     // misc packages
     NgbModule.forRoot(),
-    RecaptchaModule.forRoot(),
+    // RecaptchaModule.forRoot(),
     HttpClientModule
   ],
   providers: [

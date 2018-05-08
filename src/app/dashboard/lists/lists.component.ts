@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { MailingListDialogComponent } from '#shared/mailing-list-dialog/mailing-list-dialog.component';
 import { ViewListDialogComponent } from '#shared/view-list-dialog/view-list-dialog.component';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { FirestoreService } from '#core/firestore.service';
 import { AuthService } from '#core/auth.service';
 

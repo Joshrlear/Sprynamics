@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Inject, ElementRef, ViewChild } from '@angular/core';
 
 import * as dropin from 'braintree-web-drop-in';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { CheckoutService } from '#app/checkout/checkout.service';
 import { Router } from '@angular/router';
 import { AuthService } from '#core/auth.service';
