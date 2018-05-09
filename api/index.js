@@ -98,8 +98,8 @@ function uploadAll(listings, listingIndex = 0, photoIndex = 0) {
       } else {
         const date = new Date()
         const year = date.getFullYear()
-        const month = date.getMonth() + 1
-        const day = date.getDate()
+        const month = ('0' + (date.getMonth() + 1)).slice(-2)
+        const day = ('0' + date.getDate()).slice(-2)
         console.log(`${year}-${month}-${day}`)
         fs.writeFile(`listing_status_${year}-${month}-${day}.csv`, output)
         csvData = [['ListingKey', 'Status', 'URL', 'Message', 'Timestamp']]
@@ -246,8 +246,8 @@ schedule.scheduleJob('0 16 * * *', () => {
 app.get('/status', (req, res) => {
   const date = new Date()
   const year = date.getFullYear()
-  const month = date.getMonth() + 1
-  const day = date.getDate()
+  const month = ('0' + (date.getMonth() + 1)).slice(-2)
+  const day = ('0' + date.getDate()).slice(-2)
   console.log(`${year}-${month}-${day}`)
   res.download(path.resolve(__dirname, `listing_status_${year}-${month}-${day}.csv`))
 })
