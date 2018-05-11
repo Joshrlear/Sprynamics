@@ -1,0 +1,53 @@
+brand colors popup
+ability right delete colors
+clicking add open popup
+
+add payment page
+
+sidebar mobile only
+
+only show agent's mailing lists on agent page
+
+syndicate agent data
+search database for agents
+
+upload spreadsheet of agents
+
+sort orders by date
+
+- listed
+- in escrow
+- sold
+
+cropping user images
+
+rounded corners
+
+less intense border on design #4
+
+editable disclaimer on every design
+  - pop up to confirm that they agree they added their disclaimer for their location
+
+not loading designs - bug
+
+fix phone number auto update
+
+primary / secondary / accent colors
+
+best fit
+
+remove mailing list from shipping page
+
+rename 
+
+paypal venmo applepay googlepay
+
+border around design template
+
+design #4 phone number
+
+undo button glitches
+
+show cutoff lines always on top
+
+s

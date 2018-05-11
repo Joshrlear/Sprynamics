@@ -18,6 +18,7 @@ import { ColorsComponent } from './colors/colors.component';
 import { SidenavComponent } from './sidenav/sidenav.component';
 import { MailingListDialogComponent } from './mailing-list-dialog/mailing-list-dialog.component';
 import { ViewListDialogComponent } from '#app/shared/view-list-dialog/view-list-dialog.component';
+import { ContextMenuModule } from 'ngx-contextmenu';
 
 const modules: any[] = [
   // angular modules
@@ -66,6 +67,7 @@ const everything = modules.concat(components);
     BreadcrumbsComponent,
     ColorsComponent,
     SidenavComponent,
+    ContextMenuModule
   ]
 })
 export class SharedModule { }

@@ -25,7 +25,7 @@ export class AlignmentService {
         if (this.canSnap(target.left, bound.left, 10))
           target.left = bound.left;
         // left/right alignment
-        if (this.canSnap(target.left, target.right, 10))
+        if (this.canSnap(target.left, bound.right, 10))
           target.left = bound.right;
         // right/right alignment
         if (this.canSnap(target.right, bound.right, 10))
@@ -39,13 +39,13 @@ export class AlignmentService {
         // bottom/top alignment
         if (target.bottom > bound.top - 10 && target.bottom < bound.top + 10)
           target.top = bound.top - target.height;
-        // center x alignment
+        // centerX/centerX alignment
         const middleX = target.left + target.width / 2;
         const boundMiddleX = bound.left + bound.width / 2;
         if (middleX > boundMiddleX - 10 && middleX < boundMiddleX + 10) {
           target.left = boundMiddleX - target.width / 2;
         }
-        // center y alignment
+        // centerY/centerY alignment
         const middleY = target.top + target.height / 2;
         const boundMiddleY = bound.top + bound.height / 2;
         if (middleY > boundMiddleY - 10 && middleY < boundMiddleY + 10) {

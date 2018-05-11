@@ -3,7 +3,7 @@
 <div class="main-container">
 
 
-  <mat-toolbar *ngIf="auth.user | async" class="app-toolbar" [class.transitioning]="isTransitioning">
+  <mat-toolbar *ngIf="(auth.user | async) && router.url !== '/designer/admin'" class="app-toolbar" [class.transitioning]="isTransitioning">
 
     <mat-toolbar-row>
       <button *ngIf="auth.user | async" mat-button class="hamburger" (click)="sidenav.toggle()" title="Menu">

@@ -20,5 +20,7 @@ export const fabricObjectFields = [
   'cy1',
   'cy2',
   'cy3',
-  'cy4'
+  'cy4',
+  'isAutoFit',
+  'fixedWidth'
 ];

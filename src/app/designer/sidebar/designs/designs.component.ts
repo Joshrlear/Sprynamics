@@ -10,8 +10,12 @@ import { thumbnailSizes } from '#app/designer/products';
 })
 export class DesignsComponent implements AfterViewInit {
 
-  thumbnailSizes = thumbnailSizes;
+  @Input('showContextMenu') showContextMenu: boolean;
+  @Input('showDropdown') showDropdown: boolean;
 
+  @Output('select') selectEvent = new EventEmitter();
+
+  thumbnailSizes = thumbnailSizes;
   templates: Observable<any>;
 
   private _size;
@@ -25,10 +29,6 @@ export class DesignsComponent implements AfterViewInit {
       console.log('set templates')
     }
   }
-
-  @Input('showDropdown') showDropdown: boolean;
-
-  @Output('select') selectEvent = new EventEmitter();
 
   constructor(private firestore: FirestoreService) { }
 
@@ -49,6 +49,19 @@ export class DesignsComponent implements AfterViewInit {
   updateProduct(size: string) {
     this.size = size;
     this.templates = this.firestore.colWithIds$('templates', ref => ref.where('productType.size', '==', this.size));
+  }
+
+  deleteDesign(design) {
+    if (confirm(`Are you sure you wish to permanently delete this design? (${design.name})`)) {
+      this.firestore.delete(`templates/${design.id}`)
+        .then(() => {
+          this.templates = this.firestore.colWithIds$('templates', ref => ref.where('productType.size', '==', this.size));
+          window.alert('Successfully deleted design.');
+        })
+        .catch(err => {
+          window.alert(err.message);
+        })
+    }
   }
 
 }

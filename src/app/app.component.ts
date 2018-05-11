@@ -39,7 +39,7 @@ export class AppComponent implements OnInit {
 
   constructor(public auth: AuthService,
     private ns: NavigationService,
-    private router: Router,
+    public router: Router,
     private firestore: FirestoreService) { }
 
   public logout() {

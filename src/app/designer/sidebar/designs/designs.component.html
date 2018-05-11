@@ -1,3 +1,9 @@
+<context-menu #designMenu>
+  <ng-template contextMenuItem (execute)="deleteDesign($event.item)">
+    Delete
+  </ng-template>
+</context-menu>
+
 <div class="templates-container">
 
   <select *ngIf="showDropdown" class="form-control" #productType (change)="updateProduct(productType.value)">
@@ -21,7 +27,7 @@
 
   <ng-container *ngIf="size">
       <ng-container *ngFor="let template of templates | async">
-        <div class="template" (click)="select(template)"
+        <div class="template" [contextMenu]="designMenu" [contextMenuSubject]="template" (click)="select(template)"
         [ngStyle]="{'background-image': 'url(' + template.thumbnail + ')', width: thumbnailSizes[size]?.width+'px', height: thumbnailSizes[size]?.height+'px'}">
         <div class="template-title">{{ template.name }}</div>
       </div>

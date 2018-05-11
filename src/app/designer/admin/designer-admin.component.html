@@ -1,11 +1,13 @@
-<div class="designer-container">
+
+
+<div class="designer-container" (scroll)="onResize($event)">
 
   <div *ngIf="loadingFonts" class="loading-overlay">
     <mat-spinner></mat-spinner>
   </div>
 
   <div class="designer-sidebar">
-    <span class="selected-tab" [style.transform]="'translateY(' + (80 + currentTabIndex*70) + 'px)'">
+    <span class="selected-tab" [style.transform]="'translateY(' + (currentTabIndex*70) + 'px)'">
       <span></span>
       <span class="bottom"></span>
     </span>
@@ -34,8 +36,8 @@
         <button class="btn btn-sm green" (click)="currentTab = 'designs'; currentTabIndex = 3;">Open</button>
         <button class="btn btn-sm green" (click)="clickSave()">Save</button>
         <button class="btn btn-sm green" (click)="clickSaveNew()">Save New</button>
-        <button class="btn btn-sm green" (click)="createThumbnail()">thumb</button>
-        <button class="btn btn-sm green" (click)="removeExtraLines()">fix</button>
+        <!-- <button class="btn btn-sm green" (click)="createThumbnail()">thumb</button>
+        <button class="btn btn-sm green" (click)="removeExtraLines()">fix</button> -->
         <br>
         <br>
         <!-- Template metadata -->
@@ -67,7 +69,7 @@
         </label>
       </div>
 
-      <app-designs *ngIf="currentTab === 'designs'" [showDropdown]="true" (select)="loadTemplate($event)"></app-designs>
+      <app-designs *ngIf="currentTab === 'designs'" [showContextMenu]="true" [showDropdown]="true" (select)="loadTemplate($event)"></app-designs>
 
       <app-colors *ngIf="currentTab === 'colors'" [showAddButton]="true" (addColor)="addColor()" [colors]="template.presetColors"
         (colorChange)="onColorChange($event)" [bgColor]="background.fill" (bgColorChange)="onBgColorChange($event)" (change)="saveUndo()"></app-colors>
@@ -77,8 +79,8 @@
         <ng-container *ngIf="selection">
           <ng-container [ngSwitch]="selection.type">
             <!-- TEXT selected -->
-            <!-- <ng-container *ngSwitchCase="selection.type === 'i-text' || selection.type === 'textbox' ? selection.type : ''"> -->
-            <ng-container *ngSwitchCase="'textbox'">
+            <ng-container *ngSwitchCase="selection.type === 'i-text' || selection.type === 'textbox' ? selection.type : ''">
+            <!-- <ng-container *ngSwitchCase="'textbox'"> -->
               <h4>Text</h4>
               <!-- Font Family -->
               <div class="form-field" style="display:flex;width:230px;margin-bottom:12px;">
@@ -102,6 +104,7 @@
                   <mat-icon>format_underline</mat-icon>
                 </button>
               </div>
+              <!-- Alignment -->
               <div class="form-field">
                 <button mat-icon-button (click)="selection.textAlign = 'left'; canvas.renderAll(); saveUndo()">
                   <mat-icon>format_align_left</mat-icon>
@@ -114,6 +117,7 @@
                 </button>
               </div>
               <hr>
+              <!-- Line Spacing -->
               <div class="form-field" style="display:flex;align-items:center;margin-bottom:16px;">
                 <mat-icon matTooltip="Character Spacing">compare_arrows</mat-icon>
                 <input type="number" id="textCharSpacing" style="width:56px;margin-left:8px;margin-right:16px;" [(ngModel)]="selection.charSpacing"
@@ -121,6 +125,15 @@
                 <mat-icon matTooltip="Line Spacing">format_line_spacing</mat-icon>
                 <input type="number" id="textLineHeight" style="width:56px;margin-left:8px;" [(ngModel)]="selection.lineHeight" (input)="forceRender(selection)"
                   (change)="saveUndo()">
+              </div>
+              <hr>
+              <!-- Auto Fit Width -->
+              <div class="form-field">
+                <input type="checkbox" [(ngModel)]="selection.isAutoFit" (change)="selection.fixedWidth = selection.fixedWidth ? selection.fixedWidth : selection.width">
+                <label>Auto Fit</label>
+                <div *ngIf="selection.isAutoFit">
+                  <input type="number" [(ngModel)]="selection.fixedWidth" (input)="forceRender(selection)">
+                </div>
               </div>
               <hr>
               <!-- Text ContentType -->
@@ -296,6 +309,18 @@
       <label for="width">Width (px): </label>
       <input id="width" type="number" style="width: 128px" [(ngModel)]="selection.width" (input)="forceRender(selection)" (change)="saveUndo()">
     </div>
+    <div>
+      <label for="x">X Position (px): </label>
+      <input id="x" type="number" style="width: 128px" [(ngModel)]="selection.left" (input)="forceRender(selection)" (change)="saveUndo()">
+    </div>
+    <div>
+      <label for="y">Y Position (px): </label>
+      <input id="y" type="number" style="width: 128px" [(ngModel)]="selection.top" (input)="forceRender(selection)" (change)="saveUndo()">
+    </div>
+    <div>
+      <label for="radius">Border Radius: </label>
+      <input id="radius" type="number" style="width: 128px" [value]="selection.rx" step="10" (input)="setBorderRadius($event.target.value)" (change)="saveUndo()">
+    </div>
   </ng-template>
 
   <!-- SHADOW NG-TEMPLATE -->
@@ -338,10 +363,10 @@
       <button mat-icon-button matTooltip="redo" (click)="redo()" [disabled]="future.length === 0">
         <mat-icon>redo</mat-icon>
       </button>
-      <button class="btn green" (click)="factory.createText(canvas);">+ Text</button>
-      <button class="btn green" (click)="factory.createParagraph(canvas);">+ Paragraph</button>
+      <button class="btn btn-sm green" (click)="factory.createText(canvas);">+ Text</button>
+      <button class="btn btn-sm green" (click)="factory.createParagraph(canvas);">+ Paragraph</button>
       <div class="btn-group" ngbDropdown>
-        <button ngbDropdownToggle class="btn green dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <button ngbDropdownToggle class="btn btn-sm green dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           + Shape
         </button>
         <div ngbDropdownMenu class="dropdown-menu" role="menu">
@@ -351,31 +376,31 @@
           <a class="dropdown-item" (click)="factory.createLine(canvas)">+ Line</a>
         </div>
       </div>
-      <button class="btn green" (click)="factory.createLogo(canvas)">+ Logo</button>
-      <button class="btn green" (click)="addImageInput.click()">+ Static Image</button>
-      <button class="btn green" (click)="factory.createUserImage(canvas)">+ User Image</button>
-      <button class="btn green" (click)="factory.createMapImage(canvas)">+ Map Image</button>
+      <button class="btn btn-sm green" (click)="factory.createLogo(canvas)">+ User Image</button>
+      <button class="btn btn-sm green" (click)="addImageInput.click()">+ Static Image</button>
+      <button class="btn btn-sm green" (click)="factory.createUserImage(canvas)">+ Property Image</button>
+      <button class="btn btn-sm green" (click)="factory.createMapImage(canvas)">+ Map Image</button>
       <input #addImageInput type="file" (change)="addImageFiles(addImageInput.files)" multiple hidden>
       <ng-container *ngIf="selection">
-        <button class="btn" (click)="deleteSelection()">Remove</button>
-        <button class="btn" (click)="factory.createClone(selection, canvas)">Clone</button>
+        <button class="btn btn-sm" (click)="deleteSelection()">Remove</button>
+        <button class="btn btn-sm" (click)="factory.createClone(selection, canvas)">Clone</button>
         <div class="btn-group" ngbDropdown>
-          <button ngbDropdownToggle class="btn dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <button ngbDropdownToggle class="btn btn-sm dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Arrange
           </button>
           <div ngbDropdownMenu class="dropdown-menu" role="menu">
-            <button class="btn dropdown-item" (click)="bringToFront()">To Front</button>
-            <button class="btn dropdown-item" (click)="bringForward()">Forward</button>
-            <button class="btn dropdown-item" (click)="sendBackward()">Backward</button>
-            <button class="btn dropdown-item" (click)="sendToBack()">To Back</button>
+            <button class="btn btn-sm dropdown-item" (click)="bringToFront()">To Front</button>
+            <button class="btn btn-sm dropdown-item" (click)="bringForward()">Forward</button>
+            <button class="btn btn-sm dropdown-item" (click)="sendBackward()">Backward</button>
+            <button class="btn btn-sm dropdown-item" (click)="sendToBack()">To Back</button>
           </div>
         </div>
       </ng-container>
 
     </div>
 
-    <div #designerView class="designer-view">
-      <canvas id="canvas" class="designer-canvas"></canvas>
+    <div #designerView class="designer-view" (scroll)="onResize($event)" (keydown)="onKeyUp($event)">
+      <canvas id="canvas" class="designer-canvas" (scroll)="onResize($event)" (keydown)="onKeyUp($event)"></canvas>
     </div>
 
   </div>

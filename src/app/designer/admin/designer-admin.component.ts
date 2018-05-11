@@ -15,6 +15,8 @@ declare let WebFont;
 
 import 'fabric';
 import { fabricObjectFields } from '#app/designer/fabric-object-fields';
+import { AdminDesignerProgressDialogComponent } from '#app/designer/admin/admin-designer-progress-dialog/admin-designer-progress-dialog.component';
+import { ContextMenuComponent } from 'ngx-contextmenu';
 declare let fabric;
 
 @Component({
@@ -25,6 +27,7 @@ declare let fabric;
 export class DesignerAdminComponent implements OnInit, AfterViewInit {
 
   @ViewChild('designerView') view: ElementRef;
+  @ViewChild(ContextMenuComponent) public contextMenu: ContextMenuComponent;
 
   productTypes = productTypes;
   productSpecs = productSpecs;
@@ -58,9 +61,12 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
   future = [];
   disableHistory = true;
 
+  lockedLeft: number = null;
+  lockedTop: number = null;
+
   get selection() {
     if (this.canvas) {
-      return this.canvas.getActiveObject() || null;
+      return this.canvas.getActiveObject() || this.canvas.getActiveObjects() || null;
     } else {
       return null;
     }
@@ -109,27 +115,44 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
     // })
   }
 
-  // @HostListener('window:resize', ['$event'])
-  // onResize(event?) {
-  //   this.canvas.setWidth(this.view.nativeElement.clientWidth);
-  //   this.canvas.setHeight(this.view.nativeElement.clientHeight);
-  //   // this.canvas.calcOffset();
-  //   const objects = this.canvas.getObjects();
-  //   const selection = new fabric.ActiveSelection(objects, { canvas: this.canvas });
-  //   const width = selection.width;
-  //   const height = selection.height;
-  //   const scale = this.canvas.height / height;
-  //   // selection.scale(scale);
-  //   selection.center();
-  //   selection.destroy();
-  //   this.canvas.zoomToPoint(new fabric.Point(this.canvas.width / 2, this.canvas.height / 2), Math.min(scale, 1));
-  // }
+  @HostListener('scroll', ['$event'])
+  onResize(e?) {
+
+    e.preventDefault();
+    console.log(e);
+    if (e.originalEvent.wheelDelta / 120 > 0) {
+      this.canvas.setZoom(this.canvas.viewport.zoom * 1.1);
+    }
+    else {
+      this.canvas.setZoom(this.canvas.viewport.zoom / 1.1);
+    }
+
+    // console.log(event)
+    // this.canvas.setWidth(this.view.nativeElement.clientWidth);
+    // this.canvas.setHeight(this.view.nativeElement.clientHeight);
+    // // this.canvas.calcOffset();
+    // const objects = this.canvas.getObjects();
+    // const selection = new fabric.ActiveSelection(objects, { canvas: this.canvas });
+    // const width = selection.width;
+    // const height = selection.height;
+    // const scale = this.view.nativeElement.clientHeight / this.canvas.height;
+    // console.log(selection.height, this.canvas.height, this.view.nativeElement.clientHeight);
+    // // selection.scale(scale);
+    // // selection.center();
+    // // selection.destroy();
+    // // this.canvas.zoomToPoint(new fabric.Point(this.canvas.width / 2, this.canvas.height / 2), scale);
+    // this.canvas.setZoom(scale);
+  }
 
   getCanvasWidth() {
     return this.canvas.width / this.canvas.getZoom();
   }
   getCanvasHeight() {
     return this.canvas.height / this.canvas.getZoom();
+  }
+
+  @HostListener('keyup', ['$event'])
+  onKeyUp(event?) {
   }
 
   ngAfterViewInit() {
@@ -174,32 +197,66 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
 
     // Fix rectangle scaling
     this.canvas.on('object:modified', (event) => {
-      console.log(event.target.isUserImage);
-      if (event.target.type === 'rect') {
-        event.target.width = Math.floor(event.target.width * event.target.scaleX);
-        event.target.height = Math.floor(event.target.height * event.target.scaleY);
-        event.target.scaleX = 1;
-        event.target.scaleY = 1;
-        this.forceRender(event.target);
+      const obj = event.target;
+      if (obj.type === 'rect') {
+        obj.width = Math.floor(obj.width * obj.scaleX);
+        obj.height = Math.floor(obj.height * obj.scaleY);
+        obj.scaleX = 1;
+        obj.scaleY = 1;
+        this.forceRender(obj);
+      } 
+      else if (obj.type === 'textbox' || obj.type === 'i-text') {
+        obj.fontSize *= obj.scaleX;
+        obj.scaleX = 1;
+        obj.scaleY = 1;
+        this.forceRender(obj);
       }
       this.saveUndo();
     });
 
     this.canvas.on('object:added', (event) => {
+      if (event.target.isBackground || event.target.isHidden) {
+        return;
+      }
       this.saveUndo();
     });
 
     this.canvas.on('object:removed', (event) => {
+      if (event.target.isBackground || event.target.isHidden) {
+        return;
+      }
       this.saveUndo();
     });
 
     // Auto-align object when dragged
     this.canvas.on("object:moving", (event) => {
+      event.target.left = Math.round(event.target.left);
+      event.target.top = Math.round(event.target.top);
+
+      // lock top position if shift key is held
+      if (event.e.shiftKey && this.lockedTop === null) {
+        this.lockedTop = event.target.top;
+      } else if (!event.e.shiftKey) {
+        this.lockedTop = null;
+      }
+      // lock left position if alt key is held
+      if (event.e.altKey && this.lockedLeft === null) {
+        this.lockedLeft = event.target.left;
+      } else if (!event.e.altKey) {
+        this.lockedLeft = null;
+      }
+
       // ignore alignment when the ctrl key is held down
       if (!event.e.ctrlKey) {
         this.aligner.alignDragging(event.target, this.canvas);
       }
-      console.log(event.target.left);
+
+      if (this.lockedTop !== null) {
+        event.target.top = this.lockedTop;
+      }
+      if (this.lockedLeft !== null) {
+        event.target.left = this.lockedLeft;
+      }
     });
 
     // Auto-align when scaling
@@ -209,6 +266,18 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
         this.aligner.alignScaling(event.target, this.canvas);
       }
     });
+
+    // Auto-fit text
+    this.canvas.on('text:changed', (event) => {
+      const text = event.target;
+      if (!text.isAutoFit) {
+        return;
+      }
+      if (text.width > text.fixedWidth) {
+        text.fontSize *= text.fixedWidth / (text.width + 1);
+        text.width = text.fixedWidth;
+      }
+    })
 
     // initialize the canvas
     this.clearCanvas();
@@ -227,6 +296,62 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
         console.log('svg element: ' + obj.id);
       });
     */
+
+    fabric.util.addListener(document.body, 'keydown', (options) => {
+      var Direction = {
+        LEFT: 0,
+        UP: 1,
+        RIGHT: 2,
+        DOWN: 3
+      };
+      if (options.repeat) {
+        return;
+      }
+      var key = options.which || options.keyCode; // key detection
+      if (key === 37) { // handle Left key
+        this.moveSelected(Direction.LEFT);
+      } else if (key === 38) { // handle Up key
+        this.moveSelected(Direction.UP);
+      } else if (key === 39) { // handle Right key
+        this.moveSelected(Direction.RIGHT);
+      } else if (key === 40) { // handle Down key
+        this.moveSelected(Direction.DOWN);
+      }
+    });
+  }
+
+  moveSelected(direction) {
+    var Direction = {
+      LEFT: 0,
+      UP: 1,
+      RIGHT: 2,
+      DOWN: 3
+    };
+    const STEP = 10;
+    var activeObject = this.canvas.getActiveObject();
+
+    if (activeObject) {
+      switch (direction) {
+        case Direction.LEFT:
+          activeObject.left = activeObject.left - STEP;
+          break;
+        case Direction.UP:
+          activeObject.top = activeObject.top - STEP;
+          break;
+        case Direction.RIGHT:
+          activeObject.left = activeObject.left + STEP;
+          break;
+        case Direction.DOWN:
+          activeObject.top = activeObject.top + STEP;
+          break;
+      }
+      activeObject.setCoords();
+      this.canvas.renderAll();
+      console.log('selected objects was moved');
+    } else {
+      console.log('no object selected');
+    }
+
   }
 
   canvasToJSON() {
@@ -348,6 +473,14 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
     }
   }
 
+  setBorderRadius(amount) {
+    this.selection.set({
+      rx: amount,
+      ry: amount
+    });
+    this.forceRender(this.selection);
+  }
+
   clickNew() {
     if (confirm('Unsaved changes will be lost. Are you sure you want to start a new template?')) {
       this.template = Object.assign({}, this.defaultTemplate);
@@ -377,8 +510,10 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
     });
     this.template.fonts = fonts;
 
+    const dialogRef = this.dialog.open(AdminDesignerProgressDialogComponent);
+
     (new Promise((resolve, reject) => {
-      const docData = this.template;
+      const docData = Object.assign({}, this.template);
       delete docData.front;
       delete docData.back;
       if (this.template.id && !saveNew) {
@@ -395,6 +530,7 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
       }
     })).then(id => {
       console.log(`Saving template: ${id}`)
+      console.log(canvasData)
       this.storage.putJSONNoDownloadURL(canvasData, `templates/${id}.json`)
         .then().then(file => {
           const url = file.downloadURL;
@@ -410,6 +546,9 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
                 this.firestore.update(`templates/${id}`, { url, thumbnail: thumbnail.downloadURL })
                   .then(() => {
                     console.log('Finished saving template.');
+                    dialogRef.close();
+                    window.alert('Finished saving template.')
+                    console.log(this.template);
                   })
               });
           }
@@ -465,15 +604,21 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
 
   loadTemplate(template: any) {
     console.log(template);
+    const dialogRef = this.dialog.open(AdminDesignerProgressDialogComponent);
     this.disableHistory = true;
     this.template = template;
     this.viewSide = 'front';
-    this.storage.getFile(template.url).take(1).subscribe(data => {
-      this.canvas.loadFromJSON(data['front'], _ => {
-        this.background = this.canvas.getObjects('rect').filter(obj => obj.isBackground)[0];
-        this.disableHistory = false;
-      });
-      this.template['back'] = data['back'];
+    this.storage.getFile(template.url).take(1).subscribe((data: any) => {
+      if (data.front) {
+        this.canvas.loadFromJSON(data['front'], _ => {
+          this.background = this.canvas.getObjects('rect').filter(obj => obj.isBackground)[0];
+          this.disableHistory = false;
+          dialogRef.close();
+        });
+        this.template['back'] = data['back'];
+      } else {
+        dialogRef.close();
+      }
     });
   }
 
@@ -540,14 +685,13 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
 
   deleteSelection() {
     if (this.selection) {
-      if (this.selection.type === 'group') {
+      if (this.selection._objects) {
         this.selection.forEachObject(obj => this.canvas.remove(obj));
-        this.canvas
-          .discardActiveGroup()
-          .renderAll();
       } else {
         this.canvas.remove(this.selection);
       }
+      this.canvas.discardActiveObject();
+      this.canvas.renderAll();
     }
   }
 

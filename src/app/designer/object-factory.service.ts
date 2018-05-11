@@ -39,12 +39,12 @@ export class ObjectFactoryService {
   }
 
   createText(canvas) {
-    const text = new fabric.Textbox('Type text here...', {
+    const text = new fabric.IText('Type text here...', {
       left: 50,
       top: 50,
-      width: 150,
+      width: 400,
       strokeWidth: 0,
-      fontSize: 20,
+      fontSize: 60,
       fontFamily: 'Roboto',
       hasRotatingPoint: true,
       textContentType: 'plain', // custom

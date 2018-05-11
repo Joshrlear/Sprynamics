@@ -20,6 +20,7 @@ import { SlipstreamService } from './slipstream.service';
 import { HttpClientModule } from '@angular/common/http';
 import { MlsService } from '#core/mls.service';
 import { GoogleMapsService } from '#core/gmaps.service';
+import { ContextMenuModule } from 'ngx-contextmenu';
 
 @NgModule({
   imports: [
@@ -31,7 +32,8 @@ import { GoogleMapsService } from '#core/gmaps.service';
     // misc packages
     NgbModule.forRoot(),
     // RecaptchaModule.forRoot(),
-    HttpClientModule
+    HttpClientModule,
+    ContextMenuModule.forRoot()
   ],
   providers: [
     AuthService,

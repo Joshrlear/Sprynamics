@@ -16,6 +16,7 @@ import { AlignmentService } from './admin/alignment.service';
 import { ObjectFactoryService } from './object-factory.service';
 import { NewUserPopupComponent } from './new-user-popup/new-user-popup.component';
 import { ImageSelectDialogComponent } from './image-select-dialog/image-select-dialog.component';
+import { AdminDesignerProgressDialogComponent } from './admin/admin-designer-progress-dialog/admin-designer-progress-dialog.component';
 
 const routes: Routes = [
   { path: '', component: DesignerClientComponent },
@@ -38,11 +39,13 @@ const routes: Routes = [
     TextComponent,
     NewUserPopupComponent,
     ImageSelectDialogComponent,
+    AdminDesignerProgressDialogComponent,
   ],
   entryComponents: [
     CropDialogComponent,
     NewUserPopupComponent,
     ImageSelectDialogComponent,
+    AdminDesignerProgressDialogComponent
   ],
   providers: [AlignmentService, ObjectFactoryService]
 })

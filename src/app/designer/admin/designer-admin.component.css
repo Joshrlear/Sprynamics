@@ -12,7 +12,6 @@
 .designer-container {
   height: 100vh;
   display: flex;
-  padding-top: 80px;
   color: black;
 }
 
@@ -147,4 +146,8 @@ legend {
 }
 .color-picker {
   transform: scale(1.1);
+}
+
+.designer-actions .btn, .designer-sidebar .btn {
+  margin-right: 8px;
 }
