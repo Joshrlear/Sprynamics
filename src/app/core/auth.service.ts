@@ -9,6 +9,7 @@ import { Observable } from 'rxjs';
 
 
 import { User } from './user.interface';
+import { FirestoreService } from '#core/firestore.service';
 
 @Injectable()
 export class AuthService {
@@ -16,9 +17,12 @@ export class AuthService {
   authState: Observable<firebase.User>;
   user: Observable<User>;
 
-  constructor(private afAuth: AngularFireAuth,
-              private afs: AngularFirestore,
-              private router: Router) {
+  constructor(
+    private afAuth: AngularFireAuth,
+    private afs: AngularFirestore,
+    private firestore: FirestoreService,
+    private router: Router
+  ) {
 
     // Get auth data, then get firestore user document || null
     this.authState = this.afAuth.authState;
@@ -33,15 +37,20 @@ export class AuthService {
   }
 
   emailSignUp(email: string, password: string) {
+    console.log('ok')
     return this.afAuth.auth.createUserWithEmailAndPassword(email, password)
       .then(user => {
+        console.log(user);
         return this.emailLogin(email, password).then(_ => {
           return this.afs.doc(`users/${user.uid}`).set({
             uid: user.uid,
             email
           });
         });
-      });
+      })
+      .catch(err => {
+        console.log(err)
+      })
   }
 
   emailLogin(username: string, password: string) {
@@ -52,13 +61,12 @@ export class AuthService {
     const provider = new firebase.auth.GoogleAuthProvider();
     return this.afAuth.auth.signInWithPopup(provider)
       .then((credential) => {
-        console.log(credential.user);
-        this.updateUserData(credential.user, {
+        return this.updateUserData(credential.user, {
           uid: credential.user.uid,
           email: credential.user.email,
           firstName: credential.user.displayName.split(' ')[0],
-          lastName: credential.user.displayName.split(' ')[1] || ''
-        });
+          lastName: credential.user.displayName.split(' ')[1] || '',
+        })
       });
   }
 
@@ -66,13 +74,12 @@ export class AuthService {
     const provider = new firebase.auth.FacebookAuthProvider();
     return this.afAuth.auth.signInWithPopup(provider)
       .then((credential) => {
-        console.log(credential.user);
-        this.updateUserData(credential.user, {
+        return this.updateUserData(credential.user, {
           uid: credential.user.uid,
           email: credential.user.email,
           firstName: credential.user.displayName.split(' ')[0],
           lastName: credential.user.displayName.split(' ')[1] || ''
-        });
+        })
       });
   }
 
@@ -82,7 +89,7 @@ export class AuthService {
 
   // update properties on user document
   updateUserData(user: User, data: Partial<User>) {
-    return this.afs.doc<User>(`users/${user.uid}`).update(data);
+    return this.firestore.upsert<User>(`users/${user.uid}`, data);
   }
 
   logout() {

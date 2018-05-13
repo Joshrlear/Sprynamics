@@ -36,7 +36,7 @@ export class RegisterComponent implements OnInit {
         Validators.required
       ]],
       'recaptcha': ['', [
-        Validators.required
+        // Validators.required
       ]]
     }, {
       validator: PasswordMatchValidation.MatchPassword // validates that confirmPassword === password
@@ -49,7 +49,9 @@ export class RegisterComponent implements OnInit {
   get recaptcha() { return this.signupForm.get('recaptcha'); }
 
   submitSignup() {
+    console.log('submit')
     if (this.signupForm.invalid) {
+      console.log('invalid form')
       this.failedSubmit = true;
     } else {
       this.auth.emailSignUp(this.email.value, this.password.value)
