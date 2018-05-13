@@ -28,6 +28,7 @@ import { CropDialogComponent } from '#app/designer/crop-dialog/crop-dialog.compo
 import { ImageSelectDialogComponent } from '#app/designer/image-select-dialog/image-select-dialog.component';
 import { fabricObjectFields } from '#app/designer/fabric-object-fields';
 import { GoogleMapsService } from '#core/gmaps.service';
+import { BrandColorChangeEvent } from '#app/shared/colors/brand-colors.interface';
 
 @Component({
   selector: 'app-designer-client',
@@ -256,6 +257,14 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
         field.obj.text = agent[field.obj.textUserData] || '';
       }
     });
+    if (agent.brandColors) {
+      this.canvas.forEachObject(obj => {
+        if (obj.brandColorRole && obj.brandColorRole !== 'none') {
+          const color = agent.brandColors[obj.brandColorRole];
+          obj.set({ fill: color });
+        }
+      });
+    }
     this.saveUndo();
     this.canvas.renderAll();
   }
@@ -331,37 +340,14 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
     return number.toString(16).toUpperCase();
   }
 
-
-  changeColor(event) {
-    const index = event.index;
+  changeColor(event: BrandColorChangeEvent) {
     const color = new fabric.Color(event.color);
-    const lastColor = new fabric.Color(this.template.presetColors[index]);
     this.canvas.forEachObject(obj => {
-      if (obj.isBackground) {
-        return;
-      }
-      let objColor = new fabric.Color(obj.fill)
-      objColor.setAlpha(obj.opacity);
-      if (objColor.toHex() === lastColor.toHex()) {
-        console.log(objColor.toHexa(), lastColor.toHexa())
-        if (obj.type !== 'i-text' && obj.type !== 'textbox') {
-          const alphaHex = event.color.substr(-2)
-          const colorWithoutAlpha = event.color.substring(0, event.color.length - 2);
-          obj.fill = colorWithoutAlpha;
-          obj.opacity = parseInt(alphaHex, 16) / 255;
-          obj.set({ opacity: parseInt(alphaHex, 16) / 255 })
-        }
+      if (obj.brandColorRole === event.role) {
+        obj.set({ fill: event.color });
       }
     });
-    this.template.presetColors[index] = event.color;
-    this.canvas.renderAll();
-  }
-
-  changeBackgroundColor(event) {
-    const color = new fabric.Color(event);
-    this.background.set({
-      fill: '#' + color.toHexa().split('.')[0]
-    });
+    this.template.brandColors[event.role] = event.color;
     this.canvas.renderAll();
   }
 
@@ -427,6 +413,10 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
     this.agentFields = [];
     // mark this side as processed
     this.template[this.viewSide].processed = true;
+    // set brand colors to user's brand colors
+    if (this.userData.brandColors) {
+      this.template.brandColors = this.userData.brandColors;
+    }
     let imagesToLoad = 0;
     // find the boundbox and background
     this.background = this.canvas.getObjects('rect').filter(obj => obj.isBackground)[0];
@@ -462,6 +452,11 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
         lockMovementY: true,
         objectCaching: false
       });
+      // update to user's brand colors
+      if (obj.brandColorRole && obj.brandColorRole !== 'none') {
+        const color = this.userData.brandColors[obj.brandColorRole];
+        obj.set({ fill: color });
+      }
       // set hover cursor
       if (obj.isUserImage) {
         obj.hoverCursor = 'pointer';

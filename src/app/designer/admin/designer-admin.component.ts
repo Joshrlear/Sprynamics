@@ -9,14 +9,15 @@ import { ObjectFactoryService } from '../object-factory.service';
 import { AlignmentService } from '#app/designer/admin/alignment.service';
 import { CropDialogComponent } from '#app/designer/crop-dialog/crop-dialog.component';
 import { MatDialog } from '@angular/material';
+import { fabricObjectFields } from '#app/designer/fabric-object-fields';
+import { AdminDesignerProgressDialogComponent } from '#app/designer/admin/admin-designer-progress-dialog/admin-designer-progress-dialog.component';
+import { ContextMenuComponent } from 'ngx-contextmenu';
+import { BrandColorChangeEvent, BrandColorRole } from '#app/shared/colors/brand-colors.interface';
 
 import 'webfontloader';
 declare let WebFont;
 
 import 'fabric';
-import { fabricObjectFields } from '#app/designer/fabric-object-fields';
-import { AdminDesignerProgressDialogComponent } from '#app/designer/admin/admin-designer-progress-dialog/admin-designer-progress-dialog.component';
-import { ContextMenuComponent } from 'ngx-contextmenu';
 declare let fabric;
 
 @Component({
@@ -26,16 +27,21 @@ declare let fabric;
 })
 export class DesignerAdminComponent implements OnInit, AfterViewInit {
 
+  productTypes = productTypes;
+  productSpecs = productSpecs;
+
   @ViewChild('designerView') view: ElementRef;
   @ViewChild(ContextMenuComponent) public contextMenu: ContextMenuComponent;
 
-  productTypes = productTypes;
-  productSpecs = productSpecs;
 
   defaultTemplate = {
     name: '',
     productType: this.productTypes.postcard_small,
-    presetColors: [],
+    brandColors: {
+      primary: '#ffffffff',
+      secondary: '#ffffffff',
+      accent: '#ffffffff'
+    },
     front: null,
     back: null
   }
@@ -48,7 +54,6 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
   printArea: any;
   currentTab = 'settings';
   currentTabIndex = 0;
-
   viewSide: 'front' | 'back' = 'front';
 
   userData: any;
@@ -56,11 +61,13 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
   loadingFonts: boolean;
   fonts: string[];
 
+  /* Undo history */
   past = [];
   present;
   future = [];
   disableHistory = true;
 
+  /* Allows locking left/top position while dragging an object */
   lockedLeft: number = null;
   lockedTop: number = null;
 
@@ -103,16 +110,7 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
     // Get user data
     this.auth.user.take(1).subscribe((user: any) => {
       this.userData = user;
-      this.template.presetColors = user.presetColors || [];
     });
-
-    // Load product type from query parameter
-    // this.route.queryParamMap.take(1).subscribe((queryParamMap: any) => {
-    //   const product = queryParamMap.params['product'];
-    //   if (product) {
-    //     this.template.productType = this.productTypes[product];
-    //   }
-    // })
   }
 
   @HostListener('scroll', ['$event'])
@@ -426,10 +424,6 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
     }
   }
 
-  addColor() {
-    this.template.presetColors.push(this.selection.fill);
-  }
-
   uploadImage(file: File) {
     const obj = this.selection;
     const reader = new FileReader();
@@ -643,25 +637,24 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
     this.canvas.renderAll();
   }
 
-  onColorChange(event) {
-    const index = event.index;
+  onColorChange(event: BrandColorChangeEvent) {
     const color = new fabric.Color(event.color);
-    const lastColor = new fabric.Color(this.template.presetColors[index]);
     this.canvas.forEachObject(obj => {
-      if ((new fabric.Color(obj.fill)).toHexa() === lastColor.toHexa()) {
+      if (obj.brandColorRole === event.role) {
         obj.set({ fill: event.color });
       }
     });
-    this.template.presetColors[index] = event.color;
+    this.template.brandColors[event.role] = event.color;
     this.canvas.renderAll();
   }
 
-  onBgColorChange(event) {
-    const color = new fabric.Color(event);
-    this.background.set({
-      fill: '#' + color.toHexa().split('.')[0]
-    });
-    this.canvas.renderAll();
+  setBrandColorRole(role: BrandColorRole) {
+    this.selection.brandColorRole = role;
+    if (role !== 'none') {
+      const color = this.template.brandColors[role];
+      this.selection.set({ fill: color });
+      this.canvas.renderAll();
+    }
   }
 
   shadowColorPickerChange(event) {

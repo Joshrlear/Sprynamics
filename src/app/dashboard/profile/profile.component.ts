@@ -5,6 +5,7 @@ import { AuthService } from '../../core/auth.service';
 import { User } from '../../core/user.interface';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { StorageService } from '#core/storage.service';
+import { BrandColorChangeEvent } from '#app/shared/colors/brand-colors.interface';
 
 @Component({
   selector: 'app-profile',
@@ -80,8 +81,8 @@ export class ProfileComponent implements OnInit {
     this.saveColors();
   }
 
-  setColor(event) {
-    this.user.brandColors[event.index] = event.color;
+  setColor(event: BrandColorChangeEvent) {
+    this.user.brandColors[event.role] = event.color;
   }
 
   saveColors() {

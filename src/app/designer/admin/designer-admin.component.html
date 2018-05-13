@@ -71,8 +71,11 @@
 
       <app-designs *ngIf="currentTab === 'designs'" [showContextMenu]="true" [showDropdown]="true" (select)="loadTemplate($event)"></app-designs>
 
-      <app-colors *ngIf="currentTab === 'colors'" [showAddButton]="true" (addColor)="addColor()" [colors]="template.presetColors"
-        (colorChange)="onColorChange($event)" [bgColor]="background.fill" (bgColorChange)="onBgColorChange($event)" (change)="saveUndo()"></app-colors>
+      <app-colors *ngIf="currentTab === 'colors'" 
+        [colors]="template.brandColors"
+        (colorChange)="onColorChange($event)" 
+        (change)="saveUndo()">
+      </app-colors>
 
       <div *ngIf="currentTab === 'edit'" style="padding: 16px;">
         <!-- Object Selection -->
@@ -120,11 +123,15 @@
               <!-- Line Spacing -->
               <div class="form-field" style="display:flex;align-items:center;margin-bottom:16px;">
                 <mat-icon matTooltip="Character Spacing">compare_arrows</mat-icon>
-                <input type="number" id="textCharSpacing" style="width:56px;margin-left:8px;margin-right:16px;" [(ngModel)]="selection.charSpacing"
-                  (input)="forceRender(selection)" (change)="saveUndo()">
+                <input type="number" id="textCharSpacing" style="width:56px;margin-left:8px;margin-right:16px;" 
+                  [(ngModel)]="selection.charSpacing"
+                  (input)="forceRender(selection)" 
+                  (change)="saveUndo()"/>
                 <mat-icon matTooltip="Line Spacing">format_line_spacing</mat-icon>
-                <input type="number" id="textLineHeight" style="width:56px;margin-left:8px;" [(ngModel)]="selection.lineHeight" (input)="forceRender(selection)"
-                  (change)="saveUndo()">
+                <input type="number" id="textLineHeight" style="width:56px;margin-left:8px;" 
+                  [(ngModel)]="selection.lineHeight" 
+                  (input)="forceRender(selection)"
+                  (change)="saveUndo()"/>
               </div>
               <hr>
               <!-- Auto Fit Width -->
@@ -150,9 +157,6 @@
                 <label style="margin-left:8px;">
                   <input type="radio" name="textContentType" id="optionsRadios1" value="property" [(ngModel)]="selection.textContentType"> Property data
                 </label>
-              </div>
-              <div class="radio">
-
               </div>
               <!-- Text Content -->
               <div class="form-field" style="display:flex;align-items:center;margin-bottom:16px;" *ngIf="selection.textContentType !== 'data'">
@@ -192,10 +196,7 @@
                 <label for="textFieldName">Field Name:</label>
                 <input id="textFieldName" type="text" [(ngModel)]="selection.textFieldName">
               </div>
-
               <hr>
-
-              <!-- Outlets -->
               <ng-container *ngTemplateOutlet="measurements"></ng-container>
               <ng-container *ngTemplateOutlet="stroke"></ng-container>
               <ng-container *ngTemplateOutlet="shadow"></ng-container>
@@ -268,11 +269,6 @@
               </div>
             </ng-container>
 
-            <!-- LOGO selected -->
-            <ng-container *ngSwitchCase="'logo'">
-
-            </ng-container>
-
             <!-- GROUP selected -->
             <ng-container *ngSwitchCase="'group'">
               <h4>Group</h4>
@@ -285,18 +281,27 @@
     </div>
   </div>
 
-  <div *ngIf="false" class="designer-sidebar mat-elevation-z8">
-
-  </div>
-
-  <!-- COLOR PICKER NG-TEMPLATE -->
+  <!-- COLOR PICKER -->
   <ng-template #colorpicker>
-    <div class="color" [style.background]="selection.fill" [cpCancelButton]="true" [cpOKButton]="true" cpAlphaChannel="always"
-      cpAddColorButton=true [cpPresetColors]="template.presetColors" [(colorPicker)]="selection.fill" (colorPickerChange)="colorPickerChange($event)"
-      (cpPresetColorsChange)="template.presetColors = $event" (cpSliderDragEnd)="saveUndo()">
+    <div>
+      <button class="btn btn-sm" [class.green]="selection.brandColorRole === 'none'"      (click)="setBrandColorRole('none')"      >none</button>
+      <button class="btn btn-sm" [class.green]="selection.brandColorRole === 'primary'"   (click)="setBrandColorRole('primary')"   >primary</button>
+      <button class="btn btn-sm" [class.green]="selection.brandColorRole === 'secondary'" (click)="setBrandColorRole('secondary')" >secondary</button>
+      <button class="btn btn-sm" [class.green]="selection.brandColorRole === 'accent'"    (click)="setBrandColorRole('accent')"    >accent</button>
+    </div>
+    <br>
+    <div class="color" *ngIf="selection.brandColorRole === 'none'" 
+      [style.background]="selection.fill" 
+      [cpCancelButton]="true" 
+      [cpOKButton]="true" 
+      [cpAlphaChannel]="'always'"
+      [(colorPicker)]="selection.fill" 
+      (colorPickerChange)="colorPickerChange($event)"
+      (cpSliderDragEnd)="saveUndo()">
     </div>
   </ng-template>
 
+  <!-- MEASUREMENTS -->
   <ng-template #measurements>
     <span>Measurements:</span>
     <div>Height (in): {{ (selection.height / productSpecs.dpi).toFixed(2) }}"</div>
@@ -323,7 +328,7 @@
     </div>
   </ng-template>
 
-  <!-- SHADOW NG-TEMPLATE -->
+  <!-- SHADOW -->
   <ng-template #shadow>
     <label for="shadowEnabled">Shadow:</label>
     <input #shadowEnabled type="checkbox" id="shadowEnabled" [(ngModel)]="selection.spryShadow">
@@ -344,7 +349,7 @@
     </ng-container>
   </ng-template>
 
-  <!-- STROKE NG-TEMPLATE -->
+  <!-- STROKE -->
   <ng-template #stroke>
     <span>Stroke:</span>
     <div class="color" [style.background]="selection.stroke" [cpCancelButton]="true" [cpOKButton]="true" cpAlphaChannel="always"
@@ -354,8 +359,8 @@
     <input type="number" id="strokeWidth" min=0 [(ngModel)]="selection.strokeWidth" (input)="forceRender(selection)" (change)="saveUndo()">
   </ng-template>
 
+  <!-- TOOLBAR -->
   <div class="designer-content">
-
     <div class="designer-actions mat-elevation-z1">
       <button mat-icon-button matTooltip="undo" (click)="undo()" [disabled]="past.length === 0">
         <mat-icon>undo</mat-icon>
@@ -396,9 +401,9 @@
           </div>
         </div>
       </ng-container>
-
     </div>
 
+    <!-- CANVAS -->
     <div #designerView class="designer-view" (scroll)="onResize($event)" (keydown)="onKeyUp($event)">
       <canvas id="canvas" class="designer-canvas" (scroll)="onResize($event)" (keydown)="onKeyUp($event)"></canvas>
     </div>

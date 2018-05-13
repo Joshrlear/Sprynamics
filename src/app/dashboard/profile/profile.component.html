@@ -105,8 +105,12 @@
     </div>
     <div class="dashboard-card no-padding">
       <p class="dashboard-card-heading" style="margin-left:12px;margin-top:6px;margin-bottom:6px;">Brand Colors</p>
-      <app-colors [colors]="user?.brandColors" [showAddButton]="true" [showBackground]="false" (addColor)="addColor()" (colorChange)="setColor($event)"
-        (change)="saveColors()"></app-colors>
+      <app-colors 
+        [colors]="user?.brandColors"
+        (addColor)="addColor()" 
+        (colorChange)="setColor($event)"
+        (change)="saveColors()">
+      </app-colors>
     </div>
   </div>
 </div>

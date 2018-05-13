@@ -1,14 +1,43 @@
 <div class="color-container">
-  <div *ngIf="showBackground" class="color wide" [style.background]="bgColor" [colorPicker]="bgColor" [cpCancelButton]="true" [cpOKButton]="true"
-    cpAlphaChannel="always" (colorPickerChange)="onBgColorChange($event)" (cpSliderDragEnd)="onChange()" [cpPresetColors]="presetColors">
-    <div class="color-title">Background Color</div>
+
+  <!-- Primary -->
+  <div class="color wide" 
+    [style.background]="colors.primary" 
+    [colorPicker]="colors.primary" 
+    [cpCancelButton]="true" 
+    [cpOKButton]="true"
+    [cpPresetColors]="presetColors"
+    [cpAlphaChannel]="'always'" 
+    (colorPickerChange)="onColorChange($event, 'primary')" 
+    (cpSliderDragEnd)="onChange()">
+    <div class="color-title">Primary Color</div>
   </div>
-  <ng-container *ngFor="let color of colors; let i=index; trackBy: trackColors">
-    <div class="color" [style.background]="color" [colorPicker]="colors[i]" [cpCancelButton]="true" [cpOKButton]="true" cpAlphaChannel="always"
-      (colorPickerChange)="onColorChange($event, i)" (cpSliderDragEnd)="onChange()" [cpPresetColors]="presetColors">
-    </div>
-  </ng-container>
-  <div *ngIf="showAddButton" class="color add" (click)="onAddColor()">
-    <mat-icon>add</mat-icon>
+
+  <!-- Secondary -->
+  <div class="color wide" 
+    [style.background]="colors.secondary" 
+    [colorPicker]="colors.secondary" 
+    [cpCancelButton]="true" 
+    [cpOKButton]="true"
+    [cpPresetColors]="presetColors"
+    [cpAlphaChannel]="'always'" 
+    (colorPickerChange)="onColorChange($event, 'secondary')" 
+    (cpSliderDragEnd)="onChange()">
+    <div class="color-title">Secondary Color</div>
   </div>
+
+  <!-- Accent -->
+  <div class="color wide" 
+    [style.background]="colors.accent" 
+    [colorPicker]="colors.accent" 
+    [cpCancelButton]="true" 
+    [cpOKButton]="true"
+    [cpPresetColors]="presetColors"
+    [cpAlphaChannel]="'always'" 
+    (colorPickerChange)="onColorChange($event, 'accent')" 
+    (cpSliderDragEnd)="onChange()">
+    <div class="color-title">Accent Color</div>
+  </div>
+
+
 </div>

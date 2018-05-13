@@ -38,46 +38,42 @@
 <div class="main-container">
 
   <div class="design-container">
+
+    <!-- Tabs -->
     <span class="selected-tab" [style.transform]="'translateY(' + (210 + currentTabIndex*70) + 'px)'">
       <span></span>
       <span class="bottom"></span>
     </span>
     <div class="side-nav">
-
       <div class="tab" [class.selected]="currentTab === 'agent'" (click)="currentTab = 'agent'; currentTabIndex = 0;">
         <mat-icon>contact_mail</mat-icon>
         <div class="tab-title"> Agent </div>
       </div>
-
       <div class="tab" [class.selected]="currentTab === 'designs'" (click)="currentTab = 'designs'; currentTabIndex = 1;">
         <mat-icon>view_carousel</mat-icon>
         <div class="tab-title"> Designs </div>
       </div>
-
       <ng-container *ngIf="template">
-
         <div class="tab" [class.selected]="currentTab === 'property'" (click)="currentTab = 'property'; currentTabIndex = 2;">
           <mat-icon>home</mat-icon>
           <div class="tab-title"> Property </div>
         </div>
-
         <div class="tab" [class.selected]="currentTab === 'text'" (click)="currentTab = 'text'; currentTabIndex = 3;">
           <mat-icon>subject</mat-icon>
           <div class="tab-title"> Text </div>
         </div>
-
         <div class="tab" [class.selected]="currentTab === 'colors'" (click)="currentTab = 'colors'; currentTabIndex = 4;">
           <mat-icon>color_lens</mat-icon>
           <div class="tab-title"> Colors </div>
         </div>
-
       </ng-container>
-
     </div>
     
+    <!-- Selected tab content -->
     <div class="form-container">
 
-      <app-designs [hidden]="currentTab !== 'designs'"
+      <app-designs 
+        [hidden]="currentTab !== 'designs'"
         [size]="size"
         (select)="loadDesign($event)">
       </app-designs>
@@ -105,13 +101,8 @@
         
         <app-colors 
           [hidden]="currentTab !== 'colors'" 
-          [colors]="template.presetColors" 
-          [showBackground]="false"
-          [bgColor]="background.fill"
-          [presetColors]="selectedAgent?.brandColors"
-          cpAddColorButton=true
+          [colors]="template.brandColors"
           (colorChange)="changeColor($event)" 
-          (bgColorChange)="changeBackgroundColor($event)" 
           (change)="saveUndo()">
         </app-colors>
         

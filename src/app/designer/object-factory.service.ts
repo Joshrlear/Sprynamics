@@ -29,7 +29,7 @@ export class ObjectFactoryService {
    */
   addObject(obj, canvas, center?) {
     const id = this._uuidv4();
-    obj.set({ id });
+    obj.set({ id, brandColorRole: 'none' });
     console.log('Created object with id ' + id);
     obj.setShadow(this.defaultShadow);
     canvas.add(obj).setActiveObject(obj);
