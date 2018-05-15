@@ -49,7 +49,7 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
   canvas: any;
   template: any;
   boundBox: any;
-  userData: any;
+  userData: any = {};
   textFields = [];
   agentFields = [];
   propertyFields = [];
@@ -88,8 +88,11 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.loadingAgents = true;
-    this.checkout.initOrder().then(_ => {
-      this.auth.user.pipe(take(1)).subscribe((user: any) => {
+    this.auth.user.pipe(take(1)).subscribe((user: any) => {
+      if (!user) {
+        user = {};
+      }
+      this.checkout.initOrder().then(_ => {
         this.userData = user;
         this.selectedAgent = user;
         const managedAgents = this.firestore.colWithIds$('users', ref => ref.where(`managers.${user.uid}`, '==', true));
@@ -290,7 +293,7 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
           case 'livingArea':
             field.obj.text += ' SQ. FT.';
             break;
-          
+
         }
       }
     });
@@ -516,14 +519,16 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
       }
     });
     // inject user data into data fields
-    const agent = this.selectedAgent;
-    this.agentFields.forEach(field => {
-      if (field.obj.textUserData === 'name') {
-        field.obj.text = (agent.firstName || '') + (agent.lastName ? ' ' + agent.lastName : '');
-      } else {
-        field.obj.text = agent[field.obj.textUserData] || '';
-      }
-    });
+    if (this.selectedAgent) {
+      const agent = this.selectedAgent;
+      this.agentFields.forEach(field => {
+        if (field.obj.textUserData === 'name') {
+          field.obj.text = (agent.firstName || '') + (agent.lastName ? ' ' + agent.lastName : '');
+        } else {
+          field.obj.text = agent[field.obj.textUserData] || '';
+        }
+      });
+    }
     // hide objects that should be hidden
     this.canvas.getObjects('rect').forEach(obj => {
       if (obj.isHidden) {
