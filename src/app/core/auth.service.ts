@@ -7,7 +7,6 @@ import { AngularFirestore, AngularFirestoreDocument } from 'angularfire2/firesto
 
 import { Observable } from 'rxjs';
 
-
 import { User } from './user.interface';
 import { FirestoreService } from '#core/firestore.service';
 
@@ -44,7 +43,12 @@ export class AuthService {
         return this.emailLogin(email, password).then(_ => {
           return this.afs.doc(`users/${user.uid}`).set({
             uid: user.uid,
-            email
+            email,
+            brandColors: {
+              primary: '#ffffffff',
+              secondary: '#ffffffff',
+              accent: '#ffffffff'
+            }
           });
         });
       })
@@ -66,6 +70,11 @@ export class AuthService {
           email: credential.user.email,
           firstName: credential.user.displayName.split(' ')[0],
           lastName: credential.user.displayName.split(' ')[1] || '',
+          brandColors: {
+            primary: '#ffffffff',
+            secondary: '#ffffffff',
+            accent: '#ffffffff'
+          }
         })
       });
   }
@@ -78,7 +87,12 @@ export class AuthService {
           uid: credential.user.uid,
           email: credential.user.email,
           firstName: credential.user.displayName.split(' ')[0],
-          lastName: credential.user.displayName.split(' ')[1] || ''
+          lastName: credential.user.displayName.split(' ')[1] || '',
+          brandColors: {
+            primary: '#ffffffff',
+            secondary: '#ffffffff',
+            accent: '#ffffffff'
+          }
         })
       });
   }

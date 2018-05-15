@@ -88,7 +88,6 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.loadingAgents = true;
-
     this.checkout.initOrder().then(_ => {
       this.auth.user.pipe(take(1)).subscribe((user: any) => {
         this.userData = user;
@@ -125,13 +124,13 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
       });
       this.firestore.colWithIds$('templates').pipe(take(1)).subscribe(templates => {
         this.loadDesign(templates[0]);
-        this.auth.authState.take(1).subscribe(userState => {
-          if (userState.isAnonymous) {
-            // this.dialog.open(NewUserPopupComponent, {
-            //   disableClose: true
-            // });
-          }
-        })
+        // this.auth.authState.take(1).subscribe(userState => {
+        //   if (userState.isAnonymous) {
+        //     this.dialog.open(NewUserPopupComponent, {
+        //       disableClose: true
+        //     });
+        //   }
+        // })
       });
     });
   }
@@ -498,20 +497,22 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
           default:
             src = '/assets/logo.png';
         }
-        const img = new Image();
-        img.crossOrigin = 'Anonymous';
-        imagesToLoad++;
-        img.onload = () => {
-          const scaleX = obj.width * obj.scaleX;
-          obj.setElement(img);
-          imagesToLoad--;
-          if (imagesToLoad <= 0) {
-            this.loading = false;
-            this.onResize();
-            this.canvas.renderAll();
+        if (src) {
+          const img = new Image();
+          img.crossOrigin = 'Anonymous';
+          imagesToLoad++;
+          img.onload = () => {
+            const scaleX = obj.width * obj.scaleX;
+            obj.setElement(img);
+            imagesToLoad--;
+            if (imagesToLoad <= 0) {
+              this.loading = false;
+              this.onResize();
+              this.canvas.renderAll();
+            }
           }
+          img.src = src;
         }
-        img.src = src;
       }
     });
     // inject user data into data fields

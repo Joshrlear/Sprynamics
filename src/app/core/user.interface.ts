@@ -1,3 +1,5 @@
+import { BrandColors } from "#app/shared/colors/brand-colors.interface";
+
 export interface User {
   uid: string;
   email: string;
@@ -22,5 +24,6 @@ export interface User {
     frontUrl?: string,
     backUrl?: string,
     pdfUrl?: string,
-  }
+  },
+  brandColors?: BrandColors
 }

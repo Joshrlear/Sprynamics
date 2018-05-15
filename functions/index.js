@@ -9,13 +9,15 @@ const PDFImage = require('pdf-image').PDFImage;
 const rp = require('request-promise');
 
 // Mailgun
-
 const mailgun_creds = require('./secrets/mailgun');
 const mailgun = require('mailgun-js')({
   apiKey: mailgun_creds.apiKey,
   domain: 'notifications.sprynamics.com'
 });
 
+/**
+ * Sends a welcome email when a new user is created.
+ */
 exports.createUserAccount = functions.auth.user().onCreate(event => {
   const user = event.data;
   const email = {
@@ -30,10 +32,8 @@ exports.createUserAccount = functions.auth.user().onCreate(event => {
 });
 
 // Braintree
-
 const braintree = require('braintree');
 const braintree_creds = require('./secrets/braintree.js');
-
 const gateway = braintree.connect({
   environment: braintree.Environment.Sandbox,
   merchantId: braintree_creds.merchantId,
@@ -41,7 +41,9 @@ const gateway = braintree.connect({
   privateKey: braintree_creds.privateKey,
 });
 
-// GET client token
+/**
+ * Sends the Braintree client token for a given customerId
+ */
 exports.getClientToken = functions.https.onRequest((req, res) => {
   cors(req, res, () => {
     const options = {};
@@ -62,7 +64,9 @@ exports.getClientToken = functions.https.onRequest((req, res) => {
   })
 })
 
-// POST new customer
+/**
+ * Creates a new Braintree customer
+ */
 exports.customer = functions.https.onRequest((req, res) => {
   cors(req, res, () => {
     gateway.customer.create({
@@ -76,7 +80,7 @@ exports.customer = functions.https.onRequest((req, res) => {
       } else {
         res.status(201).send({ message: 'success', customerId: result.customer.id });
       }
-    });
+    })
   })
 })
 
@@ -150,7 +154,6 @@ exports.checkout = functions.https.onRequest((req, res) => {
         console.log('sending email to printer');
         mailgun.messages().send(emailToPrinter, function (err, body) {
           if (err) console.error(err);
-          console.log(body);
           console.log('email sent to printer');
           res.status(200).send({ message: 'Success!' });
         });
@@ -204,17 +207,3 @@ function calculatePricing(amt) {
 
   return pricing;
 }
-
-/** 
- * When a PDF is uploaded to 
-*/
-exports.generateThumbnail = functions.firestore.document('users/{userId}').onUpdate(event => {
-  const user = event.data.data();
-
-  // if this user is making an order that doesn't have thumbnails yet
-  if (user.currentOrder && user.currentOrder.pdfUrl && !user.currentOrder.frontUrl && !user.currentOrder.backUrl) {
-    const pdfUrl = user.currentOrder.pdfUrl;
-    const file = admin.storage().bucket().file().download()
-    const tempLocalDir = path.join(os.tmpdir(), 'filenamehere')
-  }
-})

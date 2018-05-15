@@ -38,18 +38,19 @@ export class CheckoutService {
       this.auth.user.take(1).subscribe(user => {
         if (!user) {
           // fill with dummy info if user isn't logged in
-          this.auth.anonLogin().then(user => {
-            this.firestore.set(`users/${user.uid}`, {
-              firstName: 'John',
-              lastName: 'Doe',
-              company: 'DemoAgency',
-              email: 'john.doe@demo.email',
-              phoneNumber: '555-555-5555',
-              licenseId: '0000000'
-            }).then(_ => {
-              this._initialize(user).then(_ => resolve());
-            })
-          });
+          // this.auth.anonLogin().then(user => {
+          //   this.firestore.set(`users/${user.uid}`, {
+          //     firstName: 'John',
+          //     lastName: 'Doe',
+          //     company: 'DemoAgency',
+          //     email: 'john.doe@demo.email',
+          //     phoneNumber: '555-555-5555',
+          //     licenseId: '0000000'
+          //   }).then(_ => {
+          //     this._initialize(user).then(_ => resolve());
+          //   })
+          // });
+          resolve();
         } else {
           this._initialize(user).then(_ => resolve());
         }
@@ -84,7 +85,7 @@ export class CheckoutService {
         const orderId = this.afs.collection('orders').ref.doc().id;
         this.firestore.set(`orders/${orderId}`, { id: orderId, uid: user.uid, submitted: false }).then(_ => {
           this.firestore.upsert(`users/${user.uid}`, { currentOrder: orderId }).then(_ => {
-            this.updateOrder({ id: orderId, firstName: user.firstName, lastName: user.lastName, submitted: false });
+            this.updateOrder({ id: orderId, firstName: user.firstName || '', lastName: user.lastName || '', submitted: false });
             this.setUser(user).then(_ => {
               this.initialized = true;
               resolve();
