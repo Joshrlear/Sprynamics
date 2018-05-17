@@ -120,12 +120,12 @@ function uploadAll(listings, listingIndex = 0, photoIndex = 0) {
   const uploadPath = `listingPhotos/${listing.id}/photo-${photoIndex}.jpg`
   firebase.upload(photo, uploadPath, { contentType: 'image/jpg' })
     .then((res) => {
-      return null
-      // console.log(`Finished uploading ${uploadPath}`)
-      // return firebase.bucket.file(uploadPath).getSignedUrl({
-      //   action: 'read',
-      //   expires: '03-01-2500'
-      // })
+      // return null
+      console.log(`Finished uploading ${uploadPath}`)
+      return firebase.bucket.file(uploadPath).getSignedUrl({
+        action: 'read',
+        expires: '03-01-2500'
+      })
     })
     .catch((err) => {
       console.error(err)
@@ -200,28 +200,28 @@ function runSyndication() {
     })
     .then((listings) => {
       console.log('Creating listing status file...')
-      // const csvData = [ ['ListingKey', 'Status', 'URL', 'Message', 'Timestamp'] ]
-      // listings.forEach((listing) => {
-      //   csvData.push([
-      //     listing.listingKey,
-      //     'SUCCESS',
-      //     `https://sprynamics.now.sh/designer?product=postcard&size=9x6&agent=${listing.agentId}&listing=${listing.id}`,
-      //     'Successfully imported',
-      //     ''
-      //   ])
-      // })
-      // csvStringify(csvData, (err, output) => {
-      //   if (err) {
-      //     console.error(err)
-      //   } else {
-      //     const date = new Date()
-      //     const year = date.getFullYear()
-      //     const month = date.getMonth() + 1
-      //     const day = date.getDate()
-      //     console.log(`${year}-${month}-${day}`)
-      //     fs.writeFile(`listing_status_${year}-${month}-${day}.csv`, output)
-      //   }
-      // })
+      const csvData = [ ['ListingKey', 'Status', 'URL', 'Message', 'Timestamp'] ]
+      listings.forEach((listing) => {
+        csvData.push([
+          listing.listingKey,
+          'SUCCESS',
+          `https://sprynamics.now.sh/designer?product=postcard&size=9x6&agent=${listing.agentId}&listing=${listing.id}`,
+          'Successfully imported',
+          ''
+        ])
+      })
+      csvStringify(csvData, (err, output) => {
+        if (err) {
+          console.error(err)
+        } else {
+          const date = new Date()
+          const year = date.getFullYear()
+          const month = date.getMonth() + 1
+          const day = date.getDate()
+          console.log(`${year}-${month}-${day}`)
+          fs.writeFile(`listing_status_${year}-${month}-${day}.csv`, output)
+        }
+      })
       console.log('Uploading data to firebase...')
       // batchUpload(listings)
       uploadAll(listings)

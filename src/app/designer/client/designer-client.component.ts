@@ -210,6 +210,7 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
 
   clickImage(obj) {
     console.log(obj)
+    console.log(this.selectedListing)
     const imageDialogRef = this.dialog.open(ImageSelectDialogComponent, {
       data: {
         listing: this.selectedListing

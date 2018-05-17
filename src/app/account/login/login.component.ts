@@ -46,6 +46,10 @@ export class LoginComponent implements OnInit {
       });
   }
 
+  linkedinLogin() {
+    window.open('linkedin-popup.html', 'name', 'height=585,width-400');
+  }
+
   googleLogin() {
     this.auth.googleLogin()
       .then(login => {

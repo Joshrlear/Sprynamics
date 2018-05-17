@@ -18,10 +18,22 @@ service cloud.firestore {
       // allow read: if request.auth.uid == userId;
       // allow write: if request.auth.uid == userId;
     }
+    // Match agents
     match /users/{userId}/agents {
       allow read, write;
     }
+    // Match agents
     match /users/{userId}/agents/{agentId} {
+      allow read, write;
+    }
+    // Match agent lists
+    match /users/{userId}/agents/{agentId}/lists/{listId} {
+      allow read, write;
+    }
+    match /users/{userId}/agents/{agentId}/lists/{listId}/addresses {
+      allow read, write;
+    }
+    match /users/{userId}/agents/{agentId}/lists/{listId}/addresses/{addressId} {
       allow read, write;
     }
     
@@ -49,6 +61,14 @@ service cloud.firestore {
     }
     match /lists/{listId}/addresses/{addressId} {
       allow read, write;
+    }
+    
+    // Match listings
+    match /listings {
+  		allow read;
+    }
+    match /listings/{listingId} {
+    	allow read;
     }
   }
 }
