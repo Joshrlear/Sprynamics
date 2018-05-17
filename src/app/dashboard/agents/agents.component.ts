@@ -6,6 +6,7 @@ import { AuthService } from '#core/auth.service';
 import { MatDialog } from '@angular/material';
 import { AddAgentDialogComponent } from '#app/dashboard/agents/add-agent-dialog/add-agent-dialog.component';
 import { Router } from '@angular/router';
+import { ImportAgentsDialogComponent } from '#app/dashboard/agents/import-agents-dialog/import-agents-dialog.component';
 
 @Component({
   selector: 'app-agents',
@@ -39,14 +40,12 @@ export class AgentsComponent implements OnInit {
 
   createAgent() {
     const doc = this.firestore.col('users').ref.doc();
-    const managers = {};
-    managers[this.uid] = true;
     const agent = {
       id: doc.id,
       uid: doc.id,
       isCreated: true,
       managerId: this.uid,
-      managers: managers
+      managers: { [this.uid]: true }
     };
     this.firestore.set(`users/${doc.id}`, agent)
       .then(ref => {
@@ -67,6 +66,13 @@ export class AgentsComponent implements OnInit {
       });
     }
     window.alert('Successfully removed agent.');
+  }
+
+  uploadFile(file: File) {
+    const dialogRef = this.dialog.open(ImportAgentsDialogComponent, {
+      width: '500px',
+      data: { file }
+    });
   }
 
 }

@@ -22,7 +22,9 @@ export class OrdersComponent implements OnInit {
       // get all orders for the logged-in user
       this.orders = this.firestore.colWithIds$('orders', ref => ref.where('uid', '==', user.uid).orderBy('createdAt', 'desc'));
       this.orders.take(1).subscribe(orders => {
-        console.log(orders[0].createdAt);
+        if (orders.length > 0) {
+          console.log(orders[0].createdAt);
+        }
       })
     });
   }

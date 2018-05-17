@@ -3,7 +3,10 @@
 
 <button class="btn green" (click)="createAgent()">Create new agent</button>
 &nbsp;
-<button class="btn green" (click)="addAgent()">Request agent access</button>
+<button class="btn green" (click)="fileInput.click()">Import from CSV</button>
+<input #fileInput type="file" accept=".csv" style="display: none;" onclick="this.value=null" (change)="uploadFile(fileInput.files[0])">
+&nbsp;
+<!-- <button class="btn green" (click)="addAgent()">Request agent access</button> -->
 <br>
 <br>
 

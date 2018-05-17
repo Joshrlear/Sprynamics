@@ -29,8 +29,11 @@ export class ProfileComponent implements OnInit {
 
   ngOnInit() {
     if (this.agent) {
-      this.userSub = this.firestore.doc$(`users/${this.agent.uid}`).subscribe(user => {
+      this.userSub = this.firestore.doc$<User>(`users/${this.agent.uid}`).subscribe(user => {
         this.user = user;
+        if (!user.brandColors) {
+          this.initBrandColors(user)
+        }
         if (!this.userForm) {
           this.buildForm();
         }
@@ -39,6 +42,9 @@ export class ProfileComponent implements OnInit {
     } else {
       this.userSub = this.auth.user.subscribe(user => {
         this.user = user;
+        if (!user.brandColors) {
+          this.initBrandColors(user)
+        }
         if (!this.userForm) {
           this.buildForm();
         }
@@ -50,6 +56,16 @@ export class ProfileComponent implements OnInit {
     if (this.userSub) {
       this.userSub.unsubscribe();
     }
+  }
+
+  initBrandColors(user) {
+    this.firestore.update(`users/${user.uid}`, {
+      brandColors: {
+        primary: "#ffffffff",
+        secondary: "#ffffffff",
+        accent: "#ffffffff"
+      }
+    });
   }
 
   buildForm() {
