@@ -1,0 +1,66 @@
+<div class="designer-container">
+  <div *ngIf="!isMin && scrMin" (click)="minSidenav()" class="designer-sidebar-backdrop"></div>
+  <div id="designer-sidebar" class="designer-sidebar">
+    <div class="pull-tab" (click)="tabToggle()">
+        <mat-icon *ngIf="!isMin" style="color: #fff;">chevron_left</mat-icon>
+        <mat-icon *ngIf="isMin" style="color: #fff;">chevron_right</mat-icon>
+    </div>
+    <div class="designer-sidebar-min">
+    </div>
+    <div id="designer-sidebar-slim" class="designer-sidebar-slim">
+      <div class="sidebar-tabs-container">
+        <!-- Agents -->
+        <div class="sidebar-tab selected">
+          <mat-icon>contact_mail</mat-icon>
+          <div class="sidebar-tab-title">Agent</div>
+        </div>
+        <!-- Designs -->
+        <div class="sidebar-tab">
+          <mat-icon>view_carousel</mat-icon>
+          <div class="sidebar-tab-title">Designs</div>
+        </div>
+        <!-- Property -->
+        <div class="sidebar-tab">
+          <mat-icon>home</mat-icon>
+          <div class="sidebar-tab-title">Property</div>
+        </div>
+        <!-- Text -->
+        <div class="sidebar-tab">
+          <mat-icon>subject</mat-icon>
+          <div class="sidebar-tab-title">Text</div>
+        </div>
+        <!-- Colors -->
+        <div class="sidebar-tab">
+          <mat-icon>color_lens</mat-icon>
+          <div class="sidebar-tab-title">Colors</div>
+        </div>
+      </div>
+
+    </div>
+    <div id="designer-sidebar-full"  class="designer-sidebar-full">
+      
+    </div>
+  </div>
+
+  <div id="designer-view" class="designer-view">
+    <div class="designer-view-options">
+      <!-- <div><button id="goBack"></button></div> -->
+      <button id="back" class="btn">View Back</button>
+      <button id="front" class="btn active">View Front</button>
+      
+      
+    </div>
+    
+    
+    
+    <div class="designer-view-canvas">
+      <!-- <button (click)="fullSidenav()">make full</button>
+      <button (click)="slimSidenav()">make slim</button>
+      <button (click)="minSidenav()">minimize</button> -->
+    </div>
+
+    <div class="designer-view-save">
+        <button id="save" class="btn btn-green">Save and Continue</button>
+      </div>
+  </div>
+</div>

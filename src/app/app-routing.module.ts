@@ -18,11 +18,14 @@ import { AccountModule } from '#app/account/account.module';
 import { CheckoutModule } from '#app/checkout/checkout.module';
 import { DashboardModule } from '#app/dashboard/dashboard.module';
 
+import { DesignerdevComponent } from '#app/designerdev/designerdev.component';
+
 const routes: Routes = [
   { path: '', component: DashboardComponent, loadChildren: () => DashboardModule, canActivate: [AuthGuard] },
   { path: 'products', component: ProductsComponent },
   { path: 'designer', loadChildren: () => DesignerModule },
   { path: 'terms', component: TermsAndConditionsComponent },
+  { path: 'designerdev', component: DesignerdevComponent },
   { path: 'privacy', component: PrivacyPolicyComponent },
   {
     path: 'account', 

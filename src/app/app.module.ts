@@ -16,6 +16,7 @@ import { HomeComponent } from './home/home.component';
 import { ProductsComponent } from './products/products.component';
 import { TermsAndConditionsComponent } from './terms-and-conditions/terms-and-conditions.component';
 import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
+import { DesignerdevComponent } from './designerdev/designerdev.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.componen
     ProductsComponent,
     TermsAndConditionsComponent,
     PrivacyPolicyComponent,
+    DesignerdevComponent,
   ],
   imports: [
     BrowserModule,
