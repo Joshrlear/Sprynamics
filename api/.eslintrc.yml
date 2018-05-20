@@ -3,6 +3,7 @@ env:
   node: true
 extends: ['google']
 parserOptions:
+  ecmaVersion: 2017
   sourceType: module
 rules:
   linebreak-style:

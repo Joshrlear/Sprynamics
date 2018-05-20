@@ -12,7 +12,7 @@
   "dependencies": {
     "btoa": "^1.2.1",
     "cors": "^2.8.4",
-    "csv-stringify": "^3.0.0",
+    "csv-stringify-as-promised": "^2.0.3",
     "express": "^4.16.3",
     "firebase-admin": "^5.11.0",
     "json-parse-async": "^1.0.3",
