@@ -8,12 +8,10 @@ import { Observable ,  BehaviorSubject ,  combineLatest } from 'rxjs';
   styleUrls: ['./designerdev.component.scss']
 })
 export class DesignerdevComponent implements OnInit {
-  scrFull = false;
-  scrSlim = false;
-  scrMin = false;
-  isFull = false;
-  isSlim = false;
-  isMin = false;
+
+  screenSize: 'min' | 'slim' | 'full';
+  sidebarSize: 'min' | 'slim' | 'full';
+
   private smWidth = 520;
   private mdWidth = 992;
 
@@ -24,82 +22,30 @@ export class DesignerdevComponent implements OnInit {
   }
 
   tabToggle() {
-    if (this.isFull) {
-      this.slimSidenav();
+    switch (this.sidebarSize) {
+      case 'full':
+        this.sidebarSize = 'slim';
+        break;
+      case 'slim':
+        this.sidebarSize = 'min';
+        break;
+      case 'min':
+        this.sidebarSize = 'full';
+        break;
     }
-
-    else if (this.isSlim) {
-      this.minSidenav();
-    }
-
-    else if (this.isMin) {
-      this.fullSidenav();
-    }
-  }
-
-  minSidenav() {
-    //Sidebar
-    document.getElementById("designer-sidebar").classList.remove("slim", "full");
-
-    //Canvas
-    document.getElementById("designer-view").classList.remove("slim", "full");
-
-    (this.isMin) = true;
-    (this.isSlim) = false;
-    (this.isFull) = false;
-  }
-
-  slimSidenav() {
-    //Sidebar
-    document.getElementById("designer-sidebar").classList.add("slim");
-
-    document.getElementById("designer-sidebar").classList.remove("full");
-
-    //Canvas
-    document.getElementById("designer-view").classList.add("slim");
-
-    document.getElementById("designer-view").classList.remove("full");
-
-    (this.isMin) = false;
-    (this.isSlim) = true;
-    (this.isFull) = false;
-  }
-
-  fullSidenav() {
-    //Sidebar
-    document.getElementById("designer-sidebar").classList.add("full");
-
-    document.getElementById("designer-sidebar").classList.remove("slim");
-
-    //Canvas
-    document.getElementById("designer-view").classList.add("full");
-
-    document.getElementById("designer-view").classList.remove("slim");
-
-    (this.isMin) = false;
-    (this.isSlim) = false;
-    (this.isFull) = true;
   }
 
   @HostListener('window:resize', ['$event.target.innerWidth'])
   onResize(width: number) {
-    this.scrFull = width > this.mdWidth;
-
-    this.scrSlim = width < this.mdWidth;
-
-    this.scrMin = width < this.smWidth;
-
-    if (this.scrFull) {
-      this.fullSidenav();
+    if (width > this.mdWidth) {
+      this.screenSize = 'full';
+    } else if (width < this.smWidth) {
+      this.screenSize = 'min';
+    } else {
+      this.screenSize = 'slim';
     }
 
-    if (this.scrSlim) {
-      this.slimSidenav();
-    }
-
-    if (this.scrMin) {
-      this.minSidenav();
-    }
+    this.sidebarSize = this.screenSize;
   }
 
 }

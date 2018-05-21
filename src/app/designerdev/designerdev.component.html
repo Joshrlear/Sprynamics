@@ -1,9 +1,9 @@
 <div class="designer-container">
-  <div *ngIf="!isMin && scrMin" (click)="minSidenav()" class="designer-sidebar-backdrop"></div>
-  <div id="designer-sidebar" class="designer-sidebar">
+  <div *ngIf="screenSize === 'min' && sidebarSize === 'full'" (click)="sidebarSize = 'min'" class="designer-sidebar-backdrop"></div>
+  <div id="designer-sidebar" class="designer-sidebar" [ngClass]="sidebarSize">
     <div class="pull-tab" (click)="tabToggle()">
-        <mat-icon *ngIf="!isMin" style="color: #fff;">chevron_left</mat-icon>
-        <mat-icon *ngIf="isMin" style="color: #fff;">chevron_right</mat-icon>
+        <mat-icon *ngIf="sidebarSize !== 'min'">chevron_left</mat-icon>
+        <mat-icon *ngIf="sidebarSize === 'min'">chevron_right</mat-icon>
     </div>
     <div class="designer-sidebar-min">
     </div>
@@ -42,7 +42,7 @@
     </div>
   </div>
 
-  <div id="designer-view" class="designer-view">
+  <div id="designer-view" class="designer-view" [ngClass]="sidebarSize">
     <div class="designer-view-options">
       <!-- <div><button id="goBack"></button></div> -->
       <button id="back" class="btn">View Back</button>
