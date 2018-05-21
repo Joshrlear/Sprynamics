@@ -17,6 +17,8 @@ import { ProductsComponent } from './products/products.component';
 import { TermsAndConditionsComponent } from './terms-and-conditions/terms-and-conditions.component';
 import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
 import { DesignerdevComponent } from './designerdev/designerdev.component';
+import { DesignerViewComponent } from './designer-view/designer-view.component';
+import { SidebarTabComponent } from './designer-view/sidebar-tab/sidebar-tab.component';
 
 @NgModule({
   declarations: [
@@ -26,6 +28,8 @@ import { DesignerdevComponent } from './designerdev/designerdev.component';
     TermsAndConditionsComponent,
     PrivacyPolicyComponent,
     DesignerdevComponent,
+    DesignerViewComponent,
+    SidebarTabComponent,
   ],
   imports: [
     BrowserModule,
