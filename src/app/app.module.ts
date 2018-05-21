@@ -14,8 +14,8 @@ import { DesignerModule } from './designer/designer.module';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { ProductsComponent } from './products/products.component';
-import { TermsAndConditionsComponent } from './terms-and-conditions/terms-and-conditions.component';
-import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
+import { TermsAndConditionsComponent } from './legal/terms-and-conditions/terms-and-conditions.component';
+import { PrivacyPolicyComponent } from './legal/privacy-policy/privacy-policy.component';
 
 @NgModule({
   declarations: [

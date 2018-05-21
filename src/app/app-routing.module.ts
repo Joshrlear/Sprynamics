@@ -11,8 +11,8 @@ import { CheckoutComponent } from './checkout/checkout.component';
 
 import { AuthGuard } from './core/auth.guard';
 import { DesignerModule } from '#app/designer/designer.module';
-import { TermsAndConditionsComponent } from '#app/terms-and-conditions/terms-and-conditions.component';
-import { PrivacyPolicyComponent } from '#app/privacy-policy/privacy-policy.component';
+import { TermsAndConditionsComponent } from '#app/legal/terms-and-conditions/terms-and-conditions.component';
+import { PrivacyPolicyComponent } from '#app/legal/privacy-policy/privacy-policy.component';
 import { LoginComponent } from '#app/account/login/login.component';
 import { AccountModule } from '#app/account/account.module';
 import { CheckoutModule } from '#app/checkout/checkout.module';

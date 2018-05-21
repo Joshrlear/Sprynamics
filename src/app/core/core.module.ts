@@ -14,7 +14,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AuthService } from './auth.service';
 import { StorageService } from './storage.service';
 import { FirestoreService } from './firestore.service';
-import { NavigationService } from './navigation/navigation.service';
+import { NavigationService } from './navigation.service';
 import { CheckoutService } from '#app/checkout/checkout.service';
 import { HttpClientModule } from '@angular/common/http';
 import { MlsService } from '#core/mls.service';

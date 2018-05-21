@@ -6,7 +6,7 @@ import { MatSidenav } from '@angular/material/sidenav';
 import { Observable ,  BehaviorSubject ,  combineLatest } from 'rxjs';
 
 
-import { NavigationService } from '#core/navigation/navigation.service';
+import { NavigationService } from '#core/navigation.service';
 import { FirestoreService } from '#core/firestore.service';
 
 declare const $;
@@ -37,10 +37,12 @@ export class AppComponent implements OnInit {
   get isOpened() { return this.isSideBySide && this.ns.isSideNavDash }
   get mode() { return this.ns.isSideNavDash ? (this.isSideBySide ? 'side' : 'over') : 'over' }
 
-  constructor(public auth: AuthService,
+  constructor(
+    public auth: AuthService,
     private ns: NavigationService,
     public router: Router,
-    private firestore: FirestoreService) { }
+    private firestore: FirestoreService
+  ) { }
 
   public logout() {
     this.auth.logout();
