@@ -90,8 +90,6 @@ function processData(jsonData) {
   })
 }
 
-let csvData = [['ListingKey', 'Status', 'URL', 'Message', 'Timestamp']]
-
 function getCurrentCSVFilename() {
   const date = new Date()
   const year = date.getFullYear()
