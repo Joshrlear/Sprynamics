@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewInit, QueryList, ViewChild, ViewChildren, ElementRef, HostBinding, HostListener } from '@angular/core'
 
 import { Observable ,  BehaviorSubject ,  combineLatest } from 'rxjs'
-import { SidebarTabComponent } from '#app/shared/designer-view/sidebar-tab/sidebar-tab.component';
+import { SidebarTabComponent } from './sidebar-tab.component';
 
 @Component({
   selector: 'app-designer-view',

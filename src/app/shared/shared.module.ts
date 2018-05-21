@@ -20,7 +20,7 @@ import { MailingListDialogComponent } from './mailing-list-dialog/mailing-list-d
 import { ViewListDialogComponent } from '#app/shared/view-list-dialog/view-list-dialog.component';
 import { ContextMenuModule } from 'ngx-contextmenu';
 import { DesignerViewComponent } from './designer-view/designer-view.component';
-import { SidebarTabComponent } from './designer-view/sidebar-tab/sidebar-tab.component';
+import { SidebarTabComponent } from './designer-view/sidebar-tab.component';
 
 const modules: any[] = [
   // angular modules
