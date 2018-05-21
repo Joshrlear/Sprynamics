@@ -38,7 +38,7 @@ export class DesignerViewComponent implements OnInit {
     tab.selected = true
   }
 
-  tabToggle() {
+  toggleSidebarSize() {
     switch (this.sidebarSize) {
       case 'full':
         this.sidebarSize = 'slim'

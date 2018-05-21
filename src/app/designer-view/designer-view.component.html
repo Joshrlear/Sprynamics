@@ -1,7 +1,7 @@
 <div class="designer-container">
   <div *ngIf="screenSize === 'min' && sidebarSize === 'full'" (click)="sidebarSize = 'min'" class="designer-sidebar-backdrop"></div>
   <div class="designer-sidebar" [ngClass]="sidebarSize">
-    <div class="pull-tab" (click)="tabToggle()">
+    <div class="pull-tab" (click)="toggleSidebarSize()">
         <mat-icon *ngIf="sidebarSize !== 'min'">chevron_left</mat-icon>
         <mat-icon *ngIf="sidebarSize === 'min'">chevron_right</mat-icon>
     </div>
