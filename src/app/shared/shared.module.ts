@@ -19,6 +19,8 @@ import { SidenavComponent } from './sidenav/sidenav.component';
 import { MailingListDialogComponent } from './mailing-list-dialog/mailing-list-dialog.component';
 import { ViewListDialogComponent } from '#app/shared/view-list-dialog/view-list-dialog.component';
 import { ContextMenuModule } from 'ngx-contextmenu';
+import { DesignerViewComponent } from './designer-view/designer-view.component';
+import { SidebarTabComponent } from './designer-view/sidebar-tab/sidebar-tab.component';
 
 const modules: any[] = [
   // angular modules
@@ -43,6 +45,8 @@ const components: any[] = [
   SidenavComponent,
   MailingListDialogComponent,
   ViewListDialogComponent,
+  DesignerViewComponent,
+  SidebarTabComponent
 ];
 
 const everything = modules.concat(components);
@@ -67,7 +71,9 @@ const everything = modules.concat(components);
     BreadcrumbsComponent,
     ColorsComponent,
     SidenavComponent,
-    ContextMenuModule
+    ContextMenuModule,
+    DesignerViewComponent,
+    SidebarTabComponent
   ]
 })
 export class SharedModule { }

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { DesignerViewComponent } from '#app/designer-view/designer-view.component';
+import { DesignerViewComponent } from '#app/shared/designer-view/designer-view.component';
 
 @Component({
   selector: 'app-sidebar-tab',
