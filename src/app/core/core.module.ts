@@ -16,7 +16,6 @@ import { StorageService } from './storage.service';
 import { FirestoreService } from './firestore.service';
 import { NavigationService } from './navigation/navigation.service';
 import { CheckoutService } from '#app/checkout/checkout.service';
-import { SlipstreamService } from './slipstream.service';
 import { HttpClientModule } from '@angular/common/http';
 import { MlsService } from '#core/mls.service';
 import { GoogleMapsService } from '#core/gmaps.service';
@@ -41,7 +40,6 @@ import { ContextMenuModule } from 'ngx-contextmenu';
     FirestoreService,
     NavigationService,
     CheckoutService,
-    SlipstreamService,
     MlsService,
     GoogleMapsService,
   ]

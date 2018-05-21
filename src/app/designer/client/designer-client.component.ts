@@ -9,7 +9,6 @@ import { productSizes, productSpecs, thumbnailSizes } from '../products';
 import { ObjectFactoryService } from '../object-factory.service';
 import { CheckoutService } from '#app/checkout/checkout.service';
 import { NewUserPopupComponent } from '#app/designer/new-user-popup/new-user-popup.component';
-import { SlipstreamService } from '#core/slipstream.service';
 
 import { take } from 'rxjs/operators';
 import 'rxjs/add/operator/take';

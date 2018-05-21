@@ -2,7 +2,7 @@ import { Component, OnInit, EventEmitter, Output, Input } from '@angular/core';
 import { AuthService } from '#core/auth.service';
 import { Observable } from 'rxjs';
 import { FirestoreService } from '#core/firestore.service';
-import { User } from '#core/user.interface';
+import { User } from '#models/user.interface';
 
 @Component({
   selector: 'app-agent-info',

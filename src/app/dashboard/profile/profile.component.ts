@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { FirestoreService } from '../../core/firestore.service';
 import { Observable ,  Subscription } from 'rxjs';
 import { AuthService } from '../../core/auth.service';
-import { User } from '../../core/user.interface';
+import { User } from '#models/user.interface';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { StorageService } from '#core/storage.service';
 import { BrandColorChangeEvent } from '#app/shared/colors/brand-colors.interface';
