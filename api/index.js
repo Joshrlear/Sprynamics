@@ -104,10 +104,6 @@ async function uploadAll(listings, listingIndex = 0, photoIndex = 0) {
   try {
     if (listingIndex >= listings.length) {
       console.log('Finished looping over listings')
-      const csvString = await csvStringify(csvData)
-      const fileName = getCurrentCSVFilename()
-      fs.writeFile(fileName, csvString)
-      csvData = [['ListingKey', 'Status', 'URL', 'Message', 'Timestamp']]
       return
     }
     const listing = listings[listingIndex]
@@ -126,7 +122,7 @@ async function uploadAll(listings, listingIndex = 0, photoIndex = 0) {
       action: 'read',
       expires: '03-01-2500'
     })
-    if (listing.photos && downloadUrl) {
+    if (downloadUrl) {
       listings[listingIndex].photos[photoIndex] = downloadUrl[0]
       if (photoIndex >= listings[listingIndex].photos.length - 1) {
         // all photos are finished, set this listing in firestore
@@ -138,9 +134,6 @@ async function uploadAll(listings, listingIndex = 0, photoIndex = 0) {
       }
     } else {
       // skip photos for this listing if it has no photos
-      if (!downloadUrl) {
-        console.log(`Download URL not found for ${uploadPath}`)
-      }
       await firebase.doc(`listings/${listing.id}`).set(listing)
       uploadAll(listings, listingIndex + 1)
     }
@@ -174,6 +167,7 @@ async function runSyndication() {
 
     /* Upload data to Firebase */
     console.log('Uploading data to firebase...')
+    console.log('Listing amount: ' + listings.length)
     uploadAll(listings)
   } catch (err) {
     console.error(err)
@@ -193,6 +187,7 @@ schedule.scheduleJob('0 16 * * *', () => {
 })
 
 app.get('/status', (req, res) => {
+  console.log('request for file ' + getCurrentCSVFilename())
   res.download(path.join(__dirname, getCurrentCSVFilename()))
 })
 
