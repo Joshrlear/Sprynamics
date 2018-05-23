@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
 import { FirestoreService } from '#core/firestore.service';
 import { MailingListDialogComponent } from '#app/shared/mailing-list-dialog/mailing-list-dialog.component';
 import { MatDialog } from '@angular/material';
-import { Order } from '#app/checkout/order.interface';
+import { Order } from '#models/order.interface';
 
 @Component({
   selector: 'app-shipping',

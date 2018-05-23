@@ -18,29 +18,26 @@ import { AccountModule } from '#app/account/account.module';
 import { CheckoutModule } from '#app/checkout/checkout.module';
 import { DashboardModule } from '#app/dashboard/dashboard.module';
 
-import { DesignerdevComponent } from '#app/designerdev/designerdev.component';
-
 const routes: Routes = [
-  { path: '', component: DashboardComponent, loadChildren: () => DashboardModule, canActivate: [AuthGuard] },
+  { path: '', component: DashboardComponent, loadChildren: './dashboard/dashboard.module#DashboardModule', canActivate: [AuthGuard] },
   { path: 'products', component: ProductsComponent },
-  { path: 'designer', loadChildren: () => DesignerModule },
+  { path: 'designer', loadChildren: './designer/designer.module#DesignerModule' },
   { path: 'terms', component: TermsAndConditionsComponent },
-  { path: 'designerdev', component: DesignerdevComponent },
   { path: 'privacy', component: PrivacyPolicyComponent },
   {
     path: 'account', 
     component: AccountComponent,
-    loadChildren: () => AccountModule,
+    loadChildren: './account/account.module#AccountModule',
   },
   {
     path: 'checkout',
     component: CheckoutComponent,
-    loadChildren: () => CheckoutModule,
+    loadChildren: './checkout/checkout.module#CheckoutModule',
   },
   {
     path: 'profile',
     component: DashboardComponent,
-    loadChildren: () => DashboardModule,
+    loadChildren: './dashboard/dashboard.module#DashboardModule',
     canActivate: [AuthGuard]
   },
   { path: '**', redirectTo: '', pathMatch: 'full' }

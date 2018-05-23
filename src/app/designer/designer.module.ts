@@ -42,7 +42,7 @@ const routes: Routes = [
     NewUserPopupComponent,
     ImageSelectDialogComponent,
     AdminDesignerProgressDialogComponent,
-    DesignerdevComponent
+    DesignerdevComponent,
   ],
   entryComponents: [
     CropDialogComponent,

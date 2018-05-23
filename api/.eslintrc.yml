@@ -22,3 +22,4 @@ rules:
   block-spacing: 'off'
   brace-style: 'off'
   array-bracket-spacing: 'off'
+  arrow-parens: 'off'

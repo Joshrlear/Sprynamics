@@ -18,15 +18,15 @@ function fetchListhubFeed() {
         auth: {
           user: 'spry',
           pass: 'Jhd413vQ',
-          sendImmediately: true,
-        },
+          sendImmediately: true
+        }
       })
       .pipe(gunzip)
       .pipe(parser)
-      .on('end', (result) => {
+      .on('end', result => {
         resolve(result)
       })
-      .on('error', (err) => {
+      .on('error', err => {
         console.error(err)
       })
   })
@@ -65,7 +65,7 @@ function processData(jsonData) {
         mlsNumber: listing.MlsNumber
       }
 
-      Object.getOwnPropertyNames(listingObj).forEach((name) => {
+      Object.getOwnPropertyNames(listingObj).forEach(name => {
         if (listingObj[name] === undefined) {
           listingObj[name] = null
         }
@@ -75,7 +75,7 @@ function processData(jsonData) {
         let photos
         // listing.Photos.Photo is either an array, or an Object if there's only one
         if (listing.Photos.Photo instanceof Array) {
-          photos = listing.Photos.Photo.map((photo) => photo.MediaURL)
+          photos = listing.Photos.Photo.map(photo => photo.MediaURL)
         } else {
           photos = [listing.Photos.Photo.MediaURL]
         }
@@ -145,12 +145,15 @@ async function runSyndication() {
     /* Fetch ListHub feed */
     console.log('Fetching feed from ListHub...')
     const data = await fetchListhubFeed()
+
+    /* Process ListHub data */
+    console.log('Processing ListHub data...')
     const listings = await processData(data)
 
     /* Create status CSV file */
-    console.log('Creating listing status file...')
+    console.log('Creating listing status file... ' + getCurrentCSVFilename())
     const csvData = [['ListingKey', 'Status', 'URL', 'Message', 'Timestamp']]
-    listings.forEach((listing) => {
+    listings.forEach(listing => {
       csvData.push([
         listing.listingKey,
         'SUCCESS',
@@ -174,14 +177,34 @@ async function runSyndication() {
 
 runSyndication()
 
-/* Schedule jobs for 4:00am and 4:00pm every day */
-schedule.scheduleJob('0 4 * * *', () => {
+/* Every 30 minutes */
+schedule.scheduleJob('30 * * * *', async () => {
   console.log('Running syndication at ' + new Date())
-  runSyndication()
+  try {
+    await runSyndication()
+  } catch (err) {
+    console.error('An error occured during syndication', err)
+  }
 })
-schedule.scheduleJob('0 16 * * *', () => {
+
+/* 4:00 am */
+schedule.scheduleJob('0 4 * * *', async () => {
   console.log('Running syndication at ' + new Date())
-  runSyndication()
+  try {
+    await runSyndication()
+  } catch (err) {
+    console.error('An error occured during syndication', err)
+  }
+})
+
+/* 4:00 pm */
+schedule.scheduleJob('0 16 * * *', async () => {
+  console.log('Running syndication at ' + new Date())
+  try {
+    await runSyndication()
+  } catch (err) {
+    console.error('An error occured during syndication', err)
+  }
 })
 
 app.get('/status', (req, res) => {
