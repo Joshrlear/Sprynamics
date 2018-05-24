@@ -3,6 +3,7 @@ env:
   node: true
 extends: ['google']
 parserOptions:
+  ecmaVersion: 2017
   sourceType: module
 rules:
   linebreak-style:
@@ -21,3 +22,4 @@ rules:
   block-spacing: 'off'
   brace-style: 'off'
   array-bracket-spacing: 'off'
+  arrow-parens: 'off'

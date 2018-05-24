@@ -44,4 +44,16 @@ export class StorageService {
       xhr.send();
     }));
   }
+
+  promiseFile(url) {
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.responseType = 'json';
+      xhr.onload = (event) => {
+        resolve(xhr.response);
+      };
+      xhr.open('GET', url);
+      xhr.send();
+    })
+  }
 }

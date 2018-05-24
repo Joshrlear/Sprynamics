@@ -14,95 +14,9 @@ import { BrandColors } from '#app/shared/colors/brand-colors.interface';
 })
 export class DashboardComponent implements OnInit {
 
-  
-  isSideNavDash = true;
-  editing = false;
-  error: string;
-
-  userForm: FormGroup;
-
-  templates: Observable<any[]>;
-
-  constructor(public fb: FormBuilder, public auth: AuthService, private storage: StorageService, private firestore: FirestoreService) { }
+  constructor() { }
 
   ngOnInit() {
-    this.error = '';
-
-    this.userForm = this.fb.group({
-      'email': [''],
-      'firstName': [''],
-      'lastName': [''],
-      'address1': [''],
-      'address2': [''],
-      'city': [''],
-      'state': [''],
-      'country': [''],
-      'company': [''],
-      'licenseId': ['']
-    });
-
-    this.auth.user.take(1).subscribe(user => {
-      if (user.admin) {
-        this.templates = this.firestore.col$('templates');
-      }
-    });
-  }
-
-  edit() {
-    this.editing = true;
-  }
-
-  save(user) {
-    const changedValues = {};
-    const formData = this.userForm.value;
-    // only include values that were filled in on the form
-    Object.getOwnPropertyNames(formData).forEach(prop => {
-      if (formData[prop] !== '' && formData[prop] !== null && formData[prop] !== undefined) {
-        changedValues[prop] = formData[prop];
-      }
-    });
-    return this.auth.updateUserData(user, changedValues)
-      .then(_ => {
-        this.editing = false;
-      })
-      .catch(err => {
-        console.log(err);
-        this.error = err;
-      });
-  }
-
-  uploadAvatar(user, file: File) {
-    const extension = file.name.split('.').pop();
-    const path = `avatars/${user.uid}.${extension}`;
-    this.storage.putFile(file, path).then().then(_ => {
-      this.storage.getDownloadURL(path).subscribe(url => {
-        this.auth.updateUserData(user, { avatarUrl: url });
-      });
-    });
-  }
-
-  uploadCompany(user, file: File) {
-    const extension = file.name.split('.').pop();
-    const path = `companyLogos/${user.uid}.${extension}`;
-    this.storage.putFile(file, path).then().then(_ => {
-      this.storage.getDownloadURL(path).subscribe(url => {
-        this.auth.updateUserData(user, { companyLogoUrl: url });
-      });
-    });
-  }
-
-  uploadBrokerage(user, file: File) {
-    const extension = file.name.split('.').pop();
-    const path = `brokerageLogos/${user.uid}.${extension}`;
-    this.storage.putFile(file, path).then().then(_ => {
-      this.storage.getDownloadURL(path).subscribe(url => {
-        this.auth.updateUserData(user, { brokerageLogoUrl: url });
-      });
-    });
-  }
-
-  addTemplate(name: string) {
-    this.firestore.add('templates', { name });
   }
 
 }

@@ -47,9 +47,6 @@ export class ListsComponent implements OnInit {
       width: '500px',
       data: { file, agent: this.agent }
     });
-    dialogRef.afterClosed().take(1).subscribe((result: any) => {
-
-    });
   }
 
   viewList(list) {

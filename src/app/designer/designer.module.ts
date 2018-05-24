@@ -17,10 +17,12 @@ import { ObjectFactoryService } from './object-factory.service';
 import { NewUserPopupComponent } from './new-user-popup/new-user-popup.component';
 import { ImageSelectDialogComponent } from './image-select-dialog/image-select-dialog.component';
 import { AdminDesignerProgressDialogComponent } from './admin/admin-designer-progress-dialog/admin-designer-progress-dialog.component';
+import { DesignerdevComponent } from '#app/designerdev/designerdev.component';
 
 const routes: Routes = [
   { path: '', component: DesignerClientComponent },
-  { path: 'admin', component: DesignerAdminComponent }
+  { path: 'admin', component: DesignerAdminComponent },
+  { path: 'dev', component: DesignerdevComponent }
 ]
 
 @NgModule({
@@ -40,6 +42,7 @@ const routes: Routes = [
     NewUserPopupComponent,
     ImageSelectDialogComponent,
     AdminDesignerProgressDialogComponent,
+    DesignerdevComponent,
   ],
   entryComponents: [
     CropDialogComponent,

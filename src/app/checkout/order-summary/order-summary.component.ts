@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { CheckoutService } from '#app/checkout/checkout.service';
 import { Subscription ,  Observable } from 'rxjs';
 import { AuthService } from '#core/auth.service';
-import { User } from '#core/user.interface';
+import { User } from '#models/user.interface';
 
 @Component({
   selector: 'order-summary',

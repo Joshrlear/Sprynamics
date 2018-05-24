@@ -8,7 +8,8 @@
     "paths": {
       "#core/*": ["app/core/*"],
       "#app/*": ["app/*"],
-      "#shared/*": ["app/shared/*"]
+      "#shared/*": ["app/shared/*"],
+      "#models/*": ["app/models/*"]
     }
   },
   "exclude": [

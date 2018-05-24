@@ -7,7 +7,7 @@ import { AngularFirestore, AngularFirestoreDocument } from 'angularfire2/firesto
 
 import { Observable } from 'rxjs';
 
-import { User } from './user.interface';
+import { User } from '#models/user.interface';
 import { FirestoreService } from '#core/firestore.service';
 
 @Injectable()

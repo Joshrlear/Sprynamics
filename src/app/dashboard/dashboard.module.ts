@@ -12,6 +12,7 @@ import { ProfileComponent } from './profile/profile.component';
 import { AddAgentDialogComponent } from './agents/add-agent-dialog/add-agent-dialog.component';
 import { ViewAgentComponent } from './agents/view-agent/view-agent.component';
 import { AdminComponent } from './admin/admin.component';
+import { ImportAgentsDialogComponent } from './agents/import-agents-dialog/import-agents-dialog.component';
 
 const routes: Routes = [
   { path: '', component: ProfileComponent },
@@ -37,9 +38,11 @@ const routes: Routes = [
     AddAgentDialogComponent,
     ViewAgentComponent,
     AdminComponent,
+    ImportAgentsDialogComponent,
   ],
   entryComponents: [
     AddAgentDialogComponent,
+    ImportAgentsDialogComponent
   ]
 })
 export class DashboardModule { }

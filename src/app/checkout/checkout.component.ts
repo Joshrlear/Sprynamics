@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 
 import { OrderSummaryComponent } from './order-summary/order-summary.component';
 import { CheckoutService } from '#app/checkout/checkout.service';
-import { Order } from '#app/checkout/order.interface';
+import { Order } from '#models/order.interface';
 import { Router } from '@angular/router';
 
 @Component({
