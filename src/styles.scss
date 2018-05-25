@@ -83,10 +83,14 @@ body {
 }
 
 .top-menu {
-  margin: 0 24px;
+  margin: 0;
   width: 100%;
   display: flex;
   justify-content: space-between;
+
+  @media only screen and (min-width: 1200px) {
+    margin: 0 24px;
+  }
 
   a {
     text-decoration: none;
@@ -106,7 +110,14 @@ body {
   align-items: center;
 }
 
+#account-dropdown {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
 .design-link {
+    display: none !important;
     margin: 12px 32px 0 !important;
     padding: 0 32px !important;
     border-radius: 6px !important;
@@ -115,6 +126,10 @@ body {
     // background-color: #12c463 !important;
     background-color: #75d84f !important;
     color: #fff !important;
+
+    @media only screen and (min-width: 800px) {
+      display: block !important;
+    }
 }
 
 .dropdown-container {
