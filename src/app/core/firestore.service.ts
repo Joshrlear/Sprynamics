@@ -1,58 +1,59 @@
-import { Injectable } from '@angular/core';
-import * as firebase from 'firebase/app';
-import {
-  AngularFirestore,
-  AngularFirestoreDocument,
-  AngularFirestoreCollection
-} from 'angularfire2/firestore';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import 'rxjs/add/observable/combineLatest';
-import 'rxjs/add/operator/reduce';
+import { Injectable } from '@angular/core'
+import * as firebase from 'firebase/app'
+import { AngularFirestore, AngularFirestoreDocument, AngularFirestoreCollection } from 'angularfire2/firestore'
+import { Observable } from 'rxjs'
+import { map, first } from 'rxjs/operators'
+import 'rxjs/add/observable/combineLatest'
+import 'rxjs/add/operator/reduce'
 
-type CollectionPredicate<T> = string | AngularFirestoreCollection<T>;
-type DocPredicate<T> = string | AngularFirestoreDocument<T>;
+type CollectionPredicate<T> = string | AngularFirestoreCollection<T>
+type DocPredicate<T> = string | AngularFirestoreDocument<T>
 
 @Injectable()
 export class FirestoreService {
-
-  constructor(private afs: AngularFirestore) { }
+  constructor(private afs: AngularFirestore) {}
 
   /// **************
   /// Get a Reference
   /// **************
   public col<T>(ref: CollectionPredicate<T>, queryFn?): AngularFirestoreCollection<T> {
-    return typeof ref === 'string' ? this.afs.collection<T>(ref, queryFn) : ref;
+    return typeof ref === 'string' ? this.afs.collection<T>(ref, queryFn) : ref
   }
 
   public doc<T>(ref: DocPredicate<T>): AngularFirestoreDocument<T> {
-    return typeof ref === 'string' ? this.afs.doc<T>(ref) : ref;
+    return typeof ref === 'string' ? this.afs.doc<T>(ref) : ref
   }
 
   /// **************
   /// Get Data
   /// **************
   public doc$<T>(ref: DocPredicate<T>): Observable<T> {
-    return this.doc(ref).snapshotChanges().map(doc => {
-      return doc.payload.data() as T
-    })
+    return this.doc(ref)
+      .snapshotChanges()
+      .map(doc => {
+        return doc.payload.data() as T
+      })
   }
 
   public col$<T>(ref: CollectionPredicate<T>, queryFn?): Observable<T[]> {
-    return this.col(ref, queryFn).snapshotChanges().map(docs => {
-      return docs.map(a => a.payload.doc.data()) as T[]
-    });
+    return this.col(ref, queryFn)
+      .snapshotChanges()
+      .map(docs => {
+        return docs.map(a => a.payload.doc.data()) as T[]
+      })
   }
 
   /// with Ids
   public colWithIds$<T>(ref: CollectionPredicate<T>, queryFn?): Observable<any[]> {
-    return this.col(ref, queryFn).snapshotChanges().map(actions => {
-      return actions.map(a => {
-        const data = a.payload.doc.data();
-        const id = a.payload.doc.id;
-        return { id, ...data };
-      });
-    });
+    return this.col(ref, queryFn)
+      .snapshotChanges()
+      .map(actions => {
+        return actions.map(a => {
+          const data = a.payload.doc.data()
+          const id = a.payload.doc.id
+          return { id, ...data }
+        })
+      })
   }
 
   // as Promise
@@ -61,18 +62,21 @@ export class FirestoreService {
     return this.doc$<T>(ref).toPromise()
   }
 
-  public promiseCol<T>(ref: CollectionPredicate<T>): Promise<T[]> {
-    return this.col$<T>(ref).toPromise()
+  public promiseCol<T>(ref: CollectionPredicate<T>, queryFn?): Promise<T[]> {
+    return this.col$<T>(ref, queryFn)
+      .pipe(first())
+      .toPromise()
   }
 
-  public promiseColWithIds<T>(ref: CollectionPredicate<T>): Promise<T[]> {
-    return this.colWithIds$<T>(ref).toPromise()
+  public promiseColWithIds<T>(ref: CollectionPredicate<T>, queryFn?): Promise<T[]> {
+    return this.colWithIds$<T>(ref, queryFn)
+      .pipe(first())
+      .toPromise()
   }
 
   // Combine multiple observables collections into one array - similar to UNION in sql
   public combine(observables: Observable<any>[]) {
-    return Observable.combineLatest(observables)
-      .pipe(map((arr: any[]) => arr.reduce((acc, cur) => acc.concat(cur))))
+    return Observable.combineLatest(observables).pipe(map((arr: any[]) => arr.reduce((acc, cur) => acc.concat(cur))))
   }
 
   /// **************
@@ -118,7 +122,10 @@ export class FirestoreService {
 
   /// If doc exists update, otherwise set
   upsert<T>(ref: DocPredicate<T>, data: any) {
-    const doc = this.doc(ref).snapshotChanges().take(1).toPromise()
+    const doc = this.doc(ref)
+      .snapshotChanges()
+      .take(1)
+      .toPromise()
     return doc.then(snap => {
       return snap.payload.exists ? this.update(ref, data) : this.set(ref, data)
     })
@@ -129,7 +136,8 @@ export class FirestoreService {
   /// **************
   inspectDoc(ref: DocPredicate<any>): void {
     const tick = new Date().getTime()
-    this.doc(ref).snapshotChanges()
+    this.doc(ref)
+      .snapshotChanges()
       .take(1)
       .do(d => {
         const tock = new Date().getTime() - tick
@@ -140,7 +148,8 @@ export class FirestoreService {
 
   inspectCol(ref: CollectionPredicate<any>): void {
     const tick = new Date().getTime()
-    this.col(ref).snapshotChanges()
+    this.col(ref)
+      .snapshotChanges()
       .take(1)
       .do(c => {
         const tock = new Date().getTime() - tick
@@ -173,13 +182,12 @@ export class FirestoreService {
   atomic() {
     const batch = firebase.firestore().batch()
     /// add your operations here
-    const itemDoc = firebase.firestore().doc('items/myCoolItem');
-    const userDoc = firebase.firestore().doc('users/userId');
+    const itemDoc = firebase.firestore().doc('items/myCoolItem')
+    const userDoc = firebase.firestore().doc('users/userId')
     const currentTime = this.timestamp
-    batch.update(itemDoc, { timestamp: currentTime });
-    batch.update(userDoc, { timestamp: currentTime });
+    batch.update(itemDoc, { timestamp: currentTime })
+    batch.update(userDoc, { timestamp: currentTime })
     /// commit operations
     return batch.commit()
   }
-
 }

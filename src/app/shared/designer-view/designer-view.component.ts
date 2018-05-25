@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, QueryList, ViewChild, ViewChildren, ElementRef, HostBinding, HostListener } from '@angular/core'
+import { Component, OnInit, AfterViewInit, QueryList, ViewChild, ViewChildren, ElementRef, HostBinding, HostListener, Input } from '@angular/core'
 
 import { Observable ,  BehaviorSubject ,  combineLatest } from 'rxjs'
 import { SidebarTabComponent } from './sidebar-tab.component';
@@ -9,6 +9,8 @@ import { SidebarTabComponent } from './sidebar-tab.component';
   styleUrls: ['./designer-view.component.scss']
 })
 export class DesignerViewComponent implements OnInit {
+
+  @Input() loading: boolean
 
   screenSize: 'min' | 'slim' | 'full'
   sidebarSize: 'min' | 'slim' | 'full'

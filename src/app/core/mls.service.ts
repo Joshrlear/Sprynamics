@@ -9,7 +9,7 @@ export class MlsService {
   constructor(private firestore: FirestoreService) { }
 
   public getListings(agentId) {
-    return this.firestore.colWithIds$(`listings`, ref => ref.where('agentId', '==', agentId));
+    return this.firestore.promiseColWithIds(`listings`, ref => ref.where('agentId', '==', agentId));
   }
 
 }

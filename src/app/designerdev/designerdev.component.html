@@ -1,39 +1,58 @@
-<app-designer-view>
-
+<app-designer-view [loading]="loading">
   <ng-container sidebar>
-    <app-sidebar-tab title="Products" icon="aspect_ratio">
+    <!-- BEGIN sidebar tabs -->
+    <app-sidebar-tab title="Products"
+                     icon="aspect_ratio">
       Products
     </app-sidebar-tab>
-    <app-sidebar-tab title="Designs" icon="view_carousel">
-      <app-designs
-        [size]="'9x6'"
-        (select)="canvas.loadDesign($event)">
+    <app-sidebar-tab title="Designs"
+                     icon="view_carousel">
+      <app-designs [size]="'9x6'"
+                   (select)="canvas.loadDesign($event)">
       </app-designs>
     </app-sidebar-tab>
-    <app-sidebar-tab title="Agents" icon="contact_mail">
-      agents
+    <app-sidebar-tab title="Agents"
+                     icon="contact_mail">
+      <app-agent-info [user]="selectedAgent"
+                      [agents]="agents"
+                      [loading]="loadingAgents"
+                      (changeAgent)="changeAgent($event)"
+                      [(selectedAgent)]="selectedAgent">
+      </app-agent-info>
     </app-sidebar-tab>
-    <app-sidebar-tab title="Property" icon="home">
-      property
-    </app-sidebar-tab>
-    <app-sidebar-tab title="Text" icon="subject">
-      text
-    </app-sidebar-tab>
-    <app-sidebar-tab title="Colors" icon="color_lens">
-      colors
-    </app-sidebar-tab>
+    <ng-container *ngIf="selectedAgent">
+      <app-sidebar-tab title="Property"
+                       icon="home">
+        <app-property [agent]="selectedAgent"
+                      [listingId]="listingId">
+        </app-property>
+      </app-sidebar-tab>
+      <app-sidebar-tab title="Text"
+                       icon="subject">
+        <app-text [formFields]="designState.textFields"></app-text>
+      </app-sidebar-tab>
+      <app-sidebar-tab title="Colors"
+                       icon="color_lens">
+        <app-colors colors="designState.brandColors">
+        </app-colors>
+      </app-sidebar-tab>
+    </ng-container>
+    <!-- END sidebar tabs -->
   </ng-container>
 
   <ng-container designer>
     <div class="designer-view-options">
-      <button id="front" class="btn active">View Front</button>
-      <button id="back" class="btn">View Back</button>
+      <button id="front"
+              class="btn active">View Front</button>
+      <button id="back"
+              class="btn">View Back</button>
     </div>
-      <!-- canvas -->
-      <app-fabric-canvas #canvas></app-fabric-canvas>
+    <!-- canvas -->
+    <app-fabric-canvas #canvas></app-fabric-canvas>
     <div class="designer-view-save">
-      <button id="save" class="btn btn-green">Save and Continue</button>
+      <button id="save"
+              class="btn btn-green">Save and Continue</button>
     </div>
   </ng-container>
-  
+
 </app-designer-view>

@@ -3,14 +3,14 @@ import { BrandColors } from "#app/shared/colors/brand-colors.interface";
 
 export interface DesignState {
 
-  agent: User
+  agent?: User
 
-  property: {
+  property?: {
     address: string,
   }
 
-  brandColors: BrandColors
+  brandColors?: BrandColors
 
-  textFields: any
+  textFields?: any
 
 }

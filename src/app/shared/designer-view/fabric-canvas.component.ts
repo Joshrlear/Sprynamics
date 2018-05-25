@@ -14,8 +14,7 @@ import { Design } from "#app/models/design.interface"
       <canvas id="canvas" class="designer-canvas" (contextmenu)="$event.preventDefault()"></canvas>
     </div>
   `,
-  styles: [
-    `
+  styles: [`
     :host {
       display: flex;
       flex: 1;
@@ -23,8 +22,7 @@ import { Design } from "#app/models/design.interface"
     .shell {
       width: 100%;
     }
-  `
-  ]
+  `]
 })
 export class FabricCanvasComponent implements AfterViewInit {
   @ViewChild("shell") shell: ElementRef
@@ -57,10 +55,6 @@ export class FabricCanvasComponent implements AfterViewInit {
     const width = selection.width
     const height = selection.height
     const scale = Math.min(this.canvas.width / width, this.canvas.height / height)
-    // selection.left = this.canvas.width / 2;
-    // selection.top = 0;
-    // selection.originX = 'left'
-    // selection.originY = 'top'
     selection.center()
     selection.destroy()
 
