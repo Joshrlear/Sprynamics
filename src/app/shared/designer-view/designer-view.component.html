@@ -1,32 +1,34 @@
 <div class="designer-container">
   <ng-container *ngIf="loading">
     <div class="loading-overlay">
-        <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+      <div class="lds-ellipsis">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
     </div>
   </ng-container>
-  <ng-container *ngIf="!loading">
+  <ng-container>
     <div *ngIf="screenSize === 'min' && sidebarSize === 'full'"
          (click)="sidebarSize = 'min'"
          class="designer-sidebar-backdrop"></div>
     <div class="designer-sidebar"
          [ngClass]="sidebarSize">
-      <div class="pull-tab"
-           (click)="toggleSidebarSize()">
-        <mat-icon *ngIf="sidebarSize !== 'min'">chevron_left</mat-icon>
-        <mat-icon *ngIf="sidebarSize === 'min'">chevron_right</mat-icon>
-      </div>
       <div class="designer-sidebar-min">
       </div>
       <div class="designer-sidebar-slim">
+        <!-- BEGIN sidebar tabs -->
         <div class="sidebar-tabs-container">
           <div class="sidebar-tab"
                *ngFor="let tab of tabs"
                [class.selected]="tab.selected"
-               (click)="selectTab(tab)">
+               (click)="clickTab(tab)">
             <mat-icon>{{ tab.icon }}</mat-icon>
             <div class="sidebar-tab-title">{{ tab.title }}</div>
           </div>
         </div>
+        <!-- END sidebar tabs -->
       </div>
       <div class="designer-sidebar-full">
         <ng-content select="[sidebar]"></ng-content>
@@ -35,6 +37,11 @@
     <div id="designer-view"
          class="designer-view"
          [ngClass]="sidebarSize">
+      <div class="pull-tab"
+           (click)="toggleSidebarSize()">
+        <mat-icon *ngIf="sidebarSize === 'full'">chevron_left</mat-icon>
+        <mat-icon *ngIf="sidebarSize === 'slim'">chevron_right</mat-icon>
+      </div>
       <ng-content select="[designer]"></ng-content>
     </div>
   </ng-container>

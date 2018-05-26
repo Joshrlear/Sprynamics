@@ -51,22 +51,6 @@
       transform: translateX(0%);
     }
   }
-
-  .pull-tab {
-    cursor: pointer;
-    width: 16px;
-    height: 80px;
-    background-color: #75d84f;
-    color: #fff;
-    position: absolute;
-    top: 40%;
-    right: -8px;
-    border-radius: 4px;
-    z-index: 6;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
 }
 
 .designer-sidebar-min {
@@ -107,6 +91,7 @@
       background-color: #30343a;
       color: #999;
       cursor: pointer;
+      user-select: none;
 
       &.selected {
         background-color: #3f4652;
@@ -150,26 +135,44 @@
 }
 
 .designer-view {
-  padding-left: 8px;
+  margin-left: 8px;
   transition: 200ms ease-in-out;
-  width: 100%;
+  width: auto;
   height: 100%;
   display: flex;
+  position: relative;
   justify-content: space-between;
   align-items: stretch;
   flex-direction: column;
 
   &.slim {
-    padding-left: 70px;
+    margin-left: 70px;
   }
 
   &.full {
-    padding-left: 70px;
+    margin-left: 70px;
 
     @media only screen and (min-width: 992px) {
-      padding-left: 430px;
+      margin-left: 430px;
     }
   }
+}
+
+.pull-tab {
+  cursor: pointer;
+  width: 24px;
+  height: 80px;
+  background-color: #75d84f;
+  color: #fff;
+  position: absolute;
+  // top: 40%;
+  bottom: 64px;
+  left: -12px;
+  border-radius: 4px;
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .loading-overlay {
@@ -179,6 +182,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+  z-index: 9999999;
 }
 
 .lds-ellipsis {

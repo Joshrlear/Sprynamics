@@ -11,6 +11,15 @@ export interface DesignState {
 
   brandColors?: BrandColors
 
-  textFields?: any
+  textFields?: any[]
+  agentFields?: any[]
+
+  canvasData?: {
+    front: any,
+    back: any
+  }
+
+  backgroundObj: any
+  boundBoxObj: any
 
 }

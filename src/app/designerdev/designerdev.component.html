@@ -8,14 +8,14 @@
     <app-sidebar-tab title="Designs"
                      icon="view_carousel">
       <app-designs [size]="'9x6'"
-                   (select)="canvas.loadDesign($event)">
+                   (select)="loadDesign($event)">
       </app-designs>
     </app-sidebar-tab>
     <app-sidebar-tab title="Agents"
                      icon="contact_mail">
       <app-agent-info [user]="selectedAgent"
                       [agents]="agents"
-                      [loading]="loadingAgents"
+                      [loading]="loading"
                       (changeAgent)="changeAgent($event)"
                       [(selectedAgent)]="selectedAgent">
       </app-agent-info>
@@ -33,7 +33,7 @@
       </app-sidebar-tab>
       <app-sidebar-tab title="Colors"
                        icon="color_lens">
-        <app-colors colors="designState.brandColors">
+        <app-colors [(colors)]="designState.brandColors">
         </app-colors>
       </app-sidebar-tab>
     </ng-container>
@@ -43,12 +43,12 @@
   <ng-container designer>
     <div class="designer-view-options">
       <button id="front"
-              class="btn active">View Front</button>
+              class="btn" [class.active]="viewSide === 'front'" (click)="setViewSide('front')">View Front</button>
       <button id="back"
-              class="btn">View Back</button>
+              class="btn" [class.active]="viewSide === 'back'" (click)="setViewSide('back')">View Back</button>
     </div>
     <!-- canvas -->
-    <app-fabric-canvas #canvas></app-fabric-canvas>
+    <app-fabric-canvas #canvas [(designState)]="designState"></app-fabric-canvas>
     <div class="designer-view-save">
       <button id="save"
               class="btn btn-green">Save and Continue</button>

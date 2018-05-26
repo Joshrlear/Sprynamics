@@ -35,9 +35,15 @@ export class DesignerViewComponent implements OnInit {
     this.tabs.push(tab)
   }
 
-  selectTab(tab: SidebarTabComponent) {
-    this.tabs.forEach(tab => tab.selected = false)
-    tab.selected = true
+  clickTab(tab: SidebarTabComponent) {
+    if (tab.selected) {
+      this.sidebarSize = 'slim'
+      tab.selected = false
+    } else {
+      this.tabs.forEach(tab => tab.selected = false)
+      tab.selected = true
+      this.sidebarSize = 'full'
+    }
   }
 
   toggleSidebarSize() {
@@ -46,7 +52,7 @@ export class DesignerViewComponent implements OnInit {
         this.sidebarSize = 'slim'
         break
       case 'slim':
-        this.sidebarSize = 'min'
+        this.sidebarSize = 'full'
         break
       case 'min':
         this.sidebarSize = 'full'

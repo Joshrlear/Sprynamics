@@ -9,6 +9,7 @@ import { Observable } from 'rxjs';
 
 import { User } from '#models/user.interface';
 import { FirestoreService } from '#core/firestore.service';
+import { DEFAULT_BRAND_COLORS } from '#app/shared/colors/brand-colors.interface';
 
 @Injectable()
 export class AuthService {
@@ -44,11 +45,7 @@ export class AuthService {
           return this.afs.doc(`users/${user.uid}`).set({
             uid: user.uid,
             email,
-            brandColors: {
-              primary: '#ffffffff',
-              secondary: '#ffffffff',
-              accent: '#ffffffff'
-            }
+            brandColors: DEFAULT_BRAND_COLORS
           });
         });
       })
@@ -70,11 +67,7 @@ export class AuthService {
           email: credential.user.email,
           firstName: credential.user.displayName.split(' ')[0],
           lastName: credential.user.displayName.split(' ')[1] || '',
-          brandColors: {
-            primary: '#ffffffff',
-            secondary: '#ffffffff',
-            accent: '#ffffffff'
-          }
+          brandColors: DEFAULT_BRAND_COLORS
         })
       });
   }
@@ -88,11 +81,7 @@ export class AuthService {
           email: credential.user.email,
           firstName: credential.user.displayName.split(' ')[0],
           lastName: credential.user.displayName.split(' ')[1] || '',
-          brandColors: {
-            primary: '#ffffffff',
-            secondary: '#ffffffff',
-            accent: '#ffffffff'
-          }
+          brandColors: DEFAULT_BRAND_COLORS
         })
       });
   }

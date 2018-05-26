@@ -9,6 +9,7 @@ const express = require('express')
 const app = express()
 const path = require('path')
 const schedule = require('node-schedule')
+const serveIndex = require('serve-index')
 
 function fetchListhubFeed() {
   return new Promise((resolve, reject) => {
@@ -163,8 +164,8 @@ async function runSyndication() {
       ])
     })
     const csvString = await csvStringify(csvData)
-    const fileName = getCurrentCSVFilename()
-    fs.writeFile(fileName, csvString)
+    const filePath = path.join('status', getCurrentCSVFilename())
+    fs.writeFile(filePath, csvString)
 
     /* Upload data to Firebase */
     console.log('Uploading data to firebase...')
@@ -207,9 +208,17 @@ schedule.scheduleJob('0 16 * * *', async () => {
   }
 })
 
-app.get('/status', (req, res) => {
-  console.log('request for file ' + getCurrentCSVFilename())
-  res.download(path.join(__dirname, getCurrentCSVFilename()))
-})
+app.use('/status', express.static('status'), serveIndex('status'))
+
+// app.get('/status', (req, res) => {
+//   console.log('request for file ' + getCurrentCSVFilename())
+//   res.download(path.join(__dirname, 'status', getCurrentCSVFilename()))
+// })
+
+// app.get('/status/:filename', (req, res) => {
+//   const filename = req.params.filename
+//   console.log('request for file ' + filename)
+//   res.download(path.join(__dirname, 'status', filename))
+// })
 
 app.listen(8080, () => console.log('Server listening on port 8080'))

@@ -5,7 +5,7 @@ import { AuthService } from '../../core/auth.service';
 import { User } from '#models/user.interface';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { StorageService } from '#core/storage.service';
-import { BrandColorChangeEvent } from '#app/shared/colors/brand-colors.interface';
+import { BrandColorChangeEvent, DEFAULT_BRAND_COLORS } from '#app/shared/colors/brand-colors.interface';
 
 @Component({
   selector: 'app-profile',
@@ -60,11 +60,7 @@ export class ProfileComponent implements OnInit {
 
   initBrandColors(user) {
     this.firestore.update(`users/${user.uid}`, {
-      brandColors: {
-        primary: "#ffffffff",
-        secondary: "#ffffffff",
-        accent: "#ffffffff"
-      }
+      brandColors: DEFAULT_BRAND_COLORS
     });
   }
 

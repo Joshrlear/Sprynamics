@@ -4,8 +4,10 @@ declare let fabric
 import "webfontloader"
 declare let WebFont
 
-import { Component, OnInit, HostListener, AfterViewInit, ElementRef, ViewChild } from "@angular/core"
+import { Component, OnInit, HostListener, AfterViewInit, ElementRef, ViewChild, Input } from "@angular/core"
 import { Design } from "#app/models/design.interface"
+import { DesignState } from "#app/models/design-state.interface";
+import { WebfontService } from "#core/webfont.service";
 
 @Component({
   selector: "app-fabric-canvas",
@@ -26,21 +28,22 @@ import { Design } from "#app/models/design.interface"
 })
 export class FabricCanvasComponent implements AfterViewInit {
   @ViewChild("shell") shell: ElementRef
-
+  @Input() designState: DesignState
   canvas: any
-  fabricData: any
 
-  constructor() {}
+  constructor(private webfont: WebfontService) {}
 
   ngAfterViewInit() {
     this.canvas = new fabric.Canvas("canvas", {
       width: this.shell.nativeElement.clientWidth,
-      height: this.shell.nativeElement.clientHeight
+      height: this.shell.nativeElement.clientHeight,
+      preserveObjectStacking: true,
     })
   }
 
   @HostListener("window:resize", ["$event"])
   onResize(event?) {
+    /* zoom out initially */
     this.canvas.zoomToPoint(new fabric.Point(this.canvas.width / 2, this.canvas.height / 2), 1)
 
     /* resize canvas to fill the container */
@@ -62,31 +65,6 @@ export class FabricCanvasComponent implements AfterViewInit {
     this.canvas.zoomToPoint(new fabric.Point(this.canvas.width / 2, this.canvas.height / 2), Math.min(scale, 1))
   }
 
-  async loadDesign(design: Design) {
-    if (!design.fonts || design.fonts.length === 0) {
-      design.fonts = ["Roboto"]
-    }
-    WebFont.load({
-      google: {
-        families: design.fonts
-      },
-      active: async () => {
-        try {
-          this.fabricData = await (await fetch(design.url)).json()
-          await this.loadFromJSON(this.fabricData.front)
-          this.onResize()
-        } catch (err) {
-          window.alert(err.message)
-          console.error(err)
-        }
-      },
-      fontinactive: err => {
-        window.alert(err.message)
-        console.error(err)
-      }
-    })
-  }
-
   loadFromJSON(jsonData: any) {
     return new Promise((resolve, reject) => {
       this.canvas.loadFromJSON(jsonData, err => {
@@ -97,5 +75,18 @@ export class FabricCanvasComponent implements AfterViewInit {
         }
       })
     })
+  }
+
+  findObject(filterFn: (obj: any) => void) {
+    const obj = this.canvas.getObjects().filter(filterFn)[0]
+    if (obj) {
+      return obj
+    } else {
+      throw new Error('The object could not be found. Filter function: ' + filterFn)
+    }
+  }
+
+  forEachObject(fn: (obj: any) => void) {
+    this.canvas.forEachObject(fn)
   }
 }

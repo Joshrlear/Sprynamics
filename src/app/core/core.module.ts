@@ -20,6 +20,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { MlsService } from '#core/mls.service';
 import { GoogleMapsService } from '#core/gmaps.service';
 import { ContextMenuModule } from 'ngx-contextmenu';
+import { WebfontService } from '#core/webfont.service';
 
 @NgModule({
   imports: [
@@ -42,6 +43,7 @@ import { ContextMenuModule } from 'ngx-contextmenu';
     CheckoutService,
     MlsService,
     GoogleMapsService,
+    WebfontService
   ]
 })
 export class CoreModule { }

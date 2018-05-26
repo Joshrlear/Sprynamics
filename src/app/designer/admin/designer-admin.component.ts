@@ -12,7 +12,7 @@ import { MatDialog } from '@angular/material';
 import { fabricObjectFields } from '#app/designer/fabric-object-fields';
 import { AdminDesignerProgressDialogComponent } from '#app/designer/admin/admin-designer-progress-dialog/admin-designer-progress-dialog.component';
 import { ContextMenuComponent } from 'ngx-contextmenu';
-import { BrandColorChangeEvent, BrandColorRole } from '#app/shared/colors/brand-colors.interface';
+import { BrandColorChangeEvent, BrandColorRole, DEFAULT_BRAND_COLORS } from '#app/shared/colors/brand-colors.interface';
 
 import 'webfontloader';
 declare let WebFont;
@@ -37,11 +37,7 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
   defaultTemplate = {
     name: '',
     productType: this.productTypes.postcard_small,
-    brandColors: {
-      primary: '#ffffffff',
-      secondary: '#ffffffff',
-      accent: '#ffffffff'
-    },
+    brandColors: DEFAULT_BRAND_COLORS,
     front: null,
     back: null
   }
