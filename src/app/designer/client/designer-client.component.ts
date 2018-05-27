@@ -23,8 +23,8 @@ import * as jspdf from 'jspdf';
 declare let jsPDF;
 
 import * as JSZip from 'jszip';
-import { CropDialogComponent } from '#app/designer/crop-dialog/crop-dialog.component';
-import { ImageSelectDialogComponent } from '#app/designer/image-select-dialog/image-select-dialog.component';
+import { CropDialog } from '#app/designer/crop-dialog/crop.dialog';
+import { ImageSelectDialog } from '#app/designer/image-select-dialog/image-select.dialog';
 import { fabricObjectFields } from '#app/designer/fabric-object-fields';
 import { GoogleMapsService } from '#core/gmaps.service';
 import { BrandColorChangeEvent } from '#models/brand-colors.model';
@@ -210,14 +210,14 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
   clickImage(obj) {
     console.log(obj)
     console.log(this.selectedListing)
-    const imageDialogRef = this.dialog.open(ImageSelectDialogComponent, {
+    const imageDialogRef = this.dialog.open(ImageSelectDialog, {
       data: {
         listing: this.selectedListing
       }
     });
     imageDialogRef.afterClosed().subscribe(photo => {
       if (photo) {
-        const cropDialogRef = this.dialog.open(CropDialogComponent, {
+        const cropDialogRef = this.dialog.open(CropDialog, {
           data: {
             url: photo,
             width: obj.width * obj.scaleX,

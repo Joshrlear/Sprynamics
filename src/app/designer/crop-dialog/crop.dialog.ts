@@ -5,15 +5,15 @@ declare const Cropper;
 
 @Component({
   selector: 'app-crop-dialog',
-  templateUrl: './crop-dialog.component.html',
-  styleUrls: ['./crop-dialog.component.scss']
+  templateUrl: './crop.dialog.html',
+  styleUrls: ['./crop.dialog.scss']
 })
-export class CropDialogComponent implements OnInit {
+export class CropDialog implements OnInit {
 
   cropper: any;
   loading: boolean;
 
-  constructor(@Inject(MAT_DIALOG_DATA) private data, private dialogRef: MatDialogRef<CropDialogComponent>) { }
+  constructor(@Inject(MAT_DIALOG_DATA) private data, private dialogRef: MatDialogRef<CropDialog>) { }
 
   ngOnInit() {
     this.loading = true;

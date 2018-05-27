@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { HomeComponent } from './home/home.component';
-import { ProductsComponent } from './products/products.component';
 import { DesignerAdminComponent } from './designer/admin/designer-admin.component';
 import { DesignerClientComponent } from './designer/client/designer-client.component';
 import { AccountComponent } from './account/account.component';
@@ -20,7 +19,6 @@ import { DashboardModule } from '#app/dashboard/dashboard.module';
 
 const routes: Routes = [
   { path: '', component: DashboardComponent, loadChildren: './dashboard/dashboard.module#DashboardModule', canActivate: [AuthGuard] },
-  { path: 'products', component: ProductsComponent },
   { path: 'designer', loadChildren: './designer/designer.module#DesignerModule' },
   { path: 'terms', component: TermsAndConditionsComponent },
   { path: 'privacy', component: PrivacyPolicyComponent },

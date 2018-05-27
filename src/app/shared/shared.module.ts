@@ -13,10 +13,9 @@ import { PapaParseModule } from 'ngx-papaparse'
 // local modules
 import { MaterialModule } from './material.module'
 // components
-import { BreadcrumbsComponent } from './breadcrumbs/breadcrumbs.component'
 import { SidenavComponent } from './sidenav/sidenav.component'
-import { MailingListDialogComponent } from './mailing-list-dialog/mailing-list-dialog.component'
-import { ViewListDialogComponent } from '#app/shared/view-list-dialog/view-list-dialog.component'
+import { MailingListDialog } from './mailing-list-dialog/mailing-list.dialog'
+import { ViewListDialog } from '#app/shared/view-list-dialog/view-list.dialog'
 import { ContextMenuModule } from 'ngx-contextmenu'
 import { ColorsComponent } from '#app/shared/colors/colors.component'
 
@@ -34,14 +33,18 @@ const modules = [
 ]
 
 const components = [
-  BreadcrumbsComponent, 
   SidenavComponent, 
-  ColorsComponent
+  ColorsComponent,
+]
+
+const dialogs = [
+  MailingListDialog,
+  ViewListDialog
 ]
 
 @NgModule({
   imports: modules,
-  declarations: components,
-  exports: [...modules, ...components]
+  declarations: [...components, ...dialogs],
+  exports: [...modules, ...components, ...dialogs]
 })
 export class SharedModule {}

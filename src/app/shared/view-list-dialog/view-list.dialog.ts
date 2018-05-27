@@ -7,10 +7,10 @@ import { AuthService } from '#core/auth.service';
 
 @Component({
   selector: 'app-view-list-dialog',
-  templateUrl: './view-list-dialog.component.html',
-  styleUrls: ['./view-list-dialog.component.scss']
+  templateUrl: './view-list.dialog.html',
+  styleUrls: ['./view-list.dialog.scss']
 })
-export class ViewListDialogComponent implements OnInit {
+export class ViewListDialog implements OnInit {
 
   list: any;
   rows: any;
@@ -18,7 +18,7 @@ export class ViewListDialogComponent implements OnInit {
   isLoading: boolean;
 
   constructor(@Inject(MAT_DIALOG_DATA) private data,
-    private dialogRef: MatDialogRef<ViewListDialogComponent>,
+    private dialogRef: MatDialogRef<ViewListDialog>,
     private firestore: FirestoreService,
     private auth: AuthService) { }
 

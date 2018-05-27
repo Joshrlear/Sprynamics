@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CropDialogComponent } from './crop-dialog.component';
+import { AdminDesignerProgressDialog } from './admin-designer-progress.dialog';
 
-describe('CropDialogComponent', () => {
-  let component: CropDialogComponent;
-  let fixture: ComponentFixture<CropDialogComponent>;
+describe('AdminDesignerProgressDialog', () => {
+  let component: AdminDesignerProgressDialog;
+  let fixture: ComponentFixture<AdminDesignerProgressDialog>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CropDialogComponent ]
+      declarations: [ AdminDesignerProgressDialog ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CropDialogComponent);
+    fixture = TestBed.createComponent(AdminDesignerProgressDialog);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

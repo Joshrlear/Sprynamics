@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
-import { MailingListDialogComponent } from '#app/shared/mailing-list-dialog/mailing-list-dialog.component';
+import { MailingListDialog } from '#app/shared/mailing-list-dialog/mailing-list.dialog';
 import { PapaParseService } from 'ngx-papaparse';
 import * as firebase from 'firebase';
 import { FirestoreService } from '#core/firestore.service';
@@ -8,10 +8,10 @@ import { AuthService } from '#core/auth.service';
 
 @Component({
   selector: 'app-import-agents-dialog',
-  templateUrl: './import-agents-dialog.component.html',
-  styleUrls: ['./import-agents-dialog.component.scss']
+  templateUrl: './import-agents.dialog.html',
+  styleUrls: ['./import-agents.dialog.scss']
 })
-export class ImportAgentsDialogComponent implements OnInit {
+export class ImportAgentsDialog implements OnInit {
 
   isLoading: boolean;
 
@@ -23,7 +23,7 @@ export class ImportAgentsDialogComponent implements OnInit {
 
   constructor(
     @Inject(MAT_DIALOG_DATA) private data: any,
-    private dialogRef: MatDialogRef<MailingListDialogComponent>,
+    private dialogRef: MatDialogRef<MailingListDialog>,
     private papa: PapaParseService,
     private firestore: FirestoreService,
     private auth: AuthService

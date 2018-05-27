@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core'
 import { MatDialog } from '@angular/material'
 
-import { CropDialogComponent } from '../../crop-dialog/crop-dialog.component'
+import { CropDialog } from '../../crop-dialog/crop.dialog'
 import { AuthService } from '#core/auth.service'
 import { MlsService } from '#core/mls.service'
 import { productSpecs } from '#app/designer/products'

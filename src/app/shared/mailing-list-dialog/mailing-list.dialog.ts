@@ -7,11 +7,11 @@ import { AuthService } from '#core/auth.service';
 import * as firebase from 'firebase/app';
 
 @Component({
-  selector: 'app-mailing-list-dialog',
-  templateUrl: './mailing-list-dialog.component.html',
-  styleUrls: ['./mailing-list-dialog.component.scss']
+  selector: 'app-mailing-list.dialog',
+  templateUrl: './mailing-list.dialog.html',
+  styleUrls: ['./mailing-list.dialog.scss']
 })
-export class MailingListDialogComponent implements OnInit {
+export class MailingListDialog implements OnInit {
 
   isLoading: boolean;
 
@@ -23,7 +23,7 @@ export class MailingListDialogComponent implements OnInit {
 
   constructor(
     @Inject(MAT_DIALOG_DATA) private data: any,
-    private dialogRef: MatDialogRef<MailingListDialogComponent>,
+    private dialogRef: MatDialogRef<MailingListDialog>,
     private papa: PapaParseService,
     private firestore: FirestoreService,
     private auth: AuthService

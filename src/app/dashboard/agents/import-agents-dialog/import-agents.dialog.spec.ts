@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ViewListDialogComponent } from './view-list-dialog.component';
+import { ImportAgentsDialog } from './import-agents.dialog';
 
-describe('ViewListDialogComponent', () => {
-  let component: ViewListDialogComponent;
-  let fixture: ComponentFixture<ViewListDialogComponent>;
+describe('ImportAgentsDialog', () => {
+  let component: ImportAgentsDialog;
+  let fixture: ComponentFixture<ImportAgentsDialog>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ViewListDialogComponent ]
+      declarations: [ ImportAgentsDialog ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ViewListDialogComponent);
+    fixture = TestBed.createComponent(ImportAgentsDialog);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

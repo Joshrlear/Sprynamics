@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { MailingListDialogComponent } from '#shared/mailing-list-dialog/mailing-list-dialog.component';
-import { ViewListDialogComponent } from '#shared/view-list-dialog/view-list-dialog.component';
+import { MailingListDialog } from '#shared/mailing-list-dialog/mailing-list.dialog';
+import { ViewListDialog } from '#shared/view-list-dialog/view-list.dialog';
 import { Observable } from 'rxjs';
 import { FirestoreService } from '#core/firestore.service';
 import { AuthService } from '#core/auth.service';
@@ -43,14 +43,14 @@ export class ListsComponent implements OnInit {
   }
 
   uploadFile(file: File) {
-    const dialogRef = this.dialog.open(MailingListDialogComponent, {
+    const dialogRef = this.dialog.open(MailingListDialog, {
       width: '500px',
       data: { file, agent: this.agent }
     });
   }
 
   viewList(list) {
-    const dialogRef = this.dialog.open(ViewListDialogComponent, {
+    const dialogRef = this.dialog.open(ViewListDialog, {
       data: { list, agent: this.agent }
     });
   }

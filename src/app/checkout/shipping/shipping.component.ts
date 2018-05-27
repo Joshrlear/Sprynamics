@@ -5,7 +5,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { CheckoutService } from '#app/checkout/checkout.service';
 import { Router } from '@angular/router';
 import { FirestoreService } from '#core/firestore.service';
-import { MailingListDialogComponent } from '#app/shared/mailing-list-dialog/mailing-list-dialog.component';
+import { MailingListDialog } from '#app/shared/mailing-list-dialog/mailing-list.dialog';
 import { MatDialog } from '@angular/material';
 import { Order } from '#models/order.model';
 
@@ -109,7 +109,7 @@ export class ShippingComponent implements OnInit, OnDestroy {
   }
 
   uploadList(file: File) {
-    const dialogRef = this.dialog.open(MailingListDialogComponent, {
+    const dialogRef = this.dialog.open(MailingListDialog, {
       width: '500px',
       data: { file }
     });

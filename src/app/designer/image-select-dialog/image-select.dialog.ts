@@ -3,15 +3,15 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 
 @Component({
   selector: 'app-image-select-dialog',
-  templateUrl: './image-select-dialog.component.html',
-  styleUrls: ['./image-select-dialog.component.scss']
+  templateUrl: './image-select.dialog.html',
+  styleUrls: ['./image-select.dialog.scss']
 })
-export class ImageSelectDialogComponent implements OnInit {
+export class ImageSelectDialog implements OnInit {
 
   listing: any;
   photos: string[];
 
-  constructor(@Inject(MAT_DIALOG_DATA) private data, private dialogRef: MatDialogRef<ImageSelectDialogComponent>) { }
+  constructor(@Inject(MAT_DIALOG_DATA) private data, private dialogRef: MatDialogRef<ImageSelectDialog>) { }
 
   ngOnInit() {
     this.listing = this.data.listing;

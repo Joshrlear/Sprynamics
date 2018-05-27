@@ -4,9 +4,9 @@ import { Observable } from 'rxjs';
 
 import { AuthService } from '#core/auth.service';
 import { MatDialog } from '@angular/material';
-import { AddAgentDialogComponent } from '#app/dashboard/agents/add-agent-dialog/add-agent-dialog.component';
+import { AddAgentDialog } from '#app/dashboard/agents/add-agent-dialog/add-agent.dialog';
 import { Router } from '@angular/router';
-import { ImportAgentsDialogComponent } from '#app/dashboard/agents/import-agents-dialog/import-agents-dialog.component';
+import { ImportAgentsDialog } from '#app/dashboard/agents/import-agents-dialog/import-agents.dialog';
 
 @Component({
   selector: 'app-agents',
@@ -35,7 +35,7 @@ export class AgentsComponent implements OnInit {
   }
 
   addAgent() {
-    const dialogRef = this.dialog.open(AddAgentDialogComponent);
+    const dialogRef = this.dialog.open(AddAgentDialog);
   }
 
   createAgent() {
@@ -69,7 +69,7 @@ export class AgentsComponent implements OnInit {
   }
 
   uploadFile(file: File) {
-    const dialogRef = this.dialog.open(ImportAgentsDialogComponent, {
+    const dialogRef = this.dialog.open(ImportAgentsDialog, {
       width: '500px',
       data: { file }
     });

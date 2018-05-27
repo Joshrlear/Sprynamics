@@ -7,10 +7,10 @@ import { StorageService } from '../../core/storage.service';
 import { productTypes, productSpecs, thumbnailSizes } from '../products';
 import { ObjectFactoryService } from '../object-factory.service';
 import { AlignmentService } from '#app/designer/admin/alignment.service';
-import { CropDialogComponent } from '#app/designer/crop-dialog/crop-dialog.component';
+import { CropDialog } from '#app/designer/crop-dialog/crop.dialog';
 import { MatDialog } from '@angular/material';
 import { fabricObjectFields } from '#app/designer/fabric-object-fields';
-import { AdminDesignerProgressDialogComponent } from '#app/designer/admin/admin-designer-progress-dialog/admin-designer-progress-dialog.component';
+import { AdminDesignerProgressDialog } from '#app/designer/admin/admin-designer-progress-dialog/admin-designer-progress.dialog';
 import { ContextMenuComponent } from 'ngx-contextmenu';
 import { BrandColorChangeEvent, BrandColorRole, DEFAULT_BRAND_COLORS } from '#models/brand-colors.model';
 
@@ -430,7 +430,7 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
   }
 
   openDialog(dataURL, obj) {
-    const dialogRef = this.dialog.open(CropDialogComponent, {
+    const dialogRef = this.dialog.open(CropDialog, {
       data: {
         url: dataURL,
         width: obj.width * obj.scaleX,
@@ -500,7 +500,7 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
     });
     this.template.fonts = fonts;
 
-    const dialogRef = this.dialog.open(AdminDesignerProgressDialogComponent);
+    const dialogRef = this.dialog.open(AdminDesignerProgressDialog);
 
     (new Promise((resolve, reject) => {
       const docData = Object.assign({}, this.template);
@@ -594,7 +594,7 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
 
   loadTemplate(template: any) {
     console.log(template);
-    const dialogRef = this.dialog.open(AdminDesignerProgressDialogComponent);
+    const dialogRef = this.dialog.open(AdminDesignerProgressDialog);
     this.disableHistory = true;
     this.template = template;
     this.viewSide = 'front';
