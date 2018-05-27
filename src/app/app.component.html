@@ -21,7 +21,7 @@
 
         </div>
         <div class="top-menu-right">
-          <a routerLink="products" class="design-link" mat-button>Start Designing</a>
+          <a routerLink="designer" class="design-link" mat-button>Start Designing</a>
           <ng-container *ngIf="(auth.user | async) || {} as user">
             <ng-container *ngIf="!user.uid; else loggedIn">
               <a routerLink="account/login" class="top-menu-account">
