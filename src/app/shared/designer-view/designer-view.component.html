@@ -1,14 +1,13 @@
 <div class="designer-container">
-  <ng-container *ngIf="loading">
-    <div class="loading-overlay">
-      <div class="lds-ellipsis">
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-      </div>
+  <div *ngIf="loading"
+       class="loading-overlay">
+    <div class="lds-ellipsis">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
     </div>
-  </ng-container>
+  </div>
   <ng-container>
     <div *ngIf="screenSize === 'min' && sidebarSize === 'full'"
          (click)="sidebarSize = 'min'"

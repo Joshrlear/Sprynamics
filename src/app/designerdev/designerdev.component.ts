@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core'
+import { Component, OnInit, ViewChild, HostListener } from '@angular/core'
 import { User } from '#models/user.interface'
 import { DesignState } from '#models/design-state.interface'
 import { AuthService } from '#core/auth.service'
@@ -10,6 +10,7 @@ import { FabricCanvasComponent } from '#app/shared/designer-view/fabric-canvas.c
 import { Design } from '#app/models/design.interface'
 import { WebfontService } from '#core/webfont.service'
 import { DEFAULT_BRAND_COLORS } from '#app/shared/colors/brand-colors.interface'
+import { promiseImage } from '#app/helpers/promise-image'
 
 @Component({
   selector: 'app-designerdev',
@@ -24,6 +25,7 @@ export class DesignerdevComponent implements OnInit {
   user: User
   selectedAgent: User
   loading = true
+  processing = false
   selectedListing: any
   listingId: string
   viewSide: 'front' | 'back' = 'front'
@@ -60,24 +62,47 @@ export class DesignerdevComponent implements OnInit {
   }
 
   async loadDesign(design: Design) {
-    if (!design.fonts || design.fonts.length === 0) {
-      design.fonts = ['Roboto']
-    }
+    this.processing = true
     try {
       /* load fonts */
+      if (!design.fonts || design.fonts.length === 0) {
+        design.fonts = ['Roboto']
+      }
       await this.webfont.load(design.fonts)
       /* fetch json data from url */
       this.designState.canvasData = await (await fetch(design.url)).json()
       /* load canvas from json */
       await this.fabricCanvas.loadFromJSON(this.designState.canvasData.front)
+      this.viewSide = 'front'
+      /* process canvas */
+      await this.processCanvas()
+    } catch (err) {
+      window.alert(err.message)
+      console.error(err)
+    }
+    this.processing = false
+  }
+
+  async processCanvas() {
+    this.processing = true
+    try {
       /* resize to fit screen */
-      this.fabricCanvas.onResize()
+      this.fabricCanvas.zoomToFit()
       /* clear previous fields */
       this.designState.textFields = []
       this.designState.agentFields = []
-      /* find background and bound box objects */
-      this.designState.backgroundObj = this.fabricCanvas.findObject(obj => obj.isBackground)
-      this.designState.boundBoxObj = this.fabricCanvas.findObject(obj => obj.isBoundBox)
+      /* find objects */
+      this.designState.backgroundObj = this.fabricCanvas.findObjects(obj => obj.isBackground, true)[0]
+      this.designState.boundBoxObj = this.fabricCanvas.findObjects(obj => obj.isBoundBox, true)[0]
+      this.designState.addressObj = this.fabricCanvas.findObjects(obj => obj.textContentType === 'address')[0]
+      console.log(this.designState.addressObj)
+      /* map text fields */
+      const fieldFromObject = obj => ({ obj, name: obj.textFieldName || obj.textUserData })
+      this.designState.textFields = this.fabricCanvas.findObjects(obj => obj.userEditable).map(fieldFromObject)
+      this.designState.agentFields = this.fabricCanvas.findObjects(obj => obj.textContentType === 'data').map(fieldFromObject)
+      this.designState.propertyFields = this.fabricCanvas.findObjects(obj => obj.textContentType === 'property').map(fieldFromObject)
+      /* find property images */
+      this.designState.propertyImages = this.fabricCanvas.findObjects(obj => obj.isUserImage)
       /* clip canvas to bound box */
       this.fabricCanvas.canvas.clipTo = ctx => {
         const c = this.designState.boundBoxObj.getCoords()
@@ -89,7 +114,7 @@ export class DesignerdevComponent implements OnInit {
         ctx.rect(bound.left, bound.top, bound.width, bound.height)
       }
       /* loop through canvas objects */
-      this.fabricCanvas.forEachObject(obj => {
+      for (let obj of this.fabricCanvas.getObjects()) {
         /* set object properties */
         obj.set({
           selectable: false,
@@ -101,29 +126,75 @@ export class DesignerdevComponent implements OnInit {
         })
         /* set brand colors */
         if (obj.brandColorRole && obj.brandColorRole !== 'none') {
-          const color = this.designState.brandColors[obj.brandColorRole];
-          obj.set({ fill: color });
+          const color = this.designState.brandColors[obj.brandColorRole]
+          obj.set({ fill: color })
         }
-      })
+        /* set pointer cursor for user images */
+        obj.hoverCursor = obj.isUserImage ? 'pointer' : 'default'
+        /* inject user images */
+        if (obj.isLogo) {
+          let src
+          switch (obj.logoType) {
+            case 'headshot':
+              src = this.selectedAgent.avatarUrl
+              break
+            case 'brokerage':
+              src = this.selectedAgent.brokerageLogoUrl
+              break
+            case 'company':
+              src = this.selectedAgent.companyLogoUrl
+              break
+            default:
+              src = '/assets/logo.png'
+          }
+          const img = await promiseImage(src)
+          const width = obj.width * obj.scaleX
+          const height = obj.height * obj.scaleY
+          obj.setElement(img)
+          obj.scaleX = width / img.width
+          obj.scaleY = height / img.height
+        }
+      }
+      // this.fabricCanvas.zoomToFit(this.designState.boundBoxObj)
+      this.fabricCanvas.canvas.renderAll()
     } catch (err) {
-      window.alert(err.message)
+      if (err.message) { 
+        window.alert(err.message)
+      }
       console.error(err)
     }
+    this.processing = false
   }
 
   async setViewSide(viewSide: 'front' | 'back') {
     try {
       this.viewSide = viewSide
+      this.processing = true
       await this.fabricCanvas.loadFromJSON(this.designState.canvasData[viewSide])
-      this.fabricCanvas.onResize()
+      await this.processCanvas()
+      this.processing = false
     } catch (err) {
       window.alert(err.message)
       console.error(err)
     }
   }
 
+  @HostListener('window:resize', ['$event'])
+  onResize(event?) {
+    this.fabricCanvas.zoomToFit(this.designState.boundBoxObj)
+  }
+
   changeAgent(agent: User) {
     this.selectedAgent = agent
     this.checkout.setUser(agent)
+  }
+
+  changeProperty(property: any) {
+    console.log(this.designState.addressObj)
+    this.selectedListing = property.listing
+    if (this.designState.addressObj) {
+      this.designState.addressObj.text = property.formatted_address
+      this.fabricCanvas.render()
+    }
   }
 }

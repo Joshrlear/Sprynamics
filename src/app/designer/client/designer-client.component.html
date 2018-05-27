@@ -80,8 +80,6 @@
 
       <app-text 
         [hidden]="currentTab !== 'text'" 
-        [productName]="productSizes[size]?.name" 
-        [size]="productSizes[size]?.width + ' x ' + productSizes[size]?.height + ' in.'"
         [formFields]="textFields" 
         (change)="saveUndo()" 
         (render)="canvas.renderAll()">
@@ -92,11 +90,9 @@
         <app-property 
           [hidden]="currentTab !== 'property'" 
           [agent]="selectedAgent" 
-          [photos]="template[viewSide]?.userImages" 
           [listingId]="listingId"
           [(listing)]="selectedListing"
-          (photoChange)="changePhoto($event)"
-          (addressChange)="changeAddress($event)">
+          (changeProperty)="changeAddress($event)">
         </app-property>
         
         <app-colors 

@@ -39,9 +39,8 @@ export class GoogleMapsService {
 
   public getStaticMapUrl(latitude: number, longitude: number, zoom = 12, width = 400, height = 400) {
     return (
-      `${this.API_URL}/staticmap?center=${latitude},${longitude}&zoom=${zoom}&size=${width}x${height}&key=${
-        this.API_KEY
-      }` + `&markers=${latitude},${longitude}`
+      `${this.API_URL}/staticmap?center=${latitude},${longitude}&zoom=${zoom}&size=${width}x${height}&key=${this.API_KEY}` +
+      `&markers=${latitude},${longitude}`
     )
   }
 }

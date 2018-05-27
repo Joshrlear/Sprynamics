@@ -6,9 +6,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
   styleUrls: ['./text.component.scss']
 })
 export class TextComponent implements OnInit {
-
-  @Input('productName') productName: string;
-  @Input('size') size: string;
+  
   @Input('formFields') formFields: any = [];
 
   @Output('render') renderEvent = new EventEmitter();

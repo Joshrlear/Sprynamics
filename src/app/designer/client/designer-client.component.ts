@@ -460,11 +460,7 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
         obj.set({ fill: color });
       }
       // set hover cursor
-      if (obj.isUserImage) {
-        obj.hoverCursor = 'pointer';
-      } else {
-        obj.hoverCursor = 'default';
-      }
+      obj.hoverCursor = obj.isUserImage ? 'pointer' : 'default'
       // store the address text object so we can bind it later
       if (obj.textContentType === 'address') {
         this.addressObj = obj;

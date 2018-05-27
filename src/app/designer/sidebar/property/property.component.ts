@@ -8,6 +8,7 @@ import { productSpecs } from '#app/designer/products'
 import { FormBuilder } from '@angular/forms'
 import { GoogleMapsService } from '#core/gmaps.service'
 import { first } from 'rxjs/operators'
+import { User } from '#app/models/user.interface'
 
 declare const google
 declare const lh
@@ -18,14 +19,13 @@ declare const lh
   styleUrls: ['./property.component.scss']
 })
 export class PropertyComponent implements OnInit {
-  @Input('agent') agent: any
-  @Input('photos') photos: any[]
+  @Input('listing') selectedListing: any
   @Input('listingId') listingId: any
-  @Output('photoChange') changeEvent = new EventEmitter()
-  @Output('addressChange') addressChangeEvent = new EventEmitter()
+  @Output('changeProperty') addressChangeEvent = new EventEmitter()
+
+  _agent: User
 
   selectedIndex: number
-  @Input('listing') selectedListing: any
   listings: any[]
 
   loading: boolean
@@ -40,66 +40,35 @@ export class PropertyComponent implements OnInit {
     private gmaps: GoogleMapsService
   ) {}
 
-  async ngOnInit() {
-    this.loading = true
-    if (this.agent.licenseId) {
-      this.listings = await this.mls.getListings(this.agent.licenseId)
-      lh('submit', 'SEARCH_DISPLAY', this.listings.map(l => ({ lkey: l.listingKey })))
-      if (this.listingId) {
-        this.selectedListing = this.listings.find(listing => {
-          return listing.id === this.listingId
-        })
-        this.onChangeAddress()
-      }
-      if (!this.selectedListing) {
-        this.selectedListing = this.listings[0]
-        this.onChangeAddress()
-      }
-      this.loading = false
-    } else {
-      this.listings = []
+  @Input('agent')
+  set agent(agent: User) {
+    this._agent = agent
+    if (agent) {
+      this.loading = true
+      this.mls.getListings(agent.licenseId).then(listings => {
+        this.listings = listings
+        lh('submit', 'SEARCH_DISPLAY', this.listings.map(l => ({ lkey: l.listingKey })))
+        if (this.listingId) {
+          this.selectedListing = this.listings.find(listing => {
+            return listing.id === this.listingId
+          })
+          this.onChangeAddress()
+        }
+        if (!this.selectedListing) {
+          this.selectedListing = this.listings[0]
+          this.onChangeAddress()
+        }
+        this.loading = false
+      })
     }
   }
 
-  loadImagesFromListing() {
-    this.selectedIndex = 0
-    this.openDialog(this.selectedListing.photos[0])
+  async ngOnInit() {
+    this.listings = []
   }
 
   updatePropertyInfo() {
     this.onChangeAddress()
-  }
-
-  uploadImage(file: File) {
-    const reader = new FileReader()
-    reader.addEventListener('load', () => {
-      this.openDialog(reader.result)
-    })
-    reader.readAsDataURL(file)
-  }
-
-  async openDialog(dataURL) {
-    const obj = this.photos[this.selectedIndex]
-    obj.width = obj.width * obj.scaleX
-    obj.height = obj.height * obj.scaleY
-    obj.scaleX = obj.scaleY = 1
-    const dialogRef = this.dialog.open(CropDialogComponent, {
-      data: {
-        url: dataURL,
-        width: obj.width * productSpecs.dpi,
-        height: obj.height * productSpecs.dpi
-      }
-    })
-    const data = await dialogRef
-      .afterClosed()
-      .pipe(first())
-      .toPromise()
-    if (data) {
-      this.changeEvent.emit({
-        index: this.selectedIndex,
-        photo: data
-      })
-    }
   }
 
   async onChangeAddress() {
