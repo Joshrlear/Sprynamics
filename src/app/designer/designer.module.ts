@@ -13,7 +13,6 @@ import { TextComponent } from './sidebar/text/text.component';
 
 import { AlignmentService } from './admin/alignment.service';
 import { ObjectFactoryService } from './object-factory.service';
-import { NewUserPopupComponent } from './new-user-popup/new-user-popup.component';
 import { ImageSelectDialog } from './image-select-dialog/image-select.dialog';
 import { AdminDesignerProgressDialog } from './admin/admin-designer-progress-dialog/admin-designer-progress.dialog';
 import { DesignerDevComponent } from './dev/designer-dev.component';
@@ -41,7 +40,6 @@ const routes: Routes = [
     DesignsComponent,
     PropertyComponent,
     TextComponent,
-    NewUserPopupComponent,
     ImageSelectDialog,
     AdminDesignerProgressDialog,
     DesignerDevComponent,
@@ -52,7 +50,6 @@ const routes: Routes = [
   ],
   entryComponents: [
     CropDialog,
-    NewUserPopupComponent,
     ImageSelectDialog,
     AdminDesignerProgressDialog
   ],

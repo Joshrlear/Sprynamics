@@ -12,14 +12,12 @@ import { CheckoutModule } from './checkout/checkout.module';
 import { DesignerModule } from './designer/designer.module';
 
 import { AppComponent } from './app.component';
-import { HomeComponent } from './home/home.component';
 import { TermsAndConditionsComponent } from './legal/terms-and-conditions/terms-and-conditions.component';
 import { PrivacyPolicyComponent } from './legal/privacy-policy/privacy-policy.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    HomeComponent,
     TermsAndConditionsComponent,
     PrivacyPolicyComponent,
   ],
