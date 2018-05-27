@@ -1,23 +1,23 @@
 import { Component, OnInit, ViewChild, HostListener } from '@angular/core'
-import { User } from '#models/user.interface'
-import { DesignState } from '#models/design-state.interface'
+import { User } from '#models/user.model'
+import { DesignState } from '#models/design-state.model'
 import { AuthService } from '#core/auth.service'
 
 import { first } from 'rxjs/operators'
 import { CheckoutService } from '#app/checkout/checkout.service'
 import { FirestoreService } from '#core/firestore.service'
-import { FabricCanvasComponent } from '#app/shared/designer-view/fabric-canvas.component'
-import { Design } from '#app/models/design.interface'
+import { FabricCanvasComponent } from '#app/designer/fabric-canvas.component'
+import { Design } from '#app/models/design.model'
 import { WebfontService } from '#core/webfont.service'
-import { DEFAULT_BRAND_COLORS } from '#app/shared/colors/brand-colors.interface'
+import { DEFAULT_BRAND_COLORS } from '#models/brand-colors.model'
 import { promiseImage } from '#app/helpers/promise-image'
 
 @Component({
-  selector: 'app-designerdev',
-  templateUrl: './designerdev.component.html',
-  styleUrls: ['./designerdev.component.scss']
+  selector: 'app-designer-dev',
+  templateUrl: './designer-dev.component.html',
+  styleUrls: ['./designer-dev.component.scss']
 })
-export class DesignerdevComponent implements OnInit {
+export class DesignerDevComponent implements OnInit {
   @ViewChild(FabricCanvasComponent) fabricCanvas: FabricCanvasComponent
 
   designState: DesignState
@@ -29,6 +29,7 @@ export class DesignerdevComponent implements OnInit {
   selectedListing: any
   listingId: string
   viewSide: 'front' | 'back' = 'front'
+  selectedProduct: 'postcard' | 'flyer' | 'doorhanger'
 
   constructor(
     private auth: AuthService,

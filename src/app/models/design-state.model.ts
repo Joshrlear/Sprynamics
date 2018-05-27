@@ -1,5 +1,5 @@
-import { User } from "#models/user.interface";
-import { BrandColors } from "#app/shared/colors/brand-colors.interface";
+import { User } from "#models/user.model";
+import { BrandColors } from "#models/brand-colors.model";
 
 export interface DesignState {
 

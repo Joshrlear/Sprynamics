@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { BrandColorRole, BrandColors, BrandColorChangeEvent } from '#app/shared/colors/brand-colors.interface';
+import { BrandColorRole, BrandColors, BrandColorChangeEvent } from '#models/brand-colors.model';
 
 @Component({
   selector: 'app-colors',

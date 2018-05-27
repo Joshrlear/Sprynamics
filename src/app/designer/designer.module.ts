@@ -6,7 +6,6 @@ import { SharedModule } from '#app/shared/shared.module';
 import { DesignerAdminComponent } from './admin/designer-admin.component';
 import { DesignerClientComponent } from './client/designer-client.component';
 import { CropDialogComponent } from './crop-dialog/crop-dialog.component';
-import { SidebarComponent } from './sidebar/sidebar.component';
 import { AgentInfoComponent } from './sidebar/agent-info/agent-info.component';
 import { DesignsComponent } from './sidebar/designs/designs.component';
 import { PropertyComponent } from './sidebar/property/property.component';
@@ -17,12 +16,16 @@ import { ObjectFactoryService } from './object-factory.service';
 import { NewUserPopupComponent } from './new-user-popup/new-user-popup.component';
 import { ImageSelectDialogComponent } from './image-select-dialog/image-select-dialog.component';
 import { AdminDesignerProgressDialogComponent } from './admin/admin-designer-progress-dialog/admin-designer-progress-dialog.component';
-import { DesignerdevComponent } from '#app/designerdev/designerdev.component';
+import { DesignerDevComponent } from './dev/designer-dev.component';
+import { ProductsComponent } from './sidebar/products/products.component';
+import { DesignerViewComponent } from '#app/designer/designer-view/designer-view.component';
+import { FabricCanvasComponent } from '#app/designer/fabric-canvas.component';
+import { SidebarTabComponent } from '#app/designer/designer-view/sidebar-tab.component';
 
 const routes: Routes = [
   { path: '', component: DesignerClientComponent },
   { path: 'admin', component: DesignerAdminComponent },
-  { path: 'dev', component: DesignerdevComponent }
+  { path: 'dev', component: DesignerDevComponent }
 ]
 
 @NgModule({
@@ -34,7 +37,6 @@ const routes: Routes = [
     DesignerAdminComponent,
     DesignerClientComponent,
     CropDialogComponent,
-    SidebarComponent,
     AgentInfoComponent,
     DesignsComponent,
     PropertyComponent,
@@ -42,7 +44,11 @@ const routes: Routes = [
     NewUserPopupComponent,
     ImageSelectDialogComponent,
     AdminDesignerProgressDialogComponent,
-    DesignerdevComponent,
+    DesignerDevComponent,
+    ProductsComponent,
+    DesignerViewComponent,
+    FabricCanvasComponent,
+    SidebarTabComponent,
   ],
   entryComponents: [
     CropDialogComponent,

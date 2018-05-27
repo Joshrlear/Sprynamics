@@ -5,8 +5,8 @@ import 'webfontloader'
 declare let WebFont
 
 import { Component, OnInit, AfterViewInit, ElementRef, ViewChild, Input } from '@angular/core'
-import { Design } from '#app/models/design.interface'
-import { DesignState } from '#app/models/design-state.interface'
+import { Design } from '#models/design.model'
+import { DesignState } from '#models/design-state.model'
 import { WebfontService } from '#core/webfont.service'
 
 @Component({

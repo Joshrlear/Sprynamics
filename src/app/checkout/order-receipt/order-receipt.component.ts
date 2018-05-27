@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Order } from '#models/order.interface';
+import { Order } from '#models/order.model';
 import { Observable } from 'rxjs';
 
 @Component({

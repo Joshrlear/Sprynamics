@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FirestoreService } from '#core/firestore.service';
 import { Observable } from 'rxjs';
-import { Order } from '#models/order.interface';
+import { Order } from '#models/order.model';
 import { AuthService } from '#core/auth.service';
 
 import * as moment from 'moment';

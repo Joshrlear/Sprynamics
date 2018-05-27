@@ -12,7 +12,7 @@ import { MatDialog } from '@angular/material';
 import { fabricObjectFields } from '#app/designer/fabric-object-fields';
 import { AdminDesignerProgressDialogComponent } from '#app/designer/admin/admin-designer-progress-dialog/admin-designer-progress-dialog.component';
 import { ContextMenuComponent } from 'ngx-contextmenu';
-import { BrandColorChangeEvent, BrandColorRole, DEFAULT_BRAND_COLORS } from '#app/shared/colors/brand-colors.interface';
+import { BrandColorChangeEvent, BrandColorRole, DEFAULT_BRAND_COLORS } from '#models/brand-colors.model';
 
 import 'webfontloader';
 declare let WebFont;

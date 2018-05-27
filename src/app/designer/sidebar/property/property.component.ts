@@ -8,7 +8,7 @@ import { productSpecs } from '#app/designer/products'
 import { FormBuilder } from '@angular/forms'
 import { GoogleMapsService } from '#core/gmaps.service'
 import { first } from 'rxjs/operators'
-import { User } from '#app/models/user.interface'
+import { User } from '#models/user.model'
 
 declare const google
 declare const lh

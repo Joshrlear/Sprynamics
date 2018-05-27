@@ -7,9 +7,9 @@ import { AngularFirestore, AngularFirestoreDocument } from 'angularfire2/firesto
 
 import { Observable } from 'rxjs';
 
-import { User } from '#models/user.interface';
+import { User } from '#models/user.model';
 import { FirestoreService } from '#core/firestore.service';
-import { DEFAULT_BRAND_COLORS } from '#app/shared/colors/brand-colors.interface';
+import { DEFAULT_BRAND_COLORS } from '#models/brand-colors.model';
 
 @Injectable()
 export class AuthService {

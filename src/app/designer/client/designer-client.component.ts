@@ -27,7 +27,7 @@ import { CropDialogComponent } from '#app/designer/crop-dialog/crop-dialog.compo
 import { ImageSelectDialogComponent } from '#app/designer/image-select-dialog/image-select-dialog.component';
 import { fabricObjectFields } from '#app/designer/fabric-object-fields';
 import { GoogleMapsService } from '#core/gmaps.service';
-import { BrandColorChangeEvent } from '#app/shared/colors/brand-colors.interface';
+import { BrandColorChangeEvent } from '#models/brand-colors.model';
 
 @Component({
   selector: 'app-designer-client',

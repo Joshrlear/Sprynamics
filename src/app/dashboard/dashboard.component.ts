@@ -5,7 +5,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { StorageService } from '../core/storage.service';
 import { FirestoreService } from '../core/firestore.service';
 import { Observable } from 'rxjs';
-import { BrandColors } from '#app/shared/colors/brand-colors.interface';
+import { BrandColors } from '#models/brand-colors.model';
 
 @Component({
   selector: 'app-dashboard',

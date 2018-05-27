@@ -2,10 +2,10 @@ import { Component, OnInit, Input } from '@angular/core';
 import { FirestoreService } from '../../core/firestore.service';
 import { Observable ,  Subscription } from 'rxjs';
 import { AuthService } from '../../core/auth.service';
-import { User } from '#models/user.interface';
+import { User } from '#models/user.model';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { StorageService } from '#core/storage.service';
-import { BrandColorChangeEvent, DEFAULT_BRAND_COLORS } from '#app/shared/colors/brand-colors.interface';
+import { BrandColorChangeEvent, DEFAULT_BRAND_COLORS } from '#models/brand-colors.model';
 
 @Component({
   selector: 'app-profile',

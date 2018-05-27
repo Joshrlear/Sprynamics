@@ -1,4 +1,4 @@
-import { BrandColors } from "#app/shared/colors/brand-colors.interface";
+import { BrandColors } from "#models/brand-colors.model";
 
 export interface User {
   uid: string;
