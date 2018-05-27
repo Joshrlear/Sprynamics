@@ -13,7 +13,6 @@ import { PapaParseModule } from 'ngx-papaparse'
 // local modules
 import { MaterialModule } from './material.module'
 // components
-import { SidenavComponent } from './sidenav/sidenav.component'
 import { MailingListDialog } from './mailing-list-dialog/mailing-list.dialog'
 import { ViewListDialog } from '#app/shared/view-list-dialog/view-list.dialog'
 import { ContextMenuModule } from 'ngx-contextmenu'
@@ -33,7 +32,6 @@ const modules = [
 ]
 
 const components = [
-  SidenavComponent, 
   ColorsComponent,
 ]
 

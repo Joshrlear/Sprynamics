@@ -14,12 +14,14 @@ import { DesignerModule } from './designer/designer.module';
 import { AppComponent } from './app.component';
 import { TermsAndConditionsComponent } from './legal/terms-and-conditions/terms-and-conditions.component';
 import { PrivacyPolicyComponent } from './legal/privacy-policy/privacy-policy.component';
+import { SidenavComponent } from '#app/sidenav/sidenav.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     TermsAndConditionsComponent,
     PrivacyPolicyComponent,
+    SidenavComponent
   ],
   imports: [
     BrowserModule,
