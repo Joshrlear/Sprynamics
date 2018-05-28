@@ -12,6 +12,8 @@ import { WebfontService } from '#core/webfont.service'
 import { DEFAULT_BRAND_COLORS } from '#models/brand-colors.model'
 import { promiseImage } from '#app/helpers/promise-image'
 import { Product } from '#app/models/product.model';
+import { DesignerViewComponent } from '#app/designer/view/designer-view.component';
+import { SidebarTabComponent } from '#app/designer/view/sidebar-tab.component';
 
 @Component({
   selector: 'app-designer-dev',
@@ -19,7 +21,9 @@ import { Product } from '#app/models/product.model';
   styleUrls: ['./designer-dev.component.scss']
 })
 export class DesignerDevComponent implements OnInit {
+  @ViewChild(DesignerViewComponent) designerView: DesignerViewComponent
   @ViewChild(FabricCanvasComponent) fabricCanvas: FabricCanvasComponent
+  @ViewChild('designsTab') designsTab: SidebarTabComponent 
 
   designState: DesignState
   agents: User[]
@@ -190,7 +194,11 @@ export class DesignerDevComponent implements OnInit {
 
   changeProduct(product: Product) {
     if (!this.selectedProduct || !this.designState.canvasData || confirm('Are you sure you wish to change products? You will lose your current design.')) {
+      const isFirstTime = !this.selectedProduct
       this.selectedProduct = product
+      if (isFirstTime) {
+        this.designerView.clickTab(this.designsTab, true)
+      }
     }
 
   }

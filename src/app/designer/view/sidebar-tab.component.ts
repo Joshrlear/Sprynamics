@@ -13,6 +13,7 @@ export class SidebarTabComponent implements OnInit {
 
   @Input() title: string
   @Input() icon: string
+  @Input() disabled: boolean
   selected: boolean
 
   constructor(private sidebarComponent: DesignerViewComponent) { }

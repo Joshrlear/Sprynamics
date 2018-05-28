@@ -17,17 +17,20 @@
       <div class="designer-sidebar-min">
       </div>
       <div class="designer-sidebar-slim">
+
         <!-- BEGIN sidebar tabs -->
         <div class="sidebar-tabs-container">
           <div class="sidebar-tab"
                *ngFor="let tab of tabs"
                [class.selected]="tab.selected"
+               [class.disabled]="tab.disabled"
                (click)="clickTab(tab)">
             <mat-icon>{{ tab.icon }}</mat-icon>
             <div class="sidebar-tab-title">{{ tab.title }}</div>
           </div>
         </div>
         <!-- END sidebar tabs -->
+
       </div>
       <div class="designer-sidebar-full">
         <ng-content select="[sidebar]"></ng-content>

@@ -101,6 +101,12 @@
         }
       }
 
+      &.disabled {
+        // background-color: #2d2d2d;
+        color: #444;
+        cursor: not-allowed;
+      }
+
       .sidebar-tab-content {
         display: none;
       }

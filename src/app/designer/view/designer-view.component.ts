@@ -35,7 +35,10 @@ export class DesignerViewComponent implements OnInit {
     this.tabs.push(tab)
   }
 
-  clickTab(tab: SidebarTabComponent) {
+  clickTab(tab: SidebarTabComponent, force?: boolean) {
+    if (tab.disabled && !force) {
+      return
+    }
     if (tab.selected) {
       this.sidebarSize = 'slim'
       tab.selected = false
