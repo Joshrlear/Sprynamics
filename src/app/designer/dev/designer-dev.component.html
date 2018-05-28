@@ -3,7 +3,7 @@
     <!-- BEGIN sidebar tabs -->
     <app-sidebar-tab title="Products"
                      icon="aspect_ratio">
-      Products
+      <app-products (changeProduct)="changeProduct($event)" [selectedProduct]="selectedProduct"></app-products>
     </app-sidebar-tab>
     <app-sidebar-tab title="Designs"
                      icon="view_carousel">
@@ -48,12 +48,12 @@
               class="btn"
               [class.active]="viewSide === 'front'"
               (click)="setViewSide('front')"
-              [disabled]="processing">View Front</button>
+              [disabled]="!selectedProduct || !designState.canvasData || processing">View Front</button>
       <button id="back"
               class="btn"
               [class.active]="viewSide === 'back'"
               (click)="setViewSide('back')"
-              [disabled]="processing">View Back</button>
+              [disabled]="!selectedProduct || !designState.canvasData || processing">View Back</button>
     </div>
     <!-- canvas -->
     <app-fabric-canvas #canvas
@@ -61,7 +61,7 @@
     <div class="designer-view-save">
       <button id="save"
               class="btn btn-green"
-              [disabled]="processing">Save and Continue</button>
+              [disabled]="!selectedProduct || !designState.canvasData || processing">Save and Continue</button>
     </div>
   </ng-container>
 

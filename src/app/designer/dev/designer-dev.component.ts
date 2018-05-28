@@ -11,6 +11,7 @@ import { Design } from '#app/models/design.model'
 import { WebfontService } from '#core/webfont.service'
 import { DEFAULT_BRAND_COLORS } from '#models/brand-colors.model'
 import { promiseImage } from '#app/helpers/promise-image'
+import { Product } from '#app/models/product.model';
 
 @Component({
   selector: 'app-designer-dev',
@@ -29,7 +30,7 @@ export class DesignerDevComponent implements OnInit {
   selectedListing: any
   listingId: string
   viewSide: 'front' | 'back' = 'front'
-  selectedProduct: 'postcard' | 'flyer' | 'doorhanger'
+  selectedProduct: Product
 
   constructor(
     private auth: AuthService,
@@ -183,6 +184,13 @@ export class DesignerDevComponent implements OnInit {
   @HostListener('window:resize', ['$event'])
   onResize(event?) {
     this.fabricCanvas.zoomToFit(this.designState.boundBoxObj)
+  }
+
+  changeProduct(product: Product) {
+    if (!this.selectedProduct || !this.designState.canvasData || confirm('Are you sure you wish to change products? You will lose your current design.')) {
+      this.selectedProduct = product
+    }
+
   }
 
   changeAgent(agent: User) {

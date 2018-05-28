@@ -1,0 +1,1 @@
+export type Product = 'postcard' | 'flyer' | 'doorhanger'

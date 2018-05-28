@@ -1,3 +1,21 @@
-<p>
-  products works!
-</p>
+<div class="products-container">
+
+  <div class="product postcard" [class.selected]="selectedProduct === 'postcard'" (click)="changeProduct('postcard')">
+    <span class="product-title">
+      Postcard
+    </span>
+  </div>
+
+  <div class="product flyer" [class.selected]="selectedProduct === 'flyer'" (click)="changeProduct('flyer')">
+    <span class="product-title">
+      Flyer
+    </span>
+  </div>
+
+  <div class="product doorhanger" [class.selected]="selectedProduct === 'doorhanger'" (click)="changeProduct('doorhanger')">
+    <span class="product-title">
+      Door Hanger
+    </span>
+  </div>
+
+</div>

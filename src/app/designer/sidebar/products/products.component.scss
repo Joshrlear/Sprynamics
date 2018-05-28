@@ -1,0 +1,47 @@
+.products-container {
+  padding: 24px;
+}
+
+.product {
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 16px;
+  margin-bottom: 16px;
+  cursor: pointer;
+  transition: 200ms ease;
+  position: relative;
+  border: 2px dashed white;
+
+  &.postcard {
+    width: 193px;
+    height: 129px;
+  }
+  &.flyer {
+    width: 153px;
+    height: 198px;
+  }
+  &.doorhanger {
+    width: 76px;
+    height: 204px;
+  }
+
+  &:not(.selected):hover {
+    border-color: #75d84f;
+    color: #75d84f;
+  }
+
+  &.selected {
+    border: 0;
+    background-color: #75d84f;
+    box-shadow: 0px 1px 4px rgba(0,0,0,0.6);
+  }
+}
+
+.product-title {
+  display: inline-block;
+  position: absolute;
+  padding: 0 8px;
+  text-align: center;
+}
