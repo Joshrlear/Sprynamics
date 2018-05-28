@@ -17,6 +17,7 @@ import { MailingListDialog } from './mailing-list-dialog/mailing-list.dialog'
 import { ViewListDialog } from '#app/shared/view-list-dialog/view-list.dialog'
 import { ContextMenuModule } from 'ngx-contextmenu'
 import { ColorsComponent } from '#app/shared/colors/colors.component'
+import { CropDialog } from '#app/shared/crop-dialog/crop.dialog';
 
 const modules = [
   CommonModule,
@@ -37,7 +38,8 @@ const components = [
 
 const dialogs = [
   MailingListDialog,
-  ViewListDialog
+  ViewListDialog,
+  CropDialog
 ]
 
 @NgModule({

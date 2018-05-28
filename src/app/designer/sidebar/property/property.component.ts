@@ -1,10 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core'
 import { MatDialog } from '@angular/material'
 
-import { CropDialog } from '../../crop-dialog/crop.dialog'
 import { AuthService } from '#core/auth.service'
 import { MlsService } from '#core/mls.service'
-import { productSpecs } from '#app/designer/products'
 import { FormBuilder } from '@angular/forms'
 import { GoogleMapsService } from '#core/gmaps.service'
 import { first } from 'rxjs/operators'

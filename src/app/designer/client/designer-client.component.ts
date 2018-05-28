@@ -2,10 +2,10 @@ import { Component, AfterViewInit, ViewChild, ElementRef, OnInit, HostListener }
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material';
 
-import { FirestoreService } from '../../core/firestore.service';
-import { StorageService } from '../../core/storage.service';
-import { AuthService } from '../../core/auth.service';
-import { productSizes, productSpecs, thumbnailSizes } from '../products';
+import { FirestoreService } from '#core/firestore.service';
+import { StorageService } from '#core/storage.service';
+import { AuthService } from '#core/auth.service';
+import { productSizes, productSpecs, thumbnailSizes } from '#models/product.model';
 import { ObjectFactoryService } from '../object-factory.service';
 import { CheckoutService } from '#app/checkout/checkout.service';
 
@@ -22,7 +22,7 @@ import * as jspdf from 'jspdf';
 declare let jsPDF;
 
 import * as JSZip from 'jszip';
-import { CropDialog } from '#app/designer/crop-dialog/crop.dialog';
+import { CropDialog } from '#shared/crop-dialog/crop.dialog';
 import { ImageSelectDialog } from '#app/designer/image-select-dialog/image-select.dialog';
 import { fabricObjectFields } from '#app/designer/fabric-object-fields';
 import { GoogleMapsService } from '#core/gmaps.service';

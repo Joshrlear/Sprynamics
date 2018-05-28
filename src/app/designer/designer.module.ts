@@ -5,7 +5,6 @@ import { SharedModule } from '#app/shared/shared.module';
 
 import { DesignerAdminComponent } from './admin/designer-admin.component';
 import { DesignerClientComponent } from './client/designer-client.component';
-import { CropDialog } from './crop-dialog/crop.dialog';
 import { AgentsComponent } from './sidebar/agents/agents.component';
 import { DesignsComponent } from './sidebar/designs/designs.component';
 import { PropertyComponent } from './sidebar/property/property.component';
@@ -35,7 +34,6 @@ const routes: Routes = [
   declarations: [
     DesignerAdminComponent,
     DesignerClientComponent,
-    CropDialog,
     AgentsComponent,
     DesignsComponent,
     PropertyComponent,
@@ -49,7 +47,6 @@ const routes: Routes = [
     SidebarTabComponent,
   ],
   entryComponents: [
-    CropDialog,
     ImageSelectDialog,
     AdminDesignerProgressDialog
   ],
