@@ -5,7 +5,6 @@ import { SharedModule } from '#app/shared/shared.module';
 
 import { DashboardComponent } from './dashboard.component';
 import { AgentsComponent } from './agents/agents.component';
-import { DesignComponent } from './design/design.component';
 import { ListsComponent } from './lists/lists.component';
 import { OrdersComponent } from './orders/orders.component';
 import { ProfileComponent } from './profile/profile.component';
@@ -31,7 +30,6 @@ const routes: Routes = [
   declarations: [
     DashboardComponent,
     AgentsComponent,
-    DesignComponent,
     ListsComponent,
     OrdersComponent,
     ProfileComponent,

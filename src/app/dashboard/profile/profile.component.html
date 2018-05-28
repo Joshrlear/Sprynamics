@@ -2,7 +2,7 @@
   <div class="col-xs-12 col col-md-8">
     <div class="dashboard-card">
       <p class="dashboard-card-heading">Edit Profile</p>
-      <form class="ss-form" *ngIf="userForm" [formGroup]="userForm" (ngSubmit)="saveForm()">
+      <form class="ss-form was-validated" *ngIf="userForm" [formGroup]="userForm" (ngSubmit)="saveForm()" novalidate>
         <div class="form-row">
           <div class="form-group col-md-6">
             <label for="firstName">First Name</label>
@@ -14,10 +14,12 @@
           </div>
         </div>
         <div class="form-row">
-          <div class="form-group col-md-6">
+          <div class="form-group col-md-6" [class.is-invalid]="userForm.get('email').invalid">
             <label for="email">Email address</label>
             <input type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email" formControlName="email" value="{{user?.email}}" autocomplete="email">
-            <!-- <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> -->
+            <div class="invalid-feedback">
+              Please enter a valid email address.
+            </div>
           </div>
           <div class="form-group col-md-6">
             <label for="phoneNumber">Phone Number</label>
