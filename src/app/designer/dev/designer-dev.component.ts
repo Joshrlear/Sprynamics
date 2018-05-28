@@ -29,12 +29,14 @@ export class DesignerDevComponent implements OnInit {
   agents: User[]
   user: User
   selectedAgent: User
+
   loading = true
   processing = false
-  selectedListing: any
-  listingId: string
   viewSide: 'front' | 'back' = 'front'
+
+  selectedListing: any
   selectedProduct: Product
+  listingId: string
 
   constructor(
     private auth: AuthService,
@@ -198,9 +200,10 @@ export class DesignerDevComponent implements OnInit {
       this.selectedProduct = product
       if (isFirstTime) {
         this.designerView.clickTab(this.designsTab, true)
+      } else {
+        this.designState.canvasData = null
       }
     }
-
   }
 
   changeAgent(agent: User) {
