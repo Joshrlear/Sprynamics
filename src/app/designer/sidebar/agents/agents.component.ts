@@ -5,11 +5,11 @@ import { FirestoreService } from '#core/firestore.service';
 import { User } from '#models/user.model';
 
 @Component({
-  selector: 'app-agent-info',
-  templateUrl: './agent-info.component.html',
-  styleUrls: ['./agent-info.component.scss']
+  selector: 'app-agents',
+  templateUrl: './agents.component.html',
+  styleUrls: ['./agents.component.scss']
 })
-export class AgentInfoComponent implements OnInit {
+export class AgentsComponent implements OnInit {
 
   @Output('changeAgent') changeAgentEvent = new EventEmitter();
 

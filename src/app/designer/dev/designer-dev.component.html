@@ -13,12 +13,12 @@
     </app-sidebar-tab>
     <app-sidebar-tab title="Agents"
                      icon="contact_mail">
-      <app-agent-info [user]="selectedAgent"
+      <app-agents [user]="selectedAgent"
                       [agents]="agents"
                       [loading]="loading"
                       (changeAgent)="changeAgent($event)"
                       [(selectedAgent)]="selectedAgent">
-      </app-agent-info>
+      </app-agents>
     </app-sidebar-tab>
     <app-sidebar-tab title="Property"
                      icon="home">

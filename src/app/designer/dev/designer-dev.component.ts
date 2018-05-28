@@ -157,6 +157,8 @@ export class DesignerDevComponent implements OnInit {
           obj.scaleY = height / img.height
         }
       }
+      /* inject agent data into text */
+      this.updateAgentFields()
       // this.fabricCanvas.zoomToFit(this.designState.boundBoxObj)
       this.fabricCanvas.canvas.renderAll()
     } catch (err) {
@@ -196,6 +198,7 @@ export class DesignerDevComponent implements OnInit {
   changeAgent(agent: User) {
     this.selectedAgent = agent
     this.checkout.setUser(agent)
+    this.updateAgentFields()
   }
 
   changeProperty(property: any) {
@@ -205,5 +208,17 @@ export class DesignerDevComponent implements OnInit {
       this.designState.addressObj.text = property.formatted_address
       this.fabricCanvas.render()
     }
+  }
+
+  updateAgentFields() {
+    this.designState.agentFields.forEach(field => {
+      if (field.obj.textUserData === 'name') {
+        const firstName = this.selectedAgent.firstName || ''
+        const lastName = this.selectedAgent.lastName || ''
+        field.obj.text = firstName + (lastName ? ' ' + lastName : '')
+      } else {
+        field.obj.text = this.selectedAgent[field.obj.textUserData] || ''
+      }
+    })
   }
 }

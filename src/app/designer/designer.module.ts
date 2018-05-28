@@ -6,7 +6,7 @@ import { SharedModule } from '#app/shared/shared.module';
 import { DesignerAdminComponent } from './admin/designer-admin.component';
 import { DesignerClientComponent } from './client/designer-client.component';
 import { CropDialog } from './crop-dialog/crop.dialog';
-import { AgentInfoComponent } from './sidebar/agent-info/agent-info.component';
+import { AgentsComponent } from './sidebar/agents/agents.component';
 import { DesignsComponent } from './sidebar/designs/designs.component';
 import { PropertyComponent } from './sidebar/property/property.component';
 import { TextComponent } from './sidebar/text/text.component';
@@ -36,7 +36,7 @@ const routes: Routes = [
     DesignerAdminComponent,
     DesignerClientComponent,
     CropDialog,
-    AgentInfoComponent,
+    AgentsComponent,
     DesignsComponent,
     PropertyComponent,
     TextComponent,
