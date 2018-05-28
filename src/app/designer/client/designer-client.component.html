@@ -101,14 +101,14 @@
           (change)="saveUndo()">
         </app-colors>
         
-        <app-agent-info 
+        <app-agents 
           [hidden]="currentTab !== 'agent'" 
           [user]="userData" 
           [agents]="agents" 
           [loading]="loadingAgents"
           (changeAgent)="changeAgent($event)" 
           [(selectedAgent)]="selectedAgent">
-        </app-agent-info>
+        </app-agents>
 
       </ng-container>
 
