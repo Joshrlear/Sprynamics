@@ -125,13 +125,6 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
       });
       this.firestore.colWithIds$('templates').pipe(take(1)).subscribe(templates => {
         this.loadDesign(templates[0]);
-        // this.auth.authState.take(1).subscribe(userState => {
-        //   if (userState.isAnonymous) {
-        //     this.dialog.open(NewUserPopupComponent, {
-        //       disableClose: true
-        //     });
-        //   }
-        // })
       });
     });
   }

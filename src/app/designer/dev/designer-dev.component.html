@@ -68,7 +68,8 @@
     <div class="designer-view-save">
       <button id="save"
               class="btn btn-green"
-              [disabled]="!selectedProduct || !designState.canvasData || processing">Save and Continue</button>
+              [disabled]="!selectedProduct || !designState.canvasData || processing"
+              (click)="saveAndContinue()">Save and Continue</button>
     </div>
   </ng-container>
 

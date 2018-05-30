@@ -29,6 +29,7 @@ function fetchListhubFeed() {
       })
       .on('error', err => {
         console.error(err)
+        reject(err)
       })
   })
 }
@@ -209,16 +210,5 @@ schedule.scheduleJob('0 16 * * *', async () => {
 })
 
 app.use('/status', express.static('status'), serveIndex('status'))
-
-// app.get('/status', (req, res) => {
-//   console.log('request for file ' + getCurrentCSVFilename())
-//   res.download(path.join(__dirname, 'status', getCurrentCSVFilename()))
-// })
-
-// app.get('/status/:filename', (req, res) => {
-//   const filename = req.params.filename
-//   console.log('request for file ' + filename)
-//   res.download(path.join(__dirname, 'status', filename))
-// })
 
 app.listen(8080, () => console.log('Server listening on port 8080'))

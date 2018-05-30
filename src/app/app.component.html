@@ -49,7 +49,7 @@
 
     <mat-sidenav [ngClass]="{'collapsed': !isSideBySide}" #sidenav class="sidenav" [opened]="isOpened" [mode]="mode" (open)="updateHostClasses()"
       (close)="updateHostClasses()">
-      <spry-sidenav></spry-sidenav>
+      <spry-sidenav (close)="sideNavToggle(false)"></spry-sidenav>
     </mat-sidenav>
 
     <!-- <section class="sidenav-content" [id]="pageId" role="content"> -->

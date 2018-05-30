@@ -8,6 +8,8 @@ import { Component, OnInit, AfterViewInit, ElementRef, ViewChild, Input } from '
 import { Design } from '#models/design.model'
 import { DesignState } from '#models/design-state.model'
 import { WebfontService } from '#core/webfont.service'
+import { fabricObjectFields } from '#app/designer/fabric-object-fields'
+import { productSpecs } from '#app/models/product.model';
 
 @Component({
   selector: 'app-fabric-canvas',
@@ -87,6 +89,17 @@ export class FabricCanvasComponent implements AfterViewInit {
     this.canvas.zoomToPoint(new fabric.Point(this.canvas.width / 2, this.canvas.height / 2), Math.min(scale, 1))
   }
 
+  toJSON() {
+    return new Promise((resolve, reject) => {
+      try {
+        const json = this.canvas.toJSON(fabricObjectFields)
+        resolve(json)
+      } catch (err) {
+        reject(err)
+      }
+    })
+  }
+
   loadFromJSON(jsonData: any) {
     return new Promise((resolve, reject) => {
       this.canvas.loadFromJSON(jsonData, err => {
@@ -113,5 +126,41 @@ export class FabricCanvasComponent implements AfterViewInit {
 
   forEachObject(fn: (obj: any) => void) {
     this.canvas.forEachObject(fn)
+  }
+
+  getDataURL(data, canvas, width, height, options?): Promise<string> {
+    return new Promise((resolve, reject) => {
+      canvas.clear()
+      // canvas.zoomToPoint(new fabric.Point(canvas.width / 2, canvas.height / 2), 1);
+      canvas.loadFromJSON(data, _ => {
+        const boundBox = canvas.getObjects('rect').filter(obj => obj.isBoundBox)[0]
+        canvas.clipTo = null
+        // canvas.imageSmoothingEnabled = false;
+        const offsetX = boundBox.left - productSpecs.bleedInches * productSpecs.dpi
+        const offsetY = boundBox.top - productSpecs.bleedInches * productSpecs.dpi
+        // console.log(offsetX, offsetY);
+        canvas.forEachObject(obj => {
+          obj.left -= offsetX
+          obj.top -= offsetY
+        })
+        canvas.getObjects('rect').forEach(obj => {
+          if (obj.strokeDashArray && obj.strokeDashArray[0] === 5 && obj.strokeDashArray[1] === 5) {
+            canvas.remove(obj)
+          }
+        }) // remove the dashed lines
+        const bg = new fabric.Rect({
+          left: 0,
+          top: 0,
+          width: (width + productSpecs.bleedInches * 2) * productSpecs.dpi,
+          height: (height + productSpecs.bleedInches * 2) * productSpecs.dpi,
+          fill: '#ffffff'
+        })
+        canvas.add(bg)
+        canvas.sendToBack(bg)
+        canvas.renderAll()
+
+        resolve(canvas.toDataURL(options))
+      })
+    })
   }
 }
