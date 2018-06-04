@@ -381,18 +381,18 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
       },
       active: () => {
         console.log(template);
-        this.storage.getFile(template.url).take(1).subscribe((data: { front: any, back: any }) => {
-          this.template.front = data.front;
-          this.template.back = data.back;
-          this.canvas.loadFromJSON(template[this.viewSide], _ => {
-            this.processCanvas();
-            this.disableHistory = false;
-            if (this.listingId) {
-              this.currentTab = 'property';
-              this.currentTabIndex = 2;
-            }
-          });
-        });
+        // this.storage.getFile(template.url).take(1).subscribe((data: { front: any, back: any }) => {
+        //   this.template.front = data.front;
+        //   this.template.back = data.back;
+        //   this.canvas.loadFromJSON(template[this.viewSide], _ => {
+        //     this.processCanvas();
+        //     this.disableHistory = false;
+        //     if (this.listingId) {
+        //       this.currentTab = 'property';
+        //       this.currentTabIndex = 2;
+        //     }
+        //   });
+        // });
       },
       fontinactive: (e) => {
         console.log(e);

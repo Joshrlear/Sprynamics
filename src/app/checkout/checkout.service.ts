@@ -63,12 +63,8 @@ export class CheckoutService {
       // download pricing file
       this.storage.getDownloadURL('pricing.json')
         .take(1)
-        .subscribe((downloadUrl: string) => {
-          this.storage.getFile(downloadUrl)
-            .take(1)
-            .subscribe((pricing) => {
-              this.pricing = pricing;
-            });
+        .subscribe(async (downloadUrl: string) => {
+          this.pricing = await this.storage.getFile(downloadUrl)
         });
 
       console.log('checkout init');

@@ -179,28 +179,8 @@ async function runSyndication() {
 
 runSyndication()
 
-/* Every 30 minutes */
-schedule.scheduleJob('30 * * * *', async () => {
-  console.log('Running syndication at ' + new Date())
-  try {
-    await runSyndication()
-  } catch (err) {
-    console.error('An error occured during syndication', err)
-  }
-})
-
-/* 4:00 am */
-schedule.scheduleJob('0 4 * * *', async () => {
-  console.log('Running syndication at ' + new Date())
-  try {
-    await runSyndication()
-  } catch (err) {
-    console.error('An error occured during syndication', err)
-  }
-})
-
-/* 4:00 pm */
-schedule.scheduleJob('0 16 * * *', async () => {
+/* Run every 6 hours */
+schedule.scheduleJob('0 */6 * * *', async () => {
   console.log('Running syndication at ' + new Date())
   try {
     await runSyndication()

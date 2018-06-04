@@ -592,24 +592,23 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
     this.clickSave(true);
   }
 
-  loadTemplate(template: any) {
+  async loadTemplate(template: any) {
     console.log(template);
     const dialogRef = this.dialog.open(AdminDesignerProgressDialog);
     this.disableHistory = true;
     this.template = template;
     this.viewSide = 'front';
-    this.storage.getFile(template.url).take(1).subscribe((data: any) => {
-      if (data.front) {
-        this.canvas.loadFromJSON(data['front'], _ => {
-          this.background = this.canvas.getObjects('rect').filter(obj => obj.isBackground)[0];
-          this.disableHistory = false;
-          dialogRef.close();
-        });
-        this.template['back'] = data['back'];
-      } else {
+    const data = await this.storage.getFile(template.url)
+    if (data.front) {
+      this.canvas.loadFromJSON(data['front'], _ => {
+        this.background = this.canvas.getObjects('rect').filter(obj => obj.isBackground)[0];
+        this.disableHistory = false;
         dialogRef.close();
-      }
-    });
+      });
+      this.template['back'] = data['back'];
+    } else {
+      dialogRef.close();
+    }
   }
 
   colorPickerChange(event) {

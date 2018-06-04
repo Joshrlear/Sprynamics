@@ -28,7 +28,7 @@ function linkedInClient() {
 }
 
 /**
- * Redirects the User to the LinkedIn authentication consent screen. ALso the 'state' cookie is set for later state
+ * Redirects the User to the LinkedIn authentication consent screen. Also the 'state' cookie is set for later state
  * verification.
  */
 exports.redirect = functions.https.onRequest((req, res) => {
@@ -87,7 +87,7 @@ exports.token = functions.https.onRequest((req, res) => {
           return createFirebaseAccount(linkedInUserID, userName, profilePic, email, accessToken).then(
             (firebaseToken) => {
               // Serve an HTML page that signs the user in and updates the user profile.
-              return res.type('javascript').jsonp({
+              return res.type('application/javascript').jsonp({
                 token: firebaseToken,
               });
             });

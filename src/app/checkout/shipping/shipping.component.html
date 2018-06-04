@@ -74,7 +74,7 @@
           </div>
         </div> -->
       </div>
-      <div [hidden]="mailingList === false" id="mailingList">
+      <div [hidden]="!isMailingList" id="mailingList">
         <h5>Mailing List</h5>
         <p style="color: rgba(0,0,0,.54);font-weight: 600;font-size: 10px; text-transform: uppercase;">Select a list to send your items to</p>
         <div class="form-row">
