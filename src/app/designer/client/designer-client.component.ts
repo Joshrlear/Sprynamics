@@ -619,13 +619,13 @@ export class DesignerClientComponent implements OnInit, AfterViewInit {
             this.loadingMessage = 'Uploading finished design...';
             zipDataUrl = 'data:application/zip;base64,' + zipDataUrl;
             const task = this.storage.putBase64(zipDataUrl, 'design.zip', 'application/zip');
-            task.percentageChanges().subscribe(snap => {
-              this.loadingProgress = snap;
-            });
-            task.then().then(pdfSnapshot => {
+            // task.percentageChanges().subscribe(snap => {
+            //   this.loadingProgress = snap;
+            // });
+            task.then(downloadURL => {
               console.log(this.propertyAddress);
               this.checkout.updateOrder({
-                pdfUrl: pdfSnapshot.downloadURL,
+                pdfUrl: downloadURL,
                 propertyAddress: this.propertyAddress ? this.propertyAddress.formatted_address : ''
               })
               pdfCanvas.dispose();

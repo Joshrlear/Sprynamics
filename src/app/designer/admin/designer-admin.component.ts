@@ -529,11 +529,11 @@ export class DesignerAdminComponent implements OnInit, AfterViewInit {
             // create thumbnail
             const thumbData = this.createThumbnail();
             this.storage.putBase64(thumbData, `thumbnails/${id}.jpg`)
-              .then().then(thumbnail => {
-                console.log('Uploaded thumbnail to storage at URL: ' + thumbnail.downloadURL);
-                this.template.thumbnail = thumbnail.downloadURL;
+              .then(downloadURL => {
+                console.log('Uploaded thumbnail to storage at URL: ' + downloadURL);
+                this.template.thumbnail = downloadURL;
                 this.template.url = url;
-                this.firestore.update(`templates/${id}`, { url, thumbnail: thumbnail.downloadURL })
+                this.firestore.update(`templates/${id}`, { url, thumbnail: downloadURL })
                   .then(() => {
                     console.log('Finished saving template.');
                     dialogRef.close();
