@@ -26,8 +26,21 @@ export class StorageService {
     return this.storage.ref(path).putString(JSON.stringify(data))
   }
 
-  putBase64(data: string, path: string, contentType?: string) {
-    return this.storage.ref(path).putString(data, 'data_url', { contentType: contentType || 'image/jpeg' })
+  putBase64(data: string, path: string, contentType?: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const ref = this.storage.ref(path)
+      ref.putString(data, 'data_url', { contentType: contentType || 'image/jpeg' })
+        .then(() => {
+          ref.getDownloadURL().subscribe(downloadUrl => {
+            if (downloadUrl) {
+              resolve(downloadUrl)
+            }
+          })
+        })
+        .catch(err => {
+          reject(err)
+        })
+    })
   }
 
   getDownloadURL(path) {

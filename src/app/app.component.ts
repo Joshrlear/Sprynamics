@@ -8,6 +8,7 @@ import { Observable ,  BehaviorSubject ,  combineLatest } from 'rxjs';
 
 import { NavigationService } from '#core/navigation.service';
 import { FirestoreService } from '#core/firestore.service';
+import { StateService } from '#core/state.service';
 
 declare const $;
 
@@ -41,7 +42,8 @@ export class AppComponent implements OnInit {
     public auth: AuthService,
     private ns: NavigationService,
     public router: Router,
-    private firestore: FirestoreService
+    private firestore: FirestoreService,
+    public state: StateService
   ) { }
 
   public logout() {

@@ -1,5 +1,7 @@
 import { User } from "#models/user.model";
 import { BrandColors } from "#models/brand-colors.model";
+import { Design } from "#models/design.model";
+import { Product } from "#models/product.model";
 
 export interface DesignState {
 
@@ -15,6 +17,10 @@ export interface DesignState {
     front: any,
     back: any
   }
+
+  product?: Product
+
+  design?: Design
 
   addressObj?: any
   backgroundObj?: any

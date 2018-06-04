@@ -1,5 +1,4 @@
-<div id="top-of-page"></div>
-
+<app-processing-window></app-processing-window>
 <div class="main-container">
 
 
@@ -21,7 +20,7 @@
 
         </div>
         <div class="top-menu-right">
-          <a routerLink="designer" class="design-link" mat-button>Start Designing</a>
+          <a routerLink="designer" class="design-link" mat-button>{{ state.designState ? 'Continue Designing' : 'Start Designing' }}</a>
           <ng-container *ngIf="(auth.user | async) || {} as user">
             <ng-container *ngIf="!user.uid; else loggedIn">
               <a routerLink="account/login" class="top-menu-account">

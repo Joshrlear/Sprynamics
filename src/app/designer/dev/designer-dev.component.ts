@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, HostListener } from '@angular/core'
+import { Component, OnInit, ViewChild, HostListener, AfterViewInit } from '@angular/core'
 import { User } from '#models/user.model'
 import { DesignState } from '#models/design-state.model'
 import { AuthService } from '#core/auth.service'
@@ -23,7 +23,8 @@ import * as JSZip from 'jszip'
 
 import * as jspdf from 'jspdf'
 import { StorageService } from '#core/storage.service'
-import { Router } from '@angular/router';
+import { Router } from '@angular/router'
+import { StateService } from '#core/state.service'
 declare let jsPDF
 
 @Component({
@@ -31,12 +32,12 @@ declare let jsPDF
   templateUrl: './designer-dev.component.html',
   styleUrls: ['./designer-dev.component.scss']
 })
-export class DesignerDevComponent implements OnInit {
+export class DesignerDevComponent implements AfterViewInit {
   @ViewChild(DesignerViewComponent) designerView: DesignerViewComponent
   @ViewChild(FabricCanvasComponent) fabricCanvas: FabricCanvasComponent
   @ViewChild('designsTab') designsTab: SidebarTabComponent
 
-  designState: DesignState
+  designState: DesignState = {}
   agents: User[]
   user: User
   selectedAgent: User
@@ -55,26 +56,44 @@ export class DesignerDevComponent implements OnInit {
     private firestore: FirestoreService,
     private storage: StorageService,
     private webfont: WebfontService,
-    private router: Router
+    private router: Router,
+    private state: StateService
   ) {}
 
-  async ngOnInit() {
+  async ngAfterViewInit() {
     try {
-      this.designState = {}
       /* load user */
       const user = await this.auth.user.pipe(first()).toPromise()
       console.log(user)
       this.user = user
-      /* set up design state */
-      this.designState.agent = user
-      this.designState.brandColors = user.brandColors || DEFAULT_BRAND_COLORS
       /* load agents */
       const managedAgents = await this.firestore.promiseColWithIds<User>('users', ref => ref.where(`managers.${user.uid}`, '==', true))
       const createdAgents = await this.firestore.promiseColWithIds<User>(`users/${user.uid}/agents`)
       this.agents = managedAgents.concat(createdAgents)
       this.selectedAgent = user
+      /* set up design state */
+      const designState = this.state.designState || this.state.loadFromStorage()
+      if (designState) {
+        console.log(designState)
+        this.designState = designState
+        /* set product */
+        this.selectedProduct = designState.product
+        /* load fonts */
+        let fonts = designState.design.fonts
+        if (!fonts || fonts.length === 0) {
+          fonts = ['Roboto']
+        }
+        await this.webfont.load(fonts)
+        /* load canvas data */
+        await this.fabricCanvas.loadFromJSON(this.designState.canvasData.front)
+        await this.processCanvas()
+      } else {
+        this.designState.agent = user
+        this.designState.brandColors = user.brandColors || DEFAULT_BRAND_COLORS
+      }
       /* initialize order */
       await this.checkout.initOrder()
+      /* completed loading */
       this.loading = false
     } catch (err) {
       window.alert(err.message)
@@ -84,6 +103,7 @@ export class DesignerDevComponent implements OnInit {
 
   async loadDesign(design: Design) {
     this.processing = true
+    this.designState.design = design
     try {
       /* load fonts */
       if (!design.fonts || design.fonts.length === 0) {
@@ -184,6 +204,7 @@ export class DesignerDevComponent implements OnInit {
       this.updateAgentFields()
       // this.fabricCanvas.zoomToFit(this.designState.boundBoxObj)
       this.fabricCanvas.canvas.renderAll()
+      this.state.setDesignState(this.designState)
     } catch (err) {
       if (err.message) {
         window.alert(err.message)
@@ -219,6 +240,8 @@ export class DesignerDevComponent implements OnInit {
     ) {
       const isFirstTime = !this.selectedProduct
       this.selectedProduct = product
+      this.designState.product = product
+      this.state.setDesignState(this.designState)
       if (isFirstTime) {
         this.designerView.clickTab(this.designsTab, true)
       } else {
@@ -271,7 +294,6 @@ export class DesignerDevComponent implements OnInit {
     })
     canvas.style.display = 'none'
     pdfCanvas.loadFromJSON(this.designState.canvasData.front, async () => {
-      // const boundBox = this.canvas.getObjects('rect').filter(obj => obj.stroke === '#f00' && obj.strokeDashArray[0] === 5 && obj.strokeDashArray[1] === 5)[0];
       const boundBox = this.fabricCanvas.canvas.getObjects('rect').filter(obj => obj.isBoundBox)[0]
       pdfCanvas.clipTo = null
       // pdfCanvas.imageSmoothingEnabled = false;
@@ -304,7 +326,6 @@ export class DesignerDevComponent implements OnInit {
       const front = await this.fabricCanvas.getDataURL(this.designState.canvasData.front, pdfCanvas, product.width, product.height)
       // this.loadingMessage = 'Processing back side...'
       const back = await this.fabricCanvas.getDataURL(this.designState.canvasData.back, pdfCanvas, product.width, product.height)
-      // this.checkout.thumbnail = front;
 
       /* Generate Thumbnail */
       var img = await promiseImage(front)
@@ -344,9 +365,10 @@ export class DesignerDevComponent implements OnInit {
       // task.percentageChanges().subscribe(snap => {
       //   this.loadingProgress = snap
       // })
-      const pdfSnapshot = await task.then()
+      const downloadUrl = await task
+      console.log(downloadUrl)
       this.checkout.updateOrder({
-        pdfUrl: pdfSnapshot.downloadURL
+        pdfUrl: downloadUrl
       })
       pdfCanvas.dispose()
       canvas.remove()

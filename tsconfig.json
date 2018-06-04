@@ -18,9 +18,10 @@
     "baseUrl": "src",
     "paths": {
       "#core/*": ["app/core/*"],
-      "#app/*": ["app/*"],
       "#shared/*": ["app/shared/*"],
       "#models/*": ["app/models/*"],
+      "#state/*": ["app/state/*"],
+      "#app/*": ["app/*"]
     }
   }
 }
