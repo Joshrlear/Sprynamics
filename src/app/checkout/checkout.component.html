@@ -23,13 +23,13 @@
             </ul>
         </div>
         <div class="row fill">
-            <div [class]="router.url !== '/checkout/confirm-order' ? 'col-xs-7' : 'col-xs-12'">
+            <div class="col-xs-12 col-md-7">
                 <div class="checkout-view-container">
                     <router-outlet></router-outlet>
                 </div>
             </div>
             <div *ngIf="router.url !== '/checkout/confirm-order'"
-                 class="col-xs-5">
+                 class="col-xs-12 col-md-5">
                 <order-summary></order-summary>
             </div>
         </div>
