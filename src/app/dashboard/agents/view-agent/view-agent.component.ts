@@ -79,14 +79,19 @@ export class ViewAgentComponent implements OnInit {
       paypal: {
         flow: 'vault'
       },
-      venmo: true,
+      venmo: {},
       applePay: {
-
+        displayName: 'Sprynamics'
       },
       googlePay: {
-
+        // transactionInfo: {
+        //   totalPriceStatus: 'FINAL',
+        //   totalPrice: '123.45',
+        //   currencyCode: 'USD'
+        // }
       }
     }, (err, instance) => {
+      console.error(err)
       this.instance = instance;
     });
   }

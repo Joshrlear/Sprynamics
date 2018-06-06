@@ -27,11 +27,6 @@ const routes: Routes = [
     loadChildren: './account/account.module#AccountModule',
   },
   {
-    path: 'checkout',
-    component: CheckoutComponent,
-    loadChildren: './checkout/checkout.module#CheckoutModule',
-  },
-  {
     path: 'profile',
     component: DashboardComponent,
     loadChildren: './dashboard/dashboard.module#DashboardModule',
