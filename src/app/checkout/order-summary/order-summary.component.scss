@@ -10,16 +10,19 @@
     background-color: #fff;
     height: auto;
     width: 100%;
-    min-width: 364px;
+    min-width: 300px;
     display: flex;
     flex-direction: column;
     margin: 24px 0;
+
+    @media only screen and (min-width: 480px) {
+        min-width: 364px;
+    }
 }
 
 .order-summary-header {
     height: 48px;
     background-color: #34383e;
-    width: 400px;
     margin-left: -6px;
     margin-right: -6px;
 }
