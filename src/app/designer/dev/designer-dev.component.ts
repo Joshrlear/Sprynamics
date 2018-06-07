@@ -44,6 +44,7 @@ export class DesignerDevComponent implements AfterViewInit {
 
   loading = true
   processing = false
+  checkingOut = false
   viewSide: 'front' | 'back' = 'front'
 
   selectedListing: any
@@ -279,6 +280,7 @@ export class DesignerDevComponent implements AfterViewInit {
   }
 
   async saveAndContinue() {
+    // this.checkingOut = true
     this.processing = true
     this.designState.canvasData[this.viewSide] = await this.fabricCanvas.toJSON()
     const canvas = document.createElement('canvas')
