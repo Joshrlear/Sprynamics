@@ -280,101 +280,102 @@ export class DesignerDevComponent implements AfterViewInit {
   }
 
   async saveAndContinue() {
-    // this.checkingOut = true
-    this.processing = true
-    this.designState.canvasData[this.viewSide] = await this.fabricCanvas.toJSON()
-    const canvas = document.createElement('canvas')
-    canvas.id = 'pdf_canvas'
-    const product = newProductSizes[this.selectedProduct]
-    canvas.width = (product.width + productSpecs.bleedInches * 2) * productSpecs.dpi
-    canvas.height = (product.height + productSpecs.bleedInches * 2) * productSpecs.dpi
-    document.body.appendChild(canvas)
-    const pdfCanvas = new fabric.Canvas('pdf_canvas', {
-      width: canvas.width,
-      height: canvas.height,
-      preserveObjectStacking: true
-    })
-    canvas.style.display = 'none'
-    pdfCanvas.loadFromJSON(this.designState.canvasData.front, async () => {
-      const boundBox = this.fabricCanvas.canvas.getObjects('rect').filter(obj => obj.isBoundBox)[0]
-      pdfCanvas.clipTo = null
-      // pdfCanvas.imageSmoothingEnabled = false;
-      const offsetX = boundBox.left - productSpecs.bleedInches * productSpecs.dpi
-      const offsetY = boundBox.top - productSpecs.bleedInches * productSpecs.dpi
-      // console.log(offsetX, offsetY);
-      pdfCanvas.forEachObject(obj => {
-        obj.left -= offsetX
-        obj.top -= offsetY
-      })
-      pdfCanvas.getObjects('rect').forEach(obj => {
-        if (obj.strokeDashArray && obj.strokeDashArray[0] === 5 && obj.strokeDashArray[1] === 5) {
-          pdfCanvas.remove(obj)
-        }
-      }) // remove the dashed lines
-      const bg = new fabric.Rect({
-        left: 0,
-        top: 0,
-        width: (product.width + productSpecs.bleedInches * 2) * productSpecs.dpi,
-        height: (product.height + productSpecs.bleedInches * 2) * productSpecs.dpi,
-        fill: '#ffffff'
-      })
-      pdfCanvas.add(bg)
-      pdfCanvas.sendToBack(bg)
-      pdfCanvas.renderAll()
+    this.checkingOut = true
+    this.router.navigate(['/designer/checkout/shipping-info'])
+    // this.processing = true
+    // this.designState.canvasData[this.viewSide] = await this.fabricCanvas.toJSON()
+    // const canvas = document.createElement('canvas')
+    // canvas.id = 'pdf_canvas'
+    // const product = newProductSizes[this.selectedProduct]
+    // canvas.width = (product.width + productSpecs.bleedInches * 2) * productSpecs.dpi
+    // canvas.height = (product.height + productSpecs.bleedInches * 2) * productSpecs.dpi
+    // document.body.appendChild(canvas)
+    // const pdfCanvas = new fabric.Canvas('pdf_canvas', {
+    //   width: canvas.width,
+    //   height: canvas.height,
+    //   preserveObjectStacking: true
+    // })
+    // canvas.style.display = 'none'
+    // pdfCanvas.loadFromJSON(this.designState.canvasData.front, async () => {
+    //   const boundBox = this.fabricCanvas.canvas.getObjects('rect').filter(obj => obj.isBoundBox)[0]
+    //   pdfCanvas.clipTo = null
+    //   // pdfCanvas.imageSmoothingEnabled = false;
+    //   const offsetX = boundBox.left - productSpecs.bleedInches * productSpecs.dpi
+    //   const offsetY = boundBox.top - productSpecs.bleedInches * productSpecs.dpi
+    //   // console.log(offsetX, offsetY);
+    //   pdfCanvas.forEachObject(obj => {
+    //     obj.left -= offsetX
+    //     obj.top -= offsetY
+    //   })
+    //   pdfCanvas.getObjects('rect').forEach(obj => {
+    //     if (obj.strokeDashArray && obj.strokeDashArray[0] === 5 && obj.strokeDashArray[1] === 5) {
+    //       pdfCanvas.remove(obj)
+    //     }
+    //   }) // remove the dashed lines
+    //   const bg = new fabric.Rect({
+    //     left: 0,
+    //     top: 0,
+    //     width: (product.width + productSpecs.bleedInches * 2) * productSpecs.dpi,
+    //     height: (product.height + productSpecs.bleedInches * 2) * productSpecs.dpi,
+    //     fill: '#ffffff'
+    //   })
+    //   pdfCanvas.add(bg)
+    //   pdfCanvas.sendToBack(bg)
+    //   pdfCanvas.renderAll()
 
-      // const front = pdfCanvas.toDataURL();
-      // this.loadingPdf = true;
-      // this.loadingMessage = 'Processing front side...';
-      const front = await this.fabricCanvas.getDataURL(this.designState.canvasData.front, pdfCanvas, product.width, product.height)
-      // this.loadingMessage = 'Processing back side...'
-      const back = await this.fabricCanvas.getDataURL(this.designState.canvasData.back, pdfCanvas, product.width, product.height)
+    //   // const front = pdfCanvas.toDataURL();
+    //   // this.loadingPdf = true;
+    //   // this.loadingMessage = 'Processing front side...';
+    //   const front = await this.fabricCanvas.getDataURL(this.designState.canvasData.front, pdfCanvas, product.width, product.height)
+    //   // this.loadingMessage = 'Processing back side...'
+    //   const back = await this.fabricCanvas.getDataURL(this.designState.canvasData.back, pdfCanvas, product.width, product.height)
 
-      /* Generate Thumbnail */
-      var img = await promiseImage(front)
-      var newDataUri = imageToDataUri(
-        img,
-        newThumbnailSizes[this.selectedProduct].width * 4,
-        newThumbnailSizes[this.selectedProduct].height * 4
-      )
-      this.checkout.thumbnail = newDataUri
-      this.checkout.updateOrder({ thumbnail: newDataUri })
+    //   /* Generate Thumbnail */
+    //   var img = await promiseImage(front)
+    //   var newDataUri = imageToDataUri(
+    //     img,
+    //     newThumbnailSizes[this.selectedProduct].width * 4,
+    //     newThumbnailSizes[this.selectedProduct].height * 4
+    //   )
+    //   this.checkout.thumbnail = newDataUri
+    //   this.checkout.updateOrder({ thumbnail: newDataUri })
 
-      // generate PDF
-      // this.loadingMessage = 'Generating PDF...';
-      const doc = new jspdf('l', 'in', [product.width + productSpecs.bleedInches * 2, product.height + productSpecs.bleedInches * 2])
-      doc.addImage(front, 'PNG', 0, 0, product.width + productSpecs.bleedInches * 2, product.height + productSpecs.bleedInches * 2)
-      doc.addPage()
-      doc.addImage(back, 'PNG', 0, 0, product.width + productSpecs.bleedInches * 2, product.height + productSpecs.bleedInches * 2)
-      const pdfDataUrl: string = doc.output('blob')
+    //   // generate PDF
+    //   // this.loadingMessage = 'Generating PDF...';
+    //   const doc = new jspdf('l', 'in', [product.width + productSpecs.bleedInches * 2, product.height + productSpecs.bleedInches * 2])
+    //   doc.addImage(front, 'PNG', 0, 0, product.width + productSpecs.bleedInches * 2, product.height + productSpecs.bleedInches * 2)
+    //   doc.addPage()
+    //   doc.addImage(back, 'PNG', 0, 0, product.width + productSpecs.bleedInches * 2, product.height + productSpecs.bleedInches * 2)
+    //   const pdfDataUrl: string = doc.output('blob')
 
-      // compress files
-      // this.loadingMessage = 'Compressing files...'
-      const zip = new JSZip()
-      zip.file('front.png', front.replace(/data:image\/png;base64,/, ''), { base64: true })
-      zip.file('back.png', back.replace(/data:image\/png;base64,/, ''), { base64: true })
-      // zip.file('design.pdf', pdfDataUrl, { base64: true });
-      const zipDataString = await zip.generateAsync({
-        type: 'base64',
-        compression: 'DEFLATE',
-        compressionOptions: {
-          level: 1
-        }
-      })
-      // upload the design
-      // this.loadingMessage = 'Uploading finished design...'
-      const zipDataUrl = 'data:application/zip;base64,' + zipDataString
-      const task = this.storage.putBase64(zipDataUrl, 'design.zip', 'application/zip')
-      // task.percentageChanges().subscribe(snap => {
-      //   this.loadingProgress = snap
-      // })
-      const downloadUrl = await task
-      console.log(downloadUrl)
-      this.checkout.updateOrder({
-        pdfUrl: downloadUrl
-      })
-      pdfCanvas.dispose()
-      canvas.remove()
-      this.router.navigate(['/checkout'])
-    })
+    //   // compress files
+    //   // this.loadingMessage = 'Compressing files...'
+    //   const zip = new JSZip()
+    //   zip.file('front.png', front.replace(/data:image\/png;base64,/, ''), { base64: true })
+    //   zip.file('back.png', back.replace(/data:image\/png;base64,/, ''), { base64: true })
+    //   // zip.file('design.pdf', pdfDataUrl, { base64: true });
+    //   const zipDataString = await zip.generateAsync({
+    //     type: 'base64',
+    //     compression: 'DEFLATE',
+    //     compressionOptions: {
+    //       level: 1
+    //     }
+    //   })
+    //   // upload the design
+    //   // this.loadingMessage = 'Uploading finished design...'
+    //   const zipDataUrl = 'data:application/zip;base64,' + zipDataString
+    //   const task = this.storage.putBase64(zipDataUrl, 'design.zip', 'application/zip')
+    //   // task.percentageChanges().subscribe(snap => {
+    //   //   this.loadingProgress = snap
+    //   // })
+    //   const downloadUrl = await task
+    //   console.log(downloadUrl)
+    //   this.checkout.updateOrder({
+    //     pdfUrl: downloadUrl
+    //   })
+    //   pdfCanvas.dispose()
+    //   canvas.remove()
+    //   this.router.navigate(['/checkout'])
+    // })
   }
 }

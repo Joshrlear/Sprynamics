@@ -1,4 +1,4 @@
-module.exports = function (order) {
+export default function(order) {
   return `
     <table style="margin-bottom: 1.5rem; background-color: #fff; box-shadow: 0 0.25rem 0.125rem 0 rgba(0,0,0,.05); border-radius: .25rem; font-family: 'Helvetica'; max-width:600px; max-height:800px; border: 1px solid #eee" border="0" cellpadding="0" cellspacing="0" height="100%" width="100%" id="bodyTable">
         <tr>
@@ -38,12 +38,16 @@ module.exports = function (order) {
                                             </tr>
                                             <tr>
                                               <td id="product-title" align="left" valign="top">
-                                                <span style="color:#34383e; font-size: 14px; font-weight: 500;">Sprynamics ${order.product}</span>
+                                                <span style="color:#34383e; font-size: 14px; font-weight: 500;">Sprynamics ${
+                                                  order.product
+                                                }</span>
                                               </td>
                                             </tr>
                                             <tr>
                                               <td id="product-qty" align="left" valign="top">
-                                                <span style="color:#34383e; font-size: 14px; font-weight: 500;">Qty:</span> <span style="font-size: 14px; color: #666;">${order.quantity}</span>
+                                                <span style="color:#34383e; font-size: 14px; font-weight: 500;">Qty:</span> <span style="font-size: 14px; color: #666;">${
+                                                  order.quantity
+                                                }</span>
                                               </td>
                                             </tr>
                                             <hr>
@@ -96,11 +100,15 @@ module.exports = function (order) {
                                             </tr>
                                             <tr>
                                               <td align="left" valign="top">
-                                                <span style="color: #666; font-size: 12px;">${order.shipping.firstName} ${order.shipping.lastName}
+                                                <span style="color: #666; font-size: 12px;">${order.shipping.firstName} ${
+    order.shipping.lastName
+  }
                                                   <br>
                                                   <a href="">${order.shipping.address1} ${order.shipping.address2}</a> 
                                                   <br>
-                                                  <a href="">${order.shipping.city},</a> <a href="">${order.shipping.state}</a> <a href="">${order.shipping.zipCode}</a><a href=""></a> 
+                                                  <a href="">${order.shipping.city},</a> <a href="">${
+    order.shipping.state
+  }</a> <a href="">${order.shipping.zipCode}</a><a href=""></a> 
                                                 </span>
                                               </td>
                                             </tr>
@@ -160,5 +168,5 @@ module.exports = function (order) {
             </td>
         </tr>
     </table>
-  `;
+  `
 }
