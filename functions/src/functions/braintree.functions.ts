@@ -10,9 +10,9 @@ const env = functions.config()
  */
 const gateway = braintree.connect({
   environment: braintree.Environment.Sandbox,
-  merchantId: env.braintree.merchant_id,
-  publicKey: env.braintree.public_key,
-  privateKey: env.braintree.private_key
+  merchantId: env.sprynamics.merchant_id,
+  publicKey: env.sprynamics.public_key,
+  privateKey: env.sprynamics.private_key
 })
 
 /**
