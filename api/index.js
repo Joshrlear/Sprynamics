@@ -2,7 +2,6 @@ const xml2js = require('xml2js-expat')
 const firebase = require('./firebase')
 const request = require('request')
 const zlib = require('zlib')
-const parser = new xml2js.Parser()
 const csvStringify = require('csv-stringify-as-promised')
 const fs = require('fs')
 const express = require('express')
@@ -12,6 +11,7 @@ const schedule = require('node-schedule')
 const serveIndex = require('serve-index')
 
 function fetchListhubFeed() {
+  const parser = new xml2js.Parser()
   return new Promise((resolve, reject) => {
     const gunzip = zlib.createGunzip()
     request
@@ -28,7 +28,7 @@ function fetchListhubFeed() {
         resolve(result)
       })
       .on('error', err => {
-        console.error(err)
+        console.error('error during parsing', err)
         reject(err)
       })
   })
