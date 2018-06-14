@@ -1,5 +1,5 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { Component, Inject, OnInit } from '@angular/core'
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material'
 
 @Component({
   selector: 'app-admin-designer-progress-dialog',
@@ -7,10 +7,10 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
   styleUrls: ['./admin-designer-progress.dialog.scss']
 })
 export class AdminDesignerProgressDialog implements OnInit {
+  constructor(
+    @Inject(MAT_DIALOG_DATA) private data,
+    private dialogRef: MatDialogRef<AdminDesignerProgressDialog>
+  ) {}
 
-  constructor(@Inject(MAT_DIALOG_DATA) private data, private dialogRef: MatDialogRef<AdminDesignerProgressDialog>) { }
-
-  ngOnInit() {
-  }
-
+  ngOnInit() {}
 }

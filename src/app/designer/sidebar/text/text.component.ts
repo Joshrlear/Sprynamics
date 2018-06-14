@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
 
 @Component({
   selector: 'app-text',
@@ -6,25 +6,22 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
   styleUrls: ['./text.component.scss']
 })
 export class TextComponent implements OnInit {
-  
-  @Input('formFields') formFields: any = [];
+  @Input('formFields') formFields: any = []
 
-  @Output('render') renderEvent = new EventEmitter();
-  @Output('change') changeEvent = new EventEmitter();
+  @Output('render') renderEvent = new EventEmitter()
+  @Output('change') changeEvent = new EventEmitter()
 
-  viewSide: string;
-  
-  constructor() { }
+  viewSide: string
 
-  ngOnInit() {
-  }
+  constructor() {}
+
+  ngOnInit() {}
 
   render() {
-    this.renderEvent.emit(null);
+    this.renderEvent.emit(null)
   }
 
   onChange() {
-    this.changeEvent.emit(null);
+    this.changeEvent.emit(null)
   }
-
 }

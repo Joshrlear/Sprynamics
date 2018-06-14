@@ -15,7 +15,12 @@ export class LoginComponent implements OnInit {
 
   error: string
 
-  constructor(public fb: FormBuilder, public auth: AuthService, private router: Router, private afAuth: AngularFireAuth) {}
+  constructor(
+    public fb: FormBuilder,
+    public auth: AuthService,
+    private router: Router,
+    private afAuth: AngularFireAuth
+  ) {}
 
   ngOnInit() {
     this.error = ''
@@ -35,7 +40,10 @@ export class LoginComponent implements OnInit {
 
   async submitLogin() {
     try {
-      await this.auth.emailLogin(this.loginForm.value.email, this.loginForm.value.password)
+      await this.auth.emailLogin(
+        this.loginForm.value.email,
+        this.loginForm.value.password
+      )
       this.router.navigate(['/profile'])
     } catch (error) {
       window.alert(error)
@@ -45,7 +53,11 @@ export class LoginComponent implements OnInit {
   }
 
   linkedinLogin() {
-    const popup = window.open('linkedin-popup.html', 'name', 'height=585,width-400')
+    const popup = window.open(
+      'linkedin-popup.html',
+      'name',
+      'height=585,width-400'
+    )
     popup.addEventListener('finishedlinkedinlogin', () => {
       console.log('yuh')
       this.router.navigate(['/profile'])

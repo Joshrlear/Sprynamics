@@ -1,9 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Observable } from 'rxjs';
-import { AuthService } from '../../core/auth.service';
-import { PasswordMatchValidation } from './password-match-validation.class';
-import { Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core'
+import { FormBuilder, FormGroup, Validators } from '@angular/forms'
+import { Router } from '@angular/router'
+import { AuthService } from '../../core/auth.service'
+import { PasswordMatchValidation } from './password-match-validation.class'
 
 @Component({
   selector: 'app-register',
@@ -11,88 +10,105 @@ import { Router } from '@angular/router';
   styleUrls: ['./register.component.scss']
 })
 export class RegisterComponent implements OnInit {
+  signupForm: FormGroup
 
-  signupForm: FormGroup;
+  error: string
+  failedSubmit: boolean
 
-  error: string;
-  failedSubmit: boolean;
-
-  constructor( public fb: FormBuilder, public auth: AuthService, private router: Router ) { }
+  constructor(
+    public fb: FormBuilder,
+    public auth: AuthService,
+    private router: Router
+  ) {}
 
   ngOnInit() {
-    this.error = '';
+    this.error = ''
 
-    this.signupForm = this.fb.group({
-      'email': ['', [
-        Validators.required,
-        Validators.email
-      ]],
-      'password': ['', [
-        Validators.minLength(6),
-        Validators.maxLength(25),
-        Validators.required
-      ]],
-      'confirmPassword': ['', [
-        Validators.required
-      ]],
-      'recaptcha': ['', [
-        // Validators.required
-      ]]
-    }, {
-      validator: PasswordMatchValidation.MatchPassword // validates that confirmPassword === password
-    });
+    this.signupForm = this.fb.group(
+      {
+        email: ['', [Validators.required, Validators.email]],
+        password: [
+          '',
+          [
+            Validators.minLength(6),
+            Validators.maxLength(25),
+            Validators.required
+          ]
+        ],
+        confirmPassword: ['', [Validators.required]],
+        recaptcha: [
+          '',
+          [
+            // Validators.required
+          ]
+        ]
+      },
+      {
+        validator: PasswordMatchValidation.MatchPassword // validates that confirmPassword === password
+      }
+    )
   }
 
-  get email() { return this.signupForm.get('email'); }
-  get password() { return this.signupForm.get('password'); }
-  get confirmPassword() { return this.signupForm.get('confirmPassword'); }
-  get recaptcha() { return this.signupForm.get('recaptcha'); }
+  get email() {
+    return this.signupForm.get('email')
+  }
+  get password() {
+    return this.signupForm.get('password')
+  }
+  get confirmPassword() {
+    return this.signupForm.get('confirmPassword')
+  }
+  get recaptcha() {
+    return this.signupForm.get('recaptcha')
+  }
 
   submitSignup() {
     console.log('submit')
     if (this.signupForm.invalid) {
       console.log('invalid form')
-      this.failedSubmit = true;
+      this.failedSubmit = true
     } else {
-      this.auth.emailSignUp(this.email.value, this.password.value)
+      this.auth
+        .emailSignUp(this.email.value, this.password.value)
         .then(_ => {
-          this.router.navigate(['/profile']);
+          this.router.navigate(['/profile'])
         })
         .catch(err => {
-          console.log(err);
-          this.error = err;
-        });
+          console.log(err)
+          this.error = err
+        })
     }
   }
 
-  captchaResolved(response: string) {
-
-  }
+  captchaResolved(response: string) {}
 
   linkedinLogin() {
-    window.open('linkedin-popup.html', 'name', 'height=585,width-400');
+    window.open('linkedin-popup.html', 'name', 'height=585,width-400')
   }
 
   googleLogin() {
-    this.auth.googleLogin()
+    this.auth
+      .googleLogin()
       .then(login => {
-        this.router.navigate(['/profile']);
-      }).catch(error => {
-        window.alert(error);
-        console.log(error);
-        this.error = error;
-      });
+        this.router.navigate(['/profile'])
+      })
+      .catch(error => {
+        window.alert(error)
+        console.log(error)
+        this.error = error
+      })
   }
 
   facebookLogin() {
-    this.auth.facebookLogin()
+    this.auth
+      .facebookLogin()
       .then(login => {
-        this.router.navigate(['/profile']);
-      }).catch(error => {
-        window.alert(error);
-        console.log(error);
-        this.error = error;
-      });
+        this.router.navigate(['/profile'])
+      })
+      .catch(error => {
+        window.alert(error)
+        console.log(error)
+        this.error = error
+      })
   }
-
 }

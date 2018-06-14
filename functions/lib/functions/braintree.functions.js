@@ -19,13 +19,14 @@ const gateway = braintree.connect({
  *
  * Sends the Braintree client token for a given customerId
  */
-exports.client_token = https.route('GET', (req, res) => {
+exports.client_token = https.route('POST', (req, res) => {
     const customerId = req.body.customerId;
     gateway.clientToken.generate({ customerId }, (err, tokenRes) => {
         if (err) {
             console.error(err.message);
             return res.status(400).send({ message: err.message });
         }
+        console.log('successfully generated token', tokenRes);
         return res.status(200).send({
             message: 'Successfully generated token',
             token: tokenRes.clientToken

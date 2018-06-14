@@ -1,10 +1,14 @@
 import { Injectable } from '@angular/core'
+import {
+  AngularFirestore,
+  AngularFirestoreCollection,
+  AngularFirestoreDocument
+} from 'angularfire2/firestore'
 import * as firebase from 'firebase/app'
-import { AngularFirestore, AngularFirestoreDocument, AngularFirestoreCollection } from 'angularfire2/firestore'
 import { Observable } from 'rxjs'
-import { map, first } from 'rxjs/operators'
 import 'rxjs/add/observable/combineLatest'
 import 'rxjs/add/operator/reduce'
+import { first, map } from 'rxjs/operators'
 
 type CollectionPredicate<T> = string | AngularFirestoreCollection<T>
 type DocPredicate<T> = string | AngularFirestoreDocument<T>
@@ -16,7 +20,10 @@ export class FirestoreService {
   /// **************
   /// Get a Reference
   /// **************
-  public col<T>(ref: CollectionPredicate<T>, queryFn?): AngularFirestoreCollection<T> {
+  public col<T>(
+    ref: CollectionPredicate<T>,
+    queryFn?
+  ): AngularFirestoreCollection<T> {
     return typeof ref === 'string' ? this.afs.collection<T>(ref, queryFn) : ref
   }
 
@@ -44,7 +51,10 @@ export class FirestoreService {
   }
 
   /// with Ids
-  public colWithIds$<T>(ref: CollectionPredicate<T>, queryFn?): Observable<any[]> {
+  public colWithIds$<T>(
+    ref: CollectionPredicate<T>,
+    queryFn?
+  ): Observable<any[]> {
     return this.col(ref, queryFn)
       .snapshotChanges()
       .map(actions => {
@@ -68,7 +78,10 @@ export class FirestoreService {
       .toPromise()
   }
 
-  public promiseColWithIds<T>(ref: CollectionPredicate<T>, queryFn?): Promise<T[]> {
+  public promiseColWithIds<T>(
+    ref: CollectionPredicate<T>,
+    queryFn?
+  ): Promise<T[]> {
     return this.colWithIds$<T>(ref, queryFn)
       .pipe(first())
       .toPromise()
@@ -76,7 +89,9 @@ export class FirestoreService {
 
   // Combine multiple observables collections into one array - similar to UNION in sql
   public combine(observables: Observable<any>[]) {
-    return Observable.combineLatest(observables).pipe(map((arr: any[]) => arr.reduce((acc, cur) => acc.concat(cur))))
+    return Observable.combineLatest(observables).pipe(
+      map((arr: any[]) => arr.reduce((acc, cur) => acc.concat(cur)))
+    )
   }
 
   /// **************

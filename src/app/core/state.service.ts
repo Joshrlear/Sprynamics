@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core'
-import { DesignState } from '#models/design-state.model'
 import { ProcessingWindowComponent } from '#app/processing-window/processing-window.component'
+import { DesignState } from '#models/design-state.model'
+import { Injectable } from '@angular/core'
 
 @Injectable()
 export class StateService {

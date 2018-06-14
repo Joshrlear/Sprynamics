@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core'
 
 @Component({
   selector: 'app-add-agent-dialog',
@@ -6,14 +6,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./add-agent.dialog.scss']
 })
 export class AddAgentDialog implements OnInit {
+  constructor() {}
 
-  constructor() { }
+  ngOnInit() {}
 
-  ngOnInit() {
-  }
-
-  submit() {
-    
-  }
-
+  submit() {}
 }

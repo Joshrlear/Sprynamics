@@ -1,15 +1,12 @@
-import { Injectable } from '@angular/core'
-import { Router } from '@angular/router'
-
-import * as firebase from 'firebase/app'
-import { AngularFireAuth } from 'angularfire2/auth'
-import { AngularFirestore, AngularFirestoreDocument } from 'angularfire2/firestore'
-
-import { Observable, of } from 'rxjs'
-
-import { User } from '#models/user.model'
 import { FirestoreService } from '#core/firestore.service'
 import { DEFAULT_BRAND_COLORS } from '#models/brand-colors.model'
+import { User } from '#models/user.model'
+import { Injectable } from '@angular/core'
+import { Router } from '@angular/router'
+import { AngularFireAuth } from 'angularfire2/auth'
+import { AngularFirestore } from 'angularfire2/firestore'
+import * as firebase from 'firebase/app'
+import { Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
 @Injectable()
@@ -17,7 +14,12 @@ export class AuthService {
   authState: Observable<firebase.User>
   user: Observable<User>
 
-  constructor(private afAuth: AngularFireAuth, private afs: AngularFirestore, private firestore: FirestoreService, private router: Router) {
+  constructor(
+    private afAuth: AngularFireAuth,
+    private afs: AngularFirestore,
+    private firestore: FirestoreService,
+    private router: Router
+  ) {
     // Get auth data, then get firestore user document || null
     this.authState = this.afAuth.authState
     this.user = this.afAuth.authState.pipe(

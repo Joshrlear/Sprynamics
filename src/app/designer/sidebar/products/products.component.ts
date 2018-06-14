@@ -1,5 +1,5 @@
-import { Component, OnInit, EventEmitter, Output, Input } from '@angular/core';
-import { Product } from '#app/models/product.model';
+import { Product } from '#app/models/product.model'
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
 
 @Component({
   selector: 'app-products',
@@ -7,17 +7,14 @@ import { Product } from '#app/models/product.model';
   styleUrls: ['./products.component.scss']
 })
 export class ProductsComponent implements OnInit {
-
   @Input('selectedProduct') selectedProduct: Product
   @Output('changeProduct') changeProductEvent = new EventEmitter<Product>()
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   changeProduct(product: Product) {
     this.changeProductEvent.emit(product)
   }
-
 }

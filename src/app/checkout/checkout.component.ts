@@ -1,10 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
-
-import { OrderSummaryComponent } from './order-summary/order-summary.component';
-import { CheckoutService } from '#app/checkout/checkout.service';
-import { Order } from '#models/order.model';
-import { Router } from '@angular/router';
+import { CheckoutService } from '#app/checkout/checkout.service'
+import { Order } from '#models/order.model'
+import { Component, OnInit } from '@angular/core'
+import { Router } from '@angular/router'
+import { Observable } from 'rxjs'
 
 @Component({
   selector: 'app-checkout',
@@ -12,15 +10,13 @@ import { Router } from '@angular/router';
   styleUrls: ['./checkout.component.scss']
 })
 export class CheckoutComponent implements OnInit {
+  order: Observable<Order>
 
-  order: Observable<Order>;
-
-  constructor(public checkout: CheckoutService, public router: Router) { }
+  constructor(public checkout: CheckoutService, public router: Router) {}
 
   ngOnInit() {
-    console.log('init');
-    this.order = this.checkout.order;
+    console.log('init')
+    this.order = this.checkout.order
     // this.checkout.initOrder();
   }
-
 }
