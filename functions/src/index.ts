@@ -5,3 +5,4 @@ admin.initializeApp()
 
 export * from './functions/email.functions'
 export * from './functions/braintree.functions'
+export * from './functions/linkedin.functions'

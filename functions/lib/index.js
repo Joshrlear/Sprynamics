@@ -7,4 +7,5 @@ const admin = require("firebase-admin");
 admin.initializeApp();
 __export(require("./functions/email.functions"));
 __export(require("./functions/braintree.functions"));
+__export(require("./functions/linkedin.functions"));
 //# sourceMappingURL=index.js.map

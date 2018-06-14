@@ -68,7 +68,7 @@ export class DesignerViewComponent implements OnInit {
     if (width > this.mdWidth) {
       this.screenSize = 'full'
     } else if (width < this.smWidth) {
-      this.screenSize = 'min'
+      this.screenSize = 'slim'
     } else {
       this.screenSize = 'slim'
     }

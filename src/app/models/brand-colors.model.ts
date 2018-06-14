@@ -1,12 +1,15 @@
 export interface BrandColors {
-  primary: string;
-  secondary: string;
-  accent: string;
+  primary: string
+  secondary: string
+  accent: string
 }
 
-export type BrandColorRole = 'none' | 'primary' | 'secondary' | 'accent';
+export type BrandColorRole = 'none' | 'primary' | 'secondary' | 'accent'
 
-export type BrandColorChangeEvent = { color: string, role: BrandColorRole };
+export interface BrandColorChangeEvent {
+  color: string
+  role: BrandColorRole
+}
 
 export const DEFAULT_BRAND_COLORS: BrandColors = {
   primary: '#74d94fff',
