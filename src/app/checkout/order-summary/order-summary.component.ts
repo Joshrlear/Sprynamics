@@ -13,10 +13,10 @@ import { Observable, Subscription } from 'rxjs'
 export class OrderSummaryComponent implements OnInit, OnDestroy {
   get nextRoute() {
     switch (this.router.url) {
-      case '/checkout/shipping-info':
-        return '/checkout/payment-method'
-      case '/checkout/payment-method':
-        return '/checkout/confirm-order'
+      case '/designer/checkout/shipping-info':
+        return '/designer/checkout/payment-method'
+      case '/designer/checkout/payment-method':
+        return '/designer/checkout/confirm-order'
     }
   }
 
@@ -58,7 +58,7 @@ export class OrderSummaryComponent implements OnInit, OnDestroy {
 
   clickCheckout() {
     if (this.router.url.endsWith('shipping-info')) {
-      this.router.navigate(['/checkout/payment-method'])
+      this.router.navigate(['/designer/checkout/payment-method'])
     } else if (this.router.url.endsWith('payment-method')) {
       this.checkout.loading = true
       if (this.instance) {

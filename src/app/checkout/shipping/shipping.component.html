@@ -1,6 +1,6 @@
 <div class="ss-card">
   <div class="form-container">
-    <form class="ss-form" *ngIf="shippingForm" [formGroup]="shippingForm" (ngSubmit)="submitForm()">
+    <form class="ss-form" *ngIf="shippingForm" [formGroup]="shippingForm">
       <div class="form-row" style="padding: 12px 24px 24px 24px;">
         <div class="form-check col-md-6">
           <input type="radio" name="shipType" class="form-check-input" id="singleAddress" value="true" (click)="chooseSingleAddress()"

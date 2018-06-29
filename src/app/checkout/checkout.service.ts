@@ -147,7 +147,7 @@ export class CheckoutService {
   submitOrder() {
     if (!this._order.getValue().submitted) {
       this.updateOrder({ submitted: true });
-      this.router.navigate(['/checkout/confirm-order']);
+      this.router.navigate(['/designer/checkout/confirm-order']);
       // this.firestore.update(`orders/${this._order.getValue().orderId}`, this._order.getValue());
       this.http.post('https://us-central1-sprynamics.cloudfunctions.net/checkout', this._order.getValue())
         .take(1).subscribe((res: any) => {
