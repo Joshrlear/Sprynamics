@@ -130,7 +130,7 @@ export class CheckoutService {
    * @param uid Optional user ID, if not given this will use the agent set in the order
    */
   generateToken(uid?: string) {
-    const token$ = this.http.post('https://us-central1-sprynamics.cloudfunctions.net/getClientToken',
+    const token$ = this.http.post('https://us-central1-sprynamics.cloudfunctions.net/client_token',
       { customerId: uid || this._order.getValue().customerId })
         .map((res: any) => JSON.parse(res._body).token);
     token$.take(1).subscribe(token => {

@@ -6,6 +6,16 @@
 <app-designer-view [loading]="loading">
   <ng-container sidebar>
     <!-- BEGIN sidebar tabs -->
+    <app-sidebar-tab title="Agents"
+                     icon="contact_mail"
+                     [disabled]="!selectedProduct || !designState.canvasData">
+      <app-agents [user]="selectedAgent"
+                  [agents]="agents"
+                  [loading]="loading"
+                  (changeAgent)="changeAgent($event)"
+                  [(selectedAgent)]="selectedAgent">
+      </app-agents>
+    </app-sidebar-tab>
     <app-sidebar-tab title="Products"
                      icon="aspect_ratio">
       <app-products (changeProduct)="changeProduct($event)"
@@ -19,22 +29,12 @@
                    (select)="loadDesign($event)">
       </app-designs>
     </app-sidebar-tab>
-    <app-sidebar-tab title="Agents"
-                     icon="contact_mail"
-                     [disabled]="!selectedProduct || !designState.canvasData">
-      <app-agents [user]="selectedAgent"
-                  [agents]="agents"
-                  [loading]="loading"
-                  (changeAgent)="changeAgent($event)"
-                  [(selectedAgent)]="selectedAgent">
-      </app-agents>
-    </app-sidebar-tab>
     <app-sidebar-tab title="Property"
                      icon="home"
                      [disabled]="!selectedProduct || !designState.canvasData">
       <app-property [agent]="selectedAgent"
                     [listingId]="listingId"
-                    [(listing)]="selectedListing"
+                    [(selectedListing)]="selectedListing"
                     (changeProperty)="changeProperty($event)">
       </app-property>
     </app-sidebar-tab>

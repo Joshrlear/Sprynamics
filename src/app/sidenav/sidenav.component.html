@@ -1,21 +1,23 @@
 <div class="sidebar-account">
-  <img style="width:96px;height:96px;" [src]="(auth.user | async)?.avatarUrl || ''">
-  <div class="account-name">
-    <p>{{ (auth.user | async)?.firstName + ' ' + (auth.user | async)?.lastName }}</p>
-  </div>
-  <div class="account-email">
-    <p>{{(auth.user | async)?.email}}</p>
-  </div>
-  <!-- <div class="account-settings">
-    <p><mat-icon>settings</mat-icon> Account Settings</p>
-  </div> -->
+  <ng-container *ngIf="(auth.user | async) as user">
+
+    <img style="width:96px;height:96px;" [src]="user.avatarUrl || 'https://via.placeholder.com/96x96'">
+    <div class="account-name" *ngIf="user.firstName; else noNameMessage">
+      <p>{{ user.firstName + ' ' + user.lastName }}</p>
+    </div>
+    <ng-template #noNameMessage>
+      <div class="account-name">
+        <p>No Name</p>
+      </div>
+    </ng-template>
+    <div class="account-email">
+      <p>{{ user.email }}</p>
+    </div>
+  </ng-container>
 </div>
 
 
 <div class="divider"></div>
-<div class="design">
-  <a mat-button routerLink="/designer" (click)="closeEvent.emit()">Start Designing</a>
-</div>
 <ul class="sidebar-nav">
   <li><a href="#" routerLink="/profile">Your Profile</a></li>
   <li><a routerLink="/profile/agents">Agents</a></li>

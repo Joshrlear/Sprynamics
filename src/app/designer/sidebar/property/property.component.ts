@@ -15,9 +15,9 @@ declare const lh
   styleUrls: ['./property.component.scss']
 })
 export class PropertyComponent implements OnInit {
-  @Input('listing') selectedListing: any
-  @Input('listingId') listingId: any
-  @Output('changeProperty') addressChangeEvent = new EventEmitter()
+  @Input() selectedListing: any
+  @Input() listingId: any
+  @Output() changeProperty = new EventEmitter()
 
   _agent: User
 
@@ -39,6 +39,7 @@ export class PropertyComponent implements OnInit {
   @Input('agent')
   set agent(agent: User) {
     this._agent = agent
+    console.log(agent)
     if (agent) {
       this.loading = true
       this.mls.getListings(agent.licenseId).then(listings => {
@@ -53,8 +54,7 @@ export class PropertyComponent implements OnInit {
             return listing.id === this.listingId
           })
           this.onChangeAddress()
-        }
-        if (!this.selectedListing) {
+        } else {
           this.selectedListing = this.listings[0]
           this.onChangeAddress()
         }
@@ -63,7 +63,7 @@ export class PropertyComponent implements OnInit {
     }
   }
 
-  async ngOnInit() {
+  ngOnInit() {
     this.listings = []
   }
 
@@ -89,6 +89,6 @@ export class PropertyComponent implements OnInit {
         listing.stateOrProvince
       } ${listing.postalCode}`
     }
-    this.addressChangeEvent.emit(addressObj)
+    this.changeProperty.emit(addressObj)
   }
 }

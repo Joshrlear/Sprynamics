@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core'
 import { FormGroup, FormBuilder, Validators } from '@angular/forms'
-import { Router } from '@angular/router'
+import { Router, ActivatedRoute } from '@angular/router'
 
 import { AuthService } from '../../core/auth.service'
 import { AngularFireAuth } from 'angularfire2/auth'
@@ -19,11 +19,39 @@ export class LoginComponent implements OnInit {
     public fb: FormBuilder,
     public auth: AuthService,
     private router: Router,
+    private route: ActivatedRoute,
     private afAuth: AngularFireAuth
   ) {}
 
   ngOnInit() {
     this.error = ''
+
+    this.route.queryParams.take(1).subscribe(async queryParams => {
+      console.log(queryParams)
+      const linkedInAuthCode = queryParams.code
+      const linkedInError = queryParams.error
+      if (linkedInError) {
+        const errorMessage = queryParams.error_description
+        window.alert(errorMessage)
+        return
+      }
+      if (linkedInAuthCode) {
+        console.log(linkedInAuthCode)
+        const form = new FormData()
+        form.append('code', linkedInAuthCode)
+        try {
+          const linkedInToken = await fetch('https://us-central1-sprynamics.cloudfunctions.net/token', {
+            method: 'POST',
+            mode: 'no-cors',
+            body: form
+          })
+          console.log(linkedInToken)
+        } catch (err) {
+          console.error(err)
+          window.alert(err.message)
+        }
+      }
+    })
 
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -40,10 +68,7 @@ export class LoginComponent implements OnInit {
 
   async submitLogin() {
     try {
-      await this.auth.emailLogin(
-        this.loginForm.value.email,
-        this.loginForm.value.password
-      )
+      await this.auth.emailLogin(this.loginForm.value.email, this.loginForm.value.password)
       this.router.navigate(['/profile'])
     } catch (error) {
       window.alert(error)
@@ -53,15 +78,7 @@ export class LoginComponent implements OnInit {
   }
 
   linkedinLogin() {
-    const popup = window.open(
-      'linkedin-popup.html',
-      'name',
-      'height=585,width-400'
-    )
-    popup.addEventListener('finishedlinkedinlogin', () => {
-      console.log('yuh')
-      this.router.navigate(['/profile'])
-    })
+    window.location.replace('https://us-central1-sprynamics.cloudfunctions.net/redirect')
   }
 
   async googleLogin() {

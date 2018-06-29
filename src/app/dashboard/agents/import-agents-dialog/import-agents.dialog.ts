@@ -3,7 +3,7 @@ import { AuthService } from '#core/auth.service'
 import { FirestoreService } from '#core/firestore.service'
 import { Component, Inject, OnInit } from '@angular/core'
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material'
-import * as firebase from 'firebase'
+import * as firebase from 'firebase/app'
 import { PapaParseService } from 'ngx-papaparse'
 
 @Component({
@@ -11,6 +11,7 @@ import { PapaParseService } from 'ngx-papaparse'
   templateUrl: './import-agents.dialog.html',
   styleUrls: ['./import-agents.dialog.scss']
 })
+// tslint:disable-next-line:component-class-suffix
 export class ImportAgentsDialog implements OnInit {
   isLoading: boolean
 
@@ -49,8 +50,7 @@ export class ImportAgentsDialog implements OnInit {
         skipEmptyLines: true,
         complete: (results, file) => {
           this.csvData = results.data
-          const normalizeHeader = (header: string) =>
-            header.toLowerCase().replace(/ /g, '')
+          const normalizeHeader = (header: string) => header.toLowerCase().replace(/ /g, '')
           results.data[0].forEach((header, hi) => {
             this.columns.forEach((column, ci) => {
               console.log(normalizeHeader(column) === normalizeHeader(header))
@@ -70,7 +70,7 @@ export class ImportAgentsDialog implements OnInit {
 
   // maps a column to a mailing list value
   setColumn(index: number, val: string) {
-    const col = parseInt(val)
+    const col = parseInt(val, 10)
     this.mappedColumns[index] = col
   }
 
@@ -80,40 +80,43 @@ export class ImportAgentsDialog implements OnInit {
     const results = []
     const rowCount = this.csvData.length
     this.csvData.forEach((row, i) => {
-      if (i === 0) return // skip first row (column headers)
+      if (i === 0) { return } // skip first row (column headers)
       const obj = {}
       this.columns.forEach((col, j) => {
         let item = row[this.mappedColumns[j]]
-        if (item === undefined) item = ''
+        if (item === undefined) { item = '' }
         obj[col] = item
       })
       results.push(obj)
     })
 
-    this.auth.user.take(1).subscribe(user => {
+    this.auth.user.take(1).subscribe(async user => {
       const batch = firebase.firestore().batch()
-      results.forEach(agentData => {
+      for (const agentData of results) {
+        const mlsSearch = await this.firestore.promiseCol('agents', ref => ref.where('email', '==', agentData.email))
+        if (mlsSearch.length > 0) {
+          const mlsAgent = mlsSearch[0]
+          Object.assign(agentData, mlsAgent)
+        }
         const doc = this.firestore.col('users').ref.doc()
         const agent = {
           id: doc.id,
           uid: doc.id,
           isCreated: true,
           managerId: user.uid,
-          managers: { [user.uid]: true }
+          managers: { [user.uid]: true },
+          ...agentData
         }
-        Object.assign(agent, agentData)
         batch.set(doc, agent)
-      })
-      batch
-        .commit()
-        .then(success => {
-          this.isLoading = false
-          this.dialogRef.close()
-        })
-        .catch(err => {
-          window.alert(err.message)
-          console.log(err.message)
-        })
+      }
+      try {
+        batch.commit()
+        this.isLoading = false
+        this.dialogRef.close()
+      } catch (err) {
+        console.log(err)
+        window.alert(err.message)
+      }
     })
   }
 }

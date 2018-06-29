@@ -49,6 +49,7 @@ Please wait...
    * This callback is called by the JSONP callback of the 'token' Firebase Function with the Firebase auth token.
    */
   function tokenReceived(data) {
+    console.log('tokenReceived', data)
     if (data.token) {
       firebase.auth().signInWithCustomToken(data.token)
         .then((arg) => {

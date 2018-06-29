@@ -21,12 +21,13 @@ export class PaymentComponent implements OnInit {
   ngOnInit() {
     this.checkout.loading = true
     this.checkout.order.take(1).subscribe(order => {
-      if (!order.shipping) {
-        // return to shipping page if we landed here first
-        this.router.navigate(['/checkout/shipping-info'])
-      } else {
-        this.payWithMyMethod()
-      }
+      // if (!order.shipping) {
+      //   // return to shipping page if we landed here first
+      //   this.router.navigate(['/designer/checkout/shipping-info'])
+      // } else {
+      //   this.payWithMyMethod()
+      // }
+      this.payWithMyMethod()
     })
   }
 
@@ -49,7 +50,21 @@ export class PaymentComponent implements OnInit {
           dropin.create(
             {
               container: '#dropin',
-              authorization: token
+              authorization: token,
+              paypal: {
+                flow: 'vault'
+              },
+              venmo: {},
+              applePay: {
+                displayName: 'Sprynamics'
+              },
+              googlePay: {
+                // transactionInfo: {
+                //   totalPriceStatus: 'FINAL',
+                //   totalPrice: '123.45',
+                //   currencyCode: 'USD'
+                // }
+              }
             },
             (err, instance) => {
               if (err) {

@@ -4,7 +4,7 @@ import {
   DEFAULT_BRAND_COLORS
 } from '#models/brand-colors.model'
 import { User } from '#models/user.model'
-import { Component, Input, OnInit } from '@angular/core'
+import { Component, Input, OnInit, OnDestroy } from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { Observable, Subscription } from 'rxjs'
 import { AuthService } from '../../core/auth.service'
@@ -15,7 +15,7 @@ import { FirestoreService } from '../../core/firestore.service'
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss']
 })
-export class ProfileComponent implements OnInit {
+export class ProfileComponent implements OnInit, OnDestroy {
   @Input('agent') agent: any
 
   userRef: Observable<User>
@@ -72,8 +72,8 @@ export class ProfileComponent implements OnInit {
 
   buildForm() {
     this.userForm = this.fb.group({
-      firstName: [this.user.firstName],
-      lastName: [this.user.lastName],
+      firstName: [this.user.firstName, Validators.required],
+      lastName: [this.user.lastName, Validators.required],
       email: [this.user.email, Validators.email],
       phoneNumber: [this.user.phoneNumber],
       company: [this.user.company],
@@ -84,7 +84,7 @@ export class ProfileComponent implements OnInit {
       state: [this.user.state],
       zipCode: [this.user.zipCode],
       country: [this.user.country],
-      licenseId: [this.user.licenseId]
+      licenseId: [this.user.licenseId, Validators.required]
     })
   }
 

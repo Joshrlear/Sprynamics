@@ -2,7 +2,7 @@
   <div class="col-xs-12 col col-md-8">
     <div class="dashboard-card">
       <p class="dashboard-card-heading">Edit Profile</p>
-      <form class="ss-form was-validated" *ngIf="userForm" [formGroup]="userForm" (ngSubmit)="saveForm()" novalidate>
+      <form class="ss-form" *ngIf="userForm" [formGroup]="userForm" (ngSubmit)="saveForm()" novalidate>
         <div class="form-row">
           <div class="form-group col-md-6">
             <label for="firstName">First Name</label>

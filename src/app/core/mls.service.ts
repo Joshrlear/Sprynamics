@@ -7,7 +7,10 @@ export class MlsService {
 
   constructor(private firestore: FirestoreService) {}
 
-  public getListings(agentId) {
+  public async getListings(agentId) {
+    if (!agentId) {
+      return []
+    }
     return this.firestore.promiseColWithIds(`listings`, ref =>
       ref.where('agentId', '==', agentId)
     )

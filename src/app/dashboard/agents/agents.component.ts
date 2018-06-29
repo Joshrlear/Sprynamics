@@ -37,6 +37,17 @@ export class AgentsComponent implements OnInit {
 
   addAgent() {
     const dialogRef = this.dialog.open(AddAgentDialog)
+    dialogRef.afterClosed().subscribe(async agent => {
+      if (agent) {
+        console.log(agent)
+        const ref = this.firestore.col('users').ref.doc()
+        agent.licenseId = agent.id
+        agent.id = agent.uid = ref.id // set agent id to new user doc's id
+        agent.managers = { [this.uid]: true }
+        await this.firestore.set(`users/${ref.id}`, agent)
+        this.viewAgent(agent)
+      }
+    })
   }
 
   createAgent() {
@@ -54,7 +65,6 @@ export class AgentsComponent implements OnInit {
   }
 
   viewAgent(agent) {
-    let path
     this.router.navigate([`/profile/agents/${agent.id}`], {
       queryParams: { isCreated: agent.isCreated }
     })

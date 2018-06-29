@@ -16,15 +16,8 @@ import { TermsAndConditionsComponent } from './legal/terms-and-conditions/terms-
 import { PrivacyPolicyComponent } from './legal/privacy-policy/privacy-policy.component'
 import { SidenavComponent } from '#app/sidenav/sidenav.component'
 
-import { NgxsModule } from '@ngxs/store'
-import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin'
-import { NgxsLoggerPluginModule } from '@ngxs/logger-plugin'
-
-import { AppState } from './state/app.state';
-import { ProcessingWindowComponent } from './processing-window/processing-window.component'
-
 @NgModule({
-  declarations: [AppComponent, TermsAndConditionsComponent, PrivacyPolicyComponent, SidenavComponent, ProcessingWindowComponent],
+  declarations: [AppComponent, TermsAndConditionsComponent, PrivacyPolicyComponent, SidenavComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,

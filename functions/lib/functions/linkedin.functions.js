@@ -1,11 +1,22 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
-const cookieParser = require("cookie-parser");
 const nodeLinkedin = require("node-linkedin");
 const crypto = require("crypto");
+const fetch = require("node-fetch");
+const FormData = require("form-data");
 const OAUTH_SCOPES = ['r_basicprofile', 'r_emailaddress'];
+const REDIRECT_URI = 'https://sprynamics.firebaseapp.com/account/login';
+const { client_id, client_secret } = functions.config().linkedin;
 /**
  * Creates a configured LinkedIn API Client instance.
  */
@@ -19,17 +30,12 @@ function linkedInClient() {
  * verification.
  */
 exports.redirect = functions.https.onRequest((req, res) => {
-    const Linkedin = linkedInClient();
-    cookieParser()(req, res, () => {
-        const state = req.cookies.state || crypto.randomBytes(20).toString('hex');
-        console.log('Setting verification state:', state);
-        res.cookie('state', state.toString(), {
-            maxAge: 3600000,
-            secure: true,
-            httpOnly: true
-        });
-        Linkedin.auth.authorize(res, OAUTH_SCOPES, state.toString());
-    });
+    const state = crypto.randomBytes(20).toString('hex');
+    res.redirect(`https://www.linkedin.com/oauth/v2/authorization` +
+        `?response_type=code` +
+        `&client_id=${client_id}` +
+        `&redirect_uri=${REDIRECT_URI}` +
+        `&state=${'abc'}`);
 });
 /**
  * Exchanges a given LinkedIn auth code passed in the 'code' URL query parameter for a Firebase auth token.
@@ -37,51 +43,47 @@ exports.redirect = functions.https.onRequest((req, res) => {
  * The Firebase custom auth token is sent back in a JSONP callback function with function name defined by the
  * 'callback' query parameter.
  */
-exports.token = functions.https.onRequest((req, res) => {
+exports.token = functions.https.onRequest((req, res) => __awaiter(this, void 0, void 0, function* () {
     const Linkedin = linkedInClient();
     try {
-        return cookieParser()(req, res, () => {
-            if (!req.cookies.state) {
-                throw new Error('State cookie not set or expired. Maybe you took too long to authorize. Please try again.');
+        const form = new FormData();
+        form.append('grant_type', 'authorization_code');
+        form.append('code', req.query.code);
+        form.append('redirect_uri', REDIRECT_URI);
+        form.append('client_id', client_id);
+        form.append('client_secret', client_secret);
+        const results = yield fetch('https://www.linkedin.com/oauth/v2/accessToken', {
+            method: 'POST',
+            body: form
+        });
+        console.log('Received Access Token:', results.access_token);
+        const linkedin = Linkedin.init(results.access_token);
+        return linkedin.people.me((err, userResults) => __awaiter(this, void 0, void 0, function* () {
+            if (err) {
+                throw err;
             }
-            console.log('Received verification state:', req.cookies.state);
-            Linkedin.auth.authorize(OAUTH_SCOPES, req.cookies.state); // Makes sure the state parameter is set
-            console.log('Received auth code:', req.query.code);
-            console.log('Received state:', req.query.state);
-            Linkedin.auth.getAccessToken(res, req.query.code, req.query.state, (error, results) => {
-                if (error) {
-                    throw error;
-                }
-                console.log('Received Access Token:', results.access_token);
-                const linkedin = Linkedin.init(results.access_token);
-                linkedin.people.me((err, userResults) => {
-                    if (err) {
-                        throw err;
-                    }
-                    console.log('Auth code exchange result received:', userResults);
-                    // We have a LinkedIn access token and the user identity now.
-                    const accessToken = results.access_token;
-                    const linkedInUserID = userResults.id;
-                    const profilePic = userResults.pictureUrl;
-                    const userName = userResults.formattedName;
-                    const email = userResults.emailAddress;
-                    // Create a Firebase account and get the Custom Auth Token.
-                    return createFirebaseAccount(linkedInUserID, userName, profilePic, email, accessToken).then(firebaseToken => {
-                        // Serve an HTML page that signs the user in and updates the user profile.
-                        return res.type('application/javascript').send({
-                            token: firebaseToken
-                        });
-                    });
+            console.log('Auth code exchange result received:', userResults);
+            // We have a LinkedIn access token and the user identity now.
+            const accessToken = results.access_token;
+            const linkedInUserID = userResults.id;
+            const profilePic = userResults.pictureUrl;
+            const userName = userResults.formattedName;
+            const email = userResults.emailAddress;
+            // Create a Firebase account and get the Custom Auth Token.
+            yield createFirebaseAccount(linkedInUserID, userName, profilePic, email, accessToken).then(firebaseToken => {
+                // Serve an HTML page that signs the user in and updates the user profile.
+                return res.json({
+                    token: firebaseToken
                 });
             });
-        });
+        }));
     }
     catch (error) {
-        return res.jsonp({
+        return res.json({
             error: error.toString
         });
     }
-});
+}));
 /**
  * Creates a Firebase account with the given user profile and returns a custom auth token allowing
  * signing-in this account.
