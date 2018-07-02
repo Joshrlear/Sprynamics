@@ -42,14 +42,22 @@ export class LoginComponent implements OnInit {
            this.http.get('https://us-central1-sprynamics.cloudfunctions.net/token?code=' + linkedInAuthCode)
             .subscribe((res: any) => {
               console.log(res)
-              debugger;
-              return {};
+              if (res.token) {
+                this.afAuth.auth.signInWithCustomToken(res.token)
+                  .then((arg) => {
+                    console.log(arg)
+                      this.auth.linkedinLogin(arg).then(() => {
+                        this.router.navigate(['/profile']);
+                      })
+                  })
+                  .catch(err => {
+                    console.error(err)
+                  })
+              } else {
+                console.error(res);
+                window.alert("Error in the token Function:" + res.error)
+              }
             });
-          // fetch('https://us-central1-sprynamics.cloudfunctions.net/token?code=' + linkedInAuthCode, {
-          //   method: 'POST',
-          //   mode: 'no-cors'
-          // })
-
         } catch (err) {
           console.error(err)
           window.alert(err.message)

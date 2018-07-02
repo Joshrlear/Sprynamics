@@ -87,7 +87,7 @@ export const token = https.route('GET', async (req, res) => {
     })
   } catch (error) {
     return res.json({
-      error: error.toString
+      error: error
     })
   }
 })
