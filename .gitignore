@@ -44,3 +44,6 @@ testem.log
 Thumbs.db
 
 functions-old/
+
+# Credential
+functions/serviceAccountKey.json

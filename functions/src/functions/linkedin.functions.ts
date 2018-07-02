@@ -53,11 +53,14 @@ export const token = functions.https.onRequest(async (req, res) => {
     form.append('redirect_uri', REDIRECT_URI)
     form.append('client_id', client_id)
     form.append('client_secret', client_secret)
-    const results = await fetch('https://www.linkedin.com/oauth/v2/accessToken', {
-      method: 'POST',
-      body: form
-    })
-    console.log('Received Access Token:', results.access_token)
+    let url = 'https://www.linkedin.com/oauth/v2/accessToken?';
+    url += 'grant_type='+'authorization_code';
+    url += '&code='+req.query.code;
+    url += '&redirect_uri='+REDIRECT_URI;
+    url += '&client_id='+client_id;
+    url += '&client_secret='+client_secret;
+    const response = await fetch(url);
+    const results = await response.json();
     const linkedin = Linkedin.init(results.access_token)
     return linkedin.people.me(async (err, userResults) => {
       if (err) {
