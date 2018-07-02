@@ -55,6 +55,16 @@ export class AuthService {
     return this.afAuth.auth.signInWithEmailAndPassword(username, password)
   }
 
+  async linkedinLogin(credential) {
+    await this.updateUserData(credential.user, {
+      uid: credential.user.uid,
+      email: credential.user.email,
+      firstName: credential.user.displayName.split(' ')[0],
+      lastName: credential.user.displayName.split(' ')[1] || '',
+      brandColors: DEFAULT_BRAND_COLORS
+    })
+  }
+
   async googleLogin() {
     const provider = new firebase.auth.GoogleAuthProvider()
     provider.setCustomParameters({

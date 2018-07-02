@@ -1,10 +1,10 @@
 import * as functions from 'firebase-functions'
 import * as admin from 'firebase-admin'
-import * as cookieParser from 'cookie-parser'
 import * as nodeLinkedin from 'node-linkedin'
 import * as crypto from 'crypto'
 import * as fetch from 'node-fetch'
 import * as FormData from 'form-data'
+import * as https from '../controllers/https'
 
 const OAUTH_SCOPES = ['r_basicprofile', 'r_emailaddress']
 const REDIRECT_URI = 'https://sprynamics.firebaseapp.com/account/login'
@@ -27,7 +27,7 @@ function linkedInClient() {
  * Redirects the User to the LinkedIn authentication consent screen. Also the 'state' cookie is set for later state
  * verification.
  */
-export const redirect = functions.https.onRequest((req, res) => {
+export const redirect = https.route('GET', (req, res) => {
   const state = crypto.randomBytes(20).toString('hex')
   res.redirect(
     `https://www.linkedin.com/oauth/v2/authorization` +
@@ -44,7 +44,7 @@ export const redirect = functions.https.onRequest((req, res) => {
  * The Firebase custom auth token is sent back in a JSONP callback function with function name defined by the
  * 'callback' query parameter.
  */
-export const token = functions.https.onRequest(async (req, res) => {
+export const token = https.route('GET', async (req, res) => {
   const Linkedin = linkedInClient()
   try {
     const form = new FormData()
@@ -53,11 +53,14 @@ export const token = functions.https.onRequest(async (req, res) => {
     form.append('redirect_uri', REDIRECT_URI)
     form.append('client_id', client_id)
     form.append('client_secret', client_secret)
-    const results = await fetch('https://www.linkedin.com/oauth/v2/accessToken', {
-      method: 'POST',
-      body: form
-    })
-    console.log('Received Access Token:', results.access_token)
+    let url = 'https://www.linkedin.com/oauth/v2/accessToken?';
+    url += 'grant_type='+'authorization_code';
+    url += '&code='+req.query.code;
+    url += '&redirect_uri='+REDIRECT_URI;
+    url += '&client_id='+client_id;
+    url += '&client_secret='+client_secret;
+    const response = await fetch(url);
+    const results = await response.json();
     const linkedin = Linkedin.init(results.access_token)
     return linkedin.people.me(async (err, userResults) => {
       if (err) {
@@ -84,7 +87,7 @@ export const token = functions.https.onRequest(async (req, res) => {
     })
   } catch (error) {
     return res.json({
-      error: error.toString
+      error: error
     })
   }
 })
