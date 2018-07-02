@@ -37,8 +37,6 @@ export class LoginComponent implements OnInit {
       if (linkedInAuthCode) {
         console.log(linkedInAuthCode);
         try {
-
-          debugger;
            this.http.get('https://us-central1-sprynamics.cloudfunctions.net/token?code=' + linkedInAuthCode)
             .subscribe((res: any) => {
               console.log(res)
