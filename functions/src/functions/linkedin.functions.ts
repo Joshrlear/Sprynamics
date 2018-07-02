@@ -1,10 +1,10 @@
 import * as functions from 'firebase-functions'
 import * as admin from 'firebase-admin'
-import * as cookieParser from 'cookie-parser'
 import * as nodeLinkedin from 'node-linkedin'
 import * as crypto from 'crypto'
 import * as fetch from 'node-fetch'
 import * as FormData from 'form-data'
+import * as https from '../controllers/https'
 
 const OAUTH_SCOPES = ['r_basicprofile', 'r_emailaddress']
 const REDIRECT_URI = 'https://sprynamics.firebaseapp.com/account/login'
@@ -27,7 +27,7 @@ function linkedInClient() {
  * Redirects the User to the LinkedIn authentication consent screen. Also the 'state' cookie is set for later state
  * verification.
  */
-export const redirect = functions.https.onRequest((req, res) => {
+export const redirect = https.route('GET', (req, res) => {
   const state = crypto.randomBytes(20).toString('hex')
   res.redirect(
     `https://www.linkedin.com/oauth/v2/authorization` +
@@ -44,7 +44,7 @@ export const redirect = functions.https.onRequest((req, res) => {
  * The Firebase custom auth token is sent back in a JSONP callback function with function name defined by the
  * 'callback' query parameter.
  */
-export const token = functions.https.onRequest(async (req, res) => {
+export const token = https.route('GET', async (req, res) => {
   const Linkedin = linkedInClient()
   try {
     const form = new FormData()
