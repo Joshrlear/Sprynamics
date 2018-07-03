@@ -2,7 +2,11 @@ import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-account',
-  templateUrl: './account.component.html',
+  template: `
+    <div class="account-container">
+      <router-outlet></router-outlet>
+    </div>
+  `,
   styleUrls: ['./account.component.scss']
 })
 export class AccountComponent implements OnInit {

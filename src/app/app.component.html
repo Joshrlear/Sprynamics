@@ -1,8 +1,8 @@
 <div class="main-container">
 
   <mat-toolbar *ngIf="(auth.user | async) && router.url !== '/designer/admin'" class="app-toolbar" [class.transitioning]="isTransitioning">
-
     <mat-toolbar-row>
+
       <button *ngIf="auth.user | async" mat-button class="hamburger" (click)="sidenav.toggle()" title="Menu">
         <i class="fas fa-bars menu"></i>
       </button>
@@ -11,12 +11,7 @@
         <img *ngSwitchDefault src="assets/sprynamicsmark.png" height="36" title="Home" alt="Home">
       </a>
       <div class="top-menu">
-        <div class="top-menu-left">
-          <!-- <a routerLink="/" fragment="top-of-page" (click)="smoothScroll('top-of-page')" mat-button>Home</a>
-          <a routerLink="/" fragment="about-us" (click)="smoothScroll('about-us')" mat-button>About Us</a>
-          <a routerLink="/" fragment="contact-us" (click)="smoothScroll('contact-us')" mat-button>Contact Us</a> -->
-
-        </div>
+        <div class="top-menu-left"></div>
         <div class="top-menu-right">
           <a routerLink="designer" class="design-link" mat-button>{{ state.designState ? 'Continue Designing' : 'Start Designing' }}</a>
           <ng-container *ngIf="(auth.user | async) || {} as user">
@@ -33,11 +28,9 @@
                   <button class="dropdown-item" (click)="logout()" routerLink="/account/register">Logout</button>
                 </div>
               </div>
-
             </ng-template>
           </ng-container>
         </div>
-
       </div>
 
     </mat-toolbar-row>

@@ -184,7 +184,7 @@ export class ShippingComponent implements OnInit, OnDestroy {
         isMailingList: false
       })
     }
-    this.router.navigate(['/checkout/payment-method'])
+    this.router.navigate(['/designer/checkout/payment-method'])
   }
 
   isValid() {

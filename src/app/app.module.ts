@@ -15,6 +15,7 @@ import { AppComponent } from './app.component'
 import { TermsAndConditionsComponent } from './legal/terms-and-conditions/terms-and-conditions.component'
 import { PrivacyPolicyComponent } from './legal/privacy-policy/privacy-policy.component'
 import { SidenavComponent } from '#app/sidenav/sidenav.component'
+import {HttpClientModule} from '@angular/common/http';
 
 @NgModule({
   declarations: [AppComponent, TermsAndConditionsComponent, PrivacyPolicyComponent, SidenavComponent],
@@ -28,6 +29,7 @@ import { SidenavComponent } from '#app/sidenav/sidenav.component'
     AccountModule,
     CheckoutModule,
     DesignerModule,
+    HttpClientModule
     // NgxsModule.forRoot([
     //   RouterState,
     //   AppState
