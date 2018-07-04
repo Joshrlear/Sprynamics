@@ -109,7 +109,7 @@
       <p class="dashboard-card-heading" style="margin-left:12px;margin-top:6px;margin-bottom:6px;">Brand Colors</p>
       <app-colors *ngIf="user?.brandColors"
         [colors]="user?.brandColors"
-        (addColor)="addColor()" 
+        (addColor)="addColor()"
         (colorChange)="setColor($event)"
         (change)="saveColors()">
       </app-colors>
