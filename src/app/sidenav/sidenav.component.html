@@ -24,3 +24,9 @@
   <li><a routerLink="/profile/orders">Orders</a></li>
   <li><a routerLink="/profile/lists">Mailing Lists</a></li>
 </ul>
+
+<div class="divider" *ngIf="user.admin"></div>
+<ul class="sidebar-nav" *ngIf="user.admin">
+  <li><a href="#" routerLink="/admin/prices">Prices</a></li>
+  <li><a routerLink="/admin/users">Users</a></li>
+</ul>
