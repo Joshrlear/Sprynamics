@@ -45,6 +45,7 @@ const dialogs = [
 @NgModule({
   imports: modules,
   declarations: [...components, ...dialogs],
+  entryComponents: [...dialogs],
   exports: [...modules, ...components, ...dialogs]
 })
 export class SharedModule {}

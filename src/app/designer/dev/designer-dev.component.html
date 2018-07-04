@@ -69,7 +69,8 @@
     </div>
     <!-- canvas -->
     <app-fabric-canvas #canvas
-                       [loading]="processing"></app-fabric-canvas>
+                       [loading]="processing"
+                       (click)="clickObject($event)"></app-fabric-canvas>
     <div class="designer-view-save">
       <button id="save"
               class="btn btn-green"

@@ -1,49 +1,39 @@
-import { CheckoutService } from '#app/checkout/checkout.service'
-import { FabricCanvasComponent } from '#app/designer/fabric-canvas.component'
-import { DesignerViewComponent } from '#app/designer/view/designer-view.component'
-import { SidebarTabComponent } from '#app/designer/view/sidebar-tab.component'
-import { imageToDataUri } from '#app/helpers/img-to-data-uri'
-import { promiseImage } from '#app/helpers/promise-image'
-import { Design } from '#app/models/design.model'
-import {
-  newProductSizes,
-  newThumbnailSizes,
-  Product,
-  productSpecs
-} from '#app/models/product.model'
-import { AuthService } from '#core/auth.service'
-import { FirestoreService } from '#core/firestore.service'
-import { StateService } from '#core/state.service'
-import { StorageService } from '#core/storage.service'
-import { WebfontService } from '#core/webfont.service'
-import { DEFAULT_BRAND_COLORS } from '#models/brand-colors.model'
-import { DesignState } from '#models/design-state.model'
-import { User } from '#models/user.model'
-import {
-  AfterViewInit,
-  Component,
-  HostListener,
-  ViewChild
-} from '@angular/core'
-import { Router } from '@angular/router'
-import 'fabric'
-import * as jspdf from 'jspdf'
-import * as JSZip from 'jszip'
-import { first } from 'rxjs/operators'
+import { CheckoutService } from "#app/checkout/checkout.service"
+import { FabricCanvasComponent } from "#app/designer/fabric-canvas.component"
+import { ImageSelectDialog } from "#app/designer/image-select-dialog/image-select.dialog"
+import { DesignerViewComponent } from "#app/designer/view/designer-view.component"
+import { SidebarTabComponent } from "#app/designer/view/sidebar-tab.component"
+import { promiseImage } from "#app/helpers/promise-image"
+import { Design } from "#app/models/design.model"
+import { Product } from "#app/models/product.model"
+import { AuthService } from "#core/auth.service"
+import { FirestoreService } from "#core/firestore.service"
+import { StateService } from "#core/state.service"
+import { StorageService } from "#core/storage.service"
+import { WebfontService } from "#core/webfont.service"
+import { DEFAULT_BRAND_COLORS } from "#models/brand-colors.model"
+import { DesignState } from "#models/design-state.model"
+import { User } from "#models/user.model"
+import { CropDialog } from "#shared/crop-dialog/crop.dialog"
+import { AfterViewInit, Component, HostListener, ViewChild } from "@angular/core"
+import { MatDialog } from "@angular/material"
+import { Router } from "@angular/router"
+import "fabric"
+import { first } from "rxjs/operators"
 
 declare let fabric
 
 declare let jsPDF
 
 @Component({
-  selector: 'app-designer-dev',
-  templateUrl: './designer-dev.component.html',
-  styleUrls: ['./designer-dev.component.scss']
+  selector: "app-designer-dev",
+  templateUrl: "./designer-dev.component.html",
+  styleUrls: ["./designer-dev.component.scss"]
 })
 export class DesignerDevComponent implements AfterViewInit {
   @ViewChild(DesignerViewComponent) designerView: DesignerViewComponent
   @ViewChild(FabricCanvasComponent) fabricCanvas: FabricCanvasComponent
-  @ViewChild('designsTab') designsTab: SidebarTabComponent
+  @ViewChild("designsTab") designsTab: SidebarTabComponent
 
   designState: DesignState = {}
   agents: User[]
@@ -53,7 +43,7 @@ export class DesignerDevComponent implements AfterViewInit {
   loading = true
   processing = false
   checkingOut = false
-  viewSide: 'front' | 'back' = 'front'
+  viewSide: "front" | "back" = "front"
 
   selectedListing: any
   selectedProduct: Product
@@ -66,7 +56,8 @@ export class DesignerDevComponent implements AfterViewInit {
     private storage: StorageService,
     private webfont: WebfontService,
     private router: Router,
-    private state: StateService
+    private state: StateService,
+    private dialog: MatDialog
   ) {}
 
   async ngAfterViewInit() {
@@ -76,13 +67,8 @@ export class DesignerDevComponent implements AfterViewInit {
       console.log(user)
       this.user = user
       /* load agents */
-      const managedAgents = await this.firestore.promiseColWithIds<User>(
-        'users',
-        ref => ref.where(`managers.${user.uid}`, '==', true)
-      )
-      const createdAgents = await this.firestore.promiseColWithIds<User>(
-        `users/${user.uid}/agents`
-      )
+      const managedAgents = await this.firestore.promiseColWithIds<User>("users", ref => ref.where(`managers.${user.uid}`, "==", true))
+      const createdAgents = await this.firestore.promiseColWithIds<User>(`users/${user.uid}/agents`)
       this.agents = managedAgents.concat(createdAgents)
       this.selectedAgent = user
       /* set up design state */
@@ -96,15 +82,13 @@ export class DesignerDevComponent implements AfterViewInit {
         if (designState.design) {
           let fonts = designState.design.fonts
           if (!fonts || fonts.length === 0) {
-            fonts = ['Roboto']
+            fonts = ["Roboto"]
           }
           await this.webfont.load(fonts)
         }
         /* load canvas data */
         if (designState.canvasData) {
-          await this.fabricCanvas.loadFromJSON(
-            this.designState.canvasData.front
-          )
+          await this.fabricCanvas.loadFromJSON(this.designState.canvasData.front)
           await this.processCanvas()
         }
       } else {
@@ -127,14 +111,14 @@ export class DesignerDevComponent implements AfterViewInit {
     try {
       /* load fonts */
       if (!design.fonts || design.fonts.length === 0) {
-        design.fonts = ['Roboto']
+        design.fonts = ["Roboto"]
       }
       await this.webfont.load(design.fonts)
       /* fetch json data from url */
       this.designState.canvasData = await (await fetch(design.url)).json()
       /* load canvas from json */
       await this.fabricCanvas.loadFromJSON(this.designState.canvasData.front)
-      this.viewSide = 'front'
+      this.viewSide = "front"
       /* process canvas */
       await this.processCanvas()
     } catch (err) {
@@ -153,36 +137,20 @@ export class DesignerDevComponent implements AfterViewInit {
       this.designState.textFields = []
       this.designState.agentFields = []
       /* find objects */
-      this.designState.backgroundObj = this.fabricCanvas.findObjects(
-        obj => obj.isBackground,
-        true
-      )[0]
-      this.designState.boundBoxObj = this.fabricCanvas.findObjects(
-        obj => obj.isBoundBox,
-        true
-      )[0]
-      this.designState.addressObj = this.fabricCanvas.findObjects(
-        obj => obj.textContentType === 'address'
-      )[0]
+      this.designState.backgroundObj = this.fabricCanvas.findObjects(obj => obj.isBackground, true)[0]
+      this.designState.boundBoxObj = this.fabricCanvas.findObjects(obj => obj.isBoundBox, true)[0]
+      this.designState.addressObj = this.fabricCanvas.findObjects(obj => obj.textContentType === "address")[0]
       console.log(this.designState.addressObj)
       /* map text fields */
       const fieldFromObject = obj => ({
         obj,
         name: obj.textFieldName || obj.textUserData
       })
-      this.designState.textFields = this.fabricCanvas
-        .findObjects(obj => obj.userEditable)
-        .map(fieldFromObject)
-      this.designState.agentFields = this.fabricCanvas
-        .findObjects(obj => obj.textContentType === 'data')
-        .map(fieldFromObject)
-      this.designState.propertyFields = this.fabricCanvas
-        .findObjects(obj => obj.textContentType === 'property')
-        .map(fieldFromObject)
+      this.designState.textFields = this.fabricCanvas.findObjects(obj => obj.userEditable).map(fieldFromObject)
+      this.designState.agentFields = this.fabricCanvas.findObjects(obj => obj.textContentType === "data").map(fieldFromObject)
+      this.designState.propertyFields = this.fabricCanvas.findObjects(obj => obj.textContentType === "property").map(fieldFromObject)
       /* find property images */
-      this.designState.propertyImages = this.fabricCanvas.findObjects(
-        obj => obj.isUserImage
-      )
+      this.designState.propertyImages = this.fabricCanvas.findObjects(obj => obj.isUserImage)
       /* clip canvas to bound box */
       this.fabricCanvas.canvas.clipTo = ctx => {
         const c = this.designState.boundBoxObj.getCoords()
@@ -209,27 +177,27 @@ export class DesignerDevComponent implements AfterViewInit {
           obj.visible = false
         }
         /* set brand colors */
-        if (obj.brandColorRole && obj.brandColorRole !== 'none') {
+        if (obj.brandColorRole && obj.brandColorRole !== "none") {
           const color = this.designState.brandColors[obj.brandColorRole]
           obj.set({ fill: color })
         }
         /* set pointer cursor for user images */
-        obj.hoverCursor = obj.isUserImage ? 'pointer' : 'default'
+        obj.hoverCursor = obj.isUserImage ? "pointer" : "default"
         /* inject user images */
         if (obj.isLogo) {
           let src
           switch (obj.logoType) {
-            case 'headshot':
+            case "headshot":
               src = this.selectedAgent.avatarUrl
               break
-            case 'brokerage':
+            case "brokerage":
               src = this.selectedAgent.brokerageLogoUrl
               break
-            case 'company':
+            case "company":
               src = this.selectedAgent.companyLogoUrl
               break
             default:
-              src = '/assets/logo.png'
+              src = "/assets/logo.png"
           }
           const img = await promiseImage(src)
           const width = obj.width * obj.scaleX
@@ -253,13 +221,11 @@ export class DesignerDevComponent implements AfterViewInit {
     this.processing = false
   }
 
-  async setViewSide(viewSide: 'front' | 'back') {
+  async setViewSide(viewSide: "front" | "back") {
     try {
       this.viewSide = viewSide
       this.processing = true
-      await this.fabricCanvas.loadFromJSON(
-        this.designState.canvasData[viewSide]
-      )
+      await this.fabricCanvas.loadFromJSON(this.designState.canvasData[viewSide])
       await this.processCanvas()
       this.processing = false
     } catch (err) {
@@ -268,7 +234,52 @@ export class DesignerDevComponent implements AfterViewInit {
     }
   }
 
-  @HostListener('window:resize', ['$event'])
+  clickObject(obj) {
+    if (!obj.isUserImage) {
+      return
+    }
+    console.log(obj)
+    console.log(this.selectedListing)
+    const imageDialogRef = this.dialog.open(ImageSelectDialog, {
+      data: {
+        listing: this.selectedListing
+      }
+    })
+    imageDialogRef.afterClosed().subscribe(photo => {
+      if (photo) {
+        const cropDialogRef = this.dialog.open(CropDialog, {
+          data: {
+            url: photo,
+            width: obj.width * obj.scaleX,
+            height: obj.height * obj.scaleY
+          }
+        })
+        cropDialogRef.afterClosed().subscribe(croppedPhoto => {
+          obj.setSrc(croppedPhoto, () => {
+            console.log("done")
+            // scale x clip paths
+            obj.cx1 *= obj.scaleX
+            obj.cx2 *= obj.scaleX
+            obj.cx3 *= obj.scaleX
+            obj.cx4 *= obj.scaleX
+            // scale y clip paths
+            obj.cy1 *= obj.scaleY
+            obj.cy2 *= obj.scaleY
+            obj.cy3 *= obj.scaleY
+            obj.cy4 *= obj.scaleY
+            // reset scale
+            obj.set({
+              scaleX: 1,
+              scaleY: 1
+            })
+            this.fabricCanvas.render()
+          })
+        })
+      }
+    })
+  }
+
+  @HostListener("window:resize", ["$event"])
   onResize(event?) {
     this.fabricCanvas.zoomToFit(this.designState.boundBoxObj)
   }
@@ -277,9 +288,7 @@ export class DesignerDevComponent implements AfterViewInit {
     if (
       !this.selectedProduct ||
       !this.designState.canvasData ||
-      confirm(
-        'Are you sure you wish to change products? You will lose your current design.'
-      )
+      confirm("Are you sure you wish to change products? You will lose your current design.")
     ) {
       const isFirstTime = !this.selectedProduct
       this.selectedProduct = product
@@ -309,12 +318,12 @@ export class DesignerDevComponent implements AfterViewInit {
 
   updateAgentFields() {
     this.designState.agentFields.forEach(field => {
-      if (field.obj.textUserData === 'name') {
-        const firstName = this.selectedAgent.firstName || ''
-        const lastName = this.selectedAgent.lastName || ''
-        field.obj.text = firstName + (lastName ? ' ' + lastName : '')
+      if (field.obj.textUserData === "name") {
+        const firstName = this.selectedAgent.firstName || ""
+        const lastName = this.selectedAgent.lastName || ""
+        field.obj.text = firstName + (lastName ? " " + lastName : "")
       } else {
-        field.obj.text = this.selectedAgent[field.obj.textUserData] || ''
+        field.obj.text = this.selectedAgent[field.obj.textUserData] || ""
       }
     })
     this.fabricCanvas.render()
@@ -322,7 +331,7 @@ export class DesignerDevComponent implements AfterViewInit {
 
   async saveAndContinue() {
     this.checkingOut = true
-    this.router.navigate(['/designer/checkout/shipping-info'])
+    this.router.navigate(["/designer/checkout/shipping-info"])
     // this.processing = true
     // this.designState.canvasData[
     //   this.viewSide

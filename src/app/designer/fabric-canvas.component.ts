@@ -1,7 +1,7 @@
 import { fabricObjectFields } from "#app/designer/fabric-object-fields"
 import { productSpecs } from "#app/models/product.model"
 import { WebfontService } from "#core/webfont.service"
-import { AfterViewInit, Component, ElementRef, Input, ViewChild } from "@angular/core"
+import { AfterViewInit, Component, ElementRef, Input, ViewChild, EventEmitter, Output } from "@angular/core"
 import "fabric"
 import "webfontloader"
 declare let fabric
@@ -48,6 +48,7 @@ declare let WebFont
 export class FabricCanvasComponent implements AfterViewInit {
   @ViewChild("shell") shell: ElementRef
   @Input() loading: boolean = true
+  @Output() click = new EventEmitter()
   canvas: any
 
   constructor(private webfont: WebfontService) {}
@@ -57,6 +58,11 @@ export class FabricCanvasComponent implements AfterViewInit {
       width: this.shell.nativeElement.clientWidth,
       height: this.shell.nativeElement.clientHeight,
       preserveObjectStacking: true
+    })
+    this.canvas.on('mouse:down', event => {
+      if (event.target) {
+        this.click.emit(event.target)
+      }
     })
   }
 
