@@ -48,7 +48,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
         })
     } else {
       this.userSub = this.auth.user.subscribe(user => {
-        this.user = user
+        this.user = user;
+        this.uploadLinkedinAvtar(this.user.avatarUrl);
         if (!user.brandColors) {
           this.initBrandColors(user)
         }
@@ -113,16 +114,13 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   uploadAvatar(file: File) {
-
     const extension = file.name.split('.').pop()
     const path = `avatars/${this.user.uid}.${extension}`
-    console.log("path", path);
     this.storage
       .putFile(file, path)
       .then()
       .then(_ => {
         this.storage.getDownloadURL(path).subscribe(url => {
-          console.log("url", url);
           this.firestore.update(`users/${this.user.uid}`, { avatarUrl: url })
         })
       })
@@ -143,12 +141,13 @@ export class ProfileComponent implements OnInit, OnDestroy {
         for ( let i = 0; i < binary.length; i++) {
           array.push(binary.charCodeAt(i));
         }
+        this.blob = new Blob( [new Uint8Array(array)], {type: 'image/jpeg'});
+        this.file = new File([this.blob], 'abc', {type: 'image/jpeg', lastModified: Date.now()});
+        const imgPath = `avatars/${this.user.uid}.jpeg`
+        this.storage.putFile(this.file, imgPath);
       };
-      this.storage.putFile(this.file, path);
     };
     request.send();
-    this.blob = new Blob([new Uint8Array(array)], {type: 'image/jpeg'});
-    this.file = new File([this.blob], 'abc', {type: 'image/jpeg', lastModified: Date.now()});
   }
 
   uploadCompany(file: File) {
