@@ -10,6 +10,7 @@ import { DashboardModule } from './dashboard/dashboard.module'
 import { AccountModule } from './account/account.module'
 import { CheckoutModule } from './checkout/checkout.module'
 import { DesignerModule } from './designer/designer.module'
+import { AdminModule } from './admin/admin.module';
 
 import { AppComponent } from './app.component'
 import { TermsAndConditionsComponent } from './legal/terms-and-conditions/terms-and-conditions.component'
@@ -29,6 +30,7 @@ import {HttpClientModule} from '@angular/common/http';
     AccountModule,
     CheckoutModule,
     DesignerModule,
+    AdminModule,
     HttpClientModule
     // NgxsModule.forRoot([
     //   RouterState,

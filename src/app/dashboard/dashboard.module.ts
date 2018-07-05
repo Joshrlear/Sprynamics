@@ -17,7 +17,7 @@ const routes: Routes = [
   { path: 'agents/:agentId', component: ViewAgentComponent },
   { path: 'orders', component: OrdersComponent },
   { path: 'lists', component: ListsComponent },
-  { path: 'admin', component: AdminComponent }
+  // { path: 'admin', component: AdminComponent }
 ]
 
 @NgModule({
