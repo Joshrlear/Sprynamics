@@ -10,7 +10,7 @@ import 'rxjs/add/operator/do'
 import { AuthService } from './auth.service'
 
 @Injectable()
-export class AuthGuard implements CanActivate {
+export class AdminGuard implements CanActivate {
   constructor(private auth: AuthService, private router: Router) {}
 
   canActivate(
@@ -24,6 +24,9 @@ export class AuthGuard implements CanActivate {
         if (!isAdmin) {
           alert('Only administrators can access this page.')
           this.router.navigate(['/'])
+          return false;
+        } else {
+          return true;
         }
       })
   }
