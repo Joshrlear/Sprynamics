@@ -1,14 +1,16 @@
-import { StorageService } from '#core/storage.service'
+import { StorageService } from '#core/storage.service';
 import {
   BrandColorChangeEvent,
   DEFAULT_BRAND_COLORS
-} from '#models/brand-colors.model'
-import { User } from '#models/user.model'
+} from '#models/brand-colors.model';
+import { User } from '#models/user.model';
 import { Component, Input, OnInit, OnDestroy } from '@angular/core'
-import { FormBuilder, FormGroup, Validators } from '@angular/forms'
-import { Observable, Subscription } from 'rxjs'
-import { AuthService } from '../../core/auth.service'
-import { FirestoreService } from '../../core/firestore.service'
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Observable, Subscription } from 'rxjs';
+import { AuthService } from '#core/auth.service';
+import { FirestoreService } from '#core/firestore.service';
+import { CropDialog } from '#app/shared/crop-dialog/crop.dialog';
+import { MatDialog } from '@angular/material'
 
 @Component({
   selector: 'app-profile',
@@ -30,7 +32,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
     private auth: AuthService,
     private firestore: FirestoreService,
     private storage: StorageService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit() {
@@ -177,6 +180,37 @@ export class ProfileComponent implements OnInit, OnDestroy {
             brokerageLogoUrl: url
           })
         })
+      })
+  }
+
+  openDialog(dataURL, imageType) {
+    const dialogRef = this.dialog.open(CropDialog, {
+      data: {
+        url: dataURL,
+        width: 192,
+        height: 192
+      }
+    });
+    dialogRef
+      .afterClosed()
+      .take(1)
+      .subscribe(data => {
+        if (data) {
+          const arr = [];
+          const binary = atob(data.split(',')[1]);
+          for ( let i = 0; i < binary.length; i++) {
+            arr.push(binary.charCodeAt(i));
+          }
+          const blob = new Blob( [new Uint8Array(arr)], {type: 'image/jpg'});
+          const file = new File([blob], 'temp.jpg', {type: 'image/jpg', lastModified: Date.now()});
+          if (imageType === 'profile') {
+            this.uploadAvatar(file);
+          } else if (imageType === 'companyLogo') {
+            this.uploadCompany(file);
+          } else if (imageType === 'brokerageLogo') {
+            this.uploadBrokerage(file);
+          }
+        }
       })
   }
 }
