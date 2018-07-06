@@ -33,6 +33,7 @@ export class ShippingComponent implements OnInit, OnDestroy {
   mailingListId: string
 
   shippingForm: FormGroup
+  order: Order
 
   constructor(
     public auth: AuthService,
@@ -95,6 +96,8 @@ export class ShippingComponent implements OnInit, OnDestroy {
 
   loadOrder() {
     this.checkout.order.take(1).subscribe((order: Order) => {
+      this.order = order
+      console.log(this.order.product)
       if (order.shipping) {
         this.buildForm(order.shipping)
       } else {
