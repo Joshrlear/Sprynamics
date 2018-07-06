@@ -8,18 +8,22 @@ import { AngularFirestore } from 'angularfire2/firestore'
 import * as firebase from 'firebase/app'
 import { Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
+import {StorageService} from '#core/storage.service';
+
+
 
 @Injectable()
 export class AuthService {
   authState: Observable<firebase.User>
   user: Observable<User>
-
   constructor(
     private afAuth: AngularFireAuth,
     private afs: AngularFirestore,
     private firestore: FirestoreService,
-    private router: Router
+    private storage: StorageService,
+    private router: Router,
   ) {
+
     // Get auth data, then get firestore user document || null
     this.authState = this.afAuth.authState
     this.user = this.afAuth.authState.pipe(
@@ -53,6 +57,17 @@ export class AuthService {
 
   emailLogin(username: string, password: string) {
     return this.afAuth.auth.signInWithEmailAndPassword(username, password)
+  }
+
+  async linkedinLogin(credential) {
+    await this.updateUserData(credential.user, {
+      uid: credential.user.uid,
+      email: credential.user.email,
+      firstName: credential.user.displayName.split(' ')[0],
+      lastName: credential.user.displayName.split(' ')[1] || '',
+      brandColors: DEFAULT_BRAND_COLORS,
+      avatarUrl: credential.user.photoURL
+    })
   }
 
   async googleLogin() {

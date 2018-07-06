@@ -1,7 +1,14 @@
-import * as functions from 'firebase-functions'
+//import * as functions from 'firebase-functions'
+const functions = require('firebase-functions');
 import * as admin from 'firebase-admin'
 
-admin.initializeApp(functions.config().firebase)
+const serviceAccount = require("../serviceAccountKey.json");
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://sprynamics.firebaseio.com"
+});
+//admin.initializeApp(functions.config().firebase);
 
 export * from './functions/email.functions'
 export * from './functions/braintree.functions'

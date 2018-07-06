@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core'
-import { FormGroup, FormBuilder, Validators } from '@angular/forms'
-import { Router, ActivatedRoute } from '@angular/router'
+import {Component, OnInit} from '@angular/core'
+import {FormGroup, FormBuilder, Validators} from '@angular/forms'
+import {Router, ActivatedRoute} from '@angular/router'
 
-import { AuthService } from '../../core/auth.service'
-import { AngularFireAuth } from 'angularfire2/auth'
-
+import {AuthService} from '../../core/auth.service'
+import {AngularFireAuth} from 'angularfire2/auth'
+import { HttpClient } from '@angular/common/http';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -15,13 +15,12 @@ export class LoginComponent implements OnInit {
 
   error: string
 
-  constructor(
-    public fb: FormBuilder,
-    public auth: AuthService,
-    private router: Router,
-    private route: ActivatedRoute,
-    private afAuth: AngularFireAuth
-  ) {}
+  constructor(public fb: FormBuilder,
+              public auth: AuthService,
+              private router: Router,
+              private route: ActivatedRoute,
+              private afAuth: AngularFireAuth,
+              private http: HttpClient) {}
 
   ngOnInit() {
     this.error = ''
@@ -36,16 +35,27 @@ export class LoginComponent implements OnInit {
         return
       }
       if (linkedInAuthCode) {
-        console.log(linkedInAuthCode)
-        const form = new FormData()
-        form.append('code', linkedInAuthCode)
+        console.log(linkedInAuthCode);
         try {
-          const linkedInToken = await fetch('https://us-central1-sprynamics.cloudfunctions.net/token', {
-            method: 'POST',
-            mode: 'no-cors',
-            body: form
-          })
-          console.log(linkedInToken)
+           this.http.get('https://us-central1-sprynamics.cloudfunctions.net/token?code=' + linkedInAuthCode)
+            .subscribe((res: any) => {
+              console.log(res)
+              if (res.token) {
+                this.afAuth.auth.signInWithCustomToken(res.token)
+                  .then((arg) => {
+                    console.log(arg)
+                      this.auth.linkedinLogin(arg).then(() => {
+                        this.router.navigate(['/profile']);
+                      })
+                  })
+                  .catch(err => {
+                    console.error(err)
+                  })
+              } else {
+                console.error(res);
+                window.alert("Error in the token Function:" + res.error)
+              }
+            });
         } catch (err) {
           console.error(err)
           window.alert(err.message)
@@ -62,6 +72,7 @@ export class LoginComponent implements OnInit {
   get email() {
     return this.loginForm.get('email')
   }
+
   get password() {
     return this.loginForm.get('password')
   }
