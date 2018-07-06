@@ -25,7 +25,7 @@ export class CropDialog implements OnInit {
     this.cropper = new Cropper(image, {
       dragMode: 'move',
       viewMode: 1,
-      aspectRatio: 1,
+      aspectRatio: this.data.width / this.data.height,
       cropBoxResizable: true,
 
       ready: () => {
@@ -49,7 +49,7 @@ export class CropDialog implements OnInit {
       height: this.data.height
     });
 
-    this.dialogRef.close(croppedCanvas.toDataURL());
+    this.dialogRef.close(croppedCanvas.toDataURL('image/png'));
   }
 
   cancel() {
