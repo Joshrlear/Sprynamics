@@ -81,6 +81,7 @@
         <p>Your Profile Photo</p>
         <button class="btn btn-link" (click)="profilePhotoInput.click()">Upload New Image</button>
         <input type="file" #profilePhotoInput style="display:none" (change)="uploadAvatar(profilePhotoInput.files[0])" accept="image/*">
+        <button class="btn btn-link" (click)="openDialog(user.avatarUrl, 'profile')" *ngIf="user?.avatarUrl">Crop Image</button>
       </div>
     </div>
     <div class="row" style="margin:0">
@@ -91,6 +92,7 @@
             <p>Company Logo</p>
             <button class="btn btn-link" (click)="companyLogoInput.click()">Upload New Image</button>
             <input type="file" #companyLogoInput style="display:none" (change)="uploadCompany(companyLogoInput.files[0])" accept="image/*">
+            <button class="btn btn-link" (click)="openDialog(user.companyLogoUrl, 'companyLogo')" *ngIf="user?.companyLogoUrl">Crop Image</button>
           </div>
         </div>
       </div>
@@ -101,6 +103,7 @@
             <p>Brokerage Logo</p>
             <button class="btn btn-link" (click)="brokerageLogoInput.click()">Upload New Image</button>
             <input type="file" #brokerageLogoInput style="display:none" (change)="uploadBrokerage(brokerageLogoInput.files[0])" accept="image/*">
+            <button class="btn btn-link" (click)="openDialog(user.brokerageLogoUrl, 'brokerageLogo')" *ngIf="user?.brokerageLogoUrl">Crop Image</button>
           </div>
         </div>
       </div>

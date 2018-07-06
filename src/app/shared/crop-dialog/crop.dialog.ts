@@ -26,7 +26,7 @@ export class CropDialog implements OnInit {
       dragMode: 'move',
       viewMode: 1,
       aspectRatio: this.data.width / this.data.height,
-      cropBoxResizable: false,
+      cropBoxResizable: true,
 
       ready: () => {
         this.cropper.setCropBoxData({
