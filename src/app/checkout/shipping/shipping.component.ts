@@ -125,7 +125,8 @@ export class ShippingComponent implements OnInit, OnDestroy {
       address2: [obj.address2 || ''],
       city: [obj.city || '', Validators.required],
       state: [obj.state || '', Validators.required],
-      zipCode: [obj.zipCode || '', Validators.required]
+      zipCode: [obj.zipCode || '', Validators.required],
+      mailingListId: ['']
     })
   }
 
