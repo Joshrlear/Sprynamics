@@ -8,7 +8,7 @@ export class NavigationService {
   constructor(private router: Router) {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
-        if (event.url.startsWith('/profile')) {
+        if (event.url.startsWith('/profile') || event.url.startsWith('/admin')) {
           this.isSideNavDash = true
         } else {
           this.isSideNavDash = false
