@@ -1,7 +1,6 @@
 import { SharedModule } from '#app/shared/shared.module'
 import { NgModule } from '@angular/core'
 import { RouterModule, Routes } from '@angular/router'
-import { AdminComponent } from './admin/admin.component'
 import { AddAgentDialog } from './agents/add-agent-dialog/add-agent.dialog'
 import { AgentsComponent } from './agents/agents.component'
 import { ImportAgentsDialog } from './agents/import-agents-dialog/import-agents.dialog'
@@ -12,12 +11,13 @@ import { OrdersComponent } from './orders/orders.component'
 import { ProfileComponent } from './profile/profile.component'
 
 const routes: Routes = [
-  { path: '', component: ProfileComponent },
-  { path: 'agents', component: AgentsComponent },
-  { path: 'agents/:agentId', component: ViewAgentComponent },
-  { path: 'orders', component: OrdersComponent },
-  { path: 'lists', component: ListsComponent },
-  // { path: 'admin', component: AdminComponent }
+  { path: '', component: DashboardComponent, children: [
+    { path: '', component: ProfileComponent },
+    { path: 'agents', component: AgentsComponent },
+    { path: 'agents/:agentId', component: ViewAgentComponent },
+    { path: 'orders', component: OrdersComponent },
+    { path: 'lists', component: ListsComponent }
+  ]}
 ]
 
 @NgModule({
@@ -30,7 +30,6 @@ const routes: Routes = [
     ProfileComponent,
     AddAgentDialog,
     ViewAgentComponent,
-    AdminComponent,
     ImportAgentsDialog
   ],
   entryComponents: [AddAgentDialog, ImportAgentsDialog]

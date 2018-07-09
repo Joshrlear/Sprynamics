@@ -1,6 +1,9 @@
+<h2>Prices</h2>
+<br>
+
 <div class="header-table">
-  Upload pricing CSV:
-<input #fileInput type="file" accept=".csv" (change)="uploadPricing(fileInput.files[0])">
+  <button class="btn green" (click)="fileInput.click()">Upload pricing sheet</button>
+  <input #fileInput type="file" accept=".csv" hidden=true (change)="uploadPricing(fileInput.files[0])">
 </div>
 <div class="row">
   <table class="table table-admin" *ngIf="prices?.flyer">
