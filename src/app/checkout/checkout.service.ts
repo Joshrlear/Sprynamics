@@ -48,7 +48,7 @@ export class CheckoutService {
     return new Promise(async (resolve, reject) => {
       // load pricing information
       this.firestore
-        .doc$("_var/pricing")
+        .doc$('_var/pricing')
         .take(1)
         .subscribe((pricing: any) => {
           this.pricing = pricing
@@ -159,35 +159,19 @@ export class CheckoutService {
   }
 
   calculatePricing(amt: number) {
-    const product = this._order.getValue().product || "postcard"
+    const product = this._order.getValue().product || "postcard";
     // round up to the nearest 50
-    const roundedQuantity = Math.ceil(amt / 50) * 50
-    const quantityPosition = roundedQuantity / 50
-    const priceForQuantity = parseFloat(this.pricing[product][quantityPosition])
+    const roundedQuantity = Math.ceil(amt / 50) * 50;
+    const quantityPosition = roundedQuantity / 50;
+    const priceForQuantity = parseFloat(this.pricing[product][quantityPosition]);
 
-    const pricing: any = {}
+    const pricing: any = {};
     if (!amt) {
-      pricing.subtotal = 0
-      pricing.shipping = 0
-      pricing.total = 0
-      return pricing
+      pricing.total = 0;
+      return pricing;
     }
-    amt *= 0.99
-    amt += 20 // design cost
-    pricing.subtotal = priceForQuantity
-    if (amt <= 15) pricing.shipping = 4.99
-    else if (amt <= 20) pricing.shipping = 5.99
-    else if (amt <= 30) pricing.shipping = 6.49
-    else if (amt <= 50) pricing.shipping = 6.99
-    else if (amt <= 70) pricing.shipping = 7.99
-    else if (amt <= 90) pricing.shipping = 8.49
-    else if (amt <= 150) pricing.shipping = 12.99
-    else if (amt <= 200) pricing.shipping = 15.49
-    else if (amt <= 300) pricing.shipping = 16.99
-    else if (amt <= 500) pricing.shipping = 23.99
-    else pricing.shipping = 23.99
-    pricing.total = pricing.subtotal + pricing.shipping
+    pricing.total = priceForQuantity;
 
-    return pricing
+    return pricing;
   }
 }
