@@ -21,19 +21,20 @@ import { Observable, Subscription } from 'rxjs'
   styleUrls: ['./shipping.component.scss']
 })
 export class ShippingComponent implements OnInit, OnDestroy {
-  singleAddress = true
-  isMailingList = false
+  singleAddress = true;
+  isMailingList = false;
 
-  @ViewChild('quantity') quantityInput: ElementRef
+  @ViewChild('quantity') quantityInput: ElementRef;
 
-  userSub: Subscription
-  user: any
+  userSub: Subscription;
+  user: any;
 
-  lists: Observable<any[]>
-  mailingListId: string
+  lists: Observable<any[]>;
+  mailingListId: string;
+  mailingList: any;
 
-  shippingForm: FormGroup
-  order: Order
+  shippingForm: FormGroup;
+  order: Order;
 
   constructor(
     public auth: AuthService,
@@ -46,7 +47,7 @@ export class ShippingComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.userSub = this.auth.user.subscribe(user => {
-      console.log(user)
+      console.log(user);
       if (!user.currentOrder) {
         this.router.navigate(['/products'])
       }
@@ -130,13 +131,19 @@ export class ShippingComponent implements OnInit, OnDestroy {
   }
 
   chooseSingleAddress() {
-    this.singleAddress = true
-    this.isMailingList = false
+    this.singleAddress = true;
+    this.isMailingList = false;
+    if (this.quantityInput.nativeElement.value) {
+      this.updateQuantity(this.quantityInput.nativeElement.value);
+    }
   }
 
   chooseMailingList() {
-    this.singleAddress = false
-    this.isMailingList = true
+    this.singleAddress = false;
+    this.isMailingList = true;
+    if (this.mailingList) {
+      this.updateQuantity(this.mailingList.rowCount);
+    }
   }
 
   uploadList(file: File) {
@@ -160,6 +167,7 @@ export class ShippingComponent implements OnInit, OnDestroy {
       .doc$(`lists/${this.mailingListId}`)
       .take(1)
       .subscribe((mailingList: any) => {
+        this.mailingList = mailingList;
         this.updateQuantity(mailingList.rowCount)
       })
   }
@@ -169,8 +177,6 @@ export class ShippingComponent implements OnInit, OnDestroy {
     const pricing = this.checkout.calculatePricing(quantity)
     this.checkout.updateOrder({
       quantity,
-      subtotal: pricing.subtotal,
-      shippingCost: pricing.shipping,
       total: pricing.total
     })
   }
