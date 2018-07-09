@@ -11,10 +11,12 @@ import { OrderSummaryComponent } from './order-summary/order-summary.component';
 import { OrderReceiptComponent } from './order-receipt/order-receipt.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'shipping-info', pathMatch: 'full' },
-  { path: 'shipping-info', component: ShippingComponent },
-  { path: 'payment-method', component: PaymentComponent },
-  { path: 'confirm-order', component: ConfirmComponent },
+  { path: '', component: CheckoutComponent, children: [
+    { path: '', redirectTo: 'shipping-info', pathMatch: 'full' },
+    { path: 'shipping-info', component: ShippingComponent },
+    { path: 'payment-method', component: PaymentComponent },
+    { path: 'confirm-order', component: ConfirmComponent },
+  ]}
 ]
 
 @NgModule({

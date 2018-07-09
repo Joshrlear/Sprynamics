@@ -24,7 +24,6 @@ const routes: Routes = [
     children: [
       {
         path: 'checkout',
-        component: CheckoutComponent,
         loadChildren: '../checkout/checkout.module#CheckoutModule'
       }
     ]
