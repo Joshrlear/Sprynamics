@@ -25,7 +25,7 @@ export class AuthGuard implements CanActivate {
       .do(loggedIn => {
         if (!loggedIn) {
           console.log('You must be logged in to do that!')
-          this.router.navigate(['/account/register'])
+          this.router.navigate(['/account/login'])
         }
       })
   }
