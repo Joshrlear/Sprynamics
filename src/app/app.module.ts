@@ -11,6 +11,10 @@ import { TermsAndConditionsComponent } from "./legal/terms-and-conditions/terms-
 import { PrivacyPolicyComponent } from "./legal/privacy-policy/privacy-policy.component"
 import { SidenavComponent } from "#app/sidenav/sidenav.component"
 import { HttpClientModule } from "@angular/common/http"
+import { NgxsLoggerPluginModule } from "@ngxs/logger-plugin";
+import { NgxsReduxDevtoolsPluginModule } from "@ngxs/devtools-plugin";
+import { NgxsModule } from "@ngxs/store";
+import { AppState } from '#app/checkout/app.state';
 
 @NgModule({
   declarations: [AppComponent, TermsAndConditionsComponent, PrivacyPolicyComponent, SidenavComponent],
@@ -20,12 +24,11 @@ import { HttpClientModule } from "@angular/common/http"
     CoreModule,
     SharedModule,
     HttpClientModule,
-    // NgxsModule.forRoot([
-    //   RouterState,
-    //   AppState
-    // ]),
-    // NgxsReduxDevtoolsPluginModule.forRoot(),
-    // NgxsLoggerPluginModule.forRoot()
+    NgxsModule.forRoot([
+      AppState
+    ]),
+    NgxsReduxDevtoolsPluginModule.forRoot(),
+    NgxsLoggerPluginModule.forRoot(),
     AppRoutingModule
   ],
   bootstrap: [AppComponent]

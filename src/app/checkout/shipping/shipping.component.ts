@@ -14,6 +14,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { MatDialog } from '@angular/material'
 import { Router } from '@angular/router'
 import { Observable, Subscription } from 'rxjs'
+import { Store, Select } from "@ngxs/store";
 
 @Component({
   selector: 'app-shipping',
@@ -35,6 +36,9 @@ export class ShippingComponent implements OnInit, OnDestroy {
 
   shippingForm: FormGroup;
   order: Order;
+
+  @Select(state => state.app.user) user$;
+  @Select(state => state.app.order) order$;
 
   constructor(
     public auth: AuthService,

@@ -7,11 +7,17 @@ import { FirestoreService } from "#core/firestore.service"
 import { Router } from "@angular/router"
 import { AngularFirestore } from "angularfire2/firestore"
 import { StorageService } from "#core/storage.service"
+import { SetUser, UpdateUser, CreateOrder, UpdateOrder, SubmitOrder } from "#app/checkout/app.actions";
+import { Store, Select } from "@ngxs/store";
 
 @Injectable()
 export class CheckoutService {
   private _order = new BehaviorSubject<Order>({})
   public order = this._order.asObservable()
+
+  @Select(state => state.app.order) order$;
+  @Select(state => state.app.user) user$;
+  private orderState: any;
 
   private _braintreeUI = new BehaviorSubject<any>(null)
   public braintreeUI = this._braintreeUI.asObservable()
@@ -29,8 +35,13 @@ export class CheckoutService {
     private firestore: FirestoreService,
     private http: Http,
     private router: Router,
-    private storage: StorageService
-  ) {}
+    private storage: StorageService,
+    private store: Store
+  ) {
+    this.order$.subscribe((order) => {
+      this.orderState = order;
+    });
+  }
 
   initOrder() {
     return new Promise((resolve, reject) => {
@@ -38,6 +49,7 @@ export class CheckoutService {
         if (!user) {
           resolve()
         } else {
+          this.store.dispatch(new SetUser(user));
           this._initialize(user).then(_ => resolve())
         }
       })
@@ -60,17 +72,20 @@ export class CheckoutService {
           .doc$(`orders/${user.currentOrder}`)
           .take(1)
           .subscribe(order => {
-            this._order.next(order)
-            this.initialized = true
+            this.store.dispatch(new CreateOrder(order));
+            this._order.next(order);
+            this.initialized = true;
             resolve()
           })
         } else {
           // remove the order from the user doc if it doesn't exist anymore
+          this.store.dispatch(new UpdateUser({ currentOrder: null }));
           this.firestore.update(`users/${user.uid}`, { currentOrder: null })
         }
       } else {
         // create an order ID
         const orderId = this.afs.collection("orders").ref.doc().id
+        let order = {};
         this.firestore.set(`orders/${orderId}`, { id: orderId, uid: user.uid, submitted: false }).then(_ => {
           this.firestore.upsert(`users/${user.uid}`, { currentOrder: orderId }).then(_ => {
             this.updateOrder({ id: orderId, firstName: user.firstName || "", lastName: user.lastName || "", submitted: false })
@@ -85,11 +100,12 @@ export class CheckoutService {
   }
 
   setUser(user) {
+    this.store.dispatch(new SetUser(user));
     return new Promise((resolve, reject) => {
       this.updateOrder({ uid: user.uid })
       if (user.braintreeId) {
         this.updateOrder({ customerId: user.braintreeId })
-        resolve(this._order.value)
+        resolve(this.orderState)
       } else {
         // init braintree customer for this user
         const data = {
@@ -104,8 +120,9 @@ export class CheckoutService {
             console.log(res)
             const id = JSON.parse(res._body).customerId
             this.updateOrder({ customerId: id })
+            this.store.dispatch(new UpdateUser({ braintreeId: id }));
             this.firestore.update(`users/${user.uid}`, { braintreeId: id }).then(_ => {
-              resolve(this._order.value)
+              resolve(this.orderState)
             })
           })
       }
@@ -113,9 +130,10 @@ export class CheckoutService {
   }
 
   updateOrder(partialOrder: Partial<Order>): Promise<void> {
-    const data = this._order.getValue()
+    const data = this.orderState;
     Object.assign(data, partialOrder)
     this._order.next(data)
+    this.store.dispatch(new UpdateOrder(partialOrder));
     return this.firestore.update(`orders/${this._order.getValue().id}`, partialOrder)
   }
 
@@ -152,6 +170,7 @@ export class CheckoutService {
           this.loading = false
           // remove the current order from the user, since it's been submitted
           this.auth.user.take(1).subscribe(user => {
+            this.store.dispatch(new UpdateUser({ currentOrder: null }));
             this.firestore.update(`users/${user.uid}`, { currentOrder: null })
           })
         })
@@ -159,7 +178,7 @@ export class CheckoutService {
   }
 
   calculatePricing(amt: number) {
-    const product = this._order.getValue().product || "postcard";
+    const product = this.orderState.product || "postcard";
     // round up to the nearest 50
     const roundedQuantity = Math.ceil(amt / 50) * 50;
     const quantityPosition = roundedQuantity / 50;

@@ -42,7 +42,7 @@ export interface Order {
   token?: string
 }
 
-export interface AppState {
+export interface AppStateModel {
   // the currently logged in user
   user: User
 
