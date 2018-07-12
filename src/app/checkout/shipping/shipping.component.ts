@@ -2,7 +2,7 @@ import { CheckoutService } from '#app/checkout/checkout.service'
 import { MailingListDialog } from '#app/shared/mailing-list-dialog/mailing-list.dialog'
 import { AuthService } from '#core/auth.service'
 import { FirestoreService } from '#core/firestore.service'
-import { Order } from '#models/order.model'
+import { Order } from '#models/state.model'
 import {
   Component,
   ElementRef,
@@ -108,7 +108,7 @@ export class ShippingComponent implements OnInit, OnDestroy {
       } else {
         console.log(order)
         this.firestore
-          .doc$(`users/${order.uid}`)
+          .doc$(`users/${order.userId}`)
           .take(1)
           .subscribe(agent => {
             this.user = agent

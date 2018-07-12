@@ -15,11 +15,11 @@ export interface ShippingInfo {
 
 export interface Order {
   id?: string
-  userId: string
-  step: 'designer' | 'checkout'
+  userId?: string
+  step?: 'designer' | 'checkout'
 
   // design data
-  product: Product
+  product?: Product
   propertyAddress?: string
   brandColors?: BrandColors
   design?: Design
@@ -32,9 +32,11 @@ export interface Order {
   }
 
   // shipping / mailing
-  quantity: number
+  quantity?: number
+  total?: number
   shipping?: ShippingInfo
-  mailingList?: string
+  mailingListId?: string
+  isMailingList?: boolean
 
   // data from Braintree
   customerId?: string

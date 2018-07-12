@@ -37,8 +37,7 @@ export class AppState {
 
   @Action(SubmitOrder)
   submitOrder({getState, patchState }: StateContext<AppStateModel>, { payload }: SubmitOrder) {
-    // patchState({
-    //   orders: getState().orders
-    // })
+    const state = getState();
+    delete state.order;
   }
 }

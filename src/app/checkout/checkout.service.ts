@@ -1,7 +1,8 @@
 import { Injectable } from "@angular/core"
 import { Http } from "@angular/http"
 import { Observable, BehaviorSubject } from "rxjs"
-import { Order } from "#models/order.model"
+// import { Order } from "#models/order.model"
+import { Order } from '#models/state.model';
 import { AuthService } from "#core/auth.service"
 import { FirestoreService } from "#core/firestore.service"
 import { Router } from "@angular/router"
@@ -12,12 +13,12 @@ import { Store, Select } from "@ngxs/store";
 
 @Injectable()
 export class CheckoutService {
-  private _order = new BehaviorSubject<Order>({})
-  public order = this._order.asObservable()
+  // private _order = new BehaviorSubject<Order>({})
+  // public order = this._order.asObservable()
 
-  @Select(state => state.app.order) order$;
+  @Select(state => state.app.order) order;
   @Select(state => state.app.user) user$;
-  private orderState: any;
+  private _order: any;
 
   private _braintreeUI = new BehaviorSubject<any>(null)
   public braintreeUI = this._braintreeUI.asObservable()
@@ -38,8 +39,8 @@ export class CheckoutService {
     private storage: StorageService,
     private store: Store
   ) {
-    this.order$.subscribe((order) => {
-      this.orderState = order;
+    this.order.subscribe((order) => {
+      this._order = order;
     });
   }
 
@@ -73,7 +74,7 @@ export class CheckoutService {
           .take(1)
           .subscribe(order => {
             this.store.dispatch(new CreateOrder(order));
-            this._order.next(order);
+            // this._order.next(order);
             this.initialized = true;
             resolve()
           })
@@ -85,10 +86,22 @@ export class CheckoutService {
       } else {
         // create an order ID
         const orderId = this.afs.collection("orders").ref.doc().id
-        let order = {};
-        this.firestore.set(`orders/${orderId}`, { id: orderId, uid: user.uid, submitted: false }).then(_ => {
+        let order = {
+          id: orderId,
+          userId: user.uid,
+          step: 'designer'
+        };
+        this.firestore.set(`orders/${orderId}`, order).then(_ => {
           this.firestore.upsert(`users/${user.uid}`, { currentOrder: orderId }).then(_ => {
-            this.updateOrder({ id: orderId, firstName: user.firstName || "", lastName: user.lastName || "", submitted: false })
+            let payload = {
+              id: orderId,
+              step: 'designer',
+              shipping: {
+                firstName: user.firstName || "",
+                lastName: user.lastName || ""
+              }
+            };
+            this.updateOrder(payload)
             this.setUser(user).then(_ => {
               this.initialized = true
               resolve()
@@ -102,10 +115,10 @@ export class CheckoutService {
   setUser(user) {
     this.store.dispatch(new SetUser(user));
     return new Promise((resolve, reject) => {
-      this.updateOrder({ uid: user.uid })
+      this.updateOrder({ userId: user.uid })
       if (user.braintreeId) {
         this.updateOrder({ customerId: user.braintreeId })
-        resolve(this.orderState)
+        resolve(this._order)
       } else {
         // init braintree customer for this user
         const data = {
@@ -114,7 +127,7 @@ export class CheckoutService {
           email: user.email
         }
         this.http
-          .post("https://us-central1-sprynamics.cloudfunctions.net/customer", data)
+          .post('https://us-central1-sprynamics.cloudfunctions.net/customer', data)
           .take(1)
           .subscribe((res: any) => {
             console.log(res)
@@ -122,19 +135,19 @@ export class CheckoutService {
             this.updateOrder({ customerId: id })
             this.store.dispatch(new UpdateUser({ braintreeId: id }));
             this.firestore.update(`users/${user.uid}`, { braintreeId: id }).then(_ => {
-              resolve(this.orderState)
+              resolve(this._order)
             })
           })
       }
     })
   }
 
-  updateOrder(partialOrder: Partial<Order>): Promise<void> {
-    const data = this.orderState;
+  updateOrder(partialOrder: any): Promise<void> {
+    const data = this._order;
     Object.assign(data, partialOrder)
-    this._order.next(data)
+    // this._order.next(data)
     this.store.dispatch(new UpdateOrder(partialOrder));
-    return this.firestore.update(`orders/${this._order.getValue().id}`, partialOrder)
+    return this.firestore.update(`orders/${this._order.id}`, partialOrder)
   }
 
   /**
@@ -143,7 +156,7 @@ export class CheckoutService {
    */
   generateToken(uid?: string) {
     const token$ = this.http
-      .post("https://us-central1-sprynamics.cloudfunctions.net/client_token", { customerId: uid || this._order.getValue().customerId })
+      .post('https://us-central1-sprynamics.cloudfunctions.net/client_token', { customerId: uid || this._order.customerId })
       .map((res: any) => JSON.parse(res._body).token)
     token$.take(1).subscribe(token => {
       this.updateOrder({ token })
@@ -157,12 +170,12 @@ export class CheckoutService {
   }
 
   submitOrder() {
-    if (!this._order.getValue().submitted) {
-      this.updateOrder({ submitted: true })
+    if (this._order.step === 'designer') {
+      this.updateOrder({ step : 'checkout' })
       this.router.navigate(["/designer/checkout/confirm-order"])
       // this.firestore.update(`orders/${this._order.getValue().orderId}`, this._order.getValue());
       this.http
-        .post("https://us-central1-sprynamics.cloudfunctions.net/checkout", this._order.getValue())
+        .post("https://us-central1-sprynamics.cloudfunctions.net/checkout", this._order)
         .take(1)
         .subscribe((res: any) => {
           console.log(res)
@@ -178,7 +191,7 @@ export class CheckoutService {
   }
 
   calculatePricing(amt: number) {
-    const product = this.orderState.product || "postcard";
+    const product = this._order.product || 'postcard';
     // round up to the nearest 50
     const roundedQuantity = Math.ceil(amt / 50) * 50;
     const quantityPosition = roundedQuantity / 50;
