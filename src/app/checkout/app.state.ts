@@ -1,6 +1,14 @@
 import { State, Action, StateContext, Selector } from '@ngxs/store';
 import { AppStateModel, Order } from '#models/state.model';
-import { SetUser, UpdateUser, CreateOrder, UpdateOrder, SubmitOrder } from './app.actions';
+import {
+  SetUser,
+  UpdateUser,
+  CreateOrder,
+  UpdateOrder,
+  SubmitOrder,
+  SetDesignState,
+  UpdateDesignState
+} from './app.actions';
 
 @State<AppStateModel>({
   name: 'app'
@@ -19,25 +27,37 @@ export class AppState {
   }
 
   @Action(UpdateUser)
-  updateUser({ patchState, getState, setState }: StateContext<AppStateModel>, { payload }: UpdateUser) {
+  updateUser({ patchState, getState }: StateContext<AppStateModel>, { payload }: UpdateUser) {
     const state = getState();
-    setState({ user: state.user, ...payload})
+    patchState({ user: { ...state.user, ...payload } })
   }
 
   @Action(CreateOrder)
   createOrder({getState, patchState }: StateContext<AppStateModel>, { payload }: CreateOrder) {
-    patchState({ order: payload })
+    const state = getState();
+    patchState({ order: { ...state.order, ...payload } })
   }
 
   @Action(UpdateOrder)
-  updateOrder({getState, patchState, setState }: StateContext<AppStateModel>, { payload }: UpdateOrder) {
+  updateOrder({getState, patchState }: StateContext<AppStateModel>, { payload }: UpdateOrder) {
     const state = getState();
-    setState({ order: state.order, ...payload})
+    patchState({ order: { ...state.order, ...payload } })
   }
 
   @Action(SubmitOrder)
-  submitOrder({getState, patchState }: StateContext<AppStateModel>, { payload }: SubmitOrder) {
+  submitOrder({getState, setState }: StateContext<AppStateModel>) {
     const state = getState();
     delete state.order;
+  }
+
+  @Action(SetDesignState)
+  setDesignState({getState, patchState }: StateContext<AppStateModel>, { payload }: SetDesignState) {
+    patchState({ designer: payload })
+  }
+
+  @Action(UpdateDesignState)
+  updateDesignState({getState, patchState }: StateContext<AppStateModel>, { payload }: UpdateDesignState) {
+    const state = getState();
+    patchState({ designer: { ...state.designer, ...payload } })
   }
 }

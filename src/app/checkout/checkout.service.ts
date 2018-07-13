@@ -73,7 +73,7 @@ export class CheckoutService {
           .doc$(`orders/${user.currentOrder}`)
           .take(1)
           .subscribe(order => {
-            this.store.dispatch(new CreateOrder(order));
+            this.store.dispatch(new UpdateOrder(order));
             // this._order.next(order);
             this.initialized = true;
             resolve()
@@ -91,6 +91,7 @@ export class CheckoutService {
           userId: user.uid,
           step: 'designer'
         };
+        this.store.dispatch(new CreateOrder(order));
         this.firestore.set(`orders/${orderId}`, order).then(_ => {
           this.firestore.upsert(`users/${user.uid}`, { currentOrder: orderId }).then(_ => {
             let payload = {
@@ -182,6 +183,7 @@ export class CheckoutService {
           // window.alert((JSON.parse(res._body)).message);
           this.loading = false
           // remove the current order from the user, since it's been submitted
+          this.store.dispatch(new SubmitOrder());
           this.auth.user.take(1).subscribe(user => {
             this.store.dispatch(new UpdateUser({ currentOrder: null }));
             this.firestore.update(`users/${user.uid}`, { currentOrder: null })

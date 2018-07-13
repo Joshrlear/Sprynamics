@@ -16,7 +16,7 @@ export interface ShippingInfo {
 export interface Order {
   id?: string
   userId?: string
-  step?: 'designer' | 'checkout'
+  step?: string //'designer' | 'checkout'
 
   // design data
   product?: Product
@@ -44,10 +44,22 @@ export interface Order {
   token?: string
 }
 
+export interface DesignState {
+  addressObj?: any
+  backgroundObj?: any
+  boundBoxObj?: any
+
+  textFields?: any[]
+  agentFields?: any[]
+  propertyFields?: any[]
+}
+
 export interface AppStateModel {
   // the currently logged in user
   user: User
 
   // the user's current order
   order: Order
+
+  designer: DesignState
 }

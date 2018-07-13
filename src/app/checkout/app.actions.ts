@@ -1,4 +1,4 @@
-import { Order } from '#models/state.model'
+import { Order, DesignState } from '#models/state.model'
 import { User } from '#models/user.model';
 
 export class SetUser {
@@ -28,5 +28,17 @@ export class UpdateOrder {
 export class SubmitOrder {
   static readonly type = 'submitOrder';
 
-  constructor(public payload: any) {}
+  constructor() {}
+}
+
+export class SetDesignState {
+  static readonly type = 'setDesignState';
+
+  constructor(public payload: DesignState) {}
+}
+
+export class UpdateDesignState {
+  static readonly type = 'updateDesignState';
+
+  constructor(public payload: DesignState) {}
 }
