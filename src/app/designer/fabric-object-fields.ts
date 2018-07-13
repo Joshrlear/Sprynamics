@@ -24,4 +24,4 @@ export const fabricObjectFields = [
   'isAutoFit',
   'fixedWidth',
   'brandColorRole'
-];
+]

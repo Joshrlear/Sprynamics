@@ -1,20 +1,19 @@
-import { User } from "#models/user.model";
-import { BrandColors } from "#models/brand-colors.model";
-import { Design } from "#models/design.model";
-import { Product } from "#models/product.model";
+import { User } from "#models/user.model"
+import { BrandColors } from "#models/brand-colors.model"
+import { Design } from "#models/design.model"
+import { Product } from "#models/product.model"
 
 export interface DesignState {
-
   agent?: User
 
   property?: {
-    address: string,
+    address: string
   }
 
   brandColors?: BrandColors
 
   canvasData?: {
-    front: any,
+    front: any
     back: any
   }
 
@@ -29,6 +28,6 @@ export interface DesignState {
   textFields?: any[]
   agentFields?: any[]
   propertyFields?: any[]
-  
+
   propertyImages?: any[]
 }

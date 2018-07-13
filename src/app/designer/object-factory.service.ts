@@ -1,12 +1,11 @@
-import { Injectable } from '@angular/core';
-import { fabricObjectFields } from './fabric-object-fields';
+import { Injectable } from '@angular/core'
+import 'fabric'
+import { fabricObjectFields } from './fabric-object-fields'
 
-import 'fabric';
-declare let fabric;
+declare let fabric
 
 @Injectable()
 export class ObjectFactoryService {
-
   defaultShadow = {
     color: 'rgba(0,0,0,0)',
     blur: 20,
@@ -15,27 +14,28 @@ export class ObjectFactoryService {
     opacity: 0.6
   }
 
-  constructor() { }
+  constructor() {}
 
   _uuidv4() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-      var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-      return v.toString(16);
-    });
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      var r = (Math.random() * 16) | 0,
+        v = c == 'x' ? r : (r & 0x3) | 0x8
+      return v.toString(16)
+    })
   }
 
   /**
    * Creates an object with a unique ID, applies the default shadow, adds it to the canvas and selects it.
    */
   addObject(obj, canvas, center?) {
-    const id = this._uuidv4();
-    obj.set({ id, brandColorRole: 'none' });
-    console.log('Created object with id ' + id);
-    obj.setShadow(this.defaultShadow);
-    canvas.add(obj).setActiveObject(obj);
-    if (center) canvas.centerObject(obj);
-    obj.stateProperties = obj.stateProperties.concat(fabricObjectFields);
-    return obj;
+    const id = this._uuidv4()
+    obj.set({ id, brandColorRole: 'none' })
+    console.log('Created object with id ' + id)
+    obj.setShadow(this.defaultShadow)
+    canvas.add(obj).setActiveObject(obj)
+    if (center) canvas.centerObject(obj)
+    obj.stateProperties = obj.stateProperties.concat(fabricObjectFields)
+    return obj
   }
 
   createText(canvas) {
@@ -50,25 +50,25 @@ export class ObjectFactoryService {
       textContentType: 'plain', // custom
       textUserData: 'name', // custom
       userEditable: false, // custom
-      textFieldName: ''      // custom
-    });
-    text.toObject = this.extendFabricObject(text,
-      [
-        'textContentType',
-        'textUserData',
-        'textFieldName',
-        'userEditable',
-        'isUserData'
-      ]);
-    return this.addObject(text, canvas);
+      textFieldName: '' // custom
+    })
+    text.toObject = this.extendFabricObject(text, [
+      'textContentType',
+      'textUserData',
+      'textFieldName',
+      'userEditable',
+      'isUserData'
+    ])
+    return this.addObject(text, canvas)
   }
 
   createParagraph(canvas) {
-    const loremIpsum = 'Lorem ipsum dolor sit amet, ' +
+    const loremIpsum =
+      'Lorem ipsum dolor sit amet, ' +
       'consectetur adipisicing elit, sed do eiusmod tempor ' +
       'incididunt ut labore et dolore magna aliqua. Ut enim ' +
       'ad minim veniam, quis nostrud exercitation ullamco ' +
-      'laboris nisi ut aliquip exea commodo consequat.';
+      'laboris nisi ut aliquip exea commodo consequat.'
     const paragraph = new fabric.Textbox(loremIpsum, {
       left: 50,
       top: 50,
@@ -78,18 +78,17 @@ export class ObjectFactoryService {
       fontFamily: 'Roboto',
       hasRotatingPoint: true,
       textContentType: 'plain', // custom
-      textUserData: 'name',    // custom
-      userEditable: false,    // custom
-      textFieldName: ''      // custom
-    });
-    paragraph.toObject = this.extendFabricObject(paragraph,
-      [
-        'textContentType',
-        'textUserData',
-        'textFieldName',
-        'userEditable'
-      ]);
-    return this.addObject(paragraph, canvas);
+      textUserData: 'name', // custom
+      userEditable: false, // custom
+      textFieldName: '' // custom
+    })
+    paragraph.toObject = this.extendFabricObject(paragraph, [
+      'textContentType',
+      'textUserData',
+      'textFieldName',
+      'userEditable'
+    ])
+    return this.addObject(paragraph, canvas)
   }
 
   createRectangle(canvas) {
@@ -100,22 +99,21 @@ export class ObjectFactoryService {
       strokeWidth: 0,
       fill: '#00e676',
       hasRotatingPoint: true
-    });
-    return this.addObject(rectangle, canvas);
+    })
+    return this.addObject(rectangle, canvas)
   }
 
   createPolygon(numSides, canvas) {
-    const pathString = this._getRegularPolygonPath(0, 0, 50, numSides);
-    const polygon = new fabric.Path(pathString,
-      {
-        stroke: 'black',
-        strokeWidth: 1,
-        fill: '#00e676',
-        originX: 'center',
-        originY: 'center',
-        numSides: numSides,
-      });
-    return this.addObject(polygon, canvas);
+    const pathString = this._getRegularPolygonPath(0, 0, 50, numSides)
+    const polygon = new fabric.Path(pathString, {
+      stroke: 'black',
+      strokeWidth: 1,
+      fill: '#00e676',
+      originX: 'center',
+      originY: 'center',
+      numSides: numSides
+    })
+    return this.addObject(polygon, canvas)
   }
 
   createLine(canvas) {
@@ -124,70 +122,97 @@ export class ObjectFactoryService {
       height: 5,
       fill: '#00e676',
       hasRotatingPoint: true
-    });
+    })
     return this.addObject(line, canvas).setControlsVisibility({
-      tl: false, tr: false,
-      br: false, bl: false,
-      mt: false,
-    });
+      tl: false,
+      tr: false,
+      br: false,
+      bl: false,
+      mt: false
+    })
   }
 
   createLogo(canvas) {
-    const logo = new fabric.Image.fromURL('/assets/logo.png',
-      (img) => {
-        img.scaleToHeight(100);
-        img.isLogo = true;
-        img.logoType = 'sprynamics';
+    const logo = new fabric.Image.fromURL(
+      '/assets/logo.png',
+      img => {
+        img.scaleToHeight(100)
+        img.isLogo = true
+        img.logoType = 'sprynamics'
 
-        img.toObject = this.extendFabricObject(img,
-          [
-            'isLogo',
-            'logoType'
-          ]);
+        img.toObject = this.extendFabricObject(img, ['isLogo', 'logoType'])
 
-        this.addObject(img, canvas);
-      }, { crossOrigin: 'Anonymous' });
-    return logo;
+        this.addObject(img, canvas)
+      },
+      { crossOrigin: 'Anonymous' }
+    )
+    return logo
   }
 
   createUserImage(canvas) {
-    const userImage = new fabric.Image.fromURL('https://sprynamics.com/assets/300x250.png',
-      (img) => {
-        img.scaleToHeight(250);
-        img.isUserImage = true;
+    const userImage = new fabric.Image.fromURL(
+      'https://sprynamics.com/assets/300x250.png',
+      img => {
+        img.scaleToHeight(250)
+        img.isUserImage = true
 
-        img.toObject = this.extendFabricObject(img, ['isUserImage', 'cx1', 'cx2', 'cx3', 'cx4', 'cy1', 'cy2', 'cy3', 'cy4']);
+        img.toObject = this.extendFabricObject(img, [
+          'isUserImage',
+          'cx1',
+          'cx2',
+          'cx3',
+          'cx4',
+          'cy1',
+          'cy2',
+          'cy3',
+          'cy4'
+        ])
 
-        this.addObject(img, canvas);
-      }, { crossOrigin: 'Anonymous' });
-    return userImage;
+        this.addObject(img, canvas)
+      },
+      { crossOrigin: 'Anonymous' }
+    )
+    return userImage
   }
 
   createMapImage(canvas) {
-    const mapImage = new fabric.Image.fromURL('https://maps.googleapis.com/maps/api/staticmap?center=32.7320492,-117.1706642&zoom=12&size=400x400&key=AIzaSyCZVNyrdx6wsVpCCnVuvawW2ZlhTDaRg9s&markers=32.7320492,-117.1706642',
-      (img) => {
+    const mapImage = new fabric.Image.fromURL(
+      'https://maps.googleapis.com/maps/api/staticmap?center=32.7320492,-117.1706642&zoom=12&size=400x400&key=AIzaSyCZVNyrdx6wsVpCCnVuvawW2ZlhTDaRg9s&markers=32.7320492,-117.1706642',
+      img => {
         // img.scaleToHeight(250);
-        img.isMapImage = true;
+        img.isMapImage = true
 
-        img.toObject = this.extendFabricObject(img, ['isMapImage', 'cx1', 'cx2', 'cx3', 'cx4', 'cy1', 'cy2', 'cy3', 'cy4']);
+        img.toObject = this.extendFabricObject(img, [
+          'isMapImage',
+          'cx1',
+          'cx2',
+          'cx3',
+          'cx4',
+          'cy1',
+          'cy2',
+          'cy3',
+          'cy4'
+        ])
 
-        this.addObject(img, canvas);
-      }, { crossOrigin: 'Anonymous' });
-    return mapImage;
+        this.addObject(img, canvas)
+      },
+      { crossOrigin: 'Anonymous' }
+    )
+    return mapImage
   }
 
   createClone(obj: any, canvas) {
-    const object = obj.toObject();
-    fabric.util.enlivenObjects([object], (objects) => {
+    const object = obj.toObject()
+    fabric.util.enlivenObjects([object], objects => {
       objects.forEach(object => {
-        object.set("top", object.top + 5);
-        object.set("left", object.left + 5);
-        object.setShadow(this.defaultShadow);
-        this.addObject(object, canvas);
-      });
-      canvas.renderAll();
-    });
-    return object;
+        object.set('top', object.top + 5)
+        object.set('left', object.left + 5)
+        object.setShadow(this.defaultShadow)
+        this.addObject(object, canvas)
+      })
+      canvas.renderAll()
+    })
+    return object
   }
 
   /**
@@ -199,55 +224,62 @@ export class ObjectFactoryService {
       width: 912,
       height: 586,
       selectable: false,
-      hasControls: false,
+      hasControls: false
     }
 
     // the base extension properties that all base objects will add
-    const baseExt = [
-      'selectable',
-      'hasControls',
-    ];
+    const baseExt = ['selectable', 'hasControls']
 
     // Create background
-    const background = new fabric.Rect(Object.assign(baseObj,
-      {
+    const background = new fabric.Rect(
+      Object.assign(baseObj, {
         fill: '#ffffff',
-        isBackground: true,
-      }));
-    background.toObject = this.extendFabricObject(background,
-      baseExt.concat(['isBackground']));
+        isBackground: true
+      })
+    )
+    background.toObject = this.extendFabricObject(
+      background,
+      baseExt.concat(['isBackground'])
+    )
 
     // Create safety line
-    const safeArea = new fabric.Rect(Object.assign(baseObj,
-      {
+    const safeArea = new fabric.Rect(
+      Object.assign(baseObj, {
         fill: 'transparent',
         stroke: '#777',
         strokeDashArray: [5, 5],
-        isHidden: true,
-      }));
-    safeArea.toObject = this.extendFabricObject(safeArea,
-      baseExt.concat(['isHidden']));
+        isHidden: true
+      })
+    )
+    safeArea.toObject = this.extendFabricObject(
+      safeArea,
+      baseExt.concat(['isHidden'])
+    )
 
     // Create print line
-    const printArea = new fabric.Rect(Object.assign(baseObj, {
-      fill: 'transparent',
-      stroke: '#f00',
-      strokeDashArray: [5, 5],
-      isBoundBox: true,
-      isHidden: true,
-    }));
-    printArea.toObject = this.extendFabricObject(printArea,
-      baseExt.concat(['isHidden', 'isBoundBox']));
+    const printArea = new fabric.Rect(
+      Object.assign(baseObj, {
+        fill: 'transparent',
+        stroke: '#f00',
+        strokeDashArray: [5, 5],
+        isBoundBox: true,
+        isHidden: true
+      })
+    )
+    printArea.toObject = this.extendFabricObject(
+      printArea,
+      baseExt.concat(['isHidden', 'isBoundBox'])
+    )
 
-    console.log(printArea.toObject());
+    console.log(printArea.toObject())
 
     // Add objects to center of canvas
-    this.addObject(background, canvas, true);
-    this.addObject(safeArea, canvas, true);
-    this.addObject(printArea, canvas, true);
+    this.addObject(background, canvas, true)
+    this.addObject(safeArea, canvas, true)
+    this.addObject(printArea, canvas, true)
 
     // Return object of the base objects
-    return { background, safeArea, printArea };
+    return { background, safeArea, printArea }
   }
 
   /**
@@ -257,79 +289,79 @@ export class ObjectFactoryService {
    * In the above example, the result will be: {textContentType: this.textContentType, textUserData: this.textUserData, isText: true}
    */
   extendFabricObject(obj: any, fields: any[]) {
-    return (function (toObject, fields) {
-      return function () {
-        const extFields = {};
+    return (function(toObject, fields) {
+      return function() {
+        const extFields = {}
         fields.forEach(field => {
           if (typeof field === 'string') {
-            extFields[field] = this[field];
+            extFields[field] = this[field]
           } else {
-            Object.assign(extFields, field);
+            Object.assign(extFields, field)
           }
         })
-        return fabric.util.object.extend(toObject.call(this), extFields);
-      };
-    })(obj.toObject, fields);
+        return fabric.util.object.extend(toObject.call(this), extFields)
+      }
+    })(obj.toObject, fields)
   }
 
   /**
    * Converts polar coordinates to cartesian coordinates.
    */
   private _polarToCartesian(centerX, centerY, radius, angleInDegrees) {
-
-    var angleInRadians = (angleInDegrees - 90) * Math.PI / 180.0;
+    var angleInRadians = ((angleInDegrees - 90) * Math.PI) / 180.0
 
     return {
-      x: centerX + (radius * Math.cos(angleInRadians)),
-      y: centerY + (radius * Math.sin(angleInRadians))
-    };
+      x: centerX + radius * Math.cos(angleInRadians),
+      y: centerY + radius * Math.sin(angleInRadians)
+    }
   }
 
   /**
    * Returns a path for a regular polygon centered at x,y with a radius specified with numVertexes sides.
    */
   private _getRegularPolygonPath(x, y, radius, numVertexes) {
-
-    const interiorAngle = 360 / numVertexes;
+    const interiorAngle = 360 / numVertexes
 
     // rotationAdjustment rotates the path by 1/2 the interior angle so that the polygon always has a flat side on the bottom
     // This isn't strictly necessary, but it's how we tend to think of and expect polygons to be drawn
-    let rotationAdjustment = 0;
+    let rotationAdjustment = 0
     if (numVertexes % 2 == 0) {
-      rotationAdjustment = interiorAngle / 2;
+      rotationAdjustment = interiorAngle / 2
     }
 
-    const d = [];
+    const d = []
     for (var i = 0; i < numVertexes; i++) {
       // var coord = coordList[i];
-      const coord = this._polarToCartesian(x, y, radius, i * interiorAngle + rotationAdjustment);
+      const coord = this._polarToCartesian(
+        x,
+        y,
+        radius,
+        i * interiorAngle + rotationAdjustment
+      )
 
       if (i == 0) {
-        d.push('M ');
+        d.push('M ')
 
         // If an odd number of vertexes, add an additional point at the top of the polygon-- this will shift the calculated center
         // point of the shape so that the centerpoint of the polygon is at x,y (otherwise the center is mis-located)
         if (numVertexes % 2 == 1) {
-          d.push(0);
-          d.push(radius);
+          d.push(0)
+          d.push(radius)
         }
 
-        d.push('M');
-
+        d.push('M')
       } else {
-        d.push(" L ");
+        d.push(' L ')
       }
 
-      d.push(coord.x);
-      d.push(coord.y);
+      d.push(coord.x)
+      d.push(coord.y)
     }
 
-    let pathString = d.join(" ");
+    let pathString = d.join(' ')
 
-    pathString += " Z";
+    pathString += ' Z'
 
-    return pathString;
-
+    return pathString
   }
-
 }

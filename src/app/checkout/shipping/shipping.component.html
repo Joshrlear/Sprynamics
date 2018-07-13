@@ -1,6 +1,6 @@
 <div class="ss-card">
   <div class="form-container">
-    <form class="ss-form" *ngIf="shippingForm" [formGroup]="shippingForm" (ngSubmit)="submitForm()">
+    <form class="ss-form" *ngIf="shippingForm" [formGroup]="shippingForm">
       <div class="form-row" style="padding: 12px 24px 24px 24px;">
         <div class="form-check col-md-6">
           <input type="radio" name="shipType" class="form-check-input" id="singleAddress" value="true" (click)="chooseSingleAddress()"
@@ -23,8 +23,10 @@
               <option value="250">250</option>
               <option value="500">500</option>
               <option value="1000">1000</option>
-              <option value="2500">2500</option>
-              <option value="5000">5000</option>
+              <ng-container *ngIf="order.product === 'doorhanger'">
+                <option value="2500">2500</option>
+                <option value="5000">5000</option>
+              </ng-container>
             </select>
           </div>
         </div>

@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core'
-import { FormGroup, FormBuilder, Validators } from '@angular/forms'
-import { Router } from '@angular/router'
+import {Component, OnInit} from '@angular/core'
+import {FormGroup, FormBuilder, Validators} from '@angular/forms'
+import {Router, ActivatedRoute} from '@angular/router'
 
-import { AuthService } from '../../core/auth.service'
-import { AngularFireAuth } from 'angularfire2/auth'
-
+import {AuthService} from '../../core/auth.service'
+import {AngularFireAuth} from 'angularfire2/auth'
+import { HttpClient } from '@angular/common/http';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -15,10 +15,53 @@ export class LoginComponent implements OnInit {
 
   error: string
 
-  constructor(public fb: FormBuilder, public auth: AuthService, private router: Router, private afAuth: AngularFireAuth) {}
+  constructor(public fb: FormBuilder,
+              public auth: AuthService,
+              private router: Router,
+              private route: ActivatedRoute,
+              private afAuth: AngularFireAuth,
+              private http: HttpClient) {}
 
   ngOnInit() {
     this.error = ''
+
+    this.route.queryParams.take(1).subscribe(async queryParams => {
+      console.log(queryParams)
+      const linkedInAuthCode = queryParams.code
+      const linkedInError = queryParams.error
+      if (linkedInError) {
+        const errorMessage = queryParams.error_description
+        window.alert(errorMessage)
+        return
+      }
+      if (linkedInAuthCode) {
+        console.log(linkedInAuthCode);
+        try {
+           this.http.get('https://us-central1-sprynamics.cloudfunctions.net/token?code=' + linkedInAuthCode)
+            .subscribe((res: any) => {
+              console.log(res)
+              if (res.token) {
+                this.afAuth.auth.signInWithCustomToken(res.token)
+                  .then((arg) => {
+                    console.log(arg)
+                      this.auth.linkedinLogin(arg).then(() => {
+                        this.router.navigate(['/profile']);
+                      })
+                  })
+                  .catch(err => {
+                    console.error(err)
+                  })
+              } else {
+                console.error(res);
+                window.alert("Error in the token Function:" + res.error)
+              }
+            });
+        } catch (err) {
+          console.error(err)
+          window.alert(err.message)
+        }
+      }
+    })
 
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -29,6 +72,7 @@ export class LoginComponent implements OnInit {
   get email() {
     return this.loginForm.get('email')
   }
+
   get password() {
     return this.loginForm.get('password')
   }
@@ -45,11 +89,7 @@ export class LoginComponent implements OnInit {
   }
 
   linkedinLogin() {
-    const popup = window.open('linkedin-popup.html', 'name', 'height=585,width-400')
-    popup.addEventListener('finishedlinkedinlogin', () => {
-      console.log('yuh')
-      this.router.navigate(['/profile'])
-    })
+    window.location.replace('https://us-central1-sprynamics.cloudfunctions.net/redirect')
   }
 
   async googleLogin() {

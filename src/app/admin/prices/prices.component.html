@@ -1,0 +1,35 @@
+<h2>Prices</h2>
+<br>
+
+<div class="header-table">
+  <button class="btn green" (click)="fileInput.click()">Upload pricing sheet</button>
+  <input #fileInput type="file" accept=".csv" hidden=true (change)="uploadPricing(fileInput.files[0])">
+</div>
+<div class="row">
+  <table class="table table-admin" *ngIf="prices?.flyer">
+    <thead>
+    <tr>
+      <th>Quantity</th>
+      <th>Postcard</th>
+      <th>Flyer</th>
+      <th>Door Hanger</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let flyer of prices.flyer;let i = index">
+      <td>
+        {{i*50}}
+      </td>
+      <td>
+        {{prices.postcard[i]}}
+      </td>
+      <td>
+        {{flyer}}
+      </td>
+      <td>
+        {{prices.doorhanger[i]}}
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>

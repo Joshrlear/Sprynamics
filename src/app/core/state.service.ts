@@ -1,11 +1,9 @@
-import { Injectable } from '@angular/core'
 import { DesignState } from '#models/design-state.model'
-import { ProcessingWindowComponent } from '#app/processing-window/processing-window.component'
+import { Injectable } from '@angular/core'
 
 @Injectable()
 export class StateService {
   designState: DesignState
-  processingWindow: ProcessingWindowComponent
 
   constructor() {}
 
@@ -20,9 +18,5 @@ export class StateService {
     } else {
       return null
     }
-  }
-
-  registerProcessingWindow(component: ProcessingWindowComponent) {
-    this.processingWindow = component
   }
 }

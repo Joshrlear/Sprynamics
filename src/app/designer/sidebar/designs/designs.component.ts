@@ -1,7 +1,13 @@
-import { Component, Input, Output, EventEmitter, AfterViewInit } from '@angular/core';
-import { Observable } from 'rxjs';
-import { FirestoreService } from '#core/firestore.service';
-import { thumbnailSizes } from '#models/product.model.ts';
+import { FirestoreService } from '#core/firestore.service'
+import { thumbnailSizes } from '#models/product.model.ts'
+import {
+  AfterViewInit,
+  Component,
+  EventEmitter,
+  Input,
+  Output
+} from '@angular/core'
+import { Observable } from 'rxjs'
 
 @Component({
   selector: 'app-designs',
@@ -9,59 +15,72 @@ import { thumbnailSizes } from '#models/product.model.ts';
   styleUrls: ['./designs.component.scss']
 })
 export class DesignsComponent implements AfterViewInit {
+  @Input('showContextMenu') showContextMenu: boolean
+  @Input('showDropdown') showDropdown: boolean
 
-  @Input('showContextMenu') showContextMenu: boolean;
-  @Input('showDropdown') showDropdown: boolean;
+  @Output('select') selectEvent = new EventEmitter()
 
-  @Output('select') selectEvent = new EventEmitter();
+  thumbnailSizes = thumbnailSizes
+  templates: Observable<any>
 
-  thumbnailSizes = thumbnailSizes;
-  templates: Observable<any>;
-
-  private _size;
+  private _size
   get size() {
-    return this._size;
+    return this._size
   }
-  @Input('size') set size(size) {
+  @Input('size')
+  set size(size) {
     if (size) {
-      this._size = size;
-      this.templates = this.firestore.colWithIds$('templates', ref => ref.where('productType.size', '==', size));
+      this._size = size
+      this.templates = this.firestore.colWithIds$('templates', ref =>
+        ref.where('productType.size', '==', size)
+      )
       console.log('set templates')
     }
   }
 
-  constructor(private firestore: FirestoreService) { }
+  constructor(private firestore: FirestoreService) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   ngAfterViewInit() {
     if (this.showDropdown) {
-      this.size = '9x6';
-      this.templates = this.firestore.colWithIds$('templates', ref => ref.where('productType.size', '==', '9x6'));
+      this.size = '9x6'
+      this.templates = this.firestore.colWithIds$('templates', ref =>
+        ref.where('productType.size', '==', '9x6')
+      )
     }
   }
 
   select(template) {
-    this.selectEvent.emit(template);
+    this.selectEvent.emit(template)
   }
 
   updateProduct(size: string) {
-    this.size = size;
-    this.templates = this.firestore.colWithIds$('templates', ref => ref.where('productType.size', '==', this.size));
+    this.size = size
+    this.templates = this.firestore.colWithIds$('templates', ref =>
+      ref.where('productType.size', '==', this.size)
+    )
   }
 
   deleteDesign(design) {
-    if (confirm(`Are you sure you wish to permanently delete this design? (${design.name})`)) {
-      this.firestore.delete(`templates/${design.id}`)
+    if (
+      confirm(
+        `Are you sure you wish to permanently delete this design? (${
+          design.name
+        })`
+      )
+    ) {
+      this.firestore
+        .delete(`templates/${design.id}`)
         .then(() => {
-          this.templates = this.firestore.colWithIds$('templates', ref => ref.where('productType.size', '==', this.size));
-          window.alert('Successfully deleted design.');
+          this.templates = this.firestore.colWithIds$('templates', ref =>
+            ref.where('productType.size', '==', this.size)
+          )
+          window.alert('Successfully deleted design.')
         })
         .catch(err => {
-          window.alert(err.message);
+          window.alert(err.message)
         })
     }
   }
-
 }

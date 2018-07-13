@@ -1,18 +1,14 @@
-import 'fabric'
+import { fabricObjectFields } from "#app/designer/fabric-object-fields"
+import { productSpecs } from "#app/models/product.model"
+import { WebfontService } from "#core/webfont.service"
+import { AfterViewInit, Component, ElementRef, Input, ViewChild, EventEmitter, Output } from "@angular/core"
+import "fabric"
+import "webfontloader"
 declare let fabric
-
-import 'webfontloader'
 declare let WebFont
 
-import { Component, OnInit, AfterViewInit, ElementRef, ViewChild, Input } from '@angular/core'
-import { Design } from '#models/design.model'
-import { DesignState } from '#models/design-state.model'
-import { WebfontService } from '#core/webfont.service'
-import { fabricObjectFields } from '#app/designer/fabric-object-fields'
-import { productSpecs } from '#app/models/product.model';
-
 @Component({
-  selector: 'app-fabric-canvas',
+  selector: "app-fabric-canvas",
   template: `
     <div #shell class="shell">
       <div *ngIf="loading" class="loading-overlay">
@@ -28,39 +24,45 @@ import { productSpecs } from '#app/models/product.model';
   `,
   styles: [
     `
-    :host {
-      display: flex;
-      flex: 1;
-    }
-    .shell {
-      width: 100%;
-      position: relative;
-    }
-    .loading-overlay {
-      width: 100%;
-      height: 100%;
-      position: absolute;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background-color: rgba(0,0,0,0.4);
-      z-index: 9999;
-    }
-  `
+      :host {
+        display: flex;
+        flex: 1;
+      }
+      .shell {
+        width: 100%;
+        position: relative;
+      }
+      .loading-overlay {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: rgba(0, 0, 0, 0.4);
+        z-index: 9999;
+      }
+    `
   ]
 })
 export class FabricCanvasComponent implements AfterViewInit {
-  @ViewChild('shell') shell: ElementRef
+  @ViewChild("shell") shell: ElementRef
   @Input() loading: boolean = true
+  @Output() click = new EventEmitter()
   canvas: any
 
   constructor(private webfont: WebfontService) {}
 
   ngAfterViewInit() {
-    this.canvas = new fabric.Canvas('canvas', {
+    this.canvas = new fabric.Canvas("canvas", {
       width: this.shell.nativeElement.clientWidth,
       height: this.shell.nativeElement.clientHeight,
       preserveObjectStacking: true
+    })
+    this.canvas.on('mouse:down', event => {
+      if (event.target) {
+        this.click.emit(event.target)
+      }
     })
   }
 
@@ -119,7 +121,7 @@ export class FabricCanvasComponent implements AfterViewInit {
   findObjects(filterFn?: (obj: any) => boolean, throwError?: boolean): any[] | null {
     const arr = this.canvas.getObjects().filter(filterFn)
     if (arr.length === 0 && throwError) {
-      throw new Error('No matching objects could be found. Filter function: ' + filterFn)
+      throw new Error("No matching objects could be found. Filter function: " + filterFn)
     }
     return arr
   }
@@ -133,7 +135,7 @@ export class FabricCanvasComponent implements AfterViewInit {
       canvas.clear()
       // canvas.zoomToPoint(new fabric.Point(canvas.width / 2, canvas.height / 2), 1);
       canvas.loadFromJSON(data, _ => {
-        const boundBox = canvas.getObjects('rect').filter(obj => obj.isBoundBox)[0]
+        const boundBox = canvas.getObjects("rect").filter(obj => obj.isBoundBox)[0]
         canvas.clipTo = null
         // canvas.imageSmoothingEnabled = false;
         const offsetX = boundBox.left - productSpecs.bleedInches * productSpecs.dpi
@@ -143,7 +145,7 @@ export class FabricCanvasComponent implements AfterViewInit {
           obj.left -= offsetX
           obj.top -= offsetY
         })
-        canvas.getObjects('rect').forEach(obj => {
+        canvas.getObjects("rect").forEach(obj => {
           if (obj.strokeDashArray && obj.strokeDashArray[0] === 5 && obj.strokeDashArray[1] === 5) {
             canvas.remove(obj)
           }
@@ -153,7 +155,7 @@ export class FabricCanvasComponent implements AfterViewInit {
           top: 0,
           width: (width + productSpecs.bleedInches * 2) * productSpecs.dpi,
           height: (height + productSpecs.bleedInches * 2) * productSpecs.dpi,
-          fill: '#ffffff'
+          fill: "#ffffff"
         })
         canvas.add(bg)
         canvas.sendToBack(bg)

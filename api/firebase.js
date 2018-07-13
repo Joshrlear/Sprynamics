@@ -20,6 +20,10 @@ function doc(path) {
   return fs.doc(path)
 }
 
+function col(path) {
+  return fs.collection(path)
+}
+
 function batch() {
   return fs.batch()
 }
@@ -28,5 +32,6 @@ module.exports = {
   upload,
   bucket,
   batch,
-  doc
+  doc,
+  col
 }

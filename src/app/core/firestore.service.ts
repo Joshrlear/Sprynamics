@@ -1,10 +1,10 @@
-import { Injectable } from '@angular/core'
-import * as firebase from 'firebase/app'
-import { AngularFirestore, AngularFirestoreDocument, AngularFirestoreCollection } from 'angularfire2/firestore'
-import { Observable } from 'rxjs'
-import { map, first } from 'rxjs/operators'
-import 'rxjs/add/observable/combineLatest'
-import 'rxjs/add/operator/reduce'
+import { Injectable } from "@angular/core"
+import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from "angularfire2/firestore"
+import * as firebase from "firebase/app"
+import { Observable } from "rxjs"
+import "rxjs/add/observable/combineLatest"
+import "rxjs/add/operator/reduce"
+import { first, map } from "rxjs/operators"
 
 type CollectionPredicate<T> = string | AngularFirestoreCollection<T>
 type DocPredicate<T> = string | AngularFirestoreDocument<T>
@@ -17,11 +17,11 @@ export class FirestoreService {
   /// Get a Reference
   /// **************
   public col<T>(ref: CollectionPredicate<T>, queryFn?): AngularFirestoreCollection<T> {
-    return typeof ref === 'string' ? this.afs.collection<T>(ref, queryFn) : ref
+    return typeof ref === "string" ? this.afs.collection<T>(ref, queryFn) : ref
   }
 
   public doc<T>(ref: DocPredicate<T>): AngularFirestoreDocument<T> {
-    return typeof ref === 'string' ? this.afs.doc<T>(ref) : ref
+    return typeof ref === "string" ? this.afs.doc<T>(ref) : ref
   }
 
   /// **************
@@ -131,6 +131,18 @@ export class FirestoreService {
     })
   }
 
+  /**
+   * Returns a promise which resolves to true if the document exists, otherwise false
+   * @param ref The path or AngularFirestoreDocument to check
+   */
+  async exists<T>(ref: DocPredicate<T>): Promise<boolean> {
+    const snap = await this.doc(ref)
+      .snapshotChanges()
+      .take(1)
+      .toPromise()
+    return snap.payload.exists
+  }
+
   /// **************
   /// Inspect Data
   /// **************
@@ -182,8 +194,8 @@ export class FirestoreService {
   atomic() {
     const batch = firebase.firestore().batch()
     /// add your operations here
-    const itemDoc = firebase.firestore().doc('items/myCoolItem')
-    const userDoc = firebase.firestore().doc('users/userId')
+    const itemDoc = firebase.firestore().doc("items/myCoolItem")
+    const userDoc = firebase.firestore().doc("users/userId")
     const currentTime = this.timestamp
     batch.update(itemDoc, { timestamp: currentTime })
     batch.update(userDoc, { timestamp: currentTime })

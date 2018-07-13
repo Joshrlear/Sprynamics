@@ -1,22 +1,19 @@
-import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../core/auth.service';
-import { FormGroup } from '@angular/forms/src/model';
-import { FormBuilder, Validators } from '@angular/forms';
-import { StorageService } from '../core/storage.service';
-import { FirestoreService } from '../core/firestore.service';
-import { Observable } from 'rxjs';
-import { BrandColors } from '#models/brand-colors.model';
+import { Component, OnInit } from '@angular/core'
 
 @Component({
   selector: 'app-dashboard',
-  templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.css']
+  template: `
+    <div class="dashboard-container">
+      <div class="row fill">
+        <div class="dashboard-content">
+          <router-outlet></router-outlet>
+        </div>
+      </div>
+    </div>
+  `
 })
 export class DashboardComponent implements OnInit {
+  constructor() {}
 
-  constructor() { }
-
-  ngOnInit() {
-  }
-
+  ngOnInit() {}
 }

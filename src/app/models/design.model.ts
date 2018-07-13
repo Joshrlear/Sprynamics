@@ -1,4 +1,4 @@
-import { BrandColors } from "#models/brand-colors.model";
+import { BrandColors } from "#models/brand-colors.model"
 
 export interface Design {
   id: string
@@ -6,9 +6,9 @@ export interface Design {
   fonts: string[]
   name: string
   productType: {
-    type: string,
-    size: string,
-    width: number,
+    type: string
+    size: string
+    width: number
     height: number
   }
   thumbnail: string

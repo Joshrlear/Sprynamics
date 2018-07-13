@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core'
-
 import { AngularFireStorage } from 'angularfire2/storage'
-import { Observable } from 'rxjs'
 
 @Injectable()
 export class StorageService {
@@ -13,12 +11,16 @@ export class StorageService {
   }
 
   async putJSON(data: any, path: string) {
-    const snapshot = await this.storage.ref(path).putString(JSON.stringify(data))
+    const snapshot = await this.storage
+      .ref(path)
+      .putString(JSON.stringify(data))
     return snapshot.downloadURL
   }
 
   async putPrettyJSON(data: any, path: string, numSpaces: number = 2) {
-    const snapshot = await this.storage.ref(path).putString(JSON.stringify(data, null, numSpaces))
+    const snapshot = await this.storage
+      .ref(path)
+      .putString(JSON.stringify(data, null, numSpaces))
     return snapshot.downloadURL
   }
 
@@ -29,7 +31,10 @@ export class StorageService {
   putBase64(data: string, path: string, contentType?: string): Promise<string> {
     return new Promise((resolve, reject) => {
       const ref = this.storage.ref(path)
-      ref.putString(data, 'data_url', { contentType: contentType || 'image/jpeg' })
+      ref
+        .putString(data, 'data_url', {
+          contentType: contentType || 'image/jpeg'
+        })
         .then(() => {
           ref.getDownloadURL().subscribe(downloadUrl => {
             if (downloadUrl) {

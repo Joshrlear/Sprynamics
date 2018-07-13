@@ -24,7 +24,7 @@
         <input type="password" class="form-control" formControlName="password" id="password" placeholder="Password">
       </div>
       <div class="form-action">
-        <button type="submit" class="submit" [disabled]="!loginForm.valid" mat-button>Sign In <i class="fas fa-arrow-right"></i></button>
+        <button type="submit" class="submit" [disabled]="loginForm.invalid" mat-button>Sign In <i class="fas fa-arrow-right"></i></button>
       </div>
       <div class="change-method">
         <p>Don't have a Sprynamics account? <button routerLink="/account/register" class="btn btn-link">Sign Up</button></p>

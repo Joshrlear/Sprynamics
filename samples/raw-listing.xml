@@ -1,0 +1,275 @@
+<Listing>
+  <Address>
+    <commons:preference-order>1</commons:preference-order>
+    <commons:address-preference-order>1</commons:address-preference-order>
+    <commons:FullStreetAddress>2629 Columbia St</commons:FullStreetAddress>
+    <commons:City>San Diego</commons:City>
+    <commons:StateOrProvince>CA</commons:StateOrProvince>
+    <commons:PostalCode>92103</commons:PostalCode>
+    <commons:Country>US</commons:Country>
+  </Address>
+  <ListPrice commons:isgSecurityClass="Public">1299000</ListPrice>
+  <ListingURL>http://listings.listhub.net/pages/SANDICOR/180029314/?channel=spry</ListingURL>
+  <ProviderName>GoodLife Realty</ProviderName>
+  <ProviderURL>http://www.goodlifeteam.com</ProviderURL>
+  <ProviderCategory>Broker</ProviderCategory>
+  <LeadRoutingEmail>jamie@team-metro.com</LeadRoutingEmail>
+  <Bedrooms>5</Bedrooms>
+  <Bathrooms>3</Bathrooms>
+  <PropertyType otherDescription="2-4 Units">MultiFamily</PropertyType>
+  <PropertySubType otherDescription="Res Income 2-4 Units">Other</PropertySubType>
+  <ListingKey>3yd-SANDICOR-180029314</ListingKey>
+  <ListingCategory>Purchase</ListingCategory>
+  <ListingStatus>Active</ListingStatus>
+  <MarketingInformation>
+    <commons:PermitAddressOnInternet commons:isgSecurityClass="Public">true</commons:PermitAddressOnInternet>
+    <commons:VOWAddressDisplay commons:isgSecurityClass="Public">true</commons:VOWAddressDisplay>
+    <commons:VOWAutomatedValuationDisplay commons:isgSecurityClass="Public">true</commons:VOWAutomatedValuationDisplay>
+    <commons:VOWConsumerComment commons:isgSecurityClass="Public">true</commons:VOWConsumerComment>
+  </MarketingInformation>
+  <Photos>
+    <Photo>
+      <MediaModificationTimestamp commons:isgSecurityClass="Public">2018-06-01T23:47:34+00:00</MediaModificationTimestamp>
+      <MediaURL>http://photos.listhub.net/SANDICOR/180029314/1?lm=20180601T234734</MediaURL>
+    </Photo>
+    <Photo>
+      <MediaModificationTimestamp commons:isgSecurityClass="Public">2018-06-01T23:47:34+00:00</MediaModificationTimestamp>
+      <MediaURL>http://photos.listhub.net/SANDICOR/180029314/2?lm=20180601T234734</MediaURL>
+    </Photo>
+    <Photo>
+      <MediaModificationTimestamp commons:isgSecurityClass="Public">2018-06-01T23:47:34+00:00</MediaModificationTimestamp>
+      <MediaURL>http://photos.listhub.net/SANDICOR/180029314/3?lm=20180601T234734</MediaURL>
+    </Photo>
+    <Photo>
+      <MediaModificationTimestamp commons:isgSecurityClass="Public">2018-06-01T23:47:34+00:00</MediaModificationTimestamp>
+      <MediaURL>http://photos.listhub.net/SANDICOR/180029314/4?lm=20180601T234734</MediaURL>
+    </Photo>
+    <Photo>
+      <MediaModificationTimestamp commons:isgSecurityClass="Public">2018-06-01T23:47:34+00:00</MediaModificationTimestamp>
+      <MediaURL>http://photos.listhub.net/SANDICOR/180029314/5?lm=20180601T234734</MediaURL>
+    </Photo>
+    <Photo>
+      <MediaModificationTimestamp commons:isgSecurityClass="Public">2018-06-01T23:47:34+00:00</MediaModificationTimestamp>
+      <MediaURL>http://photos.listhub.net/SANDICOR/180029314/6?lm=20180601T234734</MediaURL>
+    </Photo>
+    <Photo>
+      <MediaModificationTimestamp commons:isgSecurityClass="Public">2018-06-01T23:47:34+00:00</MediaModificationTimestamp>
+      <MediaURL>http://photos.listhub.net/SANDICOR/180029314/7?lm=20180601T234734</MediaURL>
+    </Photo>
+    <Photo>
+      <MediaModificationTimestamp commons:isgSecurityClass="Public">2018-06-01T23:47:34+00:00</MediaModificationTimestamp>
+      <MediaURL>http://photos.listhub.net/SANDICOR/180029314/8?lm=20180601T234734</MediaURL>
+    </Photo>
+    <Photo>
+      <MediaModificationTimestamp commons:isgSecurityClass="Public">2018-06-01T23:47:34+00:00</MediaModificationTimestamp>
+      <MediaURL>http://photos.listhub.net/SANDICOR/180029314/9?lm=20180601T234734</MediaURL>
+    </Photo>
+    <Photo>
+      <MediaModificationTimestamp commons:isgSecurityClass="Public">2018-06-01T23:47:34+00:00</MediaModificationTimestamp>
+      <MediaURL>http://photos.listhub.net/SANDICOR/180029314/10?lm=20180601T234734</MediaURL>
+    </Photo>
+    <Photo>
+      <MediaModificationTimestamp commons:isgSecurityClass="Public">2018-06-01T23:47:34+00:00</MediaModificationTimestamp>
+      <MediaURL>http://photos.listhub.net/SANDICOR/180029314/11?lm=20180601T234734</MediaURL>
+    </Photo>
+    <Photo>
+      <MediaModificationTimestamp commons:isgSecurityClass="Public">2018-06-01T23:47:34+00:00</MediaModificationTimestamp>
+      <MediaURL>http://photos.listhub.net/SANDICOR/180029314/12?lm=20180601T234734</MediaURL>
+    </Photo>
+    <Photo>
+      <MediaModificationTimestamp commons:isgSecurityClass="Public">2018-06-01T23:47:34+00:00</MediaModificationTimestamp>
+      <MediaURL>http://photos.listhub.net/SANDICOR/180029314/13?lm=20180601T234734</MediaURL>
+    </Photo>
+    <Photo>
+      <MediaModificationTimestamp commons:isgSecurityClass="Public">2018-06-01T23:47:34+00:00</MediaModificationTimestamp>
+      <MediaURL>http://photos.listhub.net/SANDICOR/180029314/14?lm=20180601T234734</MediaURL>
+    </Photo>
+    <Photo>
+      <MediaModificationTimestamp commons:isgSecurityClass="Public">2018-06-01T23:47:34+00:00</MediaModificationTimestamp>
+      <MediaURL>http://photos.listhub.net/SANDICOR/180029314/15?lm=20180601T234734</MediaURL>
+    </Photo>
+    <Photo>
+      <MediaModificationTimestamp commons:isgSecurityClass="Public">2018-06-01T23:47:34+00:00</MediaModificationTimestamp>
+      <MediaURL>http://photos.listhub.net/SANDICOR/180029314/16?lm=20180601T234734</MediaURL>
+    </Photo>
+    <Photo>
+      <MediaModificationTimestamp commons:isgSecurityClass="Public">2018-06-01T23:47:34+00:00</MediaModificationTimestamp>
+      <MediaURL>http://photos.listhub.net/SANDICOR/180029314/17?lm=20180601T234734</MediaURL>
+    </Photo>
+    <Photo>
+      <MediaModificationTimestamp commons:isgSecurityClass="Public">2018-06-01T23:47:34+00:00</MediaModificationTimestamp>
+      <MediaURL>http://photos.listhub.net/SANDICOR/180029314/18?lm=20180601T234734</MediaURL>
+    </Photo>
+    <Photo>
+      <MediaModificationTimestamp commons:isgSecurityClass="Public">2018-06-01T23:47:34+00:00</MediaModificationTimestamp>
+      <MediaURL>http://photos.listhub.net/SANDICOR/180029314/19?lm=20180601T234734</MediaURL>
+    </Photo>
+    <Photo>
+      <MediaModificationTimestamp commons:isgSecurityClass="Public">2018-06-01T23:47:34+00:00</MediaModificationTimestamp>
+      <MediaURL>http://photos.listhub.net/SANDICOR/180029314/20?lm=20180601T234734</MediaURL>
+    </Photo>
+    <Photo>
+      <MediaModificationTimestamp commons:isgSecurityClass="Public">2018-06-01T23:47:34+00:00</MediaModificationTimestamp>
+      <MediaURL>http://photos.listhub.net/SANDICOR/180029314/21?lm=20180601T234734</MediaURL>
+    </Photo>
+    <Photo>
+      <MediaModificationTimestamp commons:isgSecurityClass="Public">2018-06-01T23:47:34+00:00</MediaModificationTimestamp>
+      <MediaURL>http://photos.listhub.net/SANDICOR/180029314/22?lm=20180601T234734</MediaURL>
+    </Photo>
+  </Photos>
+  <DiscloseAddress>true</DiscloseAddress>
+  <ListingDescription>Fantastic opportunity for savvy investor to bring these units up to their fullest potential with some of the best views in the area - city lights, downtown, airport and bay views.  The 2-bedroom and studio, both with stellar views have been remodeled with new kitchens and baths. The 3-bedroom unit is in a mid-demo state.    Huge 10,300 sf lot runs between Columbia and State Street allows future development of 6+ units with the flexibility of buying the adjoining  property for additional units.</ListingDescription>
+  <MlsId>SANDICOR</MlsId>
+  <MlsName>SANDICOR</MlsName>
+  <MlsNumber>180029314</MlsNumber>
+  <LotSize commons:areaUnits="acre">0.24</LotSize>
+  <YearBuilt>1945</YearBuilt>
+  <ListingDate>2018-06-01</ListingDate>
+  <ListingTitle>Res Income 2-4 Units - San Diego, CA</ListingTitle>
+  <FullBathrooms>3</FullBathrooms>
+  <ThreeQuarterBathrooms>0</ThreeQuarterBathrooms>
+  <HalfBathrooms>0</HalfBathrooms>
+  <OneQuarterBathrooms>0</OneQuarterBathrooms>
+  <PartialBathrooms>0</PartialBathrooms>
+  <ListingParticipants>
+    <Participant>
+      <ParticipantKey>3yd-SANDICOR-603599</ParticipantKey>
+      <ParticipantId>603599</ParticipantId>
+      <FirstName>Jamie</FirstName>
+      <LastName>Hopkins</LastName>
+      <Role>Listing</Role>
+      <PrimaryContactPhone>6192506634</PrimaryContactPhone>
+      <OfficePhone>6197788888</OfficePhone>
+      <Email>jamie@team-metro.com</Email>
+      <WebsiteURL>http://www.goodlifeteam.com</WebsiteURL>
+      <Licenses>
+        <License>
+          <commons:LicenseCategory otherDescription="">Unknown</commons:LicenseCategory>
+          <commons:LicenseNumber commons:isgSecurityClass="Public">01070481</commons:LicenseNumber>
+          <commons:Jurisdiction commons:isgSecurityClass="Public"></commons:Jurisdiction>
+        </License>
+      </Licenses>
+    </Participant>
+  </ListingParticipants>
+  <VirtualTours>
+    <VirtualTour>
+      <MediaModificationTimestamp commons:isgSecurityClass="Public"></MediaModificationTimestamp>
+      <MediaURL>https://www.propertypanorama.com/instaview/snd/180014942</MediaURL>
+    </VirtualTour>
+  </VirtualTours>
+  <Offices>
+    <Office>
+      <OfficeKey>3yd-SANDICOR-14568</OfficeKey>
+      <OfficeId>14568</OfficeId>
+      <OfficeCode>
+        <OfficeCodeId>14568</OfficeCodeId>
+      </OfficeCode>
+      <Name>Team Metro</Name>
+      <CorporateName>Team Metro</CorporateName>
+      <BrokerId>36007</BrokerId>
+      <MainOfficeId>14568</MainOfficeId>
+      <PhoneNumber>619-778-8888</PhoneNumber>
+      <Address>
+        <commons:preference-order>1</commons:preference-order>
+        <commons:address-preference-order>1</commons:address-preference-order>
+        <commons:FullStreetAddress>1975-C Fifth Ave</commons:FullStreetAddress>
+        <commons:City>San Diego</commons:City>
+        <commons:StateOrProvince>CA</commons:StateOrProvince>
+        <commons:PostalCode>92101</commons:PostalCode>
+        <commons:Country>US</commons:Country>
+      </Address>
+      <OfficeEmail>lee@team-metro.com</OfficeEmail>
+      <Website>http://www.goodlifeteam.com</Website>
+    </Office>
+  </Offices>
+  <Brokerage>
+    <Name>GoodLife Realty</Name>
+    <Phone>(760) 492-3878</Phone>
+    <Email>icxscott@gmail.com</Email>
+    <WebsiteURL>http://www.goodlifeteam.com</WebsiteURL>
+    <Address>
+      <commons:preference-order>1</commons:preference-order>
+      <commons:address-preference-order>1</commons:address-preference-order>
+      <commons:FullStreetAddress>1114 East Cesar Chavez</commons:FullStreetAddress>
+      <commons:City>Austin</commons:City>
+      <commons:StateOrProvince>TX</commons:StateOrProvince>
+      <commons:PostalCode>78702</commons:PostalCode>
+      <commons:Country>US</commons:Country>
+    </Address>
+  </Brokerage>
+  <Franchise>
+    <Name>Keller Williams Realty</Name>
+  </Franchise>
+  <Location>
+    <Directions>Laurel to north on Columbia</Directions>
+    <County>San Diego</County>
+    <ParcelId>533-051-04-00</ParcelId>
+    <Zoning>R-3:RESTRI</Zoning>
+    <Neighborhoods>
+      <Neighborhood>
+        <Name>Park West</Name>
+      </Neighborhood>
+    </Neighborhoods>
+  </Location>
+  <Expenses>
+    <Expense>
+      <commons:ExpenseCategory>Security Deposit</commons:ExpenseCategory>
+      <commons:ExpenseValue commons:isgSecurityClass="Public">2600</commons:ExpenseValue>
+    </Expense>
+    <Expense>
+      <commons:ExpenseCategory>Security Deposit</commons:ExpenseCategory>
+      <commons:ExpenseValue commons:isgSecurityClass="Public">2200</commons:ExpenseValue>
+    </Expense>
+    <Expense>
+      <commons:ExpenseCategory>Security Deposit</commons:ExpenseCategory>
+      <commons:ExpenseValue commons:isgSecurityClass="Public">1500</commons:ExpenseValue>
+    </Expense>
+  </Expenses>
+  <DetailedCharacteristics>
+    <Appliances>
+      <Appliance>Dryer</Appliance>
+      <Appliance>Oven</Appliance>
+      <Appliance>Refrigerator</Appliance>
+      <Appliance>Washer</Appliance>
+    </Appliances>
+    <ArchitectureStyle otherDescription="">Other</ArchitectureStyle>
+    <BuildingUnitCount>3</BuildingUnitCount>
+    <CoolingSystems>
+      <CoolingSystem>Central A/C</CoolingSystem>
+      <CoolingSystem>Zoned A/C</CoolingSystem>
+    </CoolingSystems>
+    <ExteriorTypes>
+      <ExteriorType>Stucco</ExteriorType>
+      <ExteriorType>Wood</ExteriorType>
+    </ExteriorTypes>
+    <HeatingFuels>
+      <HeatingFuel>Electric</HeatingFuel>
+      <HeatingFuel>Natural Gas</HeatingFuel>
+    </HeatingFuels>
+    <HeatingSystems>
+      <HeatingSystem>Forced Air</HeatingSystem>
+      <HeatingSystem>Zoned</HeatingSystem>
+    </HeatingSystems>
+    <IsNewConstruction>false</IsNewConstruction>
+    <NumFloors>2.0</NumFloors>
+    <RoofTypes>
+      <RoofType>Composition Shingle</RoofType>
+    </RoofTypes>
+    <Rooms>
+      <Room>Bedroom</Room>
+      <Room>Bedroom</Room>
+      <Room>Bedroom</Room>
+      <Room>Bedroom</Room>
+      <Room>Bedroom</Room>
+      <Room>Full Bath</Room>
+      <Room>Full Bath</Room>
+      <Room>Full Bath</Room>
+    </Rooms>
+    <ViewTypes>
+      <ViewType>City</ViewType>
+      <ViewType>Ocean</ViewType>
+    </ViewTypes>
+  </DetailedCharacteristics>
+  <ModificationTimestamp commons:isgSecurityClass="Public">2018-06-27T19:49:13-07:00</ModificationTimestamp>
+  <Disclaimer commons:isgSecurityClass="Public">Copyright © 2018 SANDICOR. All rights reserved. All information provided by the listing agent/broker is deemed reliable but is not guaranteed and should be independently verified.</Disclaimer>
+</Listing>

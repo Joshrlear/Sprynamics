@@ -2,7 +2,6 @@ const xml2js = require('xml2js-expat')
 const firebase = require('./firebase')
 const request = require('request')
 const zlib = require('zlib')
-const parser = new xml2js.Parser()
 const csvStringify = require('csv-stringify-as-promised')
 const fs = require('fs')
 const express = require('express')
@@ -12,6 +11,7 @@ const schedule = require('node-schedule')
 const serveIndex = require('serve-index')
 
 function fetchListhubFeed() {
+  const parser = new xml2js.Parser()
   return new Promise((resolve, reject) => {
     const gunzip = zlib.createGunzip()
     request
@@ -28,68 +28,79 @@ function fetchListhubFeed() {
         resolve(result)
       })
       .on('error', err => {
-        console.error(err)
+        console.error('error during parsing', err)
         reject(err)
       })
   })
 }
 
-function processData(jsonData) {
-  return new Promise((resolve, reject) => {
-    // find all photos
-    const listings = []
-    jsonData.Listing.forEach((listing, listingIndex) => {
-      // if (listingIndex > 5) return
-      const Address = listing.Address
-      const Brokerage = listing.Brokerage
-      // const Location = listing.Location[0]
+async function processData(jsonData) {
+  // find all photos
+  const listings = []
+  const listhubListings = jsonData.Listing
+  for (let i = 0; i < listhubListings.length; i++) {
+    const listing = listhubListings[i]
+    const Address = listing.Address
+    const Brokerage = listing.Brokerage
+    const Participant = listing.ListingParticipants.Participant
 
-      const listingObj = {
-        id: listing.MlsNumber,
-        agentId: listing.ListingParticipants.Participant.ParticipantId,
-        fullStreetAddress: Address['commons:FullStreetAddress'],
-        unitNumber: Address['commons:UnitNumber'],
-        city: Address['commons:City'],
-        stateOrProvince: Address['commons:StateOrProvince'],
-        postalCode: Address['commons:PostalCode'],
-        bedrooms: listing.Bedrooms,
-        bathrooms: listing.Bathrooms,
-        listPrice: listing.ListPrice['#'],
-        brokerageName: Brokerage.Name,
-        brokerageNumber: Brokerage.Phone,
-        // listing: listing,
-        // latitude: Location.Latitude[0],
-        // longitude: Location.Longitude[0],
-        listingStatus: listing.ListingStatus,
-        livingArea: listing.LivingArea,
-        listingKey: listing.ListingKey,
-        listingURL: listing.ListingURL,
-        mlsNumber: listing.MlsNumber
+    const listingObj = {
+      id: listing.MlsNumber,
+      agentId: Participant.ParticipantId,
+      fullStreetAddress: Address['commons:FullStreetAddress'],
+      unitNumber: Address['commons:UnitNumber'],
+      city: Address['commons:City'],
+      stateOrProvince: Address['commons:StateOrProvince'],
+      postalCode: Address['commons:PostalCode'],
+      bedrooms: listing.Bedrooms,
+      bathrooms: listing.Bathrooms,
+      listPrice: listing.ListPrice['#'],
+      brokerageName: Brokerage.Name,
+      brokerageNumber: Brokerage.Phone,
+      // listing: listing,
+      // latitude: Location.Latitude[0],
+      // longitude: Location.Longitude[0],
+      listingStatus: listing.ListingStatus,
+      livingArea: listing.LivingArea,
+      listingKey: listing.ListingKey,
+      listingURL: listing.ListingURL,
+      mlsNumber: listing.MlsNumber
+    }
+
+    const agentObj = {
+      firstName: Participant.FirstName || null,
+      lastName: Participant.LastName || null,
+      participantKey: Participant.ParticipantKey || null,
+      id: Participant.ParticipantId || null,
+      phoneNumber: Participant.PrimaryContactPhone || null,
+      email: Participant.Email || null,
+      website: Participant.WebsiteURL || null
+    }
+
+    await firebase.doc(`agents/${agentObj.id}`).set(agentObj)
+
+    Object.getOwnPropertyNames(listingObj).forEach(name => {
+      if (listingObj[name] === undefined) {
+        listingObj[name] = null
       }
-
-      Object.getOwnPropertyNames(listingObj).forEach(name => {
-        if (listingObj[name] === undefined) {
-          listingObj[name] = null
-        }
-      })
-
-      if (listing.Photos) {
-        let photos
-        // listing.Photos.Photo is either an array, or an Object if there's only one
-        if (listing.Photos.Photo instanceof Array) {
-          photos = listing.Photos.Photo.map(photo => photo.MediaURL)
-        } else {
-          photos = [listing.Photos.Photo.MediaURL]
-        }
-        // console.log(photos)
-        listingObj.photos = photos
-      }
-
-      listings.push(listingObj)
     })
 
-    resolve(listings)
-  })
+    if (listing.Photos) {
+      let photos
+      // listing.Photos.Photo is either an array, or an Object if there's only one
+      if (listing.Photos.Photo instanceof Array) {
+        photos = listing.Photos.Photo.map(photo => photo.MediaURL)
+      } else {
+        photos = [listing.Photos.Photo.MediaURL]
+      }
+      // console.log(photos)
+      listingObj.photos = photos
+    }
+
+    listings.push(listingObj)
+  }
+
+  return listings
 }
 
 function getCurrentCSVFilename() {
@@ -159,7 +170,9 @@ async function runSyndication() {
       csvData.push([
         listing.listingKey,
         'SUCCESS',
-        `https://sprynamics.now.sh/designer?product=postcard&size=9x6&agent=${listing.agentId}&listing=${listing.id}`,
+        `https://sprynamics.now.sh/designer?product=postcard&size=9x6&agent=${
+          listing.agentId
+        }&listing=${listing.id}`,
         'Successfully imported',
         ''
       ])

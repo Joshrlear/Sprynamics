@@ -1,6 +1,6 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { Order } from '#models/order.model';
-import { Observable } from 'rxjs';
+import { Order } from '#models/order.model'
+import { Component, Input, OnInit } from '@angular/core'
+import { Observable } from 'rxjs'
 
 @Component({
   selector: 'app-order-receipt',
@@ -8,12 +8,9 @@ import { Observable } from 'rxjs';
   styleUrls: ['./order-receipt.component.scss']
 })
 export class OrderReceiptComponent implements OnInit {
+  @Input('order') order: Observable<Order>
 
-  @Input('order') order: Observable<Order>;
+  constructor() {}
 
-  constructor() { }
-
-  ngOnInit() {
-  }
-
+  ngOnInit() {}
 }

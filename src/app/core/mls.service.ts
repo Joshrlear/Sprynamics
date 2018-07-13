@@ -1,15 +1,18 @@
+import { FirestoreService } from '#core/firestore.service'
 import { Injectable } from '@angular/core'
-import { FirestoreService } from '#core/firestore.service';
 
 @Injectable()
 export class MlsService {
-
   apiBase = 'http://localhost:8080'
 
-  constructor(private firestore: FirestoreService) { }
+  constructor(private firestore: FirestoreService) {}
 
-  public getListings(agentId) {
-    return this.firestore.promiseColWithIds(`listings`, ref => ref.where('agentId', '==', agentId));
+  public async getListings(agentId) {
+    if (!agentId) {
+      return []
+    }
+    return this.firestore.promiseColWithIds(`listings`, ref =>
+      ref.where('agentId', '==', agentId)
+    )
   }
-
 }

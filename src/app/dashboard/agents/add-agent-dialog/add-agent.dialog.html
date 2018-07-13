@@ -1,13 +1,20 @@
-<h2 mat-dialog-title>Request Agent Access</h2>
+<h2 mat-dialog-title>Import Agent By Email</h2>
 
-<mat-dialog-content>
-  <label>Agent's Email Address
-    <input #email type="email" class="form-control">
-  </label>
-</mat-dialog-content>
+<form class="ss-form">
+  <mat-dialog-content>
+    <label for="email">Agent's Email Address</label>
+    <div class="input-group">
+      <input id="email" type="email" class="form-control" [class.ng-invalid]="error" [(ngModel)]="email" [ngModelOptions]="{standalone: true}"
+        (input)="resetError()">
+    </div>
+    <div *ngIf="error" style="color: red">
+      No agents found with that email address.
+    </div>
+  </mat-dialog-content>
+</form>
 
 <mat-dialog-actions>
-  <button class="btn green" (click)="submit()">Send Request</button>
+  <button class="btn green" (click)="submit()">Find Agent</button>
   &nbsp;
   <button class="btn" mat-dialog-close>Cancel</button>
 </mat-dialog-actions>

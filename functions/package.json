@@ -1,24 +1,30 @@
 {
   "name": "functions",
-  "description": "Cloud Functions for Firebase",
   "scripts": {
-    "serve": "firebase serve --only functions",
-    "shell": "firebase experimental:functions:shell",
+    "lint": "echo hello",
+    "build": "tsc",
+    "serve": "npm run build && firebase serve --only functions",
+    "shell": "npm run build && firebase functions:shell",
     "start": "npm run shell",
     "deploy": "firebase deploy --only functions",
     "logs": "firebase functions:log"
   },
+  "main": "lib/index.js",
   "dependencies": {
-    "braintree": "^2.6.0",
+    "braintree": "^2.11.0",
     "cookie-parser": "^1.4.3",
     "cors": "^2.8.4",
-    "firebase-admin": "~5.4.2",
-    "firebase-functions": "^0.8.1",
-    "mailgun-js": "^0.14.1",
-    "node-linkedin": "^0.5.6",
-    "pdf-image": "^1.0.5",
-    "request": "^2.85.0",
-    "request-promise": "^4.2.2"
+    "crypto": "^1.0.1",
+    "firebase-admin": "~5.12.1",
+    "firebase-functions": "^1.0.4",
+    "form-data": "^2.3.2",
+    "mailgun-js": "^0.18.0",
+    "node-fetch": "^2.1.2",
+    "node-linkedin": "^0.5.6"
+  },
+  "devDependencies": {
+    "tslint": "^5.8.0",
+    "typescript": "^2.5.3"
   },
   "private": true
 }

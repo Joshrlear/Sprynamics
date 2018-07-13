@@ -1,23 +1,29 @@
-import { Injectable } from '@angular/core'
-import { Router } from '@angular/router'
-
-import * as firebase from 'firebase/app'
-import { AngularFireAuth } from 'angularfire2/auth'
-import { AngularFirestore, AngularFirestoreDocument } from 'angularfire2/firestore'
-
-import { Observable, of } from 'rxjs'
-
-import { User } from '#models/user.model'
 import { FirestoreService } from '#core/firestore.service'
 import { DEFAULT_BRAND_COLORS } from '#models/brand-colors.model'
+import { User } from '#models/user.model'
+import { Injectable } from '@angular/core'
+import { Router } from '@angular/router'
+import { AngularFireAuth } from 'angularfire2/auth'
+import { AngularFirestore } from 'angularfire2/firestore'
+import * as firebase from 'firebase/app'
+import { Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
+import {StorageService} from '#core/storage.service';
+
+
 
 @Injectable()
 export class AuthService {
   authState: Observable<firebase.User>
   user: Observable<User>
+  constructor(
+    private afAuth: AngularFireAuth,
+    private afs: AngularFirestore,
+    private firestore: FirestoreService,
+    private storage: StorageService,
+    private router: Router,
+  ) {
 
-  constructor(private afAuth: AngularFireAuth, private afs: AngularFirestore, private firestore: FirestoreService, private router: Router) {
     // Get auth data, then get firestore user document || null
     this.authState = this.afAuth.authState
     this.user = this.afAuth.authState.pipe(
@@ -34,11 +40,11 @@ export class AuthService {
   emailSignUp(email: string, password: string) {
     return this.afAuth.auth
       .createUserWithEmailAndPassword(email, password)
-      .then(user => {
-        console.log(user)
+      .then(auth => {
+        console.log(auth)
         return this.emailLogin(email, password).then(_ => {
-          return this.afs.doc(`users/${user.uid}`).set({
-            uid: user.uid,
+          return this.afs.doc(`users/${auth.user.uid}`).set({
+            uid: auth.user.uid,
             email,
             brandColors: DEFAULT_BRAND_COLORS
           })
@@ -53,30 +59,75 @@ export class AuthService {
     return this.afAuth.auth.signInWithEmailAndPassword(username, password)
   }
 
-  googleLogin() {
-    const provider = new firebase.auth.GoogleAuthProvider()
-    return this.afAuth.auth.signInWithPopup(provider).then(credential => {
-      return this.updateUserData(credential.user, {
-        uid: credential.user.uid,
-        email: credential.user.email,
-        firstName: credential.user.displayName.split(' ')[0],
-        lastName: credential.user.displayName.split(' ')[1] || '',
-        brandColors: DEFAULT_BRAND_COLORS
-      })
+  async linkedinLogin(credential) {
+    await this.updateUserData(credential.user, {
+      uid: credential.user.uid,
+      email: credential.user.email,
+      firstName: credential.user.displayName.split(' ')[0],
+      lastName: credential.user.displayName.split(' ')[1] || '',
+      brandColors: DEFAULT_BRAND_COLORS,
+      avatarUrl: credential.user.photoURL
     })
   }
 
-  facebookLogin() {
-    const provider = new firebase.auth.FacebookAuthProvider()
-    return this.afAuth.auth.signInWithPopup(provider).then(credential => {
-      return this.updateUserData(credential.user, {
+  async googleLogin() {
+    const provider = new firebase.auth.GoogleAuthProvider()
+    provider.setCustomParameters({
+      prompt: 'select_account'
+    })
+    try {
+      const credential = await this.afAuth.auth.signInWithPopup(provider)
+      await this.updateUserData(credential.user, {
         uid: credential.user.uid,
         email: credential.user.email,
         firstName: credential.user.displayName.split(' ')[0],
         lastName: credential.user.displayName.split(' ')[1] || '',
         brandColors: DEFAULT_BRAND_COLORS
       })
+    } catch (err) {
+      if (err.code === 'auth/account-exists-with-different-credential') {
+        const email = err.email
+        const methods = await this.afAuth.auth.fetchSignInMethodsForEmail(email)
+        console.log(methods)
+        if (methods.includes(firebase.auth.EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD)) {
+          throw new Error(
+            'An account already exists for the email associated with this Google account. Please log in with your email and password.'
+          )
+        } else if (methods.includes(firebase.auth.FacebookAuthProvider.FACEBOOK_SIGN_IN_METHOD)) {
+          this.facebookLogin()
+        }
+      }
+    }
+  }
+
+  async facebookLogin() {
+    const provider = new firebase.auth.FacebookAuthProvider()
+    provider.setCustomParameters({
+      auth_type: 'reauthenticate'
     })
+    try {
+      const credential = await this.afAuth.auth.signInWithPopup(provider)
+      await this.updateUserData(credential.user, {
+        uid: credential.user.uid,
+        email: credential.user.email,
+        firstName: credential.user.displayName.split(' ')[0],
+        lastName: credential.user.displayName.split(' ')[1] || '',
+        brandColors: DEFAULT_BRAND_COLORS
+      })
+    } catch (err) {
+      if (err.code === 'auth/account-exists-with-different-credential') {
+        const email = err.email
+        const methods = await this.afAuth.auth.fetchSignInMethodsForEmail(email)
+        console.log(methods)
+        if (methods.includes(firebase.auth.EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD)) {
+          throw new Error(
+            'An account already exists for the email associated with this Facebook account. Please log in with your email and password.'
+          )
+        } else if (methods.includes(firebase.auth.GoogleAuthProvider.GOOGLE_SIGN_IN_METHOD)) {
+          this.googleLogin()
+        }
+      }
+    }
   }
 
   anonLogin() {

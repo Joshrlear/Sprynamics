@@ -1,6 +1,5 @@
-import { Injectable } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
-import { Observable } from 'rxjs'
+import { Injectable } from '@angular/core'
 import { first } from 'rxjs/operators'
 
 @Injectable()
@@ -21,15 +20,27 @@ export class GoogleMapsService {
     region?: string,
     country?: string
   ): Promise<any> {
-    let compositeAddress = [address]
+    const compositeAddress = [address]
 
-    if (postalCode) compositeAddress.push(postalCode)
-    if (place) compositeAddress.push(place)
-    if (province) compositeAddress.push(province)
-    if (region) compositeAddress.push(region)
-    if (country) compositeAddress.push(country)
+    if (postalCode) {
+      compositeAddress.push(postalCode)
+    }
+    if (place) {
+      compositeAddress.push(place)
+    }
+    if (province) {
+      compositeAddress.push(province)
+    }
+    if (region) {
+      compositeAddress.push(region)
+    }
+    if (country) {
+      compositeAddress.push(country)
+    }
 
-    let url = `${this.API_URL}/geocode/json?key=${this.API_KEY}&address=${compositeAddress.join(',')}`
+    const url = `${this.API_URL}/geocode/json?key=${
+      this.API_KEY
+    }&address=${compositeAddress.join(',')}`
 
     return this.http
       .get(url)
@@ -37,10 +48,19 @@ export class GoogleMapsService {
       .toPromise()
   }
 
-  public getStaticMapUrl(latitude: number, longitude: number, zoom = 12, width = 400, height = 400) {
+  public getStaticMapUrl(
+    latitude: number,
+    longitude: number,
+    zoom = 12,
+    width = 400,
+    height = 400
+  ) {
     return (
-      `${this.API_URL}/staticmap?center=${latitude},${longitude}&zoom=${zoom}&size=${width}x${height}&key=${this.API_KEY}` +
-      `&markers=${latitude},${longitude}`
+      `${
+        this.API_URL
+      }/staticmap?center=${latitude},${longitude}&zoom=${zoom}&size=${width}x${height}&key=${
+        this.API_KEY
+      }` + `&markers=${latitude},${longitude}`
     )
   }
 }

@@ -26,6 +26,7 @@
   background-color: #30343a;
   color: white;
   display: flex;
+  z-index: 999;
 
   &.slim {
     max-width: 70px;
@@ -175,7 +176,7 @@
   bottom: 64px;
   left: -12px;
   border-radius: 4px;
-  z-index: 6;
+  z-index: 9999;
   display: flex;
   align-items: center;
   justify-content: center;
