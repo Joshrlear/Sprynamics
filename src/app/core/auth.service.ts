@@ -9,24 +9,27 @@ import * as firebase from 'firebase/app'
 import { Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 import {StorageService} from '#core/storage.service';
-
-
+import { Store, Select } from '@ngxs/store';
+import { SetUser } from '#app/checkout/app.actions';
 
 @Injectable()
 export class AuthService {
   authState: Observable<firebase.User>
-  user: Observable<User>
+  _user: Observable<User>
+  @Select(state => state.app.user) user;
+
   constructor(
     private afAuth: AngularFireAuth,
     private afs: AngularFirestore,
     private firestore: FirestoreService,
     private storage: StorageService,
     private router: Router,
+    private store: Store
   ) {
 
     // Get auth data, then get firestore user document || null
     this.authState = this.afAuth.authState
-    this.user = this.afAuth.authState.pipe(
+    this._user = this.afAuth.authState.pipe(
       switchMap(user => {
         if (user) {
           return this.afs.doc<User>(`users/${user.uid}`).valueChanges()
@@ -35,6 +38,11 @@ export class AuthService {
         }
       })
     )
+    this._user.subscribe((user) => {
+      if (user) {
+        this.store.dispatch(new SetUser(user));
+      }
+    });
   }
 
   emailSignUp(email: string, password: string) {

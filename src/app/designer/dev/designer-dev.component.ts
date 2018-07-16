@@ -12,8 +12,7 @@ import { StateService } from "#core/state.service"
 import { StorageService } from "#core/storage.service"
 import { WebfontService } from "#core/webfont.service"
 import { DEFAULT_BRAND_COLORS } from "#models/brand-colors.model"
-import { DesignState } from "#models/design-state.model"
-import { Order } from '#models/state.model';
+import { Order, DesignState } from '#models/state.model';
 import { User } from "#models/user.model"
 import { CropDialog } from "#shared/crop-dialog/crop.dialog"
 import { AfterViewInit, Component, HostListener, ViewChild } from "@angular/core"
@@ -37,7 +36,7 @@ export class DesignerDevComponent implements AfterViewInit {
   @ViewChild(FabricCanvasComponent) fabricCanvas: FabricCanvasComponent
   @ViewChild("designsTab") designsTab: SidebarTabComponent
 
-  designState: DesignState = {}
+  // designState: DesignState = {}
   agents: User[]
   user: User
   selectedAgent: User
@@ -52,7 +51,7 @@ export class DesignerDevComponent implements AfterViewInit {
   listingId: string
 
   @Select(state => state.app.designer) _designState;
-  designState1: DesignState;
+  designState: DesignState = {};
   orderState: Order;
 
   constructor(
@@ -67,7 +66,7 @@ export class DesignerDevComponent implements AfterViewInit {
     private store: Store
   ) {
     this._designState.subscribe((designer) => {
-      this.designState1 = designer;
+      this.designState = designer;
     });
   }
 
@@ -221,7 +220,9 @@ export class DesignerDevComponent implements AfterViewInit {
       this.updateAgentFields()
       // this.fabricCanvas.zoomToFit(this.designState.boundBoxObj)
       this.fabricCanvas.canvas.renderAll()
-      this.state.setDesignState(this.designState)
+      this.state.updateDesignState(this.designState);
+      this.checkout.updateOrder(this.orderState);
+      this.state.setDesignState(this.designState);
     } catch (err) {
       if (err.message) {
         window.alert(err.message)
@@ -303,12 +304,12 @@ export class DesignerDevComponent implements AfterViewInit {
       const isFirstTime = !this.selectedProduct
       this.selectedProduct = product
       this.orderState.product = product
-      this.state.setDesignState(this.designState)
       if (isFirstTime) {
         this.designerView.clickTab(this.designsTab, true)
       } else {
         this.orderState.canvasData = null
       }
+      this.checkout.updateOrder(this.orderState);
     }
   }
 
@@ -324,6 +325,7 @@ export class DesignerDevComponent implements AfterViewInit {
       this.designState.addressObj.text = property.formatted_address
       this.fabricCanvas.render()
     }
+    this.state.updateDesignState(this.designState);
   }
 
   updateAgentFields() {

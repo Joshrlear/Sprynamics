@@ -48,7 +48,7 @@
                      icon="color_lens"
                      [disabled]="!selectedProduct || !orderState.canvasData">
       <app-colors *ngIf="orderState.brandColors"
-                  [(colors)]="designState.brandColors">
+                  [(colors)]="orderState.brandColors">
       </app-colors>
     </app-sidebar-tab>
     <!-- END sidebar tabs -->

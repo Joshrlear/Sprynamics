@@ -21,7 +21,7 @@ export class StateService {
   loadFromStorage() {
     const json = localStorage.getItem('sprynamicsDesign')
     if (json) {
-      // this.store.dispatch(new SetDesignState(JSON.parse(json)));
+      this.store.dispatch(new SetDesignState(JSON.parse(json)));
       return JSON.parse(json)
     } else {
       return null
