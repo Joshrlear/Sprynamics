@@ -52,7 +52,7 @@ export class DesignerDevComponent implements AfterViewInit {
 
   @Select(state => state.app.designer) _designState;
   designState: DesignState = {};
-  orderState: Order;
+  orderState: Order = {};
 
   constructor(
     private auth: AuthService,
@@ -66,14 +66,16 @@ export class DesignerDevComponent implements AfterViewInit {
     private store: Store
   ) {
     this._designState.subscribe((designer) => {
-      this.designState = designer;
+      if (designer) {
+        this.designState = designer;
+      }
     });
   }
 
   async ngAfterViewInit() {
     try {
       /* load user */
-      const user = await this.auth.user.pipe(first()).toPromise()
+      const user = await this.auth._user.pipe(first()).toPromise()
       console.log(user)
       this.user = user
       /* load agents */
