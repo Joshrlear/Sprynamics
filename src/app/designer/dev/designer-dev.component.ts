@@ -36,7 +36,6 @@ export class DesignerDevComponent implements AfterViewInit {
   @ViewChild(FabricCanvasComponent) fabricCanvas: FabricCanvasComponent
   @ViewChild("designsTab") designsTab: SidebarTabComponent
 
-  // designState: DesignState = {}
   agents: User[]
   user: User
   selectedAgent: User
@@ -49,6 +48,10 @@ export class DesignerDevComponent implements AfterViewInit {
   selectedListing: any
   selectedProduct: Product
   listingId: string
+
+  addressObj: any
+  backgroundObj: any
+  boundBoxObj: any
 
   @Select(state => state.app.designer) _designState;
   designState: DesignState = {};
@@ -76,7 +79,6 @@ export class DesignerDevComponent implements AfterViewInit {
     try {
       /* load user */
       const user = await this.auth._user.pipe(first()).toPromise()
-      console.log(user)
       this.user = user
       /* load agents */
       const managedAgents = await this.firestore.promiseColWithIds<User>("users", ref => ref.where(`managers.${user.uid}`, "==", true))
@@ -86,7 +88,6 @@ export class DesignerDevComponent implements AfterViewInit {
       /* set up design state */
       const designState = this.state.designState || this.state.loadFromStorage()
       if (designState) {
-        console.log(designState)
         this.designState = designState
         /* set product */
         this.selectedProduct = designState.product
@@ -148,10 +149,9 @@ export class DesignerDevComponent implements AfterViewInit {
       this.designState.textFields = []
       this.designState.agentFields = []
       /* find objects */
-      this.designState.backgroundObj = this.fabricCanvas.findObjects(obj => obj.isBackground, true)[0]
-      this.designState.boundBoxObj = this.fabricCanvas.findObjects(obj => obj.isBoundBox, true)[0]
-      this.designState.addressObj = this.fabricCanvas.findObjects(obj => obj.textContentType === "address")[0]
-      console.log(this.designState.addressObj)
+      this.backgroundObj = this.fabricCanvas.findObjects(obj => obj.isBackground, true)[0]
+      this.boundBoxObj = this.fabricCanvas.findObjects(obj => obj.isBoundBox, true)[0]
+      this.addressObj = this.fabricCanvas.findObjects(obj => obj.textContentType === "address")[0]
       /* map text fields */
       const fieldFromObject = obj => ({
         obj,
@@ -164,12 +164,12 @@ export class DesignerDevComponent implements AfterViewInit {
       this.orderState.propertyImages = this.fabricCanvas.findObjects(obj => obj.isUserImage)
       /* clip canvas to bound box */
       this.fabricCanvas.canvas.clipTo = ctx => {
-        const c = this.designState.boundBoxObj.getCoords()
+        const c = this.boundBoxObj.getCoords()
         const x = c[0].x
         const y = c[0].y
         const canvasCenter = this.fabricCanvas.canvas.getCenter()
         const zoom = this.fabricCanvas.canvas.getZoom()
-        const bound = this.designState.boundBoxObj.getBoundingRect(false)
+        const bound = this.boundBoxObj.getBoundingRect(false)
         ctx.rect(bound.left, bound.top, bound.width, bound.height)
       }
       /* loop through canvas objects */
@@ -294,7 +294,7 @@ export class DesignerDevComponent implements AfterViewInit {
 
   @HostListener("window:resize", ["$event"])
   onResize(event?) {
-    this.fabricCanvas.zoomToFit(this.designState.boundBoxObj)
+    this.fabricCanvas.zoomToFit(this.boundBoxObj)
   }
 
   changeProduct(product: Product) {
@@ -323,8 +323,8 @@ export class DesignerDevComponent implements AfterViewInit {
 
   changeProperty(property: any) {
     this.selectedListing = property.listing
-    if (this.designState.addressObj) {
-      this.designState.addressObj.text = property.formatted_address
+    if (this.addressObj) {
+      this.addressObj.text = property.formatted_address
       this.fabricCanvas.render()
     }
     this.state.updateDesignState(this.designState);

@@ -45,10 +45,6 @@ export interface Order {
 }
 
 export interface DesignState {
-  addressObj?: any
-  backgroundObj?: any
-  boundBoxObj?: any
-
   textFields?: any[]
   agentFields?: any[]
   propertyFields?: any[]
