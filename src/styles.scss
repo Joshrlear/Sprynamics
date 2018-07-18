@@ -127,9 +127,24 @@ body {
     background-color: #75d84f !important;
     color: #fff !important;
 
-    @media only screen and (min-width: 800px) {
+    @media only screen and (min-width: 767px) {
       display: block !important;
     }
+}
+
+.design-link-mobile {
+  display: none !important;
+  margin: 30px 32px 0 !important;
+  padding: 0 32px !important;
+  border-radius: 6px !important;
+  font-size: 14px !important;
+  box-shadow: 0 0.25rem 0.125rem #167843;
+  // background-color: #12c463 !important;
+  background-color: #75d84f !important;
+  color: #fff !important;
+  @media only screen and (max-width: 766px) {
+    display: block !important;
+  }
 }
 
 .dropdown-container {
@@ -148,8 +163,8 @@ body {
 
 #top-of-page {
     width: 100%;
-    height: 0; 
-    position: absolute; 
+    height: 0;
+    position: absolute;
     top: 0;
 }
 
