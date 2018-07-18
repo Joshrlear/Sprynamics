@@ -49,10 +49,6 @@ export class DesignerDevComponent implements AfterViewInit {
   selectedProduct: Product
   listingId: string
 
-  addressObj: any
-  backgroundObj: any
-  boundBoxObj: any
-
   @Select(state => state.app.designer) _designState;
   designState: DesignState = {};
   orderState: Order = {};
@@ -149,9 +145,9 @@ export class DesignerDevComponent implements AfterViewInit {
       this.designState.textFields = []
       this.designState.agentFields = []
       /* find objects */
-      this.backgroundObj = this.fabricCanvas.findObjects(obj => obj.isBackground, true)[0]
-      this.boundBoxObj = this.fabricCanvas.findObjects(obj => obj.isBoundBox, true)[0]
-      this.addressObj = this.fabricCanvas.findObjects(obj => obj.textContentType === "address")[0]
+      this.designState.backgroundObj = this.fabricCanvas.findObjects(obj => obj.isBackground, true)[0]
+      this.designState.boundBoxObj = this.fabricCanvas.findObjects(obj => obj.isBoundBox, true)[0]
+      this.designState.addressObj = this.fabricCanvas.findObjects(obj => obj.textContentType === "address")[0]
       /* map text fields */
       const fieldFromObject = obj => ({
         obj,
@@ -161,15 +157,15 @@ export class DesignerDevComponent implements AfterViewInit {
       this.designState.agentFields = this.fabricCanvas.findObjects(obj => obj.textContentType === "data").map(fieldFromObject)
       this.designState.propertyFields = this.fabricCanvas.findObjects(obj => obj.textContentType === "property").map(fieldFromObject)
       /* find property images */
-      this.orderState.propertyImages = this.fabricCanvas.findObjects(obj => obj.isUserImage)
+      this.designState.propertyImages = this.fabricCanvas.findObjects(obj => obj.isUserImage)
       /* clip canvas to bound box */
       this.fabricCanvas.canvas.clipTo = ctx => {
-        const c = this.boundBoxObj.getCoords()
+        const c = this.designState.boundBoxObj.getCoords()
         const x = c[0].x
         const y = c[0].y
         const canvasCenter = this.fabricCanvas.canvas.getCenter()
         const zoom = this.fabricCanvas.canvas.getZoom()
-        const bound = this.boundBoxObj.getBoundingRect(false)
+        const bound = this.designState.boundBoxObj.getBoundingRect(false)
         ctx.rect(bound.left, bound.top, bound.width, bound.height)
       }
       /* loop through canvas objects */
@@ -294,7 +290,7 @@ export class DesignerDevComponent implements AfterViewInit {
 
   @HostListener("window:resize", ["$event"])
   onResize(event?) {
-    this.fabricCanvas.zoomToFit(this.boundBoxObj)
+    this.fabricCanvas.zoomToFit(this.designState.boundBoxObj)
   }
 
   changeProduct(product: Product) {
@@ -323,8 +319,8 @@ export class DesignerDevComponent implements AfterViewInit {
 
   changeProperty(property: any) {
     this.selectedListing = property.listing
-    if (this.addressObj) {
-      this.addressObj.text = property.formatted_address
+    if (this.designState.addressObj) {
+      this.designState.addressObj.text = property.formatted_address
       this.fabricCanvas.render()
     }
     this.state.updateDesignState(this.designState);

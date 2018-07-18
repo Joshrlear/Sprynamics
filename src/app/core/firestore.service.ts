@@ -97,6 +97,7 @@ export class FirestoreService {
   }
 
   update<T>(ref: DocPredicate<T>, data: any) {
+    console.log(ref, data)
     return this.doc(ref).update({
       ...data,
       updatedAt: this.timestamp

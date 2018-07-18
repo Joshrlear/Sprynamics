@@ -25,7 +25,6 @@ export interface Order {
   design?: Design
   pdfUrl?: string
   thumbnail?: string
-  propertyImages?: any[]
   canvasData?: {
     front: any
     back: any
@@ -45,9 +44,15 @@ export interface Order {
 }
 
 export interface DesignState {
+  addressObj?: any
+  backgroundObj?: any
+  boundBoxObj?: any
+
   textFields?: any[]
   agentFields?: any[]
   propertyFields?: any[]
+
+  propertyImages?: any[]
 }
 
 export interface AppStateModel {
