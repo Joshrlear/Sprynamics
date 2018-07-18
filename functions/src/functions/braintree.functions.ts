@@ -65,7 +65,7 @@ export const new_customer = https.route("POST", (req, res) => {
  * Makes a checkout transaction in Braintree
  */
 export const checkout = https.route("POST", (req, res) => {
-  const { nonce, chargeAmount, uid } = req.body
+  const { nonce, chargeAmount, userId } = req.body
   gateway.transaction.sale(
     {
       amount: chargeAmount,
@@ -87,7 +87,7 @@ export const checkout = https.route("POST", (req, res) => {
             .add(req.body) // add order to database
           const user = (await admin
             .firestore()
-            .doc(`users/${req.body.uid}`)
+            .doc(`users/${userId}`)
             .get()).data()
           await email.send({
             from: "Sprynamics <noreply@notifications.sprynamics.com>",

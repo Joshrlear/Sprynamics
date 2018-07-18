@@ -2,7 +2,7 @@ import { CheckoutService } from '#app/checkout/checkout.service'
 import { MailingListDialog } from '#app/shared/mailing-list-dialog/mailing-list.dialog'
 import { AuthService } from '#core/auth.service'
 import { FirestoreService } from '#core/firestore.service'
-import { Order } from '#models/order.model'
+import { Order } from '#models/state.model'
 import {
   Component,
   ElementRef,
@@ -14,6 +14,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { MatDialog } from '@angular/material'
 import { Router } from '@angular/router'
 import { Observable, Subscription } from 'rxjs'
+import { Store, Select } from "@ngxs/store";
 
 @Component({
   selector: 'app-shipping',
@@ -35,6 +36,9 @@ export class ShippingComponent implements OnInit, OnDestroy {
 
   shippingForm: FormGroup;
   order: Order;
+
+  @Select(state => state.app.user) user$;
+  @Select(state => state.app.order) order$;
 
   constructor(
     public auth: AuthService,
@@ -104,7 +108,7 @@ export class ShippingComponent implements OnInit, OnDestroy {
       } else {
         console.log(order)
         this.firestore
-          .doc$(`users/${order.uid}`)
+          .doc$(`users/${order.userId}`)
           .take(1)
           .subscribe(agent => {
             this.user = agent

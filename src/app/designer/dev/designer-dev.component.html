@@ -8,7 +8,7 @@
     <!-- BEGIN sidebar tabs -->
     <app-sidebar-tab title="Agents"
                      icon="contact_mail"
-                     [disabled]="!selectedProduct || !designState.canvasData">
+                     [disabled]="!selectedProduct || !orderState.canvasData">
       <app-agents [user]="selectedAgent"
                   [agents]="agents"
                   [loading]="loading"
@@ -31,7 +31,7 @@
     </app-sidebar-tab>
     <app-sidebar-tab title="Property"
                      icon="home"
-                     [disabled]="!selectedProduct || !designState.canvasData">
+                     [disabled]="!selectedProduct || !orderState.canvasData">
       <app-property [agent]="selectedAgent"
                     [listingId]="listingId"
                     [(selectedListing)]="selectedListing"
@@ -40,15 +40,15 @@
     </app-sidebar-tab>
     <app-sidebar-tab title="Text"
                      icon="subject"
-                     [disabled]="!selectedProduct || !designState.canvasData">
+                     [disabled]="!selectedProduct || !orderState.canvasData">
       <app-text [formFields]="designState.textFields"
                 (render)="fabricCanvas.render()"></app-text>
     </app-sidebar-tab>
     <app-sidebar-tab title="Colors"
                      icon="color_lens"
-                     [disabled]="!selectedProduct || !designState.canvasData">
-      <app-colors *ngIf="designState.brandColors"
-                  [(colors)]="designState.brandColors">
+                     [disabled]="!selectedProduct || !orderState.canvasData">
+      <app-colors *ngIf="orderState.brandColors"
+                  [(colors)]="orderState.brandColors">
       </app-colors>
     </app-sidebar-tab>
     <!-- END sidebar tabs -->
@@ -60,12 +60,12 @@
               class="btn"
               [class.active]="viewSide === 'front'"
               (click)="setViewSide('front')"
-              [disabled]="!selectedProduct || !designState.canvasData || processing">View Front</button>
+              [disabled]="!selectedProduct || !orderState.canvasData || processing">View Front</button>
       <button id="back"
               class="btn"
               [class.active]="viewSide === 'back'"
               (click)="setViewSide('back')"
-              [disabled]="!selectedProduct || !designState.canvasData || processing">View Back</button>
+              [disabled]="!selectedProduct || !orderState.canvasData || processing">View Back</button>
     </div>
     <!-- canvas -->
     <app-fabric-canvas #canvas
@@ -74,7 +74,7 @@
     <div class="designer-view-save">
       <button id="save"
               class="btn btn-green"
-              [disabled]="!selectedProduct || !designState.canvasData || processing"
+              [disabled]="!selectedProduct || !orderState.canvasData || processing"
               (click)="saveAndContinue()">Save and Continue</button>
     </div>
   </ng-container>

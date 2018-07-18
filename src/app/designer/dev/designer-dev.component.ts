@@ -12,7 +12,7 @@ import { StateService } from "#core/state.service"
 import { StorageService } from "#core/storage.service"
 import { WebfontService } from "#core/webfont.service"
 import { DEFAULT_BRAND_COLORS } from "#models/brand-colors.model"
-import { DesignState } from "#models/design-state.model"
+import { Order, DesignState } from '#models/state.model';
 import { User } from "#models/user.model"
 import { CropDialog } from "#shared/crop-dialog/crop.dialog"
 import { AfterViewInit, Component, HostListener, ViewChild } from "@angular/core"
@@ -20,6 +20,7 @@ import { MatDialog } from "@angular/material"
 import { Router } from "@angular/router"
 import "fabric"
 import { first } from "rxjs/operators"
+import { Store, Select } from "@ngxs/store";
 
 declare let fabric
 
@@ -35,7 +36,6 @@ export class DesignerDevComponent implements AfterViewInit {
   @ViewChild(FabricCanvasComponent) fabricCanvas: FabricCanvasComponent
   @ViewChild("designsTab") designsTab: SidebarTabComponent
 
-  designState: DesignState = {}
   agents: User[]
   user: User
   selectedAgent: User
@@ -49,6 +49,10 @@ export class DesignerDevComponent implements AfterViewInit {
   selectedProduct: Product
   listingId: string
 
+  @Select(state => state.app.designer) _designState;
+  designState: DesignState = {};
+  orderState: Order = {};
+
   constructor(
     private auth: AuthService,
     private checkout: CheckoutService,
@@ -57,14 +61,20 @@ export class DesignerDevComponent implements AfterViewInit {
     private webfont: WebfontService,
     private router: Router,
     private state: StateService,
-    private dialog: MatDialog
-  ) {}
+    private dialog: MatDialog,
+    private store: Store
+  ) {
+    this._designState.subscribe((designer) => {
+      if (designer) {
+        this.designState = designer;
+      }
+    });
+  }
 
   async ngAfterViewInit() {
     try {
       /* load user */
-      const user = await this.auth.user.pipe(first()).toPromise()
-      console.log(user)
+      const user = await this.auth._user.pipe(first()).toPromise()
       this.user = user
       /* load agents */
       const managedAgents = await this.firestore.promiseColWithIds<User>("users", ref => ref.where(`managers.${user.uid}`, "==", true))
@@ -74,7 +84,6 @@ export class DesignerDevComponent implements AfterViewInit {
       /* set up design state */
       const designState = this.state.designState || this.state.loadFromStorage()
       if (designState) {
-        console.log(designState)
         this.designState = designState
         /* set product */
         this.selectedProduct = designState.product
@@ -88,12 +97,11 @@ export class DesignerDevComponent implements AfterViewInit {
         }
         /* load canvas data */
         if (designState.canvasData) {
-          await this.fabricCanvas.loadFromJSON(this.designState.canvasData.front)
+          await this.fabricCanvas.loadFromJSON(this.orderState.canvasData.front)
           await this.processCanvas()
         }
       } else {
-        this.designState.agent = user
-        this.designState.brandColors = user.brandColors || DEFAULT_BRAND_COLORS
+        this.orderState.brandColors = user.brandColors || DEFAULT_BRAND_COLORS;
       }
       /* initialize order */
       await this.checkout.initOrder()
@@ -107,7 +115,7 @@ export class DesignerDevComponent implements AfterViewInit {
 
   async loadDesign(design: Design) {
     this.processing = true
-    this.designState.design = design
+    this.orderState.design = design;
     try {
       /* load fonts */
       if (!design.fonts || design.fonts.length === 0) {
@@ -115,9 +123,9 @@ export class DesignerDevComponent implements AfterViewInit {
       }
       await this.webfont.load(design.fonts)
       /* fetch json data from url */
-      this.designState.canvasData = await (await fetch(design.url)).json()
+      this.orderState.canvasData = await (await fetch(design.url)).json();
       /* load canvas from json */
-      await this.fabricCanvas.loadFromJSON(this.designState.canvasData.front)
+      await this.fabricCanvas.loadFromJSON(this.orderState.canvasData.front)
       this.viewSide = "front"
       /* process canvas */
       await this.processCanvas()
@@ -140,7 +148,6 @@ export class DesignerDevComponent implements AfterViewInit {
       this.designState.backgroundObj = this.fabricCanvas.findObjects(obj => obj.isBackground, true)[0]
       this.designState.boundBoxObj = this.fabricCanvas.findObjects(obj => obj.isBoundBox, true)[0]
       this.designState.addressObj = this.fabricCanvas.findObjects(obj => obj.textContentType === "address")[0]
-      console.log(this.designState.addressObj)
       /* map text fields */
       const fieldFromObject = obj => ({
         obj,
@@ -178,7 +185,7 @@ export class DesignerDevComponent implements AfterViewInit {
         }
         /* set brand colors */
         if (obj.brandColorRole && obj.brandColorRole !== "none") {
-          const color = this.designState.brandColors[obj.brandColorRole]
+          const color = this.orderState.brandColors[obj.brandColorRole]
           obj.set({ fill: color })
         }
         /* set pointer cursor for user images */
@@ -211,7 +218,9 @@ export class DesignerDevComponent implements AfterViewInit {
       this.updateAgentFields()
       // this.fabricCanvas.zoomToFit(this.designState.boundBoxObj)
       this.fabricCanvas.canvas.renderAll()
-      this.state.setDesignState(this.designState)
+      this.state.updateDesignState(this.designState);
+      this.checkout.updateOrder(this.orderState);
+      this.state.setDesignState(this.designState);
     } catch (err) {
       if (err.message) {
         window.alert(err.message)
@@ -225,7 +234,7 @@ export class DesignerDevComponent implements AfterViewInit {
     try {
       this.viewSide = viewSide
       this.processing = true
-      await this.fabricCanvas.loadFromJSON(this.designState.canvasData[viewSide])
+      await this.fabricCanvas.loadFromJSON(this.orderState.canvasData[viewSide])
       await this.processCanvas()
       this.processing = false
     } catch (err) {
@@ -287,18 +296,18 @@ export class DesignerDevComponent implements AfterViewInit {
   changeProduct(product: Product) {
     if (
       !this.selectedProduct ||
-      !this.designState.canvasData ||
+      !this.orderState.canvasData ||
       confirm("Are you sure you wish to change products? You will lose your current design.")
     ) {
       const isFirstTime = !this.selectedProduct
       this.selectedProduct = product
-      this.designState.product = product
-      this.state.setDesignState(this.designState)
+      this.orderState.product = product
       if (isFirstTime) {
         this.designerView.clickTab(this.designsTab, true)
       } else {
-        this.designState.canvasData = null
+        this.orderState.canvasData = null
       }
+      this.checkout.updateOrder(this.orderState);
     }
   }
 
@@ -314,6 +323,7 @@ export class DesignerDevComponent implements AfterViewInit {
       this.designState.addressObj.text = property.formatted_address
       this.fabricCanvas.render()
     }
+    this.state.updateDesignState(this.designState);
   }
 
   updateAgentFields() {

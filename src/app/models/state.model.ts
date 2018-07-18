@@ -15,26 +15,27 @@ export interface ShippingInfo {
 
 export interface Order {
   id?: string
-  userId: string
-  step: 'designer' | 'checkout'
+  userId?: string
+  step?: string //'designer' | 'checkout'
 
   // design data
-  product: Product
+  product?: Product
   propertyAddress?: string
   brandColors?: BrandColors
   design?: Design
   pdfUrl?: string
   thumbnail?: string
-  propertyImages?: any[]
   canvasData?: {
     front: any
     back: any
   }
 
   // shipping / mailing
-  quantity: number
+  quantity?: number
+  total?: number
   shipping?: ShippingInfo
-  mailingList?: string
+  mailingListId?: string
+  isMailingList?: boolean
 
   // data from Braintree
   customerId?: string
@@ -42,10 +43,24 @@ export interface Order {
   token?: string
 }
 
-export interface AppState {
+export interface DesignState {
+  addressObj?: any
+  backgroundObj?: any
+  boundBoxObj?: any
+
+  textFields?: any[]
+  agentFields?: any[]
+  propertyFields?: any[]
+
+  propertyImages?: any[]
+}
+
+export interface AppStateModel {
   // the currently logged in user
   user: User
 
   // the user's current order
   order: Order
+
+  designer: DesignState
 }
