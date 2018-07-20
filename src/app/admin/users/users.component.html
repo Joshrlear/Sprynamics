@@ -1,0 +1,38 @@
+<h2>Users</h2>
+<br>
+<div class="row">
+  <table class="table table-admin">
+    <thead>
+    <tr>
+      <th>uid</th>
+      <th>First Name</th>
+      <th>Last Name</th>
+      <th>Email</th>
+      <th>Phone</th>
+      <th>LicenseId</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let user of users | async">
+      <td>
+        {{user.uid}}
+      </td>
+      <td>
+        {{user.firstName}}
+      </td>
+      <td>
+        {{user.lastName}}
+      </td>
+      <td>
+        {{user.email}}
+      </td>
+      <td>
+        {{user.phoneNumber}}
+      </td>
+      <td>
+        {{user.licenseId}}
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
