@@ -41,7 +41,9 @@ export class OrderSummaryComponent implements OnInit, OnDestroy {
     this.user = this.auth.user
 
     this.orderSub = this.checkout.order.subscribe(order => {
-      this.total = order.total
+      if (order) {
+        this.total = order.total
+      }
     });
 
     this.braintreeSub = this.checkout.braintreeUI.subscribe(instance => {

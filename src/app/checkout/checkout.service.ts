@@ -172,21 +172,21 @@ export class CheckoutService {
 
   submitOrder() {
     if (this._order.step === 'designer') {
-      this.updateOrder({ step : 'checkout' })
       this.router.navigate(["/designer/checkout/confirm-order"])
       // this.firestore.update(`orders/${this._order.getValue().orderId}`, this._order.getValue());
       this.http
         .post("https://us-central1-sprynamics.cloudfunctions.net/checkout", this._order)
         .take(1)
         .subscribe((res: any) => {
+          this.updateOrder({ step : 'checkout' })
           console.log(res)
           // window.alert((JSON.parse(res._body)).message);
           this.loading = false
           // remove the current order from the user, since it's been submitted
-          this.store.dispatch(new SubmitOrder());
           this.auth.user.take(1).subscribe(user => {
             this.store.dispatch(new UpdateUser({ currentOrder: null }));
             this.firestore.update(`users/${user.uid}`, { currentOrder: null })
+            this.store.dispatch(new SubmitOrder());
           })
         })
     }
