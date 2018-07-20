@@ -17,6 +17,9 @@ export interface Order {
   id?: string
   userId?: string
   step?: string //'designer' | 'checkout'
+  firstName?: string
+  lastName?: string
+  createdAt?: any
 
   // design data
   product?: Product
