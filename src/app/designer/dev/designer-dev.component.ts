@@ -84,6 +84,7 @@ export class DesignerDevComponent implements AfterViewInit {
       /* set up design state */
       const designState = this.state.designState || this.state.loadFromStorage()
       if (designState) {
+        this.orderState.brandColors = user.brandColors || DEFAULT_BRAND_COLORS;
         this.designState = designState
         /* set product */
         this.selectedProduct = designState.product
