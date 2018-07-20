@@ -122,7 +122,7 @@ export class ShippingComponent implements OnInit, OnDestroy {
     this.userSub.unsubscribe()
   }
 
-  buildForm(obj: any) {
+  buildForm(obj: any = {}) {
     this.shippingForm = this.fb.group({
       firstName: [obj.firstName || '', Validators.required],
       lastName: [obj.lastName || '', Validators.required],
