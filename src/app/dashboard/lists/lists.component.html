@@ -16,6 +16,7 @@
     <td>View List</td>
     <td>Download List</td>
     <td>Date Created</td>
+    <td>Action</td>
   </thead>
   <tbody>
     <tr *ngFor="let list of lists | async; let i = index">
@@ -27,6 +28,7 @@
       <td><a style="color: #12C463; cursor: pointer" (click)="viewList(list)">View List</a></td>
       <td><a style="color: #12C463; cursor: pointer" (click)="downloadCSV(list)">Download List</a></td>
       <td>{{ formatDate(list.createdAt) }}</td>
+      <td><a style="color: #12C463; cursor: pointer" (click)="removeList(list)"><i class="fa fa-trash-alt"></i></a></td>
     </tr>
   </tbody>
 </table>
