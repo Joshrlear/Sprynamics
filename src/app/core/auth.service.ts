@@ -90,7 +90,8 @@ export class AuthService {
         email: credential.user.email,
         firstName: credential.user.displayName.split(' ')[0],
         lastName: credential.user.displayName.split(' ')[1] || '',
-        brandColors: DEFAULT_BRAND_COLORS
+        brandColors: DEFAULT_BRAND_COLORS,
+        avatarUrl: credential.user.photoURL
       })
     } catch (err) {
       if (err.code === 'auth/account-exists-with-different-credential') {
