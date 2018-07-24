@@ -7,7 +7,7 @@ import {
   UpdateOrder,
   SubmitOrder,
   SetDesignState,
-  UpdateDesignState
+  UpdateDesignState, RemoveUser
 } from './app.actions';
 
 @State<AppStateModel>({
@@ -30,6 +30,12 @@ export class AppState {
   updateUser({ patchState, getState }: StateContext<AppStateModel>, { payload }: UpdateUser) {
     const state = getState();
     patchState({ user: { ...state.user, ...payload } })
+  }
+
+  @Action(RemoveUser)
+  removeUser({getState, setState }: StateContext<AppStateModel>) {
+    const state = getState();
+    delete state.user;
   }
 
   @Action(CreateOrder)

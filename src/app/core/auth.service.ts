@@ -10,7 +10,7 @@ import { Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 import {StorageService} from '#core/storage.service';
 import { Store, Select } from '@ngxs/store';
-import { SetUser } from '#app/checkout/app.actions';
+import { SetUser, RemoveUser } from '#app/checkout/app.actions';
 
 @Injectable()
 export class AuthService {
@@ -148,6 +148,7 @@ export class AuthService {
   }
 
   logout() {
+    this.store.dispatch(new RemoveUser());
     this.afAuth.auth.signOut()
   }
 
