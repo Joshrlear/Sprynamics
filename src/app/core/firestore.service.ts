@@ -132,6 +132,17 @@ export class FirestoreService {
     })
   }
 
+  // If doc doesn't exist set, otherwise nothing
+  initialSetUser<T>(ref: DocPredicate<T>, data: any) {
+    const doc = this.doc(ref)
+      .snapshotChanges()
+      .take(1)
+      .toPromise()
+    return doc.then(snap => {
+      return !snap.payload.exists ? this.set(ref, data) : null
+    })
+  }
+
   /**
    * Returns a promise which resolves to true if the document exists, otherwise false
    * @param ref The path or AngularFirestoreDocument to check

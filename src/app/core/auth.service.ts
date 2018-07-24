@@ -144,7 +144,7 @@ export class AuthService {
 
   // update properties on user document
   updateUserData(user: User, data: Partial<User>) {
-    return this.firestore.upsert<User>(`users/${user.uid}`, data)
+    return this.firestore.initialSetUser<User>(`users/${user.uid}`, data)
   }
 
   logout() {
