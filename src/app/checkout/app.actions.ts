@@ -13,6 +13,13 @@ export class UpdateUser {
   constructor(public payload: any) {}
 }
 
+export class RemoveUser {
+  static readonly type = 'removeUser';
+
+  constructor() {
+  }
+}
+
 export class CreateOrder {
   static readonly type = 'createOrder';
 

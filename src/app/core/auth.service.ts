@@ -10,7 +10,7 @@ import { Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 import {StorageService} from '#core/storage.service';
 import { Store, Select } from '@ngxs/store';
-import { SetUser } from '#app/checkout/app.actions';
+import { SetUser, RemoveUser } from '#app/checkout/app.actions';
 
 @Injectable()
 export class AuthService {
@@ -145,10 +145,11 @@ export class AuthService {
 
   // update properties on user document
   updateUserData(user: User, data: Partial<User>) {
-    return this.firestore.upsert<User>(`users/${user.uid}`, data)
+    return this.firestore.initialSetUser<User>(`users/${user.uid}`, data)
   }
 
   logout() {
+    this.store.dispatch(new RemoveUser());
     this.afAuth.auth.signOut()
   }
 
