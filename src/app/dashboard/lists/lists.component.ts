@@ -120,4 +120,8 @@ export class ListsComponent implements OnInit {
       ` (${moment(dateString).fromNow()})`
     )
   }
+
+  removeList(list) {
+    this.firestore.delete(`lists/${list.id}`)
+  }
 }
