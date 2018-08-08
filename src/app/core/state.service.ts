@@ -15,7 +15,22 @@ export class StateService {
   }
 
   updateDesignState(payload) {
+    this.setDesignState(payload);
     this.store.dispatch(new UpdateDesignState(payload));
+  }
+
+  setOrderState(state) {
+    localStorage.setItem('orderState', JSON.stringify(state))
+  }
+
+  getOrderStateFromStorage() {
+    const json = localStorage.getItem('orderState');
+    if (json) {
+      this.store.dispatch(new SetDesignState(JSON.parse(json)));
+      return JSON.parse(json)
+    } else {
+      return {};
+    }
   }
 
   loadFromStorage() {

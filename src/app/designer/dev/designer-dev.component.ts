@@ -83,8 +83,8 @@ export class DesignerDevComponent implements AfterViewInit {
       this.selectedAgent = user
       /* set up design state */
       const designState = this.state.designState || this.state.loadFromStorage()
+      this.orderState = this.state.getOrderStateFromStorage();
       if (designState) {
-        this.orderState.brandColors = user.brandColors || DEFAULT_BRAND_COLORS;
         this.designState = designState
         /* set product */
         this.selectedProduct = designState.product
@@ -221,7 +221,6 @@ export class DesignerDevComponent implements AfterViewInit {
       this.fabricCanvas.canvas.renderAll()
       this.state.updateDesignState(this.designState);
       this.checkout.updateOrder(this.orderState);
-      this.state.setDesignState(this.designState);
     } catch (err) {
       if (err.message) {
         window.alert(err.message)

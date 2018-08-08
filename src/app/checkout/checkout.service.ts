@@ -10,6 +10,7 @@ import { AngularFirestore } from "angularfire2/firestore"
 import { StorageService } from "#core/storage.service"
 import { SetUser, UpdateUser, CreateOrder, UpdateOrder, SubmitOrder } from "#app/checkout/app.actions";
 import { Store, Select } from "@ngxs/store";
+import { StateService } from '#app/core/state.service';
 
 @Injectable()
 export class CheckoutService {
@@ -37,7 +38,8 @@ export class CheckoutService {
     private http: Http,
     private router: Router,
     private storage: StorageService,
-    private store: Store
+    private store: Store,
+    private state: StateService
   ) {
     this.order.subscribe((order) => {
       this._order = order;
@@ -147,6 +149,7 @@ export class CheckoutService {
     const data = this._order;
     Object.assign(data, partialOrder)
     // this._order.next(data)
+    this.state.setOrderState(data);
     this.store.dispatch(new UpdateOrder(partialOrder));
     return this.firestore.update(`orders/${this._order.id}`, partialOrder)
   }
