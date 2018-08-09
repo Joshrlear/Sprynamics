@@ -1,7 +1,7 @@
 import { DesignState } from '#models/design-state.model'
 import { Injectable } from '@angular/core'
 import { Store, Select } from '@ngxs/store';
-import {SetDesignState, UpdateDesignState} from '#app/checkout/app.actions';
+import {SetDesignState, UpdateDesignState, UpdateOrder} from '#app/checkout/app.actions';
 
 @Injectable()
 export class StateService {
@@ -26,7 +26,7 @@ export class StateService {
   getOrderStateFromStorage() {
     const json = localStorage.getItem('orderState');
     if (json) {
-      this.store.dispatch(new SetDesignState(JSON.parse(json)));
+      this.store.dispatch(new UpdateOrder(JSON.parse(json)));
       return JSON.parse(json)
     } else {
       return {};

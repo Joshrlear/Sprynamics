@@ -146,7 +146,7 @@ export class CheckoutService {
   }
 
   updateOrder(partialOrder: any): Promise<void> {
-    const data = this._order;
+    const data = this._order || {};
     Object.assign(data, partialOrder)
     // this._order.next(data)
     this.state.setOrderState(data);

@@ -83,26 +83,33 @@ export class DesignerDevComponent implements AfterViewInit {
       this.selectedAgent = user
       /* set up design state */
       const designState = this.state.designState || this.state.loadFromStorage()
-      this.orderState = this.state.getOrderStateFromStorage();
-      if (designState) {
-        this.designState = designState
+      const orderState = this.state.getOrderStateFromStorage();
+      if (orderState) {
+        this.orderState = orderState;
         /* set product */
-        this.selectedProduct = designState.product
+        this.selectedProduct = orderState.product
         /* load fonts */
-        if (designState.design) {
-          let fonts = designState.design.fonts
+        if (orderState.design) {
+          let fonts = orderState.design.fonts
           if (!fonts || fonts.length === 0) {
             fonts = ["Roboto"]
           }
           await this.webfont.load(fonts)
         }
         /* load canvas data */
-        if (designState.canvasData) {
+        if (orderState.canvasData) {
           await this.fabricCanvas.loadFromJSON(this.orderState.canvasData.front)
           await this.processCanvas()
         }
+
+        if (!orderState.brandColors) {
+          this.orderState.brandColors = user.brandColors || DEFAULT_BRAND_COLORS;
+        }
       } else {
         this.orderState.brandColors = user.brandColors || DEFAULT_BRAND_COLORS;
+      }
+      if (designState) {
+        this.designState = designState;
       }
       /* initialize order */
       await this.checkout.initOrder()
@@ -127,6 +134,7 @@ export class DesignerDevComponent implements AfterViewInit {
       this.orderState.canvasData = await (await fetch(design.url)).json();
       /* load canvas from json */
       await this.fabricCanvas.loadFromJSON(this.orderState.canvasData.front)
+      console.log('front');
       this.viewSide = "front"
       /* process canvas */
       await this.processCanvas()
