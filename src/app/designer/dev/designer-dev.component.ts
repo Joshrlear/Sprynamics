@@ -82,7 +82,7 @@ export class DesignerDevComponent implements AfterViewInit {
       this.agents = managedAgents.concat(createdAgents)
       this.selectedAgent = user
       /* set up design state */
-      const designState = this.state.designState || this.state.loadFromStorage()
+      // const designState = this.state.designState || this.state.loadFromStorage()
       const orderState = this.state.getOrderStateFromStorage();
       if (orderState) {
         this.orderState = orderState;
@@ -96,20 +96,12 @@ export class DesignerDevComponent implements AfterViewInit {
           }
           await this.webfont.load(fonts)
         }
-        /* load canvas data */
-        if (orderState.canvasData) {
-          await this.fabricCanvas.loadFromJSON(this.orderState.canvasData.front)
-          await this.processCanvas()
-        }
 
         if (!orderState.brandColors) {
           this.orderState.brandColors = user.brandColors || DEFAULT_BRAND_COLORS;
         }
       } else {
         this.orderState.brandColors = user.brandColors || DEFAULT_BRAND_COLORS;
-      }
-      if (designState) {
-        this.designState = designState;
       }
       /* initialize order */
       await this.checkout.initOrder()
@@ -131,9 +123,9 @@ export class DesignerDevComponent implements AfterViewInit {
       }
       await this.webfont.load(design.fonts)
       /* fetch json data from url */
-      this.orderState.canvasData = await (await fetch(design.url)).json();
+      this.designState.canvasData = await (await fetch(design.url)).json();
       /* load canvas from json */
-      await this.fabricCanvas.loadFromJSON(this.orderState.canvasData.front)
+      await this.fabricCanvas.loadFromJSON(this.designState.canvasData.front)
       console.log('front');
       this.viewSide = "front"
       /* process canvas */
@@ -227,7 +219,7 @@ export class DesignerDevComponent implements AfterViewInit {
       this.updateAgentFields()
       // this.fabricCanvas.zoomToFit(this.designState.boundBoxObj)
       this.fabricCanvas.canvas.renderAll()
-      this.state.updateDesignState(this.designState);
+      // this.state.updateDesignState(this.designState);
       this.checkout.updateOrder(this.orderState);
     } catch (err) {
       if (err.message) {
@@ -242,7 +234,7 @@ export class DesignerDevComponent implements AfterViewInit {
     try {
       this.viewSide = viewSide
       this.processing = true
-      await this.fabricCanvas.loadFromJSON(this.orderState.canvasData[viewSide])
+      await this.fabricCanvas.loadFromJSON(this.designState.canvasData[viewSide])
       await this.processCanvas()
       this.processing = false
     } catch (err) {
@@ -304,7 +296,7 @@ export class DesignerDevComponent implements AfterViewInit {
   changeProduct(product: Product) {
     if (
       !this.selectedProduct ||
-      !this.orderState.canvasData ||
+      !this.designState.canvasData ||
       confirm("Are you sure you wish to change products? You will lose your current design.")
     ) {
       const isFirstTime = !this.selectedProduct
@@ -313,7 +305,7 @@ export class DesignerDevComponent implements AfterViewInit {
       if (isFirstTime) {
         this.designerView.clickTab(this.designsTab, true)
       } else {
-        this.orderState.canvasData = null
+        this.designState.canvasData = null
       }
       this.checkout.updateOrder(this.orderState);
     }
@@ -331,7 +323,7 @@ export class DesignerDevComponent implements AfterViewInit {
       this.designState.addressObj.text = property.formatted_address
       this.fabricCanvas.render()
     }
-    this.state.updateDesignState(this.designState);
+    // this.state.updateDesignState(this.designState);
   }
 
   updateAgentFields() {
