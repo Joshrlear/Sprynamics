@@ -4,6 +4,7 @@ import { NgModule } from "@angular/core"
 import { RouterModule, Routes } from "@angular/router"
 import { AuthGuard } from "./core/auth.guard"
 import { AdminGuard } from "./core/admin.guard"
+import { EmailBuilderComponent } from "#shared/email-builder/email-builder.component";
 
 const routes: Routes = [
   {
@@ -28,6 +29,10 @@ const routes: Routes = [
   {
     path: "designer",
     loadChildren: "app/designer/designer.module#DesignerModule"
+  },
+  {
+    path: "email-builder",
+    component: EmailBuilderComponent
   },
   { path: "terms", component: TermsAndConditionsComponent },
   { path: "privacy", component: PrivacyPolicyComponent },
