@@ -28,10 +28,6 @@ export interface Order {
   design?: Design
   pdfUrl?: string
   thumbnail?: string
-  canvasData?: {
-    front: any
-    back: any
-  }
 
   // shipping / mailing
   quantity?: number
@@ -56,6 +52,10 @@ export interface DesignState {
   propertyFields?: any[]
 
   propertyImages?: any[]
+  canvasData?: {
+    front: any
+    back: any
+  }
 }
 
 export interface AppStateModel {
