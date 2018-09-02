@@ -1,4 +1,5 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core'
+import { FirestoreService } from '#core/firestore.service';
 
 declare const $
 
@@ -8,7 +9,7 @@ declare const $
   styleUrls: ['./email-builder.component.scss']
 })
 export class EmailBuilderComponent implements OnInit, AfterViewInit {
-  constructor() {}
+  constructor(private firestore: FirestoreService) {}
 
   ngOnInit() {}
 
@@ -96,6 +97,13 @@ export class EmailBuilderComponent implements OnInit, AfterViewInit {
       },
       onBeforeSettingsSaveButtonClick: (e) => {
         console.log('onBeforeSaveButtonClick html')
+        const html = emailBuilder.getContentHtml()
+        const name = window.prompt("Enter a name for your design")
+        this.firestore.col('email-designs').add({
+          name,
+          html
+        })
+
       },
       onPopupUploadImageButtonClick: () => {
         console.log('onPopupUploadImageButtonClick html')
@@ -110,7 +118,11 @@ export class EmailBuilderComponent implements OnInit, AfterViewInit {
         //e.preventDefault();
       },
       onBeforeSettingsLoadTemplateButtonClick: (e) => {
-        $('.template-list').html('<div style="text-align:center">Loading...</div>')
+        // $('.template-list').html('<div style="text-align:center">Loading...</div>')
+        const name = window.prompt("Enter design name to load")
+        this.firestore.col$<any>(`email-designs`, ref => ref.where("name", "==", name)).take(1).subscribe(designs => {
+          $('.template-list').html(designs[0].html)
+        })
       },
       onSettingsSendMailButtonClick: (e) => {
         console.log('onSettingsSendMailButtonClick html')
