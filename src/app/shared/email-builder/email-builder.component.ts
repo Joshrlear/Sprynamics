@@ -31,7 +31,7 @@ export class EmailBuilderComponent implements OnInit, AfterViewInit {
       showElementsTab: true,
       showPropertyTab: true,
       showCollapseMenu: true,
-      showBlankPageButton: true,
+      showBlankPageButton: false,
       showCollapseMenuinBottom: true,
 
       //setting items

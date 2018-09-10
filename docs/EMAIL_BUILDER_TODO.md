@@ -3,6 +3,7 @@
 ## Current Features
 
 - fix color picker
+- fix icons
 - area where users can view saved and previous email templates
 - users see all email addresses they've sent to 
 - better names of elements and properties
