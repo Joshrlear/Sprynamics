@@ -1,0 +1,19 @@
+.template-container {
+  overflow: hidden;
+}
+
+.template-view {
+  width: 400px;
+  cursor: pointer;
+  &:hover {
+    border: 1px solid #448aff;
+  }
+  &.selected {
+    border: 1px solid #448aff;
+  }
+}
+
+.template-content {
+  width: 100%;
+  transform: scale(0.5);
+}

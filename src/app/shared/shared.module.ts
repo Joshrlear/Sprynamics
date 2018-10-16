@@ -19,6 +19,8 @@ import { ContextMenuModule } from 'ngx-contextmenu'
 import { ColorsComponent } from '#app/shared/colors/colors.component'
 import { CropDialog } from '#app/shared/crop-dialog/crop.dialog';
 import { EmailBuilderComponent } from './email-builder/email-builder.component';
+import { LoadTemplateDialogComponent } from './email-builder/load-template-dialog/load-template-dialog.component';
+import { SendMailDialogComponent } from './email-builder/send-mail-dialog/send-mail-dialog.component';
 
 const modules = [
   CommonModule,
@@ -40,12 +42,13 @@ const components = [
 const dialogs = [
   MailingListDialog,
   ViewListDialog,
-  CropDialog
+  CropDialog,
+  LoadTemplateDialogComponent
 ]
 
 @NgModule({
   imports: modules,
-  declarations: [...components, ...dialogs, EmailBuilderComponent],
+  declarations: [...components, ...dialogs, EmailBuilderComponent, LoadTemplateDialogComponent, SendMailDialogComponent],
   entryComponents: [...dialogs],
   exports: [...modules, ...components, ...dialogs]
 })

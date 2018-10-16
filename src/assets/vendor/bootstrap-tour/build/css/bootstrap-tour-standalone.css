@@ -790,13 +790,13 @@ input[type="button"].btn-block {
   bottom: -10px;
 }
 .fade {
-  opacity: 0;
+  /* opacity: 0; */
   -webkit-transition: opacity 0.15s linear;
   -o-transition: opacity 0.15s linear;
   transition: opacity 0.15s linear;
 }
 .fade.in {
-  opacity: 1;
+  opacity: 1 !important;
 }
 .collapse {
   display: none;

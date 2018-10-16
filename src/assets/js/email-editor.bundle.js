@@ -16,7 +16,7 @@
 			tpl = '<div class="colorpicker"><div class="colorpicker_color"><div><div></div></div></div><div class="colorpicker_hue"><div></div></div><div class="colorpicker_new_color"></div><div class="colorpicker_current_color"></div><div class="colorpicker_hex"><input type="text" maxlength="6" size="6" /></div><div class="colorpicker_rgb_r colorpicker_field"><input type="text" maxlength="3" size="3" /><span></span></div><div class="colorpicker_rgb_g colorpicker_field"><input type="text" maxlength="3" size="3" /><span></span></div><div class="colorpicker_rgb_b colorpicker_field"><input type="text" maxlength="3" size="3" /><span></span></div><div class="colorpicker_hsb_h colorpicker_field"><input type="text" maxlength="3" size="3" /><span></span></div><div class="colorpicker_hsb_s colorpicker_field"><input type="text" maxlength="3" size="3" /><span></span></div><div class="colorpicker_hsb_b colorpicker_field"><input type="text" maxlength="3" size="3" /><span></span></div><div class="colorpicker_submit"></div></div>',
 			defaults = {
 				eventName: 'click',
-				onShow: function () {},
+				onShow: function () {console.log('show')},
 				onBeforeShow: function(){},
 				onHide: function () {},
 				onChange: function () {},
@@ -1835,7 +1835,7 @@
                     _element = jQuery(this);
                     _val = _element.val();
                     _activeElement = _this.getActiveElementContent();
-                    _activeElement.attr('href', _val);
+                    _activeElement.attr('__href__', _val);
                 });
 
                 _this.$elem.on('keyup', '.bal-elements-accordion-item-content .button-text', function(event) {
@@ -1848,7 +1848,7 @@
                     _element = jQuery(this);
                     _val = _element.val();
                     _activeElement = _this.getActiveElementContent();
-                    _activeElement.find('a').attr('href', _val);
+                    _activeElement.find('a').attr('__href__', _val);
                 });
 
                 _this.$elem.on('change', '.bal-elements-accordion-item-content .button-full-width', function(event) {

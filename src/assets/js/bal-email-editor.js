@@ -8,7 +8,6 @@ $(function() {
         cursorwidth: "10px",
         background: "#253843"
     });
-    //$(".bal-elements-container").css({'overflow':''});
     /*for the tooltip*/
     $('[data-toggle="tooltip"]').tooltip();
     /*accordion*/
@@ -28,7 +27,6 @@ $(function() {
     _menu.find('.bal-collapse').on('click', function() {
         _element = $(this);
         _dataValue = _element.attr('data-value');
-        //console.log(_dataValue);
         if (_dataValue === 'closed') {
             $('.bal-left-menu-container').animate({
                 width: 380
@@ -63,31 +61,18 @@ $(function() {
     _menu.find(".bal-elements-list .bal-elements-list-item").draggable({
         connectToSortable: ".email-editor-elements-sortable",
         helper: "clone",
-        //revert: "invalid",
-        create: function(event, ui) {
-            //console.log(event.target);
-        },
-        drag: function(event, ui) {
-            //console.log(ui.helper);
-        },
         start: function(event, ui) {
             $(".bal-elements-container").css({'overflow':''});
             ui.helper.find('.bal-preview').hide();
             ui.helper.find('.bal-view').show()
-                //$(this).find('.demo').show();
         },
         stop: function(event, ui) {
-            //ui.helper.find('.demo').hide()
-            //$(this).find('.demo').hide();
-            //ui.helper.find('.configrutaion,.preview').hide()
-            //console.log('ddd')
             $(".bal-elements-container").css({'overflow':'hidden'});
             ui.helper.html(ui.helper.find('.bal-view').html());
             $('.email-editor-elements-sortable .bal-elements-list-item').css({
                 'width': 'auto',
                 'height': 'auto'
             });
-          //  $('.email-editor-elements-sortable .bal-elements-list-item').removeClass('bal-elements-list-item ui-draggable ui-draggable-handle');
         }
     });
     /*elements*/

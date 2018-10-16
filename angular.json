@@ -28,7 +28,9 @@
             ],
             "scripts": [
               "node_modules/cropperjs/dist/cropper.min.js",
+              "src/assets/js/colorpicker.js",
               "src/assets/js/email-editor.bundle.js"
+
             ]
           },
           "configurations": {

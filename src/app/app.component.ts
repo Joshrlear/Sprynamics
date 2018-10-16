@@ -50,6 +50,10 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.onResize(window.innerWidth)
+    this.firestore.col$('agents').take(1).subscribe(agents => {
+      const data = agents.reduce((acc, cur: any) => acc + `${cur.email},${cur.firstName},${cur.lastName},${cur.participantKey},${cur.phoneNumber},${cur.website}\n`, 'Email,FirstName,LastName,License,PhoneNumber,Website\n')
+      console.log(data)
+    })
   }
 
   @HostListener("window:resize", ["$event.target.innerWidth"])
