@@ -2,10 +2,10 @@
 
 <mat-dialog-content>
   <div class="template-container">
-    <div class="template-view" (click)="submit(design.html)" *ngFor="let design of designs | async">
-      <div class="template-content" [innerHTML]="design.html">
+    <div class="thumbnail" (click)="submit(design.html)" *ngFor="let design of designs | async">
+      <iframe [srcdoc]="design.html">
 
-      </div>
+      </iframe>
     </div>
   </div>
 

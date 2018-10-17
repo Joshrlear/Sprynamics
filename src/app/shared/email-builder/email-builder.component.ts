@@ -1,8 +1,8 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core'
-import { FirestoreService } from '#core/firestore.service';
-import { AuthService } from '#core/auth.service';
-import { MatDialog } from '@angular/material';
-import { LoadTemplateDialogComponent } from '#shared/email-builder/load-template-dialog/load-template-dialog.component';
+import { FirestoreService } from '#core/firestore.service'
+import { AuthService } from '#core/auth.service'
+import { MatDialog } from '@angular/material'
+import { LoadTemplateDialogComponent } from '#shared/email-builder/load-template-dialog/load-template-dialog.component'
 
 declare const $
 
@@ -12,14 +12,9 @@ declare const $
   styleUrls: ['./email-builder.component.scss']
 })
 export class EmailBuilderComponent implements OnInit, AfterViewInit {
-
   emailBuilder
 
-  constructor(
-    private auth: AuthService,
-    private firestore: FirestoreService,
-    private dialog: MatDialog
-  ) {}
+  constructor(private auth: AuthService, private firestore: FirestoreService, private dialog: MatDialog) {}
 
   ngOnInit() {}
 
@@ -67,7 +62,7 @@ export class EmailBuilderComponent implements OnInit, AfterViewInit {
       showRowRemoveButton: true,
       showRowDuplicateButton: true,
       showRowCodeEditorButton: true,
-      onElementDragStart: (e) => {
+      onElementDragStart: e => {
         console.log('onElementDragStart html')
       },
       onElementDragFinished: (e, contentHtml) => {
@@ -75,7 +70,7 @@ export class EmailBuilderComponent implements OnInit, AfterViewInit {
         //console.log(contentHtml);
       },
 
-      onBeforeRowRemoveButtonClick: (e) => {
+      onBeforeRowRemoveButtonClick: e => {
         console.log('onBeforeRemoveButtonClick html')
 
         /*
@@ -84,31 +79,31 @@ export class EmailBuilderComponent implements OnInit, AfterViewInit {
                 */
         //e.preventDefault();
       },
-      onAfterRowRemoveButtonClick: (e) => {
+      onAfterRowRemoveButtonClick: e => {
         console.log('onAfterRemoveButtonClick html')
       },
-      onBeforeRowDuplicateButtonClick: (e) => {
+      onBeforeRowDuplicateButtonClick: e => {
         console.log('onBeforeRowDuplicateButtonClick html')
         //e.preventDefault();
       },
-      onAfterRowDuplicateButtonClick: (e) => {
+      onAfterRowDuplicateButtonClick: e => {
         console.log('onAfterRowDuplicateButtonClick html')
       },
-      onBeforeRowEditorButtonClick: (e) => {
+      onBeforeRowEditorButtonClick: e => {
         console.log('onBeforeRowEditorButtonClick html')
         //e.preventDefault();
       },
-      onAfterRowEditorButtonClick: (e) => {
+      onAfterRowEditorButtonClick: e => {
         console.log('onAfterRowDuplicateButtonClick html')
       },
-      onBeforeShowingEditorPopup: (e) => {
+      onBeforeShowingEditorPopup: e => {
         console.log('onBeforeShowingEditorPopup html')
         //e.preventDefault();
       },
-      onBeforeSettingsSaveButtonClick: (e) => {
+      onBeforeSettingsSaveButtonClick: e => {
         console.log('onBeforeSaveButtonClick html')
         const html = this.emailBuilder.getContentHtml()
-        const name = window.prompt("Enter a name for your design")
+        const name = window.prompt('Enter a name for your design')
         this.firestore.col('email-designs').add({
           name,
           html
@@ -127,11 +122,9 @@ export class EmailBuilderComponent implements OnInit, AfterViewInit {
 
         //e.preventDefault();
       },
-      onBeforeSettingsLoadTemplateButtonClick: (e) => {
+      onBeforeSettingsLoadTemplateButtonClick: e => {
         // $('.template-list').html('<div style="text-align:center">Loading...</div>')
-        const dialogRef = this.dialog.open(LoadTemplateDialogComponent, {
-
-        })
+        const dialogRef = this.dialog.open(LoadTemplateDialogComponent, {})
         dialogRef.afterClosed().subscribe(html => {
           if (html) {
             this.loadHtml(html)
@@ -139,20 +132,20 @@ export class EmailBuilderComponent implements OnInit, AfterViewInit {
         })
         e.preventDefault()
       },
-      onSettingsSendMailButtonClick: (e) => {
+      onSettingsSendMailButtonClick: e => {
         console.log('onSettingsSendMailButtonClick html')
-        e.preventDefault();
+        e.preventDefault()
       },
       onPopupSendMailButtonClick: (e, _html) => {
         console.log('onPopupSendMailButtonClick html')
       },
-      onBeforeChangeImageClick: (e) => {
+      onBeforeChangeImageClick: e => {
         console.log('onBeforeChangeImageClick html')
       },
-      onBeforePopupSelectTemplateButtonClick: (e) => {
+      onBeforePopupSelectTemplateButtonClick: e => {
         console.log('onBeforePopupSelectTemplateButtonClick html')
       },
-      onBeforePopupSelectImageButtonClick: (e) => {
+      onBeforePopupSelectImageButtonClick: e => {
         console.log('onBeforePopupSelectImageButtonClick html')
       },
       onPopupSaveButtonClick: () => {
@@ -160,19 +153,25 @@ export class EmailBuilderComponent implements OnInit, AfterViewInit {
       }
     })
 
-    this.emailBuilder.setAfterLoad((e) => {
+    this.emailBuilder.setAfterLoad(e => {
       console.log('onAfterLoad html')
       this.auth._user.take(1).subscribe(user => {
         const autosaveDoc = this.firestore.doc(`autosave-email-builder/${user.uid}`)
-        autosaveDoc.snapshotChanges().take(1).subscribe(doc => {
-          const autosave: any = doc.payload.data()
-          if (autosave && autosave.html) {
-            console.log(autosave.html)
-            this.loadHtml(autosave.html)
-          } else {
-            this.loadHtml('<table width="100%" cellspacing="0" cellpadding="0" border="0" style="background:rgb(233, 234, 234) none repeat scroll 0% 0% / auto padding-box border-box;"><tbody><tr><td><div style="margin:0 auto;width:600px;padding:0px"><table class="main mce-item-table" width="100%" cellspacing="0" cellpadding="0" border="0" data-types="background,padding" data-last-type="padding" style="width: 600px; border-spacing: 0px; border-collapse: collapse; text-size-adjust: 100%;"><tbody><tr><td align="left" class="element-content" style="background-color: rgb(255, 255, 255); padding: 10px 50px; border-collapse: collapse; text-size-adjust: 100%;" data-mce-style="background-color: #ffffff; padding: 10px 50px 10px 50px;"><table width="100%" cellspacing="0" cellpadding="0" border="0" class="mce-item-table" style="border-spacing: 0px; border-collapse: collapse; text-size-adjust: 100%;"><tbody><tr><td style="border-collapse: collapse; text-size-adjust: 100%;"><h1  style="font-weight: normal; text-align: center;" class="" data-mce-style="font-weight: normal; text-align: center;">Welcome to Builder</h1></td></tr><tr><td  align="center" class=" active" style="padding: 20px; border-collapse: collapse; text-size-adjust: 100%;" data-mce-style="padding: 20px;">Drag elements from left menu&nbsp;</td></tr></tbody></table></td></tr></tbody></table></div></td></tr></table>')
-          }
-        })
+        autosaveDoc
+          .snapshotChanges()
+          .take(1)
+          .subscribe(doc => {
+            const autosave: any = doc.payload.data()
+            console.log(autosave)
+            if (autosave && autosave.html) {
+              console.log(autosave.html)
+              this.loadHtml(autosave.html)
+            } else {
+              this.loadHtml(
+                '<table width="100%" cellspacing="0" cellpadding="0" border="0" style="background:rgb(233, 234, 234) none repeat scroll 0% 0% / auto padding-box border-box;"><tbody><tr><td><div style="margin:0 auto;width:600px;padding:0px"><table class="main mce-item-table" width="100%" cellspacing="0" cellpadding="0" border="0" data-types="background,padding" data-last-type="padding" style="width: 600px; border-spacing: 0px; border-collapse: collapse; text-size-adjust: 100%;"><tbody><tr><td align="left" class="element-content" style="background-color: rgb(255, 255, 255); padding: 10px 50px; border-collapse: collapse; text-size-adjust: 100%;" data-mce-style="background-color: #ffffff; padding: 10px 50px 10px 50px;"><table width="100%" cellspacing="0" cellpadding="0" border="0" class="mce-item-table" style="border-spacing: 0px; border-collapse: collapse; text-size-adjust: 100%;"><tbody><tr><td style="border-collapse: collapse; text-size-adjust: 100%;"><h1  style="font-weight: normal; text-align: center;" class="" data-mce-style="font-weight: normal; text-align: center;">Welcome to Builder</h1></td></tr><tr><td  align="center" class=" active" style="padding: 20px; border-collapse: collapse; text-size-adjust: 100%;" data-mce-style="padding: 20px;">Drag elements from left menu&nbsp;</td></tr></tbody></table></td></tr></tbody></table></div></td></tr></table>'
+              )
+            }
+          })
         // autosave every 5 seconds
         setInterval(async () => {
           try {
@@ -190,8 +189,6 @@ export class EmailBuilderComponent implements OnInit, AfterViewInit {
     })
 
     console.log(this.emailBuilder.getContentHtml())
-
-
   }
 
   loadHtml(html: string) {
@@ -201,10 +198,32 @@ export class EmailBuilderComponent implements OnInit, AfterViewInit {
         .replace(/{{lastname}}/g, user.lastName)
         .replace(/{{address1}}/g, user.address1)
         .replace(/{{address2}}/g, user.address2)
-      const contentText = $('<div/>').html(html).text();
-      console.log(contentText)
-      $('.bal-content-wrapper').html(html)
-      this.emailBuilder.makeSortable()
+
+      $('.bal-content-wrapper .email-editor-elements-sortable').html('')
+      const content = `
+        <div class="sortable-row">
+          <div class="sortable-row-container">
+            <div class="sortable-row-actions">
+              <div class="row-move row-action">
+                <i class="fa fa-arrows-alt"></i>
+              </div>
+              <div class="row-remove row-action">
+                <i class="fa fa-remove"></i>
+              </div>
+              <div class="row-duplicate row-action">
+                <i class="fa fa-files-o"></i>
+              </div>
+              <div class="row-code row-action">
+                <i class="fa fa-code"></i>
+              </div>
+            </div>
+            <div class="sortable-row-content">
+              ${html}
+            </div>
+          </div>
+        </div>
+      `
+      $('.bal-content-wrapper .email-editor-elements-sortable').append(content)
     })
   }
 }
