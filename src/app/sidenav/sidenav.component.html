@@ -33,4 +33,5 @@
 <ul class="sidebar-nav" *ngIf="user.admin">
   <li><a href="#" routerLink="/admin/prices">Prices</a></li>
   <li><a routerLink="/admin/users">Users</a></li>
+  <li><a style="cursor: pointer" (click)="exportAgentData()">Export Agent Data</a></li>
 </ul>
