@@ -15,9 +15,10 @@ import { NgxsLoggerPluginModule } from "@ngxs/logger-plugin";
 import { NgxsReduxDevtoolsPluginModule } from "@ngxs/devtools-plugin";
 import { NgxsModule } from "@ngxs/store";
 import { AppState } from '#app/checkout/app.state';
+import { AcceptManagerComponent } from "./accept-manager/accept-manager.component";
 
 @NgModule({
-  declarations: [AppComponent, TermsAndConditionsComponent, PrivacyPolicyComponent, SidenavComponent],
+  declarations: [AppComponent, TermsAndConditionsComponent, PrivacyPolicyComponent, SidenavComponent, AcceptManagerComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
