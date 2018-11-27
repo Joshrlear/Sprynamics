@@ -97,6 +97,7 @@ export class FirestoreService {
   }
 
   update<T>(ref: DocPredicate<T>, data: any) {
+    console.log(ref, data)
     return this.doc(ref).update({
       ...data,
       updatedAt: this.timestamp
@@ -128,6 +129,17 @@ export class FirestoreService {
       .toPromise()
     return doc.then(snap => {
       return snap.payload.exists ? this.update(ref, data) : this.set(ref, data)
+    })
+  }
+
+  // If doc doesn't exist set, otherwise nothing
+  initialSetUser<T>(ref: DocPredicate<T>, data: any) {
+    const doc = this.doc(ref)
+      .snapshotChanges()
+      .take(1)
+      .toPromise()
+    return doc.then(snap => {
+      return !snap.payload.exists ? this.set(ref, data) : null
     })
   }
 

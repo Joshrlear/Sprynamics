@@ -7,7 +7,7 @@ import * as FormData from 'form-data'
 import * as https from '../controllers/https'
 
 const OAUTH_SCOPES = ['r_basicprofile', 'r_emailaddress']
-const REDIRECT_URI = 'https://sprynamics.firebaseapp.com/account/login'
+const REDIRECT_URI = 'https://sprynamics.com/account/login'
 const { client_id, client_secret } = functions.config().linkedin
 
 /**

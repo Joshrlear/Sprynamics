@@ -2,7 +2,7 @@ import { CheckoutService } from '#app/checkout/checkout.service'
 import { MailingListDialog } from '#app/shared/mailing-list-dialog/mailing-list.dialog'
 import { AuthService } from '#core/auth.service'
 import { FirestoreService } from '#core/firestore.service'
-import { Order } from '#models/order.model'
+import { Order } from '#models/state.model'
 import {
   Component,
   ElementRef,
@@ -14,6 +14,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { MatDialog } from '@angular/material'
 import { Router } from '@angular/router'
 import { Observable, Subscription } from 'rxjs'
+import { Store, Select } from "@ngxs/store";
 
 @Component({
   selector: 'app-shipping',
@@ -21,19 +22,23 @@ import { Observable, Subscription } from 'rxjs'
   styleUrls: ['./shipping.component.scss']
 })
 export class ShippingComponent implements OnInit, OnDestroy {
-  singleAddress = true
-  isMailingList = false
+  singleAddress = true;
+  isMailingList = false;
 
-  @ViewChild('quantity') quantityInput: ElementRef
+  @ViewChild('quantity') quantityInput: ElementRef;
 
-  userSub: Subscription
-  user: any
+  userSub: Subscription;
+  user: any;
 
-  lists: Observable<any[]>
-  mailingListId: string
+  lists: Observable<any[]>;
+  mailingListId: string;
+  mailingList: any;
 
-  shippingForm: FormGroup
-  order: Order
+  shippingForm: FormGroup;
+  order: Order;
+
+  @Select(state => state.app.user) user$;
+  @Select(state => state.app.order) order$;
 
   constructor(
     public auth: AuthService,
@@ -46,7 +51,7 @@ export class ShippingComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.userSub = this.auth.user.subscribe(user => {
-      console.log(user)
+      console.log(user);
       if (!user.currentOrder) {
         this.router.navigate(['/products'])
       }
@@ -103,7 +108,7 @@ export class ShippingComponent implements OnInit, OnDestroy {
       } else {
         console.log(order)
         this.firestore
-          .doc$(`users/${order.uid}`)
+          .doc$(`users/${order.userId}`)
           .take(1)
           .subscribe(agent => {
             this.user = agent
@@ -117,7 +122,7 @@ export class ShippingComponent implements OnInit, OnDestroy {
     this.userSub.unsubscribe()
   }
 
-  buildForm(obj: any) {
+  buildForm(obj: any = {}) {
     this.shippingForm = this.fb.group({
       firstName: [obj.firstName || '', Validators.required],
       lastName: [obj.lastName || '', Validators.required],
@@ -125,18 +130,25 @@ export class ShippingComponent implements OnInit, OnDestroy {
       address2: [obj.address2 || ''],
       city: [obj.city || '', Validators.required],
       state: [obj.state || '', Validators.required],
-      zipCode: [obj.zipCode || '', Validators.required]
+      zipCode: [obj.zipCode || '', Validators.required],
+      mailingListId: ['']
     })
   }
 
   chooseSingleAddress() {
-    this.singleAddress = true
-    this.isMailingList = false
+    this.singleAddress = true;
+    this.isMailingList = false;
+    if (this.quantityInput.nativeElement.value) {
+      this.updateQuantity(this.quantityInput.nativeElement.value);
+    }
   }
 
   chooseMailingList() {
-    this.singleAddress = false
-    this.isMailingList = true
+    this.singleAddress = false;
+    this.isMailingList = true;
+    if (this.mailingList) {
+      this.updateQuantity(this.mailingList.rowCount);
+    }
   }
 
   uploadList(file: File) {
@@ -160,6 +172,7 @@ export class ShippingComponent implements OnInit, OnDestroy {
       .doc$(`lists/${this.mailingListId}`)
       .take(1)
       .subscribe((mailingList: any) => {
+        this.mailingList = mailingList;
         this.updateQuantity(mailingList.rowCount)
       })
   }
@@ -169,8 +182,6 @@ export class ShippingComponent implements OnInit, OnDestroy {
     const pricing = this.checkout.calculatePricing(quantity)
     this.checkout.updateOrder({
       quantity,
-      subtotal: pricing.subtotal,
-      shippingCost: pricing.shipping,
       total: pricing.total
     })
   }

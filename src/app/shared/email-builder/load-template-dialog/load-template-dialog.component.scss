@@ -1,0 +1,34 @@
+.template-container {
+  overflow: hidden;
+}
+
+.thumbnail {
+  width: 200px;
+  height: 300px;
+  float: left;
+  margin: 20px;
+  position: relative;
+
+  cursor: pointer;
+  &:hover {
+    border: 1px solid #448aff;
+  }
+  &.selected {
+    border: 1px solid #448aff;
+  }
+}
+
+iframe {
+  position: relative;
+  z-index: 1;
+  width: 500px;
+  height: 750px;
+  -webkit-transform-origin: 0 0;
+  -moz-transform-origin: 0 0;
+  transform-origin: 0 0;
+  -webkit-transform:  scale(0.4, 0.4);   /* Gets the size down to fit into your .thumbnail. */
+  -moz-transform:  scale(0.4, 0.4);      /* Gets the size down to fit into your .thumbnail. */
+  transform:  scale(0.4, 0.4);           /* Gets the size down to fit into your .thumbnail. */
+  overflow: hidden;
+  pointer-events: none;
+}

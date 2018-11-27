@@ -1,17 +1,25 @@
 import { Injectable } from "@angular/core"
 import { Http } from "@angular/http"
 import { Observable, BehaviorSubject } from "rxjs"
-import { Order } from "#models/order.model"
+// import { Order } from "#models/order.model"
+import { Order } from '#models/state.model';
 import { AuthService } from "#core/auth.service"
 import { FirestoreService } from "#core/firestore.service"
 import { Router } from "@angular/router"
 import { AngularFirestore } from "angularfire2/firestore"
 import { StorageService } from "#core/storage.service"
+import { SetUser, UpdateUser, CreateOrder, UpdateOrder, SubmitOrder } from "#app/checkout/app.actions";
+import { Store, Select } from "@ngxs/store";
+import { StateService } from '#app/core/state.service';
 
 @Injectable()
 export class CheckoutService {
-  private _order = new BehaviorSubject<Order>({})
-  public order = this._order.asObservable()
+  // private _order = new BehaviorSubject<Order>({})
+  // public order = this._order.asObservable()
+
+  @Select(state => state.app.order) order;
+  @Select(state => state.app.user) user$;
+  private _order: any;
 
   private _braintreeUI = new BehaviorSubject<any>(null)
   public braintreeUI = this._braintreeUI.asObservable()
@@ -29,8 +37,14 @@ export class CheckoutService {
     private firestore: FirestoreService,
     private http: Http,
     private router: Router,
-    private storage: StorageService
-  ) {}
+    private storage: StorageService,
+    private store: Store,
+    private state: StateService
+  ) {
+    this.order.subscribe((order) => {
+      this._order = order;
+    });
+  }
 
   initOrder() {
     return new Promise((resolve, reject) => {
@@ -38,6 +52,7 @@ export class CheckoutService {
         if (!user) {
           resolve()
         } else {
+          this.store.dispatch(new SetUser(user));
           this._initialize(user).then(_ => resolve())
         }
       })
@@ -48,7 +63,7 @@ export class CheckoutService {
     return new Promise(async (resolve, reject) => {
       // load pricing information
       this.firestore
-        .doc$("_var/pricing")
+        .doc$('_var/pricing')
         .take(1)
         .subscribe((pricing: any) => {
           this.pricing = pricing
@@ -60,20 +75,36 @@ export class CheckoutService {
           .doc$(`orders/${user.currentOrder}`)
           .take(1)
           .subscribe(order => {
-            this._order.next(order)
-            this.initialized = true
+            this.store.dispatch(new UpdateOrder(order));
+            // this._order.next(order);
+            this.initialized = true;
             resolve()
           })
         } else {
           // remove the order from the user doc if it doesn't exist anymore
+          this.store.dispatch(new UpdateUser({ currentOrder: null }));
           this.firestore.update(`users/${user.uid}`, { currentOrder: null })
         }
       } else {
         // create an order ID
         const orderId = this.afs.collection("orders").ref.doc().id
-        this.firestore.set(`orders/${orderId}`, { id: orderId, uid: user.uid, submitted: false }).then(_ => {
+        let order = {
+          id: orderId,
+          userId: user.uid,
+          step: 'designer'
+        };
+        this.store.dispatch(new CreateOrder(order));
+        this.firestore.set(`orders/${orderId}`, order).then(_ => {
           this.firestore.upsert(`users/${user.uid}`, { currentOrder: orderId }).then(_ => {
-            this.updateOrder({ id: orderId, firstName: user.firstName || "", lastName: user.lastName || "", submitted: false })
+            let payload = {
+              id: orderId,
+              step: 'designer',
+              shipping: {
+                firstName: user.firstName || "",
+                lastName: user.lastName || ""
+              }
+            };
+            this.updateOrder(payload)
             this.setUser(user).then(_ => {
               this.initialized = true
               resolve()
@@ -85,11 +116,12 @@ export class CheckoutService {
   }
 
   setUser(user) {
+    this.store.dispatch(new SetUser(user));
     return new Promise((resolve, reject) => {
-      this.updateOrder({ uid: user.uid })
+      this.updateOrder({ userId: user.uid })
       if (user.braintreeId) {
         this.updateOrder({ customerId: user.braintreeId })
-        resolve(this._order.value)
+        resolve(this._order)
       } else {
         // init braintree customer for this user
         const data = {
@@ -98,25 +130,28 @@ export class CheckoutService {
           email: user.email
         }
         this.http
-          .post("https://us-central1-sprynamics.cloudfunctions.net/customer", data)
+          .post('https://us-central1-sprynamics.cloudfunctions.net/customer', data)
           .take(1)
           .subscribe((res: any) => {
             console.log(res)
             const id = JSON.parse(res._body).customerId
             this.updateOrder({ customerId: id })
+            this.store.dispatch(new UpdateUser({ braintreeId: id }));
             this.firestore.update(`users/${user.uid}`, { braintreeId: id }).then(_ => {
-              resolve(this._order.value)
+              resolve(this._order)
             })
           })
       }
     })
   }
 
-  updateOrder(partialOrder: Partial<Order>): Promise<void> {
-    const data = this._order.getValue()
+  updateOrder(partialOrder: any): Promise<void> {
+    const data = this._order || {};
     Object.assign(data, partialOrder)
-    this._order.next(data)
-    return this.firestore.update(`orders/${this._order.getValue().id}`, partialOrder)
+    // this._order.next(data)
+    this.state.setOrderState(data);
+    this.store.dispatch(new UpdateOrder(partialOrder));
+    return this.firestore.update(`orders/${this._order.id}`, partialOrder)
   }
 
   /**
@@ -125,7 +160,7 @@ export class CheckoutService {
    */
   generateToken(uid?: string) {
     const token$ = this.http
-      .post("https://us-central1-sprynamics.cloudfunctions.net/client_token", { customerId: uid || this._order.getValue().customerId })
+      .post('https://us-central1-sprynamics.cloudfunctions.net/client_token', { customerId: uid || this._order.customerId })
       .map((res: any) => JSON.parse(res._body).token)
     token$.take(1).subscribe(token => {
       this.updateOrder({ token })
@@ -139,55 +174,41 @@ export class CheckoutService {
   }
 
   submitOrder() {
-    if (!this._order.getValue().submitted) {
-      this.updateOrder({ submitted: true })
+    if (this._order.step === 'designer') {
       this.router.navigate(["/designer/checkout/confirm-order"])
       // this.firestore.update(`orders/${this._order.getValue().orderId}`, this._order.getValue());
       this.http
-        .post("https://us-central1-sprynamics.cloudfunctions.net/checkout", this._order.getValue())
+        .post("https://us-central1-sprynamics.cloudfunctions.net/checkout", this._order)
         .take(1)
         .subscribe((res: any) => {
+          this.updateOrder({ step : 'checkout' })
           console.log(res)
           // window.alert((JSON.parse(res._body)).message);
           this.loading = false
           // remove the current order from the user, since it's been submitted
           this.auth.user.take(1).subscribe(user => {
+            this.store.dispatch(new UpdateUser({ currentOrder: null }));
             this.firestore.update(`users/${user.uid}`, { currentOrder: null })
+            this.store.dispatch(new SubmitOrder());
           })
         })
     }
   }
 
   calculatePricing(amt: number) {
-    const product = this._order.getValue().product || "postcard"
+    const product = this._order.product || 'postcard';
     // round up to the nearest 50
-    const roundedQuantity = Math.ceil(amt / 50) * 50
-    const quantityPosition = roundedQuantity / 50
-    const priceForQuantity = parseFloat(this.pricing[product][quantityPosition])
+    const roundedQuantity = Math.ceil(amt / 50) * 50;
+    const quantityPosition = roundedQuantity / 50;
+    const priceForQuantity = parseFloat(this.pricing[product][quantityPosition]);
 
-    const pricing: any = {}
+    const pricing: any = {};
     if (!amt) {
-      pricing.subtotal = 0
-      pricing.shipping = 0
-      pricing.total = 0
-      return pricing
+      pricing.total = 0;
+      return pricing;
     }
-    amt *= 0.99
-    amt += 20 // design cost
-    pricing.subtotal = priceForQuantity
-    if (amt <= 15) pricing.shipping = 4.99
-    else if (amt <= 20) pricing.shipping = 5.99
-    else if (amt <= 30) pricing.shipping = 6.49
-    else if (amt <= 50) pricing.shipping = 6.99
-    else if (amt <= 70) pricing.shipping = 7.99
-    else if (amt <= 90) pricing.shipping = 8.49
-    else if (amt <= 150) pricing.shipping = 12.99
-    else if (amt <= 200) pricing.shipping = 15.49
-    else if (amt <= 300) pricing.shipping = 16.99
-    else if (amt <= 500) pricing.shipping = 23.99
-    else pricing.shipping = 23.99
-    pricing.total = pricing.subtotal + pricing.shipping
+    pricing.total = priceForQuantity;
 
-    return pricing
+    return pricing;
   }
 }

@@ -83,7 +83,7 @@ export class RegisterComponent implements OnInit {
   captchaResolved(response: string) {}
 
   linkedinLogin() {
-    window.open('linkedin-popup.html', 'name', 'height=585,width-400')
+    window.open('linkedin-popup.html', 'name')
   }
 
   googleLogin() {

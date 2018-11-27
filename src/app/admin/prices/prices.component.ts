@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core'
-import { StorageService } from '#core/storage.service'
 import { PapaParseService } from 'ngx-papaparse'
 import { FirestoreService } from '#core/firestore.service';
 
@@ -10,10 +9,9 @@ import { FirestoreService } from '#core/firestore.service';
 })
 export class PricesComponent implements OnInit {
 
-  prices:any = {};
+  prices: any = {};
 
   constructor(
-    private storage: StorageService,
     private papa: PapaParseService,
     private firestore: FirestoreService
   ) { }

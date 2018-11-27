@@ -27,8 +27,10 @@
               "node_modules/cropperjs/dist/cropper.min.css"
             ],
             "scripts": [
-              "node_modules/jquery/dist/jquery.min.js",
-              "node_modules/cropperjs/dist/cropper.min.js"
+              "node_modules/cropperjs/dist/cropper.min.js",
+              "src/assets/js/colorpicker.js",
+              "src/assets/js/email-editor.bundle.js"
+
             ]
           },
           "configurations": {
@@ -76,8 +78,8 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.spec.json",
             "scripts": [
-              "node_modules/jquery/dist/jquery.min.js",
-              "node_modules/cropperjs/dist/cropper.min.js"
+              "node_modules/cropperjs/dist/cropper.min.js",
+              "src/assets/js/email-editor.bundle.js"
             ],
             "styles": [
               "src/styles.scss",

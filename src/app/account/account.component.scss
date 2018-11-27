@@ -7,11 +7,14 @@
     align-items: center;
     background-color: #f1f1f1;
     flex-direction: column;
-    padding-top: 88px;
-    padding-bottom: 48px;
     background-image: url("/assets/bg/loginbg.jpg");
     background-size: cover;
     background-attachment: fixed;
+
+    @media only screen and (min-width: 600px) {
+        padding-top: 88px;
+        padding-bottom: 48px;
+    }
 }
 
 .account-header-bg {

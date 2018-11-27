@@ -6,14 +6,6 @@
       </div>
       <img style="width: 300px; margin-top:12px" class="row center-xs middle-xs" [src]="checkout.thumbnail" oncontextmenu="return false" draggable="false">
       <div class="order-summary">
-        <div class="subtotal">
-          <span>Subtotal</span>
-          <span>${{(subtotal||0).toFixed(2)}}</span>
-        </div>
-        <div class="shipping">
-          <span>Shipping</span>
-          <span>${{(shipping||0).toFixed(2)}}</span>
-        </div>
         <div class="total">
           <span>Total</span>
           <span>${{(total||0).toFixed(2)}}</span>

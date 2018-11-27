@@ -19,13 +19,13 @@ export class AuthGuard implements CanActivate {
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<boolean> | boolean {
-    return this.auth.user
+    return this.auth._user
       .take(1)
       .map(user => !!user)
       .do(loggedIn => {
         if (!loggedIn) {
           console.log('You must be logged in to do that!')
-          this.router.navigate(['/account/register'])
+          this.router.navigate(['/account/login'])
         }
       })
   }
